@@ -23,7 +23,6 @@ help-order:
     - s rules
     - s show <name>
     - s tax
-    - s teleporters
     - s title
     - s upkeep
     - s chat

@@ -40,7 +40,7 @@ public class SettlementDisbandCommand extends SettlementSubCommand {
                     "name", res.getSettlement().getName()
             );
             Settlement settlement = res.getSettlement();
-            SettlementManager.getInstance().delete(res.getSettlement());
+            SettlementManager.getInstance().abandon(res.getSettlement());
             Message.get("broadcast.settlement-deletion").broadcast(
                     "name", settlement.getName(),
                     "state", settlement.getState().getTag());

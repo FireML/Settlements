@@ -1,7 +1,6 @@
 package de.themoep.settlements.npc.events;
 
 import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;

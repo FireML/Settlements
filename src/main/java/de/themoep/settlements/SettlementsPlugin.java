@@ -30,16 +30,10 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.adapter.PaperAdapter;
 import de.themoep.settlements.utils.adapter.ServerAdapter;
-import de.themoep.settlements.utils.adapter.SpigotAdapter;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -82,6 +76,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         timer.cancel();
+        ConfigManager.getInstance().getBossBar().removeAll();
         if (running) {
             running = false;
         }

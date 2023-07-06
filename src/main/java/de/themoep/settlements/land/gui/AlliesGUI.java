@@ -38,6 +38,7 @@ public class AlliesGUI extends SettlementsGUI {
                     .sorted((a1, a2) -> a1.compareTo(sort, a2))
                     .forEach(a -> group.addElement(
                             new StaticGuiElement('a', ItemUtils.getHead(a.getLandOwner().getChief().getUUID(), resident.getName()), click -> {
+
                                 if (landOwner.hasPermission(resident, "manageally")) {
                                     new AllyGUI(landOwner, resident, a).open();
                                 }
@@ -87,14 +88,6 @@ public class AlliesGUI extends SettlementsGUI {
                                 getMessage("success").tell(resident, "name", sender.getName());
                                 getMessage("now-allied-to").tell(sender, "name", landOwner.getName(), "state", landOwner.getStateTag());
                                 getMessage("now-allied-to").tell(landOwner, "name", sender.getName(), "state", sender.getStateTag());
-                                for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                                    provider.sendMail(sender.getStateTag() + " " + sender.getName(), landOwner.getChief(), getText("now-allied-to",
-                                            "name", sender.getName(), "state", sender.getStateTag()
-                                    ));
-                                    provider.sendMail(landOwner.getStateTag() + " " + landOwner.getName(), sender.getChief(), getText("now-allied-to",
-                                            "name", landOwner.getName(), "state", landOwner.getStateTag()
-                                    ));
-                                }
                             });
                         });
                     }

@@ -2,13 +2,10 @@ main: de.themoep.settlements.SettlementsPlugin
 version: "${minecraft.plugin.version}"
 name: Settlements
 depend: [Vault]
-softdepend: [LWC, ChestShop, Multiverse-Core, CMI, PlaceholderAPI, Brewery, PlotSquared, Citizens, Denizen]
+softdepend: [LWC, ChestShop, Multiverse-Core, CMI, PlaceholderAPI, Brewery, Citizens, Denizen]
 authors: [Phoenix616, Oheers, FireML]
-api-version: 1.19
+api-version: '1.20'
 commands:
-  plot:
-    description: Plot Commands.
-    aliases: [p, land]
   portal:
     description: Portal Commands.
     aliases: [netherportal]
@@ -187,8 +184,12 @@ permissions:
       settlements.command.empire.npc: true
       settlements.command.empire.npc.teleport: true
       settlements.command.settlement.claim.coords: true
+      settlements.command.settlement.claim.radius: true
+      settlements.command.settlement.claim.5: true
       settlements.command.settlement.unclaim.coords: true
       settlements.command.empire.claim.coords: true
+      settlements.command.empire.claim.radius: true
+      settlements.command.empire.claim.5: true
       settlements.command.empire.unclaim.coords: true
   settlements.command.scoreboard:
     description: Permission for toggling the scoreboard on or off. Does not hide custom scoreboards set with /scoreboardadmin!

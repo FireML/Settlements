@@ -1,9 +1,12 @@
 package de.themoep.settlements.banish;
 
+import com.Zrips.CMI.CMI;
+import com.Zrips.CMI.Containers.CMIUser;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.land.events.LandPreClaimEvent;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
@@ -61,6 +64,18 @@ public class BanishListener implements Listener {
                 Utils.teleportToSpawn(p);
             }
         }), 1);
+    }
+
+    @EventHandler
+    public void on(LandPreClaimEvent e) {
+        for (Player pl : e.getLand().getPlayers()) {
+            ResidentManager.getInstance().isResBanished(e.getLand(), pl, (land, p, landOwner) -> {
+            Utils.runLater(() -> sendInfo(p, landOwner, "join"), 10);
+                if (!pl.hasPermission("settlements.bypass.banish")) {
+                    Bukkit.getServer().dispatchCommand(pl, "cmi spawn");
+                }
+            });
+        }
     }
 
     private void sendInfo(Player p, LandOwner landOwner, String type) {

@@ -74,14 +74,6 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
                     }
                     Message.get("command." + landOwner.getKey() + ".unally.success").tell(target, "name", landOwner.getName(), "state", landOwner.getStateTag());
                     Message.get("command." + landOwner.getKey() + ".unally.success").tell(landOwner, "name", target.getName(), "state", target.getStateTag());
-                    for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                        provider.sendMail(landOwner.getStateTag() + " " + landOwner.getName(), target.getChief(), Message.get("command." + landOwner.getKey() + ".unally.success").getReplacedText(
-                                "name", landOwner.getName(), "state", landOwner.getStateTag()
-                        ));
-                        provider.sendMail(target.getStateTag() + " " + target.getName(), landOwner.getChief(), Message.get("command." + landOwner.getKey() + ".unally.success").getReplacedText(
-                                "name", target.getName(), "state", target.getStateTag()
-                        ));
-                    }
                     c.getGui().close();
                 }, c -> {
                     InventoryGui.goBack(c.getWhoClicked());

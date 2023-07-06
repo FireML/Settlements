@@ -231,7 +231,7 @@ public class SettlementManager {
         });
     }
 
-    void abandon(Settlement settlement) {
+    public void abandon(Settlement settlement) {
         if (settlement.hasEmpire()) {
             settlement.getEmpire().getMemberIds().remove(settlement.getId());
         }
@@ -387,23 +387,10 @@ public class SettlementManager {
             }
         }
 
-        for (NpcType npc : settlement.getLevelInfo().getNPCs()) {
-            NpcData npcData = settlement.getNpcData(npc);
-            perksDesc.add(npcData.getTag());
-        }
-
-        String mail = Message.get("levels.mail-upgrade.general").getReplacedText(
-                "name", settlement.getStateTag(),
-                "level", String.valueOf(settlement.getLevel())
-        );
-        if (!perksDesc.isEmpty()) {
-            mail += "\n" + Message.get("levels.mail-upgrade.perks").getReplacedText(
-                    "perks", String.join(", ", perksDesc)
-            );
-        }
-        for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-            for (Resident r : settlement.getResidents()) {
-                provider.sendMail(settlement.getStateTag() + " " + settlement.getName(), r, mail);
+        if (settlement.getLevelInfo().getNPCs() != null) {
+            for (NpcType npc : settlement.getLevelInfo().getNPCs()) {
+                NpcData npcData = settlement.getNpcData(npc);
+                perksDesc.add(npcData.getTag());
             }
         }
 

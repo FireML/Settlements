@@ -148,6 +148,10 @@ broadcast:
   empire-abandoned: "&cEmpire &f{name}&c has been abandoned! You have 24 hours to raid it!"
   empires-abandoned: "&cEmpires &f{empires} have been abandoned! You have 24 hours to raid it!"
   empires-tag: "{name}"
+pvp-claim:
+  enter: "&f[&eSettlements&f] &cPvP is enabled in this claim!"
+  exit: "&f[&eSettlements&f] &cPvP is no longer enabled."
+  bossbar: "&cPvP is Enabled inside this Claim!"
 scoreboard:
   sidebar:
     title: "&x&0&d&e&2&e&8&lPoleis&f&lMC"
@@ -414,7 +418,6 @@ embassy:
     title: ""
     subtitle: "{name}"
 pvp-is-enabled: " - &cPvp is enabled!&7"
-pvp-is-enabled-bossbar: "&cPvP is Enabled inside this Claim!"
 chat:
   locked: "&cChat is currently locked!"
   nobody-nearby: "&cThere is nobody around you who could hear you!"
@@ -1171,7 +1174,7 @@ gui:
       &fUpkeep cost: &e☧ {upkeep}
       
       &fCan afford for: &e{afford} days
-      &fTime till upkeep: &e{time}
+      &fTime until next Upkeep: &2{time}
       &fPayment for upkeep is taken directly from Bank
     taxes: |-
       &eCurrent Taxes
@@ -1420,7 +1423,7 @@ gui:
     info: |-
       &eDaily Missions
       &fDoing missions will reward
-      &fContribution Points
+      &fMission Points
     entry: |-
       &e{title}
       &f{requirements}
@@ -2088,16 +2091,6 @@ gui:
       back: "&cClose"
       success: "&aUnlinked from Portal at &e{world} {x}/{y}/{z}"
       error: "&cAn error occurred while unlinking! Please contact an admin."
-  private-teleports:
-    title: "&2&lSettlement teleports:"
-    entry: "{state} &b{name}"
-    outpost: |-
-      Outpost &b{name}
-      {state} {owner}
-    page:
-      next: "&7Go to next page {page}"
-      previous: "&7Go to previous page {page}"
-    back: "&cBack To Teleporters"
   settings:
     title: "&2&lSettlement Settings"
     rename:
@@ -2300,12 +2293,6 @@ gui:
       offline: "&c"
       entry: "{online}{name}"
     back: "&cClose"
-  teleporters:
-    title: "Teleportation"
-    locked: "&cLocked"
-    private: "&e&lPrivate Warps"
-    settlement-home: "&e&l{state} Home"
-    empire-home: "&e&lEmpire Home"
   title:
     title: "&2&lSelect your title"
     entry:
@@ -2595,7 +2582,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMission Points: &e☧ {missionpoints}
+          &fMission Points: &e{missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2607,7 +2594,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMission Points: &e☧ {missionpoints}
+          &fMission Points: &e{missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -3383,8 +3370,6 @@ command:
         above-max: "&c(!) &cMax auction tax amount is &e{max}%&c!"
         below-zero: "&c(!) &cAuction tax amount cannot be negative!"
         description: Sets the auction tax a player needs to pay when putting up an item for auction
-    teleporters:
-      description: Teleporter GUI
     title:
       description: "Set your title"
       success:
@@ -3469,11 +3454,13 @@ command:
       description: Manually trigger a settlement upgrade
     upkeep:
       info: |-
-        &a⊱&m━━━━&r&6Upkeep&a&m━━━━&a⊰
-        &a&lUpkeep cost:&e {cost}
-        &a&lUpkeep: &e{upkeep}☧  &7/&e claim &7/&e day in this world
-        &a&lTime Till Upkeep: &e{time}
-        &a&lCan afford for: &6{afford} days
+        &a&m━━━━↠&r &bUpkeep &a&m↞━━━━
+        &x&8&7&C&E&E&B&lTotal daily upkeep cost: &a☧ {global_cost} &b(&e{global_total} claims&b)
+        &x&8&7&C&E&E&B&l  &3↪ &fKingdoms: &a☧ {overworld_cost} &b(&e{overworld_total} claims&b)
+        &x&8&7&C&E&E&B&l  &3↪ &fKingdoms_nether: &a☧ {nether_cost} &b(&e{nether_total} claims&b)
+        &x&8&7&C&E&E&B&l  &3↪ &fKingdoms_the_end: &a☧ {end_cost} &b(&e{end_total} claims&b)
+        &x&8&7&C&E&E&B&lDays of upkeep in bank: &6{afford} days
+        &x&8&7&C&E&E&B&lTime until next Upkeep: &2{time}
       afford-infinite: "infinite"
       description: Show settlement upkeep information
     perms:
@@ -4117,10 +4104,10 @@ command:
       description: Manually trigger an empire upgrade
     upkeep:
       info: |-
-        &a⊱&m━━━━&r&6Upkeep&a&m━━━━&a⊰
-        &3&lUpkeep cost:&e {cost} &7/&e day
-        &3&lTime Till Upkeep: &e{time}
-        &3&lCan afford for: &6{afford} days
+        &a&m━━━━↠&r &bUpkeep &a&m↞━━━━
+        &x&8&7&C&E&E&B&lTotal daily upkeep cost: &a☧ {global_cost} &b(&e{global_total} claims&b)
+        &x&8&7&C&E&E&B&lDays of upkeep in bank: &6{afford} days
+        &x&8&7&C&E&E&B&lTime until next Upkeep: &2{time}
       afford-infinite: "infinite"
       description: Show empire upkeep information
     world:

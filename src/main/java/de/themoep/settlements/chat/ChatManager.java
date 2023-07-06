@@ -25,7 +25,6 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import io.papermc.paper.event.player.AsyncChatEvent;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
@@ -144,13 +143,20 @@ public class ChatManager implements ConfigMessages, Listener {
 
         Settlement settlement = res.getSettlement();
 
+        BaseComponent[] prefix = TextComponent.fromLegacyText(senderPrefix);
+
+        if (res.hasPermission("poleis.staff.punish")) {
+            prefix = new ComponentBuilder("")
+                    .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/punish " + sender.getName()))
+                    .append(TextComponent.fromLegacyText(senderPrefix))
+                    .create();
+        }
+
         Replacer replacer = new Replacer()
                 .placeholderPrefix("{")
                 .placeholderSuffix("}")
                 .replace("channel", channel.getTag())
-                .replace("prefix", new ComponentBuilder(senderPrefix.replace('&', '§'))
-                        .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/punish " + sender.getName()))
-                        .create())
+                .replace("prefix", prefix)
                 .replace("suffix", TextComponent.fromLegacyText(senderSuffix))
                 .replace("rank", TextComponent.fromLegacyText(settlement != null ? res.getSettlementRank().getTag(settlement) : ""))
                 .replace("title", TextComponent.fromLegacyText(res.getDisplayTitle()))
