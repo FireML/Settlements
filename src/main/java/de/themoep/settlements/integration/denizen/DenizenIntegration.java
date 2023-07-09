@@ -1,16 +1,20 @@
 package de.themoep.settlements.integration.denizen;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
+import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.TagManager;
 import de.themoep.settlements.integration.denizen.events.SettlementsChatScriptEvent;
 import de.themoep.settlements.integration.denizen.events.SettlementsEmpireScriptEvent;
+import de.themoep.settlements.integration.denizen.events.SettlementsLandScriptEvent;
 import de.themoep.settlements.integration.denizen.events.SettlementsSettlementScriptEvent;
 import de.themoep.settlements.integration.denizen.objects.EmpireTag;
 import de.themoep.settlements.integration.denizen.objects.LandTag;
 import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.integration.denizen.objects.SettlementTag;
+import de.themoep.settlements.integration.denizen.properties.SettlementsPlayerProperties;
 
 public class DenizenIntegration {
 
@@ -18,20 +22,24 @@ public class DenizenIntegration {
 
     public void init() {
 
-        ObjectFetcher.registerWithObjectFetcher(LandTag.class, LandTag.tagProcessor);
-        ObjectFetcher.registerWithObjectFetcher(SettlementTag.class, SettlementTag.tagProcessor);
+        ObjectFetcher.registerWithObjectFetcher(LandTag.class, LandTag.tagProcessor); // pl@
+        LandTag.register();
+        ObjectFetcher.registerWithObjectFetcher(SettlementTag.class, SettlementTag.tagProcessor); // settlement@
         SettlementTag.register();
-        ObjectFetcher.registerWithObjectFetcher(EmpireTag.class, EmpireTag.tagProcessor);
+        ObjectFetcher.registerWithObjectFetcher(EmpireTag.class, EmpireTag.tagProcessor); // empire@
         EmpireTag.register();
-        ObjectFetcher.registerWithObjectFetcher(ResidentTag.class, ResidentTag.tagProcessor);
+        ObjectFetcher.registerWithObjectFetcher(ResidentTag.class, ResidentTag.tagProcessor); // resident@
         ResidentTag.register();
 
         ScriptEvent.registerScriptEvent(new SettlementsSettlementScriptEvent());
         ScriptEvent.registerScriptEvent(new SettlementsChatScriptEvent());
         ScriptEvent.registerScriptEvent(new SettlementsEmpireScriptEvent());
+        ScriptEvent.registerScriptEvent(new SettlementsLandScriptEvent());
+
+        PropertyParser.registerProperty(SettlementsPlayerProperties.class, PlayerTag.class);
 
         // <--[tag]
-        // @attribute <land[world,x,z]>
+        // @attribute <land[x,z,world]>
         // @returns LandTag
         // @plugin Settlements
         // @description

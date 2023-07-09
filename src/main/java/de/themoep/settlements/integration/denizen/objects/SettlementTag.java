@@ -1,84 +1,82 @@
 package de.themoep.settlements.integration.denizen.objects;
 
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
-import com.denizenscript.denizencore.utilities.debugging.Debug;
-import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.world.NamedLocation;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SettlementTag implements ObjectTag, Adjustable {
-
-    public static ObjectTagProcessor<SettlementTag> tagProcessor = new ObjectTagProcessor<>();
 
     // <--[ObjectType]
     // @name SettlementTag
     // @prefix settlement
     // @base ElementTag
     // @format
-    // The identity format for settlements is their names.
-    // For example, 'settlement@my_settlement'.
+    // The identity format for settlements is their name
+    // For example, 'settlement@firedev'.
     //
-    // @plugin Settlements
     // @description
-    // A SettlementTag represents a settlement.
+    // A SettlementTag represents a Settlement object in Settlements.
     //
     // -->
+
+    //////////////////
+    //    Object Fetcher
+    ////////////////
 
     @Fetchable("settlement")
     public static SettlementTag valueOf(String string, TagContext context) {
         if (string == null) {
             return null;
         }
-
-        ////////
-        // Match Settlement name
-
-        string = string.replace("settlement@", "");
+        string = CoreUtilities.toLowerCase(string).replace("settlement@", "");
         Settlement settlement = SettlementManager.getInstance().getFromName(string);
-        if (settlement == null) {
-            return null;
-        }
-        return new SettlementTag(settlement);
-    }
-
-    Settlement settlement = null;
-
-    public SettlementTag(Settlement settlement) {
         if (settlement != null) {
-            this.settlement = settlement;
+            return new SettlementTag(settlement);
         }
-        else {
-            Debug.echoError("Settlement referenced is null!");
-        }
+        return null;
     }
 
     public static boolean matches(String arg) {
-        if (valueOf(arg, CoreUtilities.noDebugContext) != null) {
+        if (CoreUtilities.toLowerCase(arg).startsWith("settlement@")) {
             return true;
         }
-        return false;
+        Settlement settlement = SettlementManager.getInstance().getFromName(arg);
+        return settlement != null;
     }
 
-    String prefix = "settlement";
+    /////////////////////
+    //   Constructors
+    //////////////////
+
+    public SettlementTag(Settlement settlement) {
+        this.settlement = settlement;
+    }
+
+    /////////////////////
+    //   Instance Fields/Methods
+    /////////////////
+
+    private Settlement settlement;
+
+    public Settlement getSettlement() {
+        return settlement;
+    }
+
+    /////////////////////
+    //  ObjectTag Methods
+    ///////////////////
+
+    private String prefix = "Settlement";
 
     @Override
     public String getPrefix() {
@@ -101,295 +99,196 @@ public class SettlementTag implements ObjectTag, Adjustable {
     }
 
     @Override
-    public ObjectTag setPrefix(String prefix) {
-        this.prefix = prefix;
-        return this;
-    }
-
-    @Override
     public String toString() {
         return identify();
     }
 
-    public Settlement getSettlement() {
-        return settlement;
+    @Override
+    public SettlementTag setPrefix(String prefix) {
+        this.prefix = prefix;
+        return this;
     }
 
-    public boolean equals(Settlement settlement1) {
-        return settlement1.equals(this.settlement);
+    public static void register() {
+
+        // <--[tag]
+        // @attribute <SettlementTag.name>
+        // @returns ElementTag
+        // @description
+        // Gets the settlement's name
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> new ElementTag(object.settlement.getName()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.leader>
+        // @returns ResidentTag
+        // @description
+        // Gets the settlement's leader
+        // -->
+        tagProcessor.registerTag(ResidentTag.class, "leader", (attribute, object) -> new ResidentTag(object.settlement.getChief()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.online_residents>
+        // @returns ListTag(ResidentTag)
+        // @description
+        // Gets the settlement's online residents
+        // -->
+        tagProcessor.registerTag(ListTag.class, "online_residents", (attribute, object) -> new ListTag(object.settlement.getOnlineResidents(), ResidentTag::new));
+
+        // <--[tag]
+        // @attribute <SettlementTag.residents>
+        // @returns ListTag(ResidentTag)
+        // @description
+        // Gets the settlement's residents
+        // -->
+        tagProcessor.registerTag(ListTag.class, "residents", (attribute, object) -> new ListTag(object.settlement.getResidents(), ResidentTag::new));
+
+        // <--[tag]
+        // @attribute <SettlementTag.state>
+        // @returns ElementTag
+        // @description
+        // Gets the settlement's state
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "state", (attribute, object) -> new ElementTag(object.settlement.getStateTag()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.level>
+        // @returns ElementTag
+        // @description
+        // Gets the settlement's level
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "level", (attribute, object) -> new ElementTag(object.settlement.getLevel()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.balance>
+        // @returns ElementTag
+        // @description
+        // Gets the settlement's bank balance
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "balance", (attribute, object) -> new ElementTag(object.settlement.getBank()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.tax>
+        // @returns ElementTag
+        // @description
+        // Gets the settlement's tax
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "tax", (attribute, object) -> new ElementTag(object.settlement.getTax()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.empire>
+        // @returns EmpireTag
+        // @description
+        // Gets the settlement's empire
+        // -->
+        tagProcessor.registerTag(EmpireTag.class, "empire", (attribute, object) -> new EmpireTag(object.settlement.getEmpire()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.home>
+        // @returns LocationTag
+        // @description
+        // Gets the settlement's home location
+        // -->
+        tagProcessor.registerTag(LocationTag.class, "home", (attribute, object) -> new LocationTag(object.settlement.getHome().toBukkitLocation()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.claimable_land>
+        // @returns ElementTag
+        // @description
+        // Gets the settlement's total claimable land
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "claimable_land", (attribute, object) -> new ElementTag(object.settlement.getMaxClaimableChunks()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.claimed_land>
+        // @returns ListTag(LandTag)
+        // @description
+        // Gets the settlement's claimed land
+        // -->
+        tagProcessor.registerTag(ListTag.class, "claimed_land", (attribute, object) -> new ListTag(object.settlement.getLand(), LandTag::new));
+
+        // <--[tag]
+        // @attribute <SettlementTag.claimable_outposts>
+        // @returns ElementTag
+        // @description
+        // Gets the settlement's total claimable outposts
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "claimable_outposts", (attribute, object) -> new ElementTag(object.settlement.getMaxOutposts()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.claimed_outposts>
+        // @returns ListTag(LandTag)
+        // @description
+        // Gets the settlement's claimed outposts
+        // -->
+        tagProcessor.registerTag(ListTag.class, "claimed_outposts", (attribute, object) -> new ListTag(object.settlement.getOutpostHomes().values(), namedLocation -> new LocationTag(namedLocation.toBukkitLocation())));
+
+        // <--[tag]
+        // @attribute <SettlementTag.upkeep>
+        // @returns ElementTag
+        // @description
+        // Gets the settlement's upkeep cost
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "upkeep", (attribute, object) -> new ElementTag(object.settlement.getUpkeep()));
     }
 
     @Override
-    public void applyProperty(Mechanism mechanism) {
-        mechanism.echoError("Cannot apply Properties to a settlement!");
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object SettlementTag
+        // @name set_balance
+        // @input ElementTag
+        // @description
+        // Sets the settlement's Bank Balance
+        // @tags
+        // <SettlementTag.balance>
+        // @example
+        // - adjust <settlement[firedev]> set_balance:10000
+        // -->
+        if (mechanism.matches("set_balance") && mechanism.requireInteger()) {
+            settlement.setBank(mechanism.getValue().asLong());
+        }
+
+        // <--[mechanism]
+        // @object SettlementTag
+        // @name add_balance
+        // @input ElementTag
+        // @description
+        // Adds to the settlement's Bank Balance
+        // @tags
+        // <SettlementTag.balance>
+        // @example
+        // - adjust <settlement[firedev]> add_balance:10000
+        // -->
+        if (mechanism.matches("add_balance") && mechanism.requireInteger()) {
+            settlement.addToBank(mechanism.getValue().asLong());
+        }
+
+        // <--[mechanism]
+        // @object SettlementTag
+        // @name remove_balance
+        // @input ElementTag
+        // @description
+        // Takes from the settlement's Bank Balance
+        // @tags
+        // <SettlementTag.balance>
+        // @example
+        // - adjust <settlement[firedev]> remove_balance:10000
+        // -->
+        if (mechanism.matches("remove_balance") && mechanism.requireInteger()) {
+            settlement.removeFromBank(mechanism.getValue().asLong());
+        }
     }
+
+    public static ObjectTagProcessor<SettlementTag> tagProcessor = new ObjectTagProcessor<>();
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
         return tagProcessor.getObjectAttribute(this, attribute);
     }
 
-    public static void register() {
-        PropertyParser.registerPropertyTagHandlers(SettlementTag.class, tagProcessor);
-
-        // <--[tag]
-        // @attribute <SettlementTag.name>
-        // @returns ElementTag
-        // @plugin Settlements
-        // @description
-        // Returns the name of the settlement.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "name", (attribute, object) -> new ElementTag(object.getSettlement().getName()));
-
-        // <--[tag]
-        // @attribute <SettlementTag.leader>
-        // @returns PlayerTag
-        // @plugin Settlements
-        // @description
-        // Returns the leader of the settlement.
-        // -->
-        tagProcessor.registerTag(ResidentTag.class, "name", (attribute, object) -> new ResidentTag(object.getSettlement().getChief()));
-
-        // <--[tag]
-        // @attribute <SettlementTag.online_residents>
-        // @returns ListTag(PlayerTag)
-        // @plugin Settlements
-        // @description
-        // Returns the online residents of the settlement.
-        // -->
-        tagProcessor.registerTag(ListTag.class, "online_residents", (attribute, object) -> {
-            List<PlayerTag> residents = new ArrayList<>();
-            for (Resident resident : object.getSettlement().getOnlineResidents()) {
-                residents.add(new PlayerTag(resident.getUUID()));
-            }
-            return new ListTag(residents);
-        });
-
-        // <--[tag]
-        // @attribute <SettlementTag.residents>
-        // @returns ListTag(PlayerTag)
-        // @plugin Settlements
-        // @description
-        // Returns the residents of the settlement.
-        // -->
-        tagProcessor.registerTag(ListTag.class, "residents", (attribute, object) -> {
-            List<PlayerTag> residents = new ArrayList<>();
-            for (Resident resident : object.getSettlement().getResidents()) {
-                residents.add(new PlayerTag(resident.getUUID()));
-            }
-            return new ListTag(residents);
-        });
-
-        // <--[tag]
-        // @attribute <SettlementTag.state>
-        // @returns ElementTag
-        // @plugin Settlements
-        // @description
-        // Returns the state of the settlement.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "state", (attribute, object) -> new ElementTag(object.getSettlement().getStateTag()));
-
-        // <--[tag]
-        // @attribute <SettlementTag.level>
-        // @returns ElementTag
-        // @plugin Settlements
-        // @description
-        // Returns the level of the settlement.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "level", (attribute, object) -> new ElementTag(object.getSettlement().getLevel()));
-
-        // <--[tag]
-        // @attribute <SettlementTag.balance>
-        // @returns ElementTag
-        // @plugin Settlements
-        // @description
-        // Returns the balance of the settlement.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "balance", (attribute, object) -> new ElementTag(object.getSettlement().getBank()));
-
-        // <--[tag]
-        // @attribute <SettlementTag.tax>
-        // @returns ElementTag
-        // @plugin Settlements
-        // @description
-        // Returns the tax of the settlement.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "tax", (attribute, object) -> new ElementTag(object.getSettlement().getTax()));
-
-        // <--[tag]
-        // @attribute <SettlementTag.empire>
-        // @returns EmpireTag
-        // @plugin Settlements
-        // @description
-        // Returns the empire that the settlement belongs to.
-        // -->
-        tagProcessor.registerTag(EmpireTag.class, "residents", (attribute, object) -> {
-            if (!object.getSettlement().hasEmpire()) {
-                return null;
-            }
-            return new EmpireTag(object.getSettlement().getEmpire());
-        });
-
-        // <--[tag]
-        // @attribute <SettlementTag.home>
-        // @returns LocationTag
-        // @plugin Settlements
-        // @description
-        // Returns the home of this settlement.
-        // -->
-        tagProcessor.registerTag(LocationTag.class, "home", (attribute, object) -> {
-            if (!object.getSettlement().hasHome()) {
-                return null;
-            }
-            return new LocationTag(object.getSettlement().getHome().toBukkitLocation());
-        });
-
-        // <--[tag]
-        // @attribute <SettlementTag.claimable_land>
-        // @returns ElementTag
-        // @plugin Settlements
-        // @description
-        // Returns the amount of land the settlement can claim.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "claimable_land", (attribute, object) -> new ElementTag(object.getSettlement().getMaxClaimableChunks()));
-
-        // <--[tag]
-        // @attribute <SettlementTag.claimable_outposts>
-        // @returns ElementTag
-        // @plugin Settlements
-        // @description
-        // Returns the amount of outposts the settlement can claim.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "claimable_outposts", (attribute, object) -> new ElementTag(object.getSettlement().getMaxOutposts()));
-
-        // <--[tag]
-        // @attribute <SettlementTag.upkeep>
-        // @returns ElementTag
-        // @plugin Settlements
-        // @description
-        // Returns the upkeep of the settlement.
-        // -->
-        tagProcessor.registerTag(ElementTag.class, "upkeep", (attribute, object) -> new ElementTag(object.getSettlement().getUpkeep()));
-
-        // <--[tag]
-        // @attribute <SettlementTag.claimed_outposts>
-        // @returns ListTag(LocationTag)
-        // @plugin Settlements
-        // @description
-        // Returns the claimed outposts of the settlement.
-        // -->
-        tagProcessor.registerTag(ListTag.class, "claimed_outposts", (attribute, object) -> {
-            List<LocationTag> outposts = new ArrayList<>();
-            for (NamedLocation location : object.getSettlement().getOutpostHomes().values()) {
-                outposts.add(new LocationTag(location.toBukkitLocation()));
-            }
-            return new ListTag(outposts);
-        });
-
-        // <--[tag]
-        // @attribute <SettlementTag.claimed_land>
-        // @returns ListTag(LandTag)
-        // @plugin Settlements
-        // @description
-        // Returns the land claimed by the settlement.
-        // -->
-        tagProcessor.registerTag(ListTag.class, "claimed_land", (attribute, object) -> {
-            List<LandTag> lands = new ArrayList<>();
-            for (OwnedLand land : object.getSettlement().getLand()) {
-                lands.add(new LandTag(land));
-            }
-            return new ListTag(lands);
-        });
-    }
-
-    public void adjust(Mechanism mechanism) {
-
-        // <--[mechanism]
-        // @object SettlementTag
-        // @name balance
-        // @input ElementTag(Decimal)
-        // @plugin Settlements
-        // @description
-        // Sets the money balance of a settlement.
-        // @tags
-        // <SettlementTag.balance>
-        // -->
-        if (mechanism.matches("balance")) {
-            settlement.setBank(mechanism.getValue().asLong());
-            DatabaseManager.getInstance().saveSettlement(settlement);
-        }
-
-        // <--[mechanism]
-        // @object SettlementTag
-        // @name add_balance
-        // @input ElementTag(Decimal)
-        // @plugin Settlements
-        // @description
-        // Adds to the money balance of a settlement.
-        // @tags
-        // <SettlementTag.add_balance>
-        // -->
-        if (mechanism.matches("add_balance")) {
-            settlement.addToBank(mechanism.getValue().asLong());
-            DatabaseManager.getInstance().saveSettlement(settlement);
-        }
-
-        // <--[mechanism]
-        // @object SettlementTag
-        // @name remove_balance
-        // @input ElementTag(Decimal)
-        // @plugin Settlements
-        // @description
-        // Takes from the money balance of a settlement.
-        // @tags
-        // <SettlementTag.remove_balance>
-        // -->
-        if (mechanism.matches("remove_balance")) {
-            settlement.removeFromBank(mechanism.getValue().asLong());
-            DatabaseManager.getInstance().saveSettlement(settlement);
-        }
-
-        // <--[mechanism]
-        // @object SettlementTag
-        // @name add_member
-        // @input ElementTag(String)
-        // @plugin Settlements
-        // @description
-        // Add a member to this settlement.
-        // @tags
-        // <SettlementTag.add_member>
-        // -->
-        if (mechanism.matches("add_member")) {
-            Resident resident = ResidentManager.getInstance().getResident(mechanism.getValue().asString());
-            if (resident == null) {
-                mechanism.echoError("No resident found for '" + mechanism.getValue().asString() + "'");
-                return;
-            }
-            settlement.addMember(resident);
-            DatabaseManager.getInstance().saveSettlement(settlement);
-        }
-
-        // <--[mechanism]
-        // @object SettlementTag
-        // @name remove_member
-        // @input ElementTag(String)
-        // @plugin Settlements
-        // @description
-        // Removes a member from this settlement.
-        // @tags
-        // <SettlementTag.remove_member>
-        // -->
-        if (mechanism.matches("remove_member")) {
-            Resident resident = ResidentManager.getInstance().getResident(mechanism.getValue().asString());
-            if (resident == null) {
-                mechanism.echoError("No resident found for '" + mechanism.getValue().asString() + "'");
-                return;
-            }
-            settlement.removeMember(resident);
-            DatabaseManager.getInstance().saveSettlement(settlement);
-        }
-
-        tagProcessor.processMechanism(this, mechanism);
-        CoreUtilities.autoPropertyMechanism(this, mechanism);
+    public void applyProperty(Mechanism mechanism) {
+        mechanism.echoError("Cannot apply properties to an settlement!");
     }
 }

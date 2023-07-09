@@ -394,6 +394,10 @@ public class SettlementManager {
             }
         }
 
+        if (settlement.getState() == SettlementState.KINGDOM && settlement.getLevel() == 1) {
+            Message.get("levels.perk-unlocked").tell(settlement, "perk", "Flight in Disabled Worlds");
+        }
+
         Utils.callEvent(new LandownerLeveledEvent(settlement, res));
         settlement.save();
         return true;

@@ -846,6 +846,8 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         return worldName;
     }
 
+    public World getWorld() { return Bukkit.getWorld(worldName); }
+
     void setWorldName(String worldName) {
         this.worldName = worldName;
     }
