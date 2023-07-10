@@ -15,9 +15,9 @@ import de.themoep.settlements.integration.citizens.CitizensIntegration;
 import de.themoep.settlements.integration.denizen.DenizenIntegration;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.*;
-import de.themoep.settlements.land.events.LandEnterEvent;
 import de.themoep.settlements.land.events.Listeners.LandEnterListener;
 import de.themoep.settlements.land.events.Listeners.LandLeaveListener;
+import de.themoep.settlements.land.events.Listeners.LandChangeListener;
 import de.themoep.settlements.lock.LockManager;
 import de.themoep.settlements.lock.LockProvider;
 import de.themoep.settlements.missions.MissionListener;
@@ -137,6 +137,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         registerListener(new SettlementsListener());
         registerListener(new LandLeaveListener());
         registerListener(new LandEnterListener());
+        registerListener(new LandChangeListener());
 
         if (!Config.Chat.CHAT_ONLY) {
 
