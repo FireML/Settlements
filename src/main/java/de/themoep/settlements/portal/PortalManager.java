@@ -27,6 +27,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
@@ -39,6 +40,7 @@ public class PortalManager {
     private Map<IdObject, Portal> portals = new HashMap<>();
     private Table<String, SimpleBlockLocation, Portal> portalLocations = HashBasedTable.create();
     private Multimap<IdObject, IdObject> portalLinks = MultimapBuilder.hashKeys().hashSetValues().build();
+    private List<Player> portalCooldown = new ArrayList<>();
 
     private void setup() {
         for (Portal portal : DatabaseManager.getInstance().getAllPortals()) {
@@ -171,20 +173,20 @@ public class PortalManager {
                     BlockFace playerDirection = entity.getFacing();
                     axis = ((Orientable) block.getBlockData()).getAxis();
                     switch (axis) {
-                        case X:
+                        case X -> {
                             if (entity.getFacing().getModX() == 0) {
                                 direction = playerDirection.getOppositeFace();
                             } else {
                                 direction = WorldUtils.rotateClockWise(playerDirection);
                             }
-                            break;
-                        case Z:
+                        }
+                        case Z -> {
                             if (entity.getFacing().getModZ() == 0) {
                                 direction = playerDirection.getOppositeFace();
                             } else {
                                 direction = WorldUtils.rotateClockWise(playerDirection);
                             }
-                            break;
+                        }
                     }
                 }
             }
@@ -306,6 +308,9 @@ public class PortalManager {
         PlayerPortalEvent portalEvent = new PlayerPortalEvent(player, player.getLocation(), location,
                 PlayerTeleportEvent.TeleportCause.PLUGIN, 0, false, 0);
         Bukkit.getPluginManager().callEvent(portalEvent);
+        if (portalCooldown.contains(player)) {
+            return;
+        }
         if (!portalEvent.isCancelled()) {
             Location finalLocation = portalEvent.getTo();
             SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(location).thenAccept(c -> {
@@ -331,6 +336,13 @@ public class PortalManager {
                 }
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
+                portalCooldown.add(player);
+                Utils.runLater(new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        portalCooldown.remove(player);
+                    }
+                }, 60);
                 SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(player, down.getRelative(BlockFace.UP).getLocation().add(0.5, 0, 0.5)).thenAccept(success -> {
                     if (!success) {
                         Message.get("error.destination-obstructed").tell(player);
