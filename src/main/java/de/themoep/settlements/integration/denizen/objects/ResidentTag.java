@@ -1,7 +1,9 @@
 package de.themoep.settlements.integration.denizen.objects;
 
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
+import com.denizenscript.denizencore.objects.Mechanism;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
 import com.denizenscript.denizencore.objects.core.ListTag;
@@ -9,13 +11,14 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import org.bukkit.entity.Player;
 
-public class ResidentTag implements ObjectTag {
+public class ResidentTag implements ObjectTag, Adjustable {
 
     // <--[ObjectType]
     // @name ResidentTag
@@ -180,6 +183,56 @@ public class ResidentTag implements ObjectTag {
     }
 
     public static ObjectTagProcessor<ResidentTag> tagProcessor = new ObjectTagProcessor<>();
+
+    @Override
+    public void adjust(Mechanism mechanism) {
+
+        // <--[mechanism]
+        // @object ResidentTag
+        // @name add_channel
+        // @input ElementTag
+        // @description
+        // Adds the player to a chat channel
+        // @tags
+        // <ResidentTag.chat_channels>
+        // @example
+        // - adjust <resident[FireML]> add_channel:General
+        // -->
+        if (mechanism.matches("add_channel")) {
+            ChatChannel channel = ChatChannel.get(mechanism.getValue().asString());
+            if (channel.humanizedName().equals("general") && !mechanism.getValue().asString().equals("general")) {
+                channel = null;
+            }
+            if (channel != null) {
+                resident.addChannel(channel);
+            }
+        }
+
+        // <--[mechanism]
+        // @object ResidentTag
+        // @name remove_channel
+        // @input ElementTag
+        // @description
+        // Removes the player from a chat channel
+        // @tags
+        // <ResidentTag.chat_channels>
+        // @example
+        // - adjust <resident[FireML]> remove_channel:General
+        // -->
+        if (mechanism.matches("remove_channel")) {
+            ChatChannel channel = ChatChannel.get(mechanism.getValue().asString());
+            if (channel.humanizedName().equals("general") && !mechanism.getValue().asString().equals("general")) {
+                channel = null;
+            }
+            if (channel != null) {
+                resident.removeChannel(channel);
+            }
+        }
+    }
+
+    public void applyProperty(Mechanism mechanism) {
+        mechanism.echoError("Cannot apply properties to a resident!");
+    }
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
