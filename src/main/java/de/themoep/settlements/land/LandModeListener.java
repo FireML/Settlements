@@ -4,6 +4,9 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.CreaturePreSpawnEvent;
 import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
 import de.themoep.settlements.empire.Empire;
+import de.themoep.settlements.land.events.LandChangeEvent;
+import de.themoep.settlements.land.events.LandEnterEvent;
+import de.themoep.settlements.land.events.LandLeaveEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -122,42 +125,39 @@ public class LandModeListener implements LandAccessChecker {
     }
 
     @EventHandler
-    public void onPlayerEnterChunk(PlayerMoveChunkEvent e) {
+    public void onEnterLand(LandEnterEvent e) {
         BossBar bb = ConfigManager.getInstance().getBossBar();
         Player p = e.getPlayer();
-        OwnedLand land = LandManager.getInstance().getLand(e.getTo());
-        OwnedLand previousLand = LandManager.getInstance().getLand(e.getFrom());
-        if ((land == null || previousLand == null) || !land.getMode(PlotMode.pvp)) {
-            if (bb.getPlayers().contains(p)) {
-                bb.removePlayer(p);
-                MessageUtils.tell(p, Message.get("pvp-claim.exit").getText());
-            }
-        } else {
-            if (!bb.getPlayers().contains(p) && !previousLand.getMode(PlotMode.pvp)) {
-                bb.addPlayer(p);
-                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
-                MessageUtils.tell(p, Message.get("pvp-claim.enter").getText());
-            }
+        OwnedLand to = e.getTo();
+        if (to.getMode(PlotMode.pvp) && !bb.getPlayers().contains(p)) {
+            bb.addPlayer(p);
+            p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
+            MessageUtils.tell(p, Message.get("pvp-claim.enter").getText());
         }
     }
 
     @EventHandler
-    public void onPlayerTeleport(PlayerTeleportEvent e) {
+    public void onLeaveLand(LandLeaveEvent e) {
         BossBar bb = ConfigManager.getInstance().getBossBar();
         Player p = e.getPlayer();
-        OwnedLand land = LandManager.getInstance().getLand(e.getTo());
-        OwnedLand previousLand = LandManager.getInstance().getLand(e.getFrom());
-        if ((land == null || previousLand == null) || !land.getMode(PlotMode.pvp)) {
-            if (bb.getPlayers().contains(p)) {
-                bb.removePlayer(p);
-                MessageUtils.tell(p, Message.get("pvp-claim.exit").getText());
-            }
-        } else {
-            if (!bb.getPlayers().contains(p) && !previousLand.getMode(PlotMode.pvp)) {
-                bb.addPlayer(p);
-                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
-                MessageUtils.tell(p, Message.get("pvp-claim.enter").getText());
-            }
+        if (bb.getPlayers().contains(p)) {
+            bb.removePlayer(p);
+            MessageUtils.tell(p, Message.get("pvp-claim.exit").getText());
+        }
+    }
+
+    @EventHandler
+    public void onChangeLand(LandChangeEvent e) {
+        BossBar bb = ConfigManager.getInstance().getBossBar();
+        Player p = e.getPlayer();
+        OwnedLand to = e.getTo();
+        if (!to.getMode(PlotMode.pvp) && bb.getPlayers().contains(p)) {
+            bb.removePlayer(p);
+            MessageUtils.tell(p, Message.get("pvp-claim.exit").getText());
+        } else if (to.getMode(PlotMode.pvp) && !bb.getPlayers().contains(p)) {
+            bb.addPlayer(p);
+            p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
+            MessageUtils.tell(p, Message.get("pvp-claim.enter").getText());
         }
     }
 
