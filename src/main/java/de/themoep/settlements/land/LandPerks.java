@@ -4,7 +4,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.perk.Perk;
-import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.perk.PerkEffect;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
@@ -193,8 +192,7 @@ public class LandPerks {
         }
 
         for (Perk perk : perkable.getPerks()) {
-            PerkData perkData = perkable.getPerkData(perk);
-            if (perkData != null && !perkData.isActive()) {
+            if (!perkable.getPerkData(perk).isActive()) {
                 continue;
             }
 
