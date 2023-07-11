@@ -136,6 +136,10 @@ public class SettlementTitlesCommand extends SettlementSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
+        if (args.length == 0) {
+            new RankSelectGUI<>("settlement.titles", res, res, res.getSettlement(), rank -> new TitlesGUI<>("settlement", res, res.getSettlement(), rank).open()).open();
+            return true;
+        }
         return false;
     }
 }
