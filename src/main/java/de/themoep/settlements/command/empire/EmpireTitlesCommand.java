@@ -1,6 +1,7 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.land.gui.RankSelectGUI;
 import de.themoep.settlements.land.gui.TitlesGUI;
 import de.themoep.settlements.rank.EmpireRank;
@@ -137,6 +138,11 @@ public class EmpireTitlesCommand extends EmpireSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
+        if (args.length == 0) {
+            new RankSelectGUI<>("empire.titles", res, res, res.getSettlement().getEmpire(),
+                    rank -> new TitlesGUI<>("empire", res, res.getSettlement().getEmpire(), rank).open()).open();
+            return true;
+        }
         return false;
     }
 }

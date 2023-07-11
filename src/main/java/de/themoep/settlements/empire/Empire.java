@@ -888,13 +888,13 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             return true;
         }
         if (getAccess().atLeast(LandAccess.TRUSTED)) {
-            return isTrusted(resident);
+            return isTrusted(resident.getSettlement());
         }
         if (getAccess().atLeast(LandAccess.ALLY)) {
-            return isTrusted(resident) || isAlly(resident);
+            return isTrusted(resident.getSettlement()) || isAlly(resident.getSettlement());
         }
         if (getAccess().atLeast(LandAccess.PRIVATE)) {
-            return getCapital().isMember(resident);
+            return isMember(resident.getSettlement());
         }
         return false;
     }

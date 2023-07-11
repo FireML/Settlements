@@ -8,11 +8,12 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Utils;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 public class EmpireWorldCommand extends ResidentSubCommand {
     public EmpireWorldCommand(SubCommand parent) {
-        super(parent, "world [<name>]");
+        super(parent, "world [<name>]", "home");
     }
 
     @Override
@@ -50,7 +51,13 @@ public class EmpireWorldCommand extends ResidentSubCommand {
 
         World world = SettlementsPlugin.getInstance().getServer().getWorld(empire.getWorldName());
         if (world != null) {
-            Utils.teleport(this, resident.getPlayer(), world.getSpawnLocation(), empire.getStateKey(),
+            Location tpLoc;
+            if (empire.getHome() == null) {
+                tpLoc = world.getSpawnLocation();
+            } else {
+                tpLoc = empire.getHome().toBukkitLocation();
+            }
+            Utils.teleport(this, resident.getPlayer(), tpLoc, empire.getStateKey(),
                     "state", empire.getStateKey(), "name", empire.getName());
         } else {
             getError("no-world").tell(resident, "state", empire.getStateTag(), "name", empire.getName());

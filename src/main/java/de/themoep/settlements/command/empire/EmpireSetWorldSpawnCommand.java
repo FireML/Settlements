@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 public class EmpireSetWorldSpawnCommand extends EmpireSubCommand {
 
     public EmpireSetWorldSpawnCommand(SubCommand parent) {
-        super(parent, "setworldspawn");
+        super(parent, "setworldspawn", "sethome");
     }
 
     @Override
@@ -29,7 +29,9 @@ public class EmpireSetWorldSpawnCommand extends EmpireSubCommand {
             return true;
         }
 
-        player.getWorld().setSpawnLocation(player.getLocation());
+        empire.setHome(player.getLocation());
+        empire.save();
+
         MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
                 "rank", res.getEmpireRank().getTag(),
                 "title", res.getSettlementTitle(),

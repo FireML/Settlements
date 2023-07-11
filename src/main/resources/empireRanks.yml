@@ -7,8 +7,7 @@ perm-groups:
     - empire.kicknotice
     - empire.setrank
     - empire.settitle
-    - empire.settaxevasion # TODO
-    - empire.settaxexempt
+    - empire.settaxevasion
   manage-allies:
     permissions:
     - empire.allyclaim
@@ -27,15 +26,16 @@ perm-groups:
     - empire.joinfee.set
     - empire.setaccess
     - empire.setdescription
-    - empire.recruitement # TODO (NPC)
+    - empire.recruitment # TODO (NPC)
     - empire.build
     - empire.settings
     - empire.perms
     - empire.mode
     - empire.perks.toggle
+    - empire.npc
+    - empire.npc.skin
   manage-notes:
     permissions:
-    - empire.sethome
     - empire.setworldspawn
     - empire.discord.set
     - empire.rules.set # TODO
@@ -43,11 +43,10 @@ perm-groups:
     permissions:
     - empire.bank.withdraw
     - empire.tax.set
-    - empire.auctiontax.set # TODO
+    - empire.tax.action # TODO
   use-bank:
     permissions:
-    - empire.bank # TODO: GUI
-    - empire.bank.storage # TODO: Add
+    - empire.bank
     - empire.bank.history
   manage-shop:
     permissions:
@@ -192,9 +191,13 @@ ranks:
     - empire.invite
     - empire.kick
     - empire.help.recruiter
+    - empire.npc.teleport
+    - empire.rewards
+    - empire.npc
   member:
     icon: stone_sword
     permissions:
+    - empire.world
     - empire.allies
     - empire.joinfee
     - empire.memberlist

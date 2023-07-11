@@ -1,11 +1,10 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.MessageUtils;
-import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 
 public class EmpireTaxCommand extends EmpireSubCommand {
@@ -25,18 +24,19 @@ public class EmpireTaxCommand extends EmpireSubCommand {
                         );
                         return true;
                     }
-                    if (Config.Empire.MAX_TAX > -1 && amount > Config.Empire.MAX_TAX) {
+                    if (Config.Settlement.MAX_TAX > -1 && amount > Config.Settlement.MAX_TAX) {
                         getMessage("above-max").tell(resident,
                                 "amount", String.valueOf(amount),
-                                "max", String.valueOf(Config.Empire.MAX_TAX)
+                                "max", String.valueOf(Config.Settlement.MAX_TAX)
                         );
                         return true;
                     }
-                    resident.getSettlement().getEmpire().setTax(amount);
-                    DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
-                    MessageUtils.notify(resident.getSettlement().getEmpire(), resident.getSettlement().getEmpire().getResidents(), getMessage("success"),
-                            "state", resident.getSettlement().getStateTag(),
-                            "amount", Utils.CURRENCY_FORMAT.format(amount)
+                    Empire empire = resident.getSettlement().getEmpire();
+                    empire.setTax(amount);
+                    empire.save();
+                    MessageUtils.notify(empire, empire.getResidents(), getMessage("success"),
+                            "state", empire.getStateTag(),
+                            "amount", String.valueOf(amount)
                     );
                 } catch (NumberFormatException e) {
                     getError("not-a-number").tell(resident, "input", args[0]);
@@ -53,10 +53,14 @@ public class EmpireTaxCommand extends EmpireSubCommand {
                 }
                 try {
                     TaxDebtAction taxDebtAction = TaxDebtAction.valueOf(args[0].toUpperCase());
-                    if (taxDebtAction != resident.getSettlement().getEmpire().getTaxDebtAction()) {
-                        resident.getSettlement().setTaxDebtAction(taxDebtAction);
-                        getMessage("success").tell(resident.getSettlement().getEmpire().getOnlineResidents(), "action", taxDebtAction.getTag());
-                        DatabaseManager.getInstance().saveEmpire(resident.getSettlement().getEmpire());
+                    Empire empire = resident.getSettlement().getEmpire();
+                    if (taxDebtAction != empire.getTaxDebtAction()) {
+                        empire.setTaxDebtAction(taxDebtAction);
+                        empire.save();
+                        MessageUtils.notify(empire, empire.getResidents(), getMessage("success"),
+                                "state", empire.getStateTag(),
+                                "action", taxDebtAction.getTag()
+                        );
                     } else {
                         getMessage("already-set").tell(resident, "action", taxDebtAction.getTag());
                     }

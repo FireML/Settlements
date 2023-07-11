@@ -28,7 +28,6 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireDiscordCommand(this));
         registerCommand(new EmpireDonateCommand(this));
         registerCommand(new EmpireHereCommand(this));
-        registerCommand(new EmpireHomeCommand(this));
         registerCommand(new EmpireInviteCommand(this));
         registerCommand(new EmpireJoinCommand(this));
         registerCommand(new EmpireKickCommand(this));
@@ -52,7 +51,6 @@ public class EmpireCommand extends SubCommand {
         }
         registerCommand(new EmpireSetAccessCommand(this));
         registerCommand(new EmpireSetRecruitmentCommand(this));
-        registerCommand(new EmpireSetHomeCommand(this));
         registerCommand(new EmpireSetWorldSpawnCommand(this));
         registerCommand(new EmpireJoinFeeCommand(this));
         registerCommand(new EmpireSetSymbolCommand(this));

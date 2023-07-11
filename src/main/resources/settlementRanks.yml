@@ -9,7 +9,6 @@ perm-groups:
     - settlement.setrank
     - settlement.settitle
     - settlement.settaxevasion
-    - settlement.settaxexempt
   manage-allies:
     permissions:
     - settlement.allyclaim
@@ -46,11 +45,9 @@ perm-groups:
     - settlement.bank.withdraw
     - settlement.tax.set
     - settlement.tax.action
-    - settlement.auctiontax.set
   use-bank:
     permissions:
     - settlement.bank
-    - settlement.bank.storage # TODO: Add
     - settlement.bank.history
   use-outpost:
     permissions:
