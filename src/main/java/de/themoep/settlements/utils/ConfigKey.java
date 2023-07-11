@@ -14,14 +14,14 @@ public interface ConfigKey {
     String name();
 
     default String getKey() {
-        return name().toLowerCase(Locale.ROOT).replace('_', '-');
+        return name().toLowerCase(Locale.ROOT);
     }
 
     static String getKey(Enum e) {
-        return e.name().toLowerCase(Locale.ROOT).replace('_', '-');
+        return e.name().toLowerCase(Locale.ROOT);
     }
 
     static String toEnumString(String key) {
-        return key.toUpperCase(Locale.ROOT).replace('-', '_');
+        return key.toUpperCase(Locale.ROOT);
     }
 }
