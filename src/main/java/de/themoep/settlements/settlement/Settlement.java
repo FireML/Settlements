@@ -94,7 +94,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                 && LandManager.getInstance().getClaimedLandSize(this) == 0
                 && getChief().getLastLogin() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
             OfflinePlayer chiefPlayer = SettlementsPlugin.getInstance().getServer().getOfflinePlayer(getChiefId());
-            if (!chiefPlayer.hasPlayedBefore() || chiefPlayer.getLastPlayed() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
+            if (!chiefPlayer.hasPlayedBefore() || chiefPlayer.getLastLogin() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
                 SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is inactive " +
                         "(chief offline for more than " + inactiveDays + ", Village level 1, no claims, no perks unlocked), removing it!");
                 SettlementManager.getInstance().delete(this);
