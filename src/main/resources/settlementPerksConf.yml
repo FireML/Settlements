@@ -1,4 +1,5 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:settlementperksconf.yml
+# Do not use underscores in the perk IDs - The plugin doesn't like it.
 
 
         ###########################################################
@@ -9,7 +10,7 @@
         ###########################################################
 
 # Kingdom level 1
-haste_level_1:
+haste-level-1:
   # The icon that should be shown in the GUI.
   # If it's a potion (the default value is a lingering potion)
   # and an effect is defined, then it will just use a potion of the configured effect
@@ -80,7 +81,7 @@ haste_level_1:
     # If the amount is higher than 1, then this is the cost that needs to be paid to trigger it again
     repeating:
       cash: 0
-five_extra_claims:
+five-extra-claims:
   icon: light_blue_stained_glass
   repeat: 4
   cooldown: 0
@@ -95,7 +96,7 @@ five_extra_claims:
     repeating:
       cash: 5000
 # Kingdom level 2
-water_breathing_level_1:
+water-breathing-level-1:
   icon: water_bucket
   repeat: 0
   cooldown: 0
@@ -116,7 +117,7 @@ water_breathing_level_1:
       missionpoints: 225
       cash: 1000
 # Kingdom level 3
-dolphins_grace_level_1:
+dolphins-grace-level-1:
   icon: dolphin_spawn_egg
   repeat: 0
   cooldown: 0
@@ -136,7 +137,7 @@ dolphins_grace_level_1:
     unlock:
       missionpoints: 225
       cash: 1000
-temporary_haste_level_2:
+temporary-haste-level-2:
   icon: netherite_shovel
   repeat: -1
   cooldown: 0
@@ -159,7 +160,7 @@ temporary_haste_level_2:
     repeating:
       cash: 6000
 # Kingdom level 4
-damage_resistance_level_1:
+damage-resistance-level-1:
   icon: shield
   repeat: 0
   cooldown: 0
@@ -179,7 +180,7 @@ damage_resistance_level_1:
     unlock:
       missionpoints: 225
       cash: 1000
-one_extra_outpost:
+one-extra-outpost:
   icon: light_blue_banner
   repeat: 3
   cooldown: 0
@@ -194,7 +195,7 @@ one_extra_outpost:
     repeating:
       cash: 7500
 # Kingdom level 5
-night_vision:
+night-vision:
   icon: spyglass
   repeat: 0
   cooldown: 0
@@ -214,7 +215,7 @@ night_vision:
     unlock:
       missionpoints: 225
       cash: 1000
-temporary_bad_omen_level_2:
+temporary-bad-omen-level-2:
   icon: emerald
   repeat: -1
   cooldown: 300
@@ -241,7 +242,7 @@ temporary_bad_omen_level_2:
 #  unlockables:
 #  - empire.create
 # Kingdom level 6
-speed_level_1:
+speed-level-1:
   icon: netherite_boots
   repeat: 0
   cooldown: 0
@@ -261,7 +262,7 @@ speed_level_1:
     unlock:
       missionpoints: 275
       cash: 1000
-temporary_jump_level_2:
+temporary-jump-level-2:
   icon: lingering_potion
   repeat: -1
   cooldown: 0
@@ -284,7 +285,7 @@ temporary_jump_level_2:
     repeating:
       cash: 8000
 # Kingdom level 7
-increase_damage_level_1:
+increase-damage-level-1:
   icon: netherite_sword
   repeat: 0
   cooldown: 0
@@ -304,7 +305,7 @@ increase_damage_level_1:
     unlock:
       missionpoints: 275
       cash: 1000
-ten_extra_claims:
+ten-extra-claims:
   icon: blue_stained_glass
   repeat: 3
   cooldown: 0
@@ -319,7 +320,7 @@ ten_extra_claims:
     repeating:
       cash: 10000
 # Kingdom level 8
-regeneration_level_1:
+regeneration-level-1:
   icon: splash_potion
   repeat: 0
   cooldown: 0
@@ -340,7 +341,7 @@ regeneration_level_1:
       missionpoints: 275
       cash: 1000
 # Kingdom level 9
-saturation_level_1:
+saturation-level-1:
   icon: cooked_beef
   repeat: 0
   cooldown: 0
@@ -360,7 +361,7 @@ saturation_level_1:
     unlock:
       missionpoints: 275
       cash: 1000
-temporary_glowing_level_1:
+temporary-glowing-level-1:
   icon: enchanting_table
   repeat: -1
   cooldown: 0
@@ -382,7 +383,7 @@ temporary_glowing_level_1:
       cash: 10000
     repeating:
       cash: 8500
-haste_level_3:
+haste-level-3:
   icon: netherite_pickaxe
   repeat: 0
   cooldown: 0
@@ -402,7 +403,7 @@ haste_level_3:
     unlock:
       missionpoints: 275
       cash: 1000
-three_extra_outposts:
+three-extra-outposts:
   icon: blue_banner
   repeat: 2
   cooldown: 0
@@ -417,7 +418,7 @@ three_extra_outposts:
     repeating:
       cash: 15000
 # Kingdom level 11
-slow_falling_level_1:
+slow-falling-level-1:
   icon: feather
   repeat: 0
   cooldown: 0
@@ -438,7 +439,7 @@ slow_falling_level_1:
       missionpoints: 325
       cash: 1000
 # Kingdom level 12
-fire_resistance_level_1:
+fire-resistance-level-1:
   icon: flint_and_steel
   repeat: 0
   cooldown: 0
@@ -458,7 +459,7 @@ fire_resistance_level_1:
     unlock:
       missionpoints: 325
       cash: 1000
-temporary_wither_level_1:
+temporary-wither-level-1:
   icon: wither_rose
   repeat: -1
   cooldown: 0
@@ -481,7 +482,7 @@ temporary_wither_level_1:
     repeating:
       cash: 10000
 # Kingdom level 13
-hero_of_the_village_level_1:
+hero-of-the-village-level-1:
   icon: totem_oF_undying
   repeat: 0
   cooldown: 0
@@ -501,7 +502,7 @@ hero_of_the_village_level_1:
     unlock:
       missionpoints: 325
       cash: 1000
-fifteen_extra_claims:
+fifteen-extra-claims:
   icon: cyan_stained_glass
   repeat: 3
   cooldown: 0
@@ -516,7 +517,7 @@ fifteen_extra_claims:
     repeating:
       cash: 15000
 # Kingdom level 14
-luck_level_1:
+luck-level-1:
   icon: raw_gold
   repeat: 0
   cooldown: 0
@@ -537,7 +538,7 @@ luck_level_1:
       missionpoints: 325
       cash: 1000
 # Kingdom level 15
-conduit_power_level_1:
+conduit-power-level-1:
   icon: conduit
   repeat: 0
   cooldown: 0
@@ -557,7 +558,7 @@ conduit_power_level_1:
     unlock:
       missionpoints: 325
       cash: 1000
-temporary_luck_level_2:
+temporary-luck-level-2:
   icon: gold_ingot
   repeat: -1
   cooldown: 0
@@ -579,7 +580,7 @@ temporary_luck_level_2:
       cash: 16000
     repeating:
       cash: 11500
-six_extra_outposts:
+six-extra-outposts:
   icon: cyan_banner
   repeat: 0
   cooldown: 0

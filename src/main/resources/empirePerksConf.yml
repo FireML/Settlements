@@ -1,4 +1,5 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:empireperksconf.yml
+# Do not use underscores in the perk IDs - The plugin doesn't like it.
 
 resistance1:
   # The icon that should be shown in the GUI. If it's a potion (the default value is a lingering one)
