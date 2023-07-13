@@ -65,7 +65,7 @@ claiming:
   max-radius: 5
   # The seconds between each check for mobs to be removed in claimed land that has mobspawning turned off
   # Set to 0 to disable
-  mob-flag-check-period: 15
+  mob-flag-check-period: 10
   close:
     building:
       # The distance in chunks to other landowners in which to allow building
