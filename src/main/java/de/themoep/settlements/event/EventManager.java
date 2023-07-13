@@ -211,6 +211,16 @@ public class EventManager implements ConfigMessages {
     }
 
     public void startEvent(Event event) {
+        List<Settlement> settlements = new ArrayList<>();
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            Resident res = ResidentManager.getInstance().getResident(p);
+            if (!settlements.contains(res.getSettlement())) {
+                settlements.add(res.getSettlement());
+            }
+        }
+        if (settlements.isEmpty() || settlements.size() > 3) {
+            return;
+        }
         if (activeBarTask != null) {
             activeBarTask.cancel();
         }
