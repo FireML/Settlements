@@ -3,6 +3,7 @@ package de.themoep.settlements.command.settlement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
+import de.themoep.settlements.command.common.LandOwnerCommand;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
@@ -53,7 +54,10 @@ public class SettlementCreateCommand extends ResidentSubCommand {
             }
             Settlement settlement = new Settlement(name, resident.getUUID(), 1, SettlementState.VILLAGE);
             SettlementManager.getInstance().registerNew(resident, settlement);
-            LandManager.getInstance().claimLand(new SimpleChunkLocation(resident.getPlayer().getChunk()), resident.getPlayer().getLocation(), settlement);
+            if (settlement.getMaxClaimableChunks() > 0) {
+                LandManager.getInstance().claimLand(new SimpleChunkLocation(resident.getPlayer().getChunk()), resident.getPlayer().getLocation(), settlement);
+                settlement.save();
+            }
 
             getMessage("broadcast").broadcast(
                     "name", settlement.getName(),
