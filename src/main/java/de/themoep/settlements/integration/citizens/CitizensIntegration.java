@@ -548,24 +548,6 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         return CitizensAPI.getNPCRegistry().isNPC(player);
     }
 
-    public Tax getNearbyAuctionTax(Location location, int radius) {
-        Tax tax = null;
-        for (Entity entity : location.getNearbyEntities(radius, radius, radius)) {
-            NPC npc = CitizensAPI.getNPCRegistry().getNPC(entity);
-            if (npc != null) {
-                SettlementsTrait trait = npc.getTraitNullable(SettlementsTrait.class);
-                if (trait != null && trait.getType() == NpcType.AUCTIONEER && (tax == null || trait.getOwner().getAuctionTax() < tax.getAmount())) {
-                    tax = new Tax(trait.getOwner().getAuctionTax(), trait.getOwner().getIdKey());
-                }
-                AuctionTaxTrait auctionTrait = npc.getTraitNullable(AuctionTaxTrait.class);
-                if (auctionTrait != null && (tax == null || auctionTrait.getAuctionTax() < tax.getAmount())) {
-                    tax = new Tax(auctionTrait.getAuctionTax(), "npc:" + npc.getId());
-                }
-            }
-        }
-        return tax;
-    }
-
     @TraitName("settlements")
     public static class SettlementsTrait extends Trait implements ConfigMessages {
 

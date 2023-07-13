@@ -163,7 +163,7 @@ public interface LandOwnerCommand extends ConfigMessages {
                 if (!checkLand.isOwnedBy(landOwner) && (
                         !checkLand.getLandOwner().isAlly(landOwner) || (
                                 !(checkLand.getLandOwner() instanceof Settlement)
-                                        || !((Settlement) checkLand.getLandOwner()).isAllowAllyClaim()))) {
+                                        || !checkLand.getLandOwner().isAllowAllyClaim()))) {
                     if (toClaim.size() == 1) {
                         res.tell(getError("claim-too-close"),
                                 "owner", checkLand.getLandOwner().getName(),
