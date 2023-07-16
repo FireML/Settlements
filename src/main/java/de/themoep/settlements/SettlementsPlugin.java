@@ -93,7 +93,9 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             DatabaseManager.getInstance().saveSettlements(SettlementManager.getInstance().getSettlements());
             DatabaseManager.getInstance().saveSettlementMissionData(SettlementManager.getInstance().getSettlements());
             for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
-                DatabaseManager.getInstance().saveNpcs(settlement.getNpcData());
+                if (settlement.isEnableNPCs()) {
+                    DatabaseManager.getInstance().saveNpcs(settlement.getNpcData());
+                }
             }
             getLogger().log(Level.INFO, "Saving all empire data...");
             DatabaseManager.getInstance().saveEmpires(EmpireManager.getInstance().getEmpires());
