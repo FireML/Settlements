@@ -237,10 +237,8 @@ temporary-bad-omen-level-2:
       cash: 8000
     repeating:
       cash: 8000
-#     Empires are not ready.
-#     Uncomment and delete these lines when they are ready.
-#  unlockables:
-#  - empire.create
+  unlockables:
+  - empire.create
 # Kingdom level 6
 speed-level-1:
   icon: netherite_boots
