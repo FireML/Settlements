@@ -51,15 +51,6 @@ settlement:
             - command.tax.set
             - command.tax.action
             - command.auctiontax.set
-        storage:
-          unlockables:
-          - storage
-        bank-command:
-          unlockables:
-          - command.bank
-          - command.tax.set
-          - command.tax.action
-          - command.auctiontax.set
         donations:
           unlockables:
             - command.donate
