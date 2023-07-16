@@ -15,7 +15,10 @@ public abstract class LevelInfo {
     public LevelInfo(int level, LevelInfo previous, ConfigurationSection config) {
         this.level = level;
         this.previous = previous;
-        ConfigurationSection requirementsConfig = config.getConfigurationSection("requirements");
+        ConfigurationSection requirementsConfig = null;
+        if (config != null) {
+            requirementsConfig = config.getConfigurationSection("requirements");
+        }
         if (requirementsConfig != null) {
             for (String key : requirementsConfig.getKeys(false)) {
                 long value = requirementsConfig.getLong(key, -1);
