@@ -111,7 +111,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     private void updateName(LandOwner<?, ?> landOwner) {
         for (NpcData npcData : landOwner.getNpcData()) {
             NPC npc = getNpc(npcData);
-            if (npc != null && !npc.getName().equals(ChatColor.stripColor(npcData.getConfig().getName()))) {
+            if (landOwner.isEnableNPCs() && npc != null && !npc.getName().equals(ChatColor.stripColor(npcData.getConfig().getName()))) {
                 npc.setName(npcData.getConfig().getName());
             }
         }
@@ -127,6 +127,9 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     public void checkForNew(Resident resident, LandOwner<?, ?> landOwner) {
+        if (!landOwner.isEnableNPCs()) {
+            return;
+        }
         for (NpcType npc : landOwner.getLevelInfo().getInheritedNPCs()) {
             NpcData npcData = landOwner.getNpcData(npc);
             if (!npcData.isUnlocked()
@@ -144,6 +147,9 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
 
     @EventHandler
     public void onClaimed(LandClaimEvent event) {
+        if (!event.getLandOwner().isEnableNPCs()) {
+            return;
+        }
         checkForNew(event.getLandOwner().getChief(), event.getLandOwner());
         for (NpcData data : event.getLandOwner().getNpcData()) {
             handle(event, data.getType());
@@ -154,6 +160,9 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     private void handle(LandClaimEvent event, NpcType type) {
+        if (!event.getLandOwner().isEnableNPCs()) {
+            return;
+        }
         NpcData npcData = event.getLandOwner().getNpcData(type);
         if (npcData.isUnlocked() && npcData.isAvailable()) {
             NPC npc = getNpc(npcData);
@@ -182,6 +191,10 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     NPC createNpc(LandOwner<?, ?> landOwner, NpcType type, NpcConfig config, Location location) {
+        if (!landOwner.isEnableNPCs()) {
+            return null;
+        }
+
         if (config == null) {
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Tried to create " + type + " NPC for " + landOwner.getKey() + " " + landOwner.getName() + " but there was no config specified for that NPC type?");
             return null;
@@ -254,7 +267,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
 
     void applyNpcTraits(NPC npc, NpcConfig config) {
         switch (config.getEntityType()) {
-            case PLAYER: {
+            case PLAYER -> {
                 SkinTrait skinTrait = npc.getOrAddTrait(SkinTrait.class);
 
                 String skinName = config.getSkinName();
@@ -271,9 +284,8 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                 } catch (IllegalArgumentException e) {
                     SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid texture data specified! (name: " + skinName + ", texture: " + texture + ", signature: " + signature + ") " + e.getMessage());
                 }
-                break;
             }
-            case VILLAGER: {
+            case VILLAGER -> {
                 npc.getOrAddTrait(VillagerTrait.class).setType(config.getVillagerType());
                 npc.getOrAddTrait(VillagerProfession.class).setProfession(config.getVillagerProfession());
             }
