@@ -90,7 +90,7 @@ empire-world-fly:
     flying: true
   cost:
     unlock:
-      cash: 100000
+      cash: 150000
 regeneration-level-1:
   level: 1
   icon: potion
@@ -102,7 +102,8 @@ regeneration-level-1:
         to: all
   cost:
     unlock:
-      cash: 150000
+      missionpoints: 100
+      cash: 200000
 night-vision:
   level: 1
   icon: spyglass
@@ -114,7 +115,8 @@ night-vision:
         to: all
   cost:
     unlock:
-      cash: 75000
+      missionpoints: 100
+      cash: 100000
 
     ##########################
     #     Empire Level 2     #
@@ -130,7 +132,8 @@ speed-level-1:
         to: all
   cost:
     unlock:
-      cash: 150000
+      missionpoints: 200
+      cash: 175000
 damage-resistance-level-1:
   level: 2
   icon: iron_chestplate
@@ -142,7 +145,8 @@ damage-resistance-level-1:
         to: members
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 200
+      cash: 200000
 strength-level-1:
   level: 2
   icon: iron_sword
@@ -154,7 +158,8 @@ strength-level-1:
         to: all
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 300
+      cash: 250000
 
     ##########################
     #     Empire Level 3     #
@@ -170,7 +175,8 @@ saturation-level-1:
         to: all
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 500
+      cash: 250000
 speed-level-2:
   level: 3
   icon: diamond_boots
@@ -182,7 +188,8 @@ speed-level-2:
         to: all
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 400
+      cash: 300000
 haste-level-1:
   level: 3
   icon: iron_shovel
@@ -194,12 +201,13 @@ haste-level-1:
         to: all
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 500
+      cash: 300000
 
     ##########################
     #     Empire Level 4     #
     ##########################
-resistance-level-2:
+damage-resistance-level-2:
   level: 4
   icon: diamond_chestplate
   effects:
@@ -210,7 +218,8 @@ resistance-level-2:
         to: all
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 750
+      cash: 300000
 keep-inventory-upon-death:
   level: 4
   icon: bundle
@@ -218,7 +227,8 @@ keep-inventory-upon-death:
     toggle: true
   cost:
     unlock:
-      cash: 100000
+      missionpoints: 1000
+      cash: 400000
 keep-experience-upon-death:
   level: 4
   icon: experience_bottle
@@ -226,7 +236,8 @@ keep-experience-upon-death:
     toggle: true
   cost:
     unlock:
-      cash: 100000
+      missionpoints: 1000
+      cash: 400000
 
     ##########################
     #     Empire Level 5     #
@@ -242,7 +253,8 @@ regeneration-level-2:
         to: all
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 1500
+      cash: 500000
 haste-level-2:
   level: 5
   icon: diamond_pickaxe
@@ -254,7 +266,8 @@ haste-level-2:
         to: all
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 1500
+      cash: 500000
 extra-world-radius:
   level: 5
   icon: compass
@@ -263,8 +276,10 @@ extra-world-radius:
     radius: 50
   cost:
     unlock:
+      missionpoints: 1250
       cash: 250000
     repeat:
+      missionpoints: 1250
       cash: 250000
 
     ##########################
@@ -281,7 +296,8 @@ haste-level-3:
         to: all
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 2000
+      cash: 750000
 empire-world-weather-control:
   level: 6
   icon: lightning_rod
@@ -289,7 +305,8 @@ empire-world-weather-control:
     weather: true
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 3500
+      cash: 1000000
 empire-world-time-control:
   level: 6
   icon: clock
@@ -297,4 +314,5 @@ empire-world-time-control:
     time: true
   cost:
     unlock:
-      cash: 1000
+      missionpoints: 3500
+      cash: 1000000
