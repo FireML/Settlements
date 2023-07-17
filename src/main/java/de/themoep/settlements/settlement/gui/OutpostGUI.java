@@ -14,6 +14,7 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.NamedLocation;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.entity.Player;
 
 import java.util.Collection;
 
@@ -31,7 +32,12 @@ public class OutpostGUI extends ConfigurableGui {
                         .title(getText("rename.anvil.title", "name", outpost.getName()))
                         .text(getText("rename.anvil.placeholder", "name", outpost.getName()))
                         .onClose(player -> Utils.runLater(() -> new OutpostGUI(resident, settlement, outpost).open(), 1))
-                        .onComplete((player, text) -> {
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            Player player = stateSnapshot.getPlayer();
+                            String text = stateSnapshot.getText();
                             if (settlement.hasPermission(resident, "outpost.rename")) {
                                 String name = text.trim();
 

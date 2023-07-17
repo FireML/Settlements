@@ -20,6 +20,7 @@ import de.themoep.settlements.utils.config.Config;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -64,11 +65,16 @@ public class SettingsGUI extends PlotGUI {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
                 new AnvilGUI.Builder()
-                        .item(ItemUtils.toIcon(Material.WRITABLE_BOOK))
+                        .itemLeft(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                         .title(getText("name.anvil.title", "name", land.getName()))
                         .text(getText("name.anvil.placeholder", "name", land.getName().isEmpty() ? " " : land.getName().replace(ChatColor.COLOR_CHAR, '&')))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
-                        .onComplete((player, text) -> {
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            Player player = stateSnapshot.getPlayer();
+                            String text = stateSnapshot.getText();
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
                                 text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(ChatColor.stripColor(text.trim())));
@@ -94,11 +100,16 @@ public class SettingsGUI extends PlotGUI {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
                 new AnvilGUI.Builder()
-                        .item(ItemUtils.toIcon(Material.WRITABLE_BOOK))
+                        .itemLeft(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                         .title(getText("desc.anvil.title", "description", land.getDescription()))
                         .text(getText("desc.anvil.placeholder", "description", land.getDescription().isEmpty() ? " " : land.getDescription().replace(ChatColor.COLOR_CHAR, '&')))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
-                        .onComplete((player, text) -> {
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            Player player = stateSnapshot.getPlayer();
+                            String text = stateSnapshot.getText();
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
                                 text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(ChatColor.stripColor(text.trim())));
@@ -140,11 +151,16 @@ public class SettingsGUI extends PlotGUI {
                         Message.get("command.plot.unsale.success").tell(resident);
                     } else {
                         new AnvilGUI.Builder()
-                                .item(ItemUtils.toIcon(Material.EMERALD))
+                                .itemLeft(ItemUtils.toIcon(Material.EMERALD))
                                 .title(getText("sale.anvil.title", "price", String.valueOf(land.getPrice())))
                                 .text(getText("sale.anvil.placeholder", "price", land.getPrice() > 0 ? String.valueOf(land.getPrice()) : " "))
                                 .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
-                                .onComplete((player, text) -> {
+                                .onClick((slot, stateSnapshot) -> {
+                                    if (slot != AnvilGUI.Slot.OUTPUT) {
+                                        return null;
+                                    }
+                                    Player player = stateSnapshot.getPlayer();
+                                    String text = stateSnapshot.getText();
                                     OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                                     if (currentLand != null && currentLand.canAdmin(ResidentManager.getInstance().getResident(player))) {
                                         if (currentLand.isPlot()) {

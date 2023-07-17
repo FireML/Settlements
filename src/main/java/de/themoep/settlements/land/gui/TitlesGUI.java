@@ -104,7 +104,7 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                 gui.addElement(new StaticGuiElement('a', getIcon("title"), click -> {
                     if (resident.hasPermission(type + ".titles.add")) {
                         new AnvilGUI.Builder()
-                                .item(ItemUtils.toIcon(Material.WRITABLE_BOOK))
+                                .itemLeft(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                                 .title(getMessage("add.anvil.title").getReplacedText(
                                         "rank", rank.getTag(landOwner),
                                         "state", landOwner.getStateTag()
@@ -114,7 +114,11 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                         "state", landOwner.getStateTag()
                                 ))
                                 .onClose(player -> Utils.runLater(() -> new TitlesGUI<>(type, resident, landOwner, rank).open(), 1))
-                                .onComplete((player, text) -> {
+                                .onClick((slot, stateSnapshot) -> {
+                                    if (slot != AnvilGUI.Slot.OUTPUT) {
+                                        return null;
+                                    }
+                                    String text = stateSnapshot.getText();
                                     text = ChatColor.stripColor(text);
                                     if (rank.above(landOwner.getRank(resident))) {
                                         return AnvilGUI.Response.text(getError("cant-edit-higher").getReplacedText("rank", rank.getTag(landOwner)));

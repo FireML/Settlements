@@ -77,7 +77,11 @@ public class StartGUI extends ConfigurableGui {
                         .title(getText("create.anvil.title"))
                         .text("")
                         .onClose(player -> Utils.runLater(() -> new StartGUI(resident).open(), 1))
-                        .onComplete((player, name) -> {
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            String name = stateSnapshot.getText();
                             name = Utils.filterAllCurses(name.trim());
                             if (name.toLowerCase().contains("claims")) {
                                 return AnvilGUI.Response.text(getErrorText("invalid-characters", "input", name));

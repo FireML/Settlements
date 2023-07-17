@@ -179,7 +179,12 @@ public class ResidentGUI extends ConfigurableGui {
                     .title(getText("banish.anvil.title", "player", resident.getName()))
                     .text(getText("banish.anvil.placeholder", "player", resident.getName()))
                     .onClose(player -> Utils.runLater(() -> new ResidentGUI(sender, resident).open(), 1))
-                    .onComplete((player, text) -> {
+                    .onClick((slot, stateSnapshot) -> {
+                        if (slot != AnvilGUI.Slot.OUTPUT) {
+                            return null;
+                        }
+                        Player player = stateSnapshot.getPlayer();
+                        String text = stateSnapshot.getText();
                         if (settlement.hasPermission(sender, "banish") && sender.getSettlementRank().above(resident.getSettlementRank())) {
                             String reason = text.trim();
                             getMessage("command.settlement.banish.banished").tell(resident.getSettlement().getOnlineResidents(), "name", resident.getName(), "reason", reason);

@@ -13,6 +13,7 @@ import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.entity.Player;
 
 public class BankGUI extends ConfigurableGui {
 
@@ -25,8 +26,13 @@ public class BankGUI extends ConfigurableGui {
                         .itemLeft(getIcon("donations"))
                         .title(getText("donations-anvil.title"))
                         .text(getText("donations-anvil.placeholder"))
-                        .onClose(player -> Utils.runLater(() -> InventoryGui.goBack(player), 1))
-                        .onComplete((player, text) -> {
+                        .onClose(snapshot -> Utils.runLater(() -> InventoryGui.goBack(snapshot.getPlayer()), 1))
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            Player player = stateSnapshot.getPlayer();
+                            String text = stateSnapshot.getText();
                             if (!landOwner.hasUnlocked("donation") && !landOwner.hasPermission(resident, "bank.deposit")) {
                                 getError("no-permission").actionbar(resident);
                                 Utils.runLater(() -> new BankGUI(resident, landOwner).open(), 1);

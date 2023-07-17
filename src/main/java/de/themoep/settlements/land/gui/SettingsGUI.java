@@ -38,7 +38,12 @@ public class SettingsGUI extends ConfigurableGui {
                         .title(getText("rename.anvil.title", "name", landOwner.getName()))
                         .text(getText("rename.anvil.placeholder", "name", landOwner.getName()))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1))
-                        .onComplete((player, text) -> {
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            Player player = stateSnapshot.getPlayer();
+                            String text = stateSnapshot.getText();
                             if (landOwner.hasPermission(resident, "rename")) {
                                 String name = Utils.filterAllCurses(text.trim());
                                 if (name.toLowerCase().contains("claims")) {
@@ -162,7 +167,12 @@ public class SettingsGUI extends ConfigurableGui {
                         .title(getText("discord.anvil.title", "name", landOwner.getName(), "discord", landOwner.getDiscord()))
                         .text(getText("discord.anvil.placeholder", "discord", landOwner.getDiscord()))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1))
-                        .onComplete((player, text) -> {
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            Player player = stateSnapshot.getPlayer();
+                            String text = stateSnapshot.getText();
                             if (landOwner.hasPermission(resident, "discord.set")) {
                                 String link = text.trim();
                                 String oldLink = landOwner.getDiscord();
@@ -224,7 +234,12 @@ public class SettingsGUI extends ConfigurableGui {
                         .title(getText("joinfee.anvil.title", "name", landOwner.getName(), "joinfee", String.valueOf(landOwner.getJoinFee())))
                         .text(getText("joinfee.anvil.placeholder", "joinfee", String.valueOf(landOwner.getJoinFee())))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1))
-                        .onComplete((player, text) -> {
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            Player player = stateSnapshot.getPlayer();
+                            String text = stateSnapshot.getText();
                             if (landOwner.hasPermission(resident, "joinfee.set")) {
                                 try {
                                     if (!text.isEmpty()) {
@@ -263,7 +278,12 @@ public class SettingsGUI extends ConfigurableGui {
                         .title(getText("description.anvil.title", "name", landOwner.getName(), "description", landOwner.getDescription()))
                         .text(getText("description.anvil.placeholder", "description", landOwner.getDescription()))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1))
-                        .onComplete((player, text) -> {
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            Player player = stateSnapshot.getPlayer();
+                            String text = stateSnapshot.getText();
                             if (landOwner.hasPermission(resident, "setdescription")) {
                                 String description = text.trim();
                                 landOwner.setDescription(Utils.filterAllCurses(description));

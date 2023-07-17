@@ -13,6 +13,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.entity.Player;
 
 public class ManageFinancesGUI extends ConfigurableGui {
 
@@ -25,8 +26,12 @@ public class ManageFinancesGUI extends ConfigurableGui {
                         .itemLeft(getIcon("tax"))
                         .title(getText("tax.anvil.title", "tax", Utils.CURRENCY_FORMAT.format(landOwner.getTax())))
                         .text(getText("tax.anvil.placeholder", "tax", String.valueOf(landOwner.getTax())))
-                        .onClose(player -> Utils.runLater(() -> InventoryGui.goBack(player), 1))
-                        .onComplete((player, text) -> {
+                        .onClose(snapshot -> Utils.runLater(() -> InventoryGui.goBack(snapshot.getPlayer()), 1))
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            String text = stateSnapshot.getText();
                             if (!landOwner.hasPermission(resident, "tax.set")) {
                                 getError("no-permission").actionbar(resident);
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
@@ -74,8 +79,12 @@ public class ManageFinancesGUI extends ConfigurableGui {
                         .itemLeft(getIcon("auctiontax"))
                         .title(getText("auctiontax.anvil.title", "auctiontax", Utils.CURRENCY_FORMAT.format(landOwner.getAuctionTax())))
                         .text(getText("auctiontax.anvil.placeholder", "auctiontax", String.valueOf(landOwner.getAuctionTax())))
-                        .onClose(player -> Utils.runLater(() -> InventoryGui.goBack(player), 1))
-                        .onComplete((player, text) -> {
+                        .onClose(snapshot -> Utils.runLater(() -> InventoryGui.goBack(snapshot.getPlayer()), 1))
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            String text = stateSnapshot.getText();
                             if (!landOwner.hasPermission(resident, "auctiontax.set")) {
                                 getError("no-permission").actionbar(resident);
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
@@ -122,8 +131,13 @@ public class ManageFinancesGUI extends ConfigurableGui {
                         .itemLeft(getIcon("deposit"))
                         .title(getText("deposit.anvil.title"))
                         .text(getText("deposit.anvil.placeholder"))
-                        .onClose(player -> Utils.runLater(() -> InventoryGui.goBack(player), 1))
-                        .onComplete((player, text) -> {
+                        .onClose(snapshot -> Utils.runLater(() -> InventoryGui.goBack(snapshot.getPlayer()), 1))
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            Player player = stateSnapshot.getPlayer();
+                            String text = stateSnapshot.getText();
                             if (!landOwner.hasPermission(resident, "bank.deposit")) {
                                 getError("no-permission").actionbar(resident);
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
@@ -174,8 +188,13 @@ public class ManageFinancesGUI extends ConfigurableGui {
                         .itemLeft(getIcon("withdraw"))
                         .title(getText("withdraw.anvil.title"))
                         .text(getText("withdraw.anvil.placeholder"))
-                        .onClose(player -> Utils.runLater(() -> InventoryGui.goBack(player), 1))
-                        .onComplete((player, text) -> {
+                        .onClose(snapshot -> Utils.runLater(() -> InventoryGui.goBack(snapshot.getPlayer()), 1))
+                        .onClick((slot, stateSnapshot) -> {
+                            if (slot != AnvilGUI.Slot.OUTPUT) {
+                                return null;
+                            }
+                            Player player = stateSnapshot.getPlayer();
+                            String text = stateSnapshot.getText();
                             if (!landOwner.hasPermission(resident, "bank.withdraw")) {
                                 getError("no-permission").actionbar(resident);
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
