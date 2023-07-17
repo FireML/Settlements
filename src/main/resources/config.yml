@@ -15,12 +15,12 @@ max-rules-length: 10000
 command-confirm-time: 30
 
 storage:
-  type: sqlite
+  type: mysql
   host: localhost
   port: 3306
-  user: root
-  password: password
-  database: settlements
+  user: live
+  password: hZ?vub@pB5 
+  database: live_towny
   table-prefix: settlements_
   url-parameters: ""
   # MySQL connection timeout in ms
