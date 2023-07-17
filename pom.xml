@@ -69,10 +69,6 @@
                 <configuration>
                     <relocations>
                         <relocation>
-                            <pattern>io.chazza.advancementapi</pattern>
-                            <shadedPattern>de.themoep.settlements.libs.advancementapi</shadedPattern>
-                        </relocation>
-                        <relocation>
                             <pattern>com.github.benmanes.caffeine</pattern>
                             <shadedPattern>de.themoep.settlements.libs.caffeine</shadedPattern>
                         </relocation>
@@ -113,6 +109,15 @@
                             <shadedPattern>de.themoep.settlements.libs.jetbrains</shadedPattern>
                         </relocation>
                     </relocations>
+                    <filters>
+                        <filter>
+                            <artifact>*:*</artifact>
+                            <excludeDefaults>false</excludeDefaults>
+                            <includes>
+                                <include>de.themoep.settlements.libs.anvilgui</include>
+                            </includes>
+                        </filter>
+                    </filters>
                 </configuration>
                 <executions>
                     <execution>
@@ -203,7 +208,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>2.13.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -249,7 +254,7 @@
         <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>authlib</artifactId>
-            <version>4.0.42</version>
+            <version>4.0.43</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -309,7 +314,7 @@
         <dependency>
             <groupId>net.citizensnpcs</groupId>
             <artifactId>citizens-main</artifactId>
-            <version>2.0.31-SNAPSHOT</version>
+            <version>2.0.32-SNAPSHOT</version>
             <type>jar</type>
             <scope>provided</scope>
             <exclusions>
@@ -322,9 +327,15 @@
         <dependency>
             <groupId>com.denizenscript</groupId>
             <artifactId>denizen</artifactId>
-            <version>1.2.7-SNAPSHOT</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/repo/Denizen-1.2.7.jar</systemPath>
+            <version>1.2.8-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.angeschossen</groupId>
