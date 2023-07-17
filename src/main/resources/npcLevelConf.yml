@@ -86,6 +86,9 @@ settlement:
   auctioneer:
     level-1: {}
 
+  blacksmith:
+    level-1: {}
+
 empire:
   manager:
     level-1:
@@ -164,3 +167,9 @@ empire:
         outpost-teleport-command:
           unlockables:
           - command.shop
+
+  blacksmith:
+    level-1: {}
+
+  auctioneer:
+    level-1: {}

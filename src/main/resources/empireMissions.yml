@@ -1,36 +1,734 @@
-# Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:empiremissions.yml
+# Explanation: https://wiki.phoenix616.dev/plugin:empires:config:empiremissions.yml
 
-stones:
-  # Specify the material of the GUI icon, will use the requirements list if not set
-  icon: stone
-  # Only count if action occurs in empire world (should be false when using turn_in)
-  in-empire-world: false
-  # Only count if action occurs on empire claim (should be false when using turn_in)
+# stones:
+#  # Specify the material of the GUI icon, will use the requirements list if not set
+#  icon: stone
+#  # Only count if action occurs in empire world (should be false when using turn_in)
+#  in-empire-world: false
+#  # Only count if action occurs on empire claim (should be false when using turn_in)
+#  on-empire-claim: false
+#  # How many mission points the empire receives when the missions was completed
+#  mission-points: 1
+#  # How many contribution points a empire receives for finishing those
+#  contribution-points: 1
+#  # The type of this mission. Available ones are:
+#  # - turn_in: Deposit items into GUI
+#  # - place: Place blocks
+#  # - break: Break blocks
+#  # - harvest: Harvest crops and certain other stuff like berry bushes, dropping an apple etc. depends on the requirements
+#  # - kill: Kill certain monsters/animals
+#  type: turn_in
+#  requirements:
+#    stone: 500
+
+    # ----------------------------------------#
+    #   All items are in alphabetical order   #
+    # ----------------------------------------#
+
+        # Break section
+
+acacia_log:
+  icon: acacia_log
   on-empire-claim: false
-  # How many mission points the empire receives when the missions was completed
   mission-points: 1
-  # How many contribution points a settlement receives for finishing those
-  contribution-points: 1
-  # The type of this mission. Available ones are:
-  # - turn_in: Deposit items into GUI
-  # - place: Place blocks
-  # - break: Break blocks
-  # - harvest: Harvest crops and certain other stuff like berry bushes, dropping an apple etc. depends on the requirements
-  # - kill: Kill certain monsters/animals
-  type: turn_in
+  type: break
   requirements:
-    stone: 500
+    acacia_log: 300
+andesite:
+  icon: andesite
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    andesite: 750
+amethyst_block:
+  icon: amethyst_block
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    amethyst_block: 300
+birch_log:
+  icon: birch_log
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    birch_log: 450
+blue_ice:
+  icon: blue_ice
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    blue_ice: 450
+calcite:
+  icon: calcite
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    calcite: 300
+cherry_log:
+  icon: cherry_log
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    cherry_log: 300
+crimson_stem:
+  icon: crimson_stem
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    crimson_stem: 450
+dark_oak_log:
+  icon: dark_oak_log
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    dark_oak_log: 450
+deepslate:
+  icon: deepslate
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    deepslate: 375
+diorite:
+  icon: diorite
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    diorite: 750
 dirt:
-  in-empire-world: true
+  icon: dirt
+  on-empire-claim: false
   mission-points: 1
-  contribution-points: 1
-  type: turn_in
+  type: break
   requirements:
-    dirt: 1000
-wheat:
+    dirt: 750
+dripstone_block:
+  icon: dripstone_block
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    dripstone_block: 375
+end_stone:
+  icon: end_stone
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    end_stone: 450
+granite:
+  icon: granite
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    granite: 750
+ice:
+  icon: ice
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    ice: 600
+jungle_log:
+  icon: jungle_log
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    jungle_log: 450
+mangrove_log:
+  icon: mangrove_log
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    mangrove_log: 187
+mossy_cobblestone:
+  icon: mossy_cobblestone
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    mossy_cobblestone: 300
+mushroom_stem:
+  icon: mushroom_stem
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    mushroom_stem: 450
+mycelium:
+  icon: mycelium
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    mycelium: 375
+oak_log:
+  icon: oak_log
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    oak_log: 450
+obsidian:
+  icon: obsidian
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    obsidian: 150
+packed_ice:
+  icon: packed_ice
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    packed_ice: 750
+podzol:
+  icon: podzol
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    podzol: 375
+red_sandstone:
+  icon: red_sandstone
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    red_sandstone: 300
+sandstone:
+  icon: sandstone
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    sandstone: 300
+sculk:
+  icon: sculk
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    sculk: 450
+spruce_log:
+  icon: spruce_log
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    spruce_log: 450
+stone:
+  icon: stone
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    stone: 375
+tuff:
+  icon: tuff
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    tuff: 525
+warped_stem:
+  icon: warped_stem
+  on-empire-claim: false
+  mission-points: 1
+  type: break
+  requirements:
+    warped_stem: 450
+
+
+        # Harvest section
+
+bamboo-in-empire:
+  icon: bamboo
   in-empire-world: true
   mission-points: 1
-  contribution-points: 1
   type: harvest
   requirements:
-    wheat: 5000
+    bamboo: 450
+beetroot-in-empire:
+  icon: beetroot
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    beetroots: 450
+brown-mushroom-in-empire:
+  icon: brown_mushroom
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    brown_mushroom: 450
+carrot-in-empire:
+  icon: carrot
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    carrots: 450
+cocoa-in-empire:
+  icon: cocoa_beans
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    cocoa_beans: 450
+glow-berries-in-empire:
+  icon: glow_berries
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    glow_berries: 450
+glow-lichen-in-empire:
+  icon: glow_lichen
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    glow_lichen: 450
+melon-in-empire:
+  icon: melon
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    melon: 450
+pitcher-plant-in-empire:
+  icon: pitcher_plant
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    pitcher_plant: 450
+potatoes-in-empire:
+  icon: potato
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    potatoes: 450
+pumpkin-in-empire:
+  icon: pumpkin
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    pumpkin: 450
+red-mushroom-in-empire:
+  icon: red_mushroom
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    red_mushroom: 450
+sweet-berries-in-empire:
+  icon: sweet_berries
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    sweet_berries: 450
+torchflower-in-empire:
+  icon: torchflower
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    torchflower: 450
+wheat-in-empire:
+  icon: wheat
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    wheat: 750
+vines-in-empire:
+  icon: vine
+  in-empire-world: true
+  mission-points: 1
+  type: harvest
+  requirements:
+    vines: 450
+
+
+        # Plant section
+
+acacia-sapling-in-empire:
+  icon: acacia_sapling
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    acacia_sapling: 75
+beetroot-seeds-in-empire:
+  icon: beetroot_seeds
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    beetroot_seeds: 150
+birch-sapling-in-empire:
+  icon: birch_sapling
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    birch_sapling: 75
+cherry-sapling-in-empire:
+  icon: cherry_sapling
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    cherry_sapling: 75
+cocoa-beans-in-empire:
+  icon: cocoa_beans
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    cocoa: 150
+dark-oak-sapling-in-empire:
+  icon: dark_oak_sapling
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    dark_oak_sapling: 75
+jungle-sapling-in-empire:
+  icon: jungle_sapling
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    jungle_sapling: 75
+mangrove-propagule-in-empire:
+  icon: mangrove_propagule
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    mangrove_propagule: 75
+melon-seed-in-empire:
+  icon: melon_seeds
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    melon_seed: 37
+oak-sapling-in-empire:
+  icon: oak_sapling
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    oak_sapling: 75
+pitcher-pod-in-empire:
+  icon: pitcher_pod
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    pitcher_pod: 150
+pumpkin-seed-in-empire:
+  icon: pumpkin_seeds
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    pumpkin_seed: 37
+spruce-sapling-in-empire:
+  icon: spruce_sapling
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    spruce_sapling: 75
+plant-torchflower-in-empire:
+  icon: torchflower_seeds
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    torchflower: 150
+wheat-seeds-in-empire:
+  icon: wheat_seeds
+  in-empire-world: true
+  mission-points: 1
+  type: place
+  requirements:
+    wheat: 150
+
+
+        # Kill section
+
+camel-in-empire:
+  icon: saddle
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    camel: 30
+cave-spider-in-empire:
+  icon: spider_eye
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    cave_spider: 37
+chicken-in-empire:
+  icon: chicken
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    chicken: 75
+cow-in-empire:
+  icon: leather
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    cow: 75
+creeper-in-empire:
+  icon: gunpowder
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    creeper: 37
+drowned-in-empire:
+  icon: trident
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    drowned: 75
+ender-dragon-in-empire:
+  icon: dragon_egg
+  in-empire-world: true
+  mission-points: 3
+  type: kill
+  requirements:
+    ender_dragon: 2
+enderman-in-empire:
+  icon: ender_pearl
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    enderman: 75
+glow-squid-in-empire:
+  icon: glow_ink_sac
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    glow_squid: 52
+guardian-in-empire:
+  icon: prismarine_crystals
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    guardian: 67
+pig-in-empire:
+  icon: porkchop
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    pig: 75
+polar-bear-in-empire:
+  icon: snowball
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    polar_bear: 37
+rabbit-in-empire:
+  icon: rabbit
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    rabbit: 37
+sheep-in-empire:
+  icon: mutton
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    sheep: 75
+shulker-in-empire:
+  icon: shulker_shell
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    shulker: 15
+skeleton-in-empire:
+  icon: arrow
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    skeleton: 75
+slime-in-empire:
+  icon: slime_ball
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    slime: 30
+sniffer-in-empire:
+  icon: torchflower
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    sniffer: 15
+spider-in-empire:
+  icon: string
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    spider: 75
+squid-in-empire:
+  icon: ink_sac
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    squid: 67
+zombie-in-empire:
+  icon: rotten_flesh
+  in-empire-world: true
+  mission-points: 1
+  type: kill
+  requirements:
+    zombie: 75
+
+
+        # Turn in section
+
+  # Ores
+amethyst_shard:
+  icon: amethyst_shard
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    amethyst_shard: 192
+coal:
+  icon: coal
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    coal: 192
+copper:
+  icon: copper_ingot
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    copper_ingot: 192
+diamond:
+  icon: diamond
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    diamond: 24
+echo_shard:
+  icon: echo_shard
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    echo_shard: 48
+emerald:
+  icon: emerald
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    emerald: 192
+gold:
+  icon: gold_ingot
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    gold_ingot: 48
+iron:
+  icon: iron_ingot
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    iron_ingot: 96
+lapis lazuli:
+  icon: lapis_lazuli
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    lapis_lazuli: 192
+netherite_ingot:
+  icon: netherite_ingot
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    netherite_ingot: 6
+redstone:
+  icon: redstone
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    redstone: 192
+
+  # Non-ores
+deposit_cobblestone:
+  icon: cobblestone
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cobblestone: 1500
+deposit_cobbled_deepslate:
+  icon: cobbled_deepslate
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cobbled_deepslate: 2250
+deposit_dirt:
+  icon: dirt
+  on-empire-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    dirt: 2250

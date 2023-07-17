@@ -353,7 +353,7 @@ wheat:
   mission-points: 1
   type: harvest
   requirements:
-    wheat: 5000
+    wheat: 500
 vines:
   icon: vine
   on-settlement-claim: false

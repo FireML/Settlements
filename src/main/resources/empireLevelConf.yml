@@ -30,6 +30,8 @@ levels:
     # Total radius of the world is based on the level value + the perk value
     world-radius: 150
     upkeep-reduction: 15
+    claim-upkeep: 0
+    chunks: 0
     missions: 3
     size: 10
     requirements:
@@ -70,6 +72,8 @@ levels:
     upkeep: 90000
     world-radius: 175
     upkeep-reduction: 20
+    claim-upkeep: 0
+    chunks: 0
     missions: 6
     size: 14
     requirements:
@@ -110,6 +114,8 @@ levels:
     upkeep: 85000
     world-radius: 200
     upkeep-reduction: 25
+    claim-upkeep: 0
+    chunks: 0
     missions: 10
     size: 19
     requirements:
@@ -150,6 +156,8 @@ levels:
     upkeep: 80000
     world-radius: 225
     upkeep-reduction: 30
+    claim-upkeep: 0
+    chunks: 0
     missions: 15
     size: 25
     requirements:
@@ -187,6 +195,8 @@ levels:
     upkeep: 75000
     world-radius: 250
     upkeep-reduction: 35
+    claim-upkeep: 0
+    chunks: 0
     missions: 21
     size: -1
     requirements:
