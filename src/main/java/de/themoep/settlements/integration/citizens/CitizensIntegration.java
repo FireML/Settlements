@@ -75,18 +75,26 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
 
         if (Config.Citizens.FORCE_RESPAWN_NPCS) {
             for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
-                forceSpawn(settlement);
+                if (settlement.isEnableNPCs()) {
+                    forceSpawn(settlement);
+                }
             }
             for (Empire empire : EmpireManager.getInstance().getEmpires()) {
-                forceSpawn(empire);
+                if (empire.isEnableNPCs()) {
+                    forceSpawn(empire);
+                }
             }
         }
 
         for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
-            updateName(settlement);
+            if (settlement.isEnableNPCs()) {
+                updateName(settlement);
+            }
         }
         for (Empire empire : EmpireManager.getInstance().getEmpires()) {
-            updateName(empire);
+            if (empire.isEnableNPCs()) {
+                updateName(empire);
+            }
         }
     }
 
@@ -109,9 +117,12 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     private void updateName(LandOwner<?, ?> landOwner) {
+        if (!landOwner.isEnableNPCs()) {
+            return;
+        }
         for (NpcData npcData : landOwner.getNpcData()) {
             NPC npc = getNpc(npcData);
-            if (landOwner.isEnableNPCs() && npc != null && !npc.getName().equals(ChatColor.stripColor(npcData.getConfig().getName()))) {
+            if (npc != null && !npc.getName().equals(ChatColor.stripColor(npcData.getConfig().getName()))) {
                 npc.setName(npcData.getConfig().getName());
             }
         }
@@ -187,7 +198,10 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     public NPC createNpc(LandOwner<?, ?> landOwner, NpcType type, Location location) {
-        return createNpc(landOwner, type, NpcManager.getInstance().getConfig(landOwner, type), location);
+        if (landOwner.isEnableNPCs()) {
+            return createNpc(landOwner, type, NpcManager.getInstance().getConfig(landOwner, type), location);
+        }
+        return null;
     }
 
     NPC createNpc(LandOwner<?, ?> landOwner, NpcType type, NpcConfig config, Location location) {
@@ -412,6 +426,9 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     @EventHandler
     public void onLeveled(LandownerLeveledEvent event) {
         LandownerLevel level = event.getLeveled().getLevelInfo();
+        if (event.getLeveled().isEnableNPCs()) {
+            return;
+        }
         if (level != null) {
             for (NpcType npc : level.getNPCs()) {
                 if (unlockNpc(event.getResident(), event.getLeveled(), npc)) {
@@ -433,7 +450,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     private boolean unlockNpc(Resident resident, LandOwner<?, ?> landOwner, NpcType type) {
-        if (NpcManager.getInstance().getConfig(landOwner, type) != null) {
+        if (landOwner.isEnableNPCs() && NpcManager.getInstance().getConfig(landOwner, type) != null) {
             NpcData npcData = landOwner.getNpcData(type);
             if (!npcData.isUnlocked()) {
                 npcData.checkLevelUp(resident);
