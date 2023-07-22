@@ -50,14 +50,25 @@ public class InviteManager {
         return null;
     }
 
-    public void addInvite(Resident resident, Settlement settlement) {
+    public boolean addInvite(Resident resident, Settlement settlement) {
+        if (resident == null || settlement == null) {
+            return false;
+        }
         SettlementInvite invite = new SettlementInvite(resident, settlement);
+        if (invite == null) {
+            return false;
+        }
         playerInvites.put(resident.getUUID(), invite);
         invite.save();
+        return true;
     }
 
-    private void addInvite(SettlementInvite invite) {
+    private boolean addInvite(SettlementInvite invite) {
+        if (invite == null) {
+            return false;
+        }
         playerInvites.put(invite.getTarget().getUUID(), invite);
+        return true;
     }
 
     public void removeInvite(Resident resident, Settlement settlement) {

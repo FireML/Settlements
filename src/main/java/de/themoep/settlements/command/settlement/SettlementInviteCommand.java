@@ -33,7 +33,9 @@ public class SettlementInviteCommand extends SettlementSubCommand {
                 return;
             }
             Utils.runSync(() -> {
-                InviteManager.getInstance().addInvite(invitedPlayer, res.getSettlement());
+                if (!InviteManager.getInstance().addInvite(invitedPlayer, res.getSettlement())) {
+                    getMessage("failed").tell(res);
+                }
                 if (invitedPlayer.getPlayer() != null) {
                     getMessage("received").tell(invitedPlayer, "name", res.getSettlement().getName(), "state", res.getSettlement().getState().getTag());
                     getMessage("joinfee").tell(invitedPlayer,

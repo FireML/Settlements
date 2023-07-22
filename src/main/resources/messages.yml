@@ -3029,6 +3029,7 @@ command:
     invite:
       already-in-settlement: "&c{name} is already in a {state}"
       already-has-invite: "&c{name} already has an invite from your {state}"
+      fail: "&cInvite Failed. Please try again."
       joinfee: "&7Fee to join is &e☧ {amount}!"
       received: |-
         &e&l(!) &r&7Invite received from {state} {name}! 
