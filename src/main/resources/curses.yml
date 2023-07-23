@@ -1018,8 +1018,26 @@ literal:
 # Steroidal and variants
 
 # Unclassified drugs that penguin's too lazy to Google
-- "xanax"
-- "darvon"
-- "ativan"
-- "talwin"
-- "tramadol"
+# Fire used GPT to get them
+
+- "Alprazolam"
+- "Xanax XR"
+- "Niravam"
+- "Darvon"
+
+- "Propoxyphene"
+- "Darvon-N"
+- "Darvon Compound-65"
+
+- "Lorazepam"
+- "Ativan"
+
+- "Pentazocine"
+- "Talwin NX"
+- "Talwin"
+
+- "Tramadol"
+- "Ultram"
+- "ConZip"
+- "Rybix ODT"
+- "Ryzolt"
