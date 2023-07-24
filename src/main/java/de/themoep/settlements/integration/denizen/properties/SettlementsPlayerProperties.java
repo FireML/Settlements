@@ -7,6 +7,8 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.utils.Utils;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class SettlementsPlayerProperties implements Property {
 
@@ -41,7 +43,12 @@ public class SettlementsPlayerProperties implements Property {
     };
 
     public SettlementsPlayerProperties(PlayerTag player) {
-        this.resident = ResidentManager.getInstance().getResident(player.getOfflinePlayer());
+        this.resident = Utils.runAsync(new BukkitRunnable() {
+            @Override
+            public void run() {
+                ResidentManager.getInstance().getResident(player.getOfflinePlayer();
+            }
+        });
     }
 
     Resident resident;
