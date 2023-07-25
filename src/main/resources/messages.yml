@@ -833,14 +833,14 @@ gui:
           &fBank: &e{bank}
           &fUpkeep: &e{upkeep}
           &fJoin Fee: &e{joinfee}
-          &fDaily Tax: &e{tax}
+          &fDaily Tax: &e☧ {tax}
           &fAuction Tax: &e{auctiontax}%
           &fTax Evasion Action: &e{taxdebtaction}
           &fMission Points: &e{missionpoints}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
           &fOutposts: &e{outposts}&f/&e{maxoutposts}
           &f{chieftitle}: &e{chief}
-          &fMembers:
+          &fResidents:
           &7{residents}
         empire: |-
           &e{name}
@@ -854,14 +854,14 @@ gui:
           &fBank: &e{bank}
           &fUpkeep: &e{upkeep}
           &fJoin Fee: &e{joinfee}
-          &fDaily Tax: &e{tax}
+          &fDaily Tax: &e☧ {tax}
           &fAuction Tax: &e{auctiontax}%
           &fTax Evasion Action: &e{taxdebtaction}
           &fMission Points: &e{missionpoints}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
           &fOutposts: &e{outposts}&f/&e{maxoutposts}
           &f{chieftitle}: &e{chief}
-          &fMembers:
+          &fResidents:
           &7{residents}
       residents:
         rank: "&e&l{rank}:&r {residents}"
@@ -1054,7 +1054,7 @@ gui:
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
         &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}
         &f{chieftitle}: &r&7{chief}
-        &fMembers:
+        &fResidents:
         &f{residents}
       empire: |-
         &e{name}
@@ -2282,7 +2282,7 @@ gui:
       &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
       &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}
       &f{chieftitle}: &r&7{chief}
-      &fMembers:
+      &fResidents:
       &f{residents}
     bonus-claims: " Bonus: {amount}"
     residents:
@@ -3320,7 +3320,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
-        &fMembers: &e{size}&f/&e{maxsize}
+        &fResidents: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e☧ {bank}
@@ -3693,7 +3693,7 @@ command:
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e☧ {bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e{tax} | &fJoin fee: &e{joinfee}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e{joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fDaily Missions: &e{dailymissions}
         &fFinished Missions: &e{missions}
@@ -3983,7 +3983,7 @@ command:
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e☧ {bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e{tax} | &fJoin fee: &e{joinfee}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e{joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fDaily Missions: &e{dailymissions}
         &fFinished Missions: &e{missions}
