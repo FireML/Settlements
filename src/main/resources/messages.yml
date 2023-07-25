@@ -827,7 +827,7 @@ gui:
           &fBoard: &e{description}
           &fState: &e{state}
           &fLevel: &e{level}
-          &fSize: &e{size}&f/&e{maxsize}
+          &fResidents: &e{size}&f/&e{maxsize}
           &fPrivacy: &e{access}
           &fRecruitment: &e{jointype}
           &fBank: &e{bank}
@@ -847,7 +847,7 @@ gui:
           &fBoard: &e{description}
           &fState: &e{state}
           &fLevel: &e{level}
-          &fSize: &e{size}&f/&e{maxsize}
+          &fResidents: &e{size}&f/&e{maxsize}
           &fEmpire: &e{empire}
           &fPrivacy: &e{access}
           &fRecruitment: &e{jointype}
@@ -1023,7 +1023,7 @@ gui:
         &fAlliance Date: {allydate}
         &fState: {state} Level {level}
         &fPopulation: {size} Residents
-        &fSize: {land} claimed
+        &fLand: {land} claimed
         &fEmpire: {empire}
         
         &bClick for more options
@@ -1047,7 +1047,7 @@ gui:
         &e{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
-        &fSize: &e{size}&f/&e{maxsize}
+        &fResidents: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fBank: &e☧ {bank}
         &fMission Points: &e{missionpoints}
@@ -1061,7 +1061,7 @@ gui:
         &fBoard: &e{description}
         &fSymbol: &e{symbol}
         &fEmpire: &eLevel {level}
-        &fSize: &e{size}&f/&e{maxsize}
+        &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fBank: &e☧ {bank}
         &fDaily Missions: &e{dailymissions}
@@ -1616,7 +1616,7 @@ gui:
         &fBoard: &e{description}
         &fSymbol: &e{symbol}
         &fEmpire: &eLevel {level}
-        &fSize: &e{size}&f/&e{maxsize}
+        &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e☧ {bank}
@@ -2269,7 +2269,7 @@ gui:
       &e{name}
       &fBoard: &e{description}
       &f{state}: &eLevel {level}
-      &fSize: &e{size}&f/&e{maxsize}
+      &fResidents: &e{size}&f/&e{maxsize}
       &fAccess: &e{access}
       &fRecruitment: &e{jointype}
       &fBank: &e☧ {bank}
@@ -2954,7 +2954,7 @@ command:
         no-event: "&cThere is currently no event running!"
         no-one-participating: "&cThere is currently no one participating in the event {event}!"
         head: "&a⊱&m━━━━&r&6Top {amount} Settlements&a&m━━━━&a⊰"
-        entry: "&e• {place}. [&e&l{state} {name} &r&7- &e{amount}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
+        entry: "&e• {place}. [&e&l{state} {name} &r&7- &e{amount}](&8{chieftitle}: &f{chief}\n&8Residents: &f{size} players\n&f{description})"
         footer: "&a⊱&m━━━━&r&6Event: {event}&a&m━━━━&a⊰"
         description: Show top 3 settlements in the current event
       description: Settlement events commands
@@ -2963,7 +2963,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
-        &fSize: &e{size}&f/&e{maxsize}
+        &fResidents: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e☧ {bank}
@@ -2978,7 +2978,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
-        &fSize: &e{size}&f/&e{maxsize}
+        &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e☧ {bank}
@@ -3067,7 +3067,7 @@ command:
     list:
       description: "List settlements"
       head: "&a⊱&m━━━━&r&6Settlements [{page}/{maxpage}]&a&m━━━━&a⊰"
-      entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&8Recruitment: {jointype}\n&f{description})"
+      entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Residents: &f{size} players\n&8Recruitment: {jointype}\n&f{description})"
       entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
@@ -3305,7 +3305,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
-        &fSize: &e{size}&f/&e{maxsize}
+        &fResidents: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e☧ {bank}
@@ -3320,7 +3320,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &f{state}: &eLevel {level}
-        &fSize: &e{size}&f/&e{maxsize}
+        &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e☧ {bank}
@@ -3689,7 +3689,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &fEmpire: &eLevel {level} | &a&lSymbol &e{symbol}
-        &fSize: &e{size}&f/&e{maxsize}
+        &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e☧ {bank}
@@ -3764,7 +3764,7 @@ command:
     list:
       description: "List empire"
       head: "&a⊱&m━━━━&r&6Empires [{page}/{maxpage}]&a&m━━━━&a⊰"
-      entry: "&e• {place}. [&r&e{name} &r&7{access}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Size: &f{size} members\n&8Recruitment: {jointype}\n&f{description})"
+      entry: "&e• {place}. [&r&e{name} &r&7{access}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Members: &f{size} members\n&8Recruitment: {jointype}\n&f{description})"
       entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
       footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "&b<< Prev "
@@ -3844,7 +3844,7 @@ command:
       description: "Shows you a map of the surrounding chunks"
     memberlist:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
-      entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Size: &f{size} players\n&f{description})"
+      entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Members: &f{size} players\n&f{description})"
       description: "List all empire members"
     npc:
       skin:
@@ -3979,7 +3979,7 @@ command:
         &e&l{name}
         &fBoard: &e{description}
         &fEmpire: &eLevel {level} | &a&lSymbol &e{symbol}
-        &fSize: &e{size}&f/&e{maxsize}
+        &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
         &fBank: &e☧ {bank}
