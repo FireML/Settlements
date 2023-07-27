@@ -104,15 +104,11 @@ public class SettlementListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerBreakHanging(HangingBreakByEntityEvent event) {
         if (event.getRemover() instanceof Player) {
-            Material type = null;
-            switch (event.getEntity().getType()) {
-                case ITEM_FRAME:
-                    type = Material.ITEM_FRAME;
-                    break;
-                case PAINTING:
-                    type = Material.PAINTING;
-                    break;
-            }
+            Material type = switch (event.getEntity().getType()) {
+                case ITEM_FRAME -> Material.ITEM_FRAME;
+                case PAINTING -> Material.PAINTING;
+                default -> null;
+            };
             handleNearbyLandOwners(event, event.getEntity().getLocation(), type, (Player) event.getRemover(), "break");
         }
     }
@@ -134,6 +130,9 @@ public class SettlementListener implements Listener {
             Resident resident = ResidentManager.getInstance().getResident(player);
             Message notification = Message.get("close-claim.settlement-warning." + type);
             for (LandOwner landOwner : landOwners) {
+                if (landOwner == null) {
+                    continue;
+                }
                 if (notification.exists()) {
                     for (Resident r : landOwner.getOnlineResidents()) {
                         if (r.isReceivingCloseBuildingNotification(landOwner)) {
