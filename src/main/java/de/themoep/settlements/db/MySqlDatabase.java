@@ -114,8 +114,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
                 + " ON DUPLICATE KEY UPDATE " + columns.stream().map(c -> "`" + c + "`=VALUES(`" + c + "`)").collect(Collectors.joining(",")) + ";";
         PreparedStatement insertSta = conn.prepareStatement(insertSql);
         for (Map.Entry<String, ?> entry : values.entrySet()) {
-            if (entry.getValue() instanceof Collection) {
-                for (Object o : (Collection<Object>) entry.getValue()) {
+            if (entry.getValue() instanceof Collection collection) {
+                for (Object o : collection) {
                     insertSta.setInt(1, keyId);
                     insertSta.setObject(2, toDbType(entry.getKey()));
                     insertSta.setObject(3, toDbType(o));

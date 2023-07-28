@@ -136,8 +136,8 @@ public class SQLiteDatabase extends SqlDatabaseManager {
                 }
             } else {
                 Map<String, Object> map = null;
-                if (entry.getValue() instanceof ConfigurationSerializable) {
-                    map = ((ConfigurationSerializable) entry.getValue()).serialize();
+                if (entry.getValue() instanceof ConfigurationSerializable serializable) {
+                    map = serializable.serialize();
                 } else if (entry.getValue() instanceof Map) {
                     map = (Map<String, Object>) entry.getValue();
                 }

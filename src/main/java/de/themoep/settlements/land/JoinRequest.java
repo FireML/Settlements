@@ -68,10 +68,10 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
     @Override
     public String[] getReplacements(ConfigMessages configMessages, String... initial) {
         S source = getSource();
-        if (source instanceof LandOwner) {
-            return ((LandOwner) source).getReplacements(configMessages, initial);
-        } else if (source instanceof Resident) {
-            return ((Resident) source).getReplacements(initial);
+        if (source instanceof LandOwner owner) {
+            return owner.getReplacements(configMessages, initial);
+        } else if (source instanceof Resident res) {
+            return res.getReplacements(initial);
         }
         return initial;
     }
@@ -79,10 +79,10 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
     @Override
     public ItemStack getIcon() {
         S source = getSource();
-        if (source instanceof LandOwner) {
-            return ((LandOwner) source).getIcon();
-        } else if (source instanceof Resident) {
-            return ItemUtils.getHead(((Resident) source).getUUID(), source.getName());
+        if (source instanceof LandOwner owner) {
+            return owner.getIcon();
+        } else if (source instanceof Resident res) {
+            return ItemUtils.getHead(res.getUUID(), source.getName());
         }
         return new ItemStack(Material.PLAYER_HEAD);
     }

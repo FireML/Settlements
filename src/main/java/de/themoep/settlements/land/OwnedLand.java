@@ -246,8 +246,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         Entity[] entities;
         for (int length = (entities = this.getChunk().getEntities()).length, i = 0; i < length; ++i) {
             Entity entity = entities[i];
-            if (entity instanceof Player) {
-                players.add((Player) entity);
+            if (entity instanceof Player player) {
+                players.add(player);
             }
         }
         return players;
@@ -278,7 +278,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 World world = Bukkit.getWorld(getWorldName());
                 if (world != null && world.isChunkLoaded(getX(), getZ())) {
                     for (Entity entity : getChunk().getEntities()) {
-                        if (entity instanceof LivingEntity && Utils.isHostile((LivingEntity) entity)) {
+                        if (entity instanceof LivingEntity && Utils.isHostile(entity)) {
                             entity.remove();
                         }
                     }
@@ -479,8 +479,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 land.setUseState(u, Utils.parseEnum(BuildState.class, (String) uses.get(u.name()), useFlag.getDefault(land.getBuildState())));
             }
         }
-        if (land.getLandOwner() instanceof Settlement) {
-            for (NamedLocation o : ((Settlement) land.getLandOwner()).getOutpostHomes().values()) {
+        if (land.getLandOwner() instanceof Settlement settlement) {
+            for (NamedLocation o : settlement.getOutpostHomes().values()) {
                 if (land.contains(o)) {
                     land.setOutpost(o.getName());
                 }

@@ -111,10 +111,10 @@ public class Ally implements DatabaseSerializable {
             LandOwner o = other.getLandOwner();
 
             if (sort == Sort.LEVEL) {
-                if (t instanceof Empire && o instanceof Empire) {
-                    return ((Empire) t).compareTo((Empire) o);
-                } else if (t instanceof Settlement && o instanceof Settlement) {
-                    return ((Settlement) t).compareTo((Settlement) o);
+                if (t instanceof Empire empire1 && o instanceof Empire empire2) {
+                    return empire1.compareTo(empire2);
+                } else if (t instanceof Settlement settlement1 && o instanceof Settlement settlement2) {
+                    return (settlement1).compareTo(settlement2);
                 } else if (o == null) {
                     return 1;
                 } else if (t == null) {

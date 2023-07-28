@@ -152,8 +152,8 @@ public class ChatMap {
             if (landOwner != null) {
                 this.canClaimCoords = landOwner.hasPermission(resident, "claim.coords");
                 this.canUnclaimCoords = landOwner.hasPermission(resident, "unclaim.coords");
-                if (landOwner instanceof Settlement) {
-                    for (NamedLocation o : ((Settlement) landOwner).getOutpostHomes().values()) {
+                if (landOwner instanceof Settlement settlement) {
+                    for (NamedLocation o : settlement.getOutpostHomes().values()) {
                         OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
                         if (outpostLand != null && !outpostLand.containsHome()) {
                             ownOutposts.addAll(LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {

@@ -29,13 +29,13 @@ public class ElderGUI extends ConfigurableGui {
         super(resident, landOwner.getKey() + ".elder", "type", NpcType.ELDER.getTag());
 
         if (landOwner.isMember(resident)) {
-            if (landOwner instanceof MissionProvider) {
+            if (landOwner instanceof MissionProvider provider) {
                 if (!landOwner.hasUnlocked("missions") || landOwner.getLevelInfo().getMissions() <= 0) {
                     gui.addElement(new StaticGuiElement('e', getIcon("missions"), landOwner.getLevelInfo().getMissions() <= 0
                             ? getText("unlockables.locked.level", "state", landOwner.getStateTag())
                             : getUnlockText(landOwner, "missions")));
                 } else {
-                    if (!((MissionProvider<?>) landOwner).getMissionTaker(resident).getMissionData().isEmpty()) {
+                    if (!provider.getMissionTaker(resident).getMissionData().isEmpty()) {
                         gui.addElement(new DynamicGuiElement('e', who -> new StaticGuiElement('e', getIcon("missions"), click -> {
                             new MissionGui(resident, (MissionProvider<?>) landOwner, ((MissionProvider<?>) landOwner).getMissionTaker(resident)).open();
                             return true;
@@ -48,7 +48,7 @@ public class ElderGUI extends ConfigurableGui {
                                 "name", landOwner.getName()
                         ))));
                     }
-                    if (((MissionProvider<?>) landOwner).getMissionRedistributePrice() > -1 && landOwner.hasPermission(resident,"missions.redistribute")) {
+                    if (provider.getMissionRedistributePrice() > -1 && landOwner.hasPermission(resident,"missions.redistribute")) {
                         gui.addElement(new StaticGuiElement('r', getIcon("redistribute"), click -> {
                             if (landOwner.hasPermission(resident,"missions.redistribute")) {
                                 new MissionCommand() {
@@ -69,8 +69,8 @@ public class ElderGUI extends ConfigurableGui {
                         }, getText("redistribute-missions",
                                 "state", landOwner.getStateTag(),
                                 "name", landOwner.getName(),
-                                "price", String.valueOf(((MissionProvider<?>) landOwner).getMissionRedistributePrice()),
-                                "action", landOwner.has(((MissionProvider<?>) landOwner).getMissionRedistributePrice())
+                                "price", String.valueOf(provider.getMissionRedistributePrice()),
+                                "action", landOwner.has(provider.getMissionRedistributePrice())
                                         ? getText("unlockables.unlocked.purchase")
                                         : getText("unlockables.locked.money")
                         )));

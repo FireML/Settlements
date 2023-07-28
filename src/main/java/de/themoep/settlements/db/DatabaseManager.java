@@ -60,10 +60,10 @@ public abstract class DatabaseManager {
     public abstract void saveSettlement(Settlement settlement);
 
     public void saveMissionData(MissionTaker<?> taker) {
-        if (taker instanceof Settlement) {
-            saveMissionData((Settlement) taker);
-        } else if (taker instanceof Resident) {
-            saveMissionData((Resident) taker);
+        if (taker instanceof Settlement settlement) {
+            saveMissionData(settlement);
+        } else if (taker instanceof Resident resident) {
+            saveMissionData(resident);
         }
     }
 
@@ -205,26 +205,26 @@ public abstract class DatabaseManager {
     }
 
     public void log(LandOwner claimsHolder, Resident resident, String action, String type, long amount) {
-        if (claimsHolder instanceof Settlement) {
-            log(null, (Settlement) claimsHolder, resident, action, ImmutableMap.of(type, amount));
-        } else {
-            log((Empire) claimsHolder, null, resident, action, ImmutableMap.of(type, amount));
+        if (claimsHolder instanceof Settlement settlement) {
+            log(null, settlement, resident, action, ImmutableMap.of(type, amount));
+        } else if (claimsHolder instanceof Empire empire) {
+            log(empire, null, resident, action, ImmutableMap.of(type, amount));
         }
     }
 
     public void logDeposit(LandOwner landOwner, Resident resident, Map<String, Long> deposited) {
         log(
-                landOwner instanceof Empire ? (Empire) landOwner : null,
+                landOwner instanceof Empire empire ? empire : null,
                 landOwner instanceof Empire ? resident.getSettlement() : (Settlement) landOwner,
                 resident, "deposit", deposited
         );
     }
 
     public void logDeposit(LandOwner landOwner, Resident resident, long deposited) {
-        if (landOwner instanceof Settlement) {
-            logDeposit((Settlement) landOwner, resident, deposited);
-        } else if (landOwner instanceof Empire && resident.hasSettlement()) {
-            logDeposit((Empire) landOwner, resident.getSettlement(), resident, deposited);
+        if (landOwner instanceof Settlement settlement) {
+            logDeposit(settlement, resident, deposited);
+        } else if (landOwner instanceof Empire empire && resident.hasSettlement()) {
+            logDeposit(empire, resident.getSettlement(), resident, deposited);
         }
     }
 
@@ -253,10 +253,10 @@ public abstract class DatabaseManager {
     }
 
     public void logWithdraw(LandOwner landOwner, Resident resident, long withdrawn) {
-        if (landOwner instanceof Settlement) {
-            logWithdraw((Settlement) landOwner, resident, withdrawn);
-        } else if (landOwner instanceof Empire && resident.hasSettlement()) {
-            logWithdraw((Empire) landOwner, resident.getSettlement(), resident, withdrawn);
+        if (landOwner instanceof Settlement settlement) {
+            logWithdraw(settlement, resident, withdrawn);
+        } else if (landOwner instanceof Empire empire && resident.hasSettlement()) {
+            logWithdraw(empire, resident.getSettlement(), resident, withdrawn);
         }
     }
 
@@ -282,10 +282,10 @@ public abstract class DatabaseManager {
         List<Settlement> settlements = new ArrayList<>();
         List<Empire> empires = new ArrayList<>();
         for (LandOwner landOwner : landOwners) {
-            if (landOwner instanceof Settlement) {
-                settlements.add((Settlement) landOwner);
-            } else if (landOwner instanceof Empire) {
-                empires.add((Empire) landOwner);
+            if (landOwner instanceof Settlement settlement) {
+                settlements.add(settlement);
+            } else if (landOwner instanceof Empire empire) {
+                empires.add(empire);
             }
         }
         saveSettlements(settlements);

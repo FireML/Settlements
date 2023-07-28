@@ -41,10 +41,10 @@ public class PermsGUI extends SettlementsGUI {
         gui.addElement(new StaticGuiElement('m', getIcon("modes"), click -> {
             if (permCheck.get()) {
                 Resident clickResident = ResidentManager.getInstance().getResident((Player) click.getWhoClicked());
-                if (flagAble instanceof LandOwner) {
-                    new ModeGUI(clickResident, (LandOwner<?, ?>) flagAble).open();
-                } else if (flagAble instanceof OwnedLand) {
-                    new de.themoep.settlements.land.gui.plot.ModeGUI(clickResident, (OwnedLand) flagAble).open();
+                if (flagAble instanceof LandOwner owner) {
+                    new ModeGUI(clickResident, owner).open();
+                } else if (flagAble instanceof OwnedLand ownedLand) {
+                    new de.themoep.settlements.land.gui.plot.ModeGUI(clickResident, ownedLand).open();
                 }
             }
             return true;

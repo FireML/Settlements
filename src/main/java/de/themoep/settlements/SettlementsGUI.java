@@ -71,8 +71,8 @@ public abstract class SettlementsGUI implements ConfigMessages {
     }
 
     protected ItemStack getIcon(Levelable<?> selected) {
-        if (selected instanceof NpcData) {
-            NpcConfig config = ((NpcData) selected).getConfig();
+        if (selected instanceof NpcData npcData) {
+            NpcConfig config = npcData.getConfig();
             if (config.getEntityType() == EntityType.PLAYER) {
                 if (!config.getSkinTextures().isEmpty()) {
                     return ItemUtils.getHead(config.getSkinTextures());
@@ -80,7 +80,7 @@ public abstract class SettlementsGUI implements ConfigMessages {
                     return ItemUtils.getHead(config.getSkinUuid(), config.getSkinName());
                 }
             }
-            return getIcon(((NpcData) selected).getType().getKey());
+            return getIcon(npcData.getType().getKey());
         } else if (selected != null) {
             return getIcon(selected.getKey());
         }

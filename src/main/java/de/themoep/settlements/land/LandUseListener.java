@@ -28,8 +28,8 @@ public class LandUseListener implements LandAccessChecker, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void on(EntityMountEvent e) {
-        if (e.getEntity() instanceof Player) {
-            Player p = (Player) e.getEntity();
+        if (e.getEntity() instanceof Player player) {
+            Player p = player;
             Pair<Boolean, String> response = this.canUse(p, Use.RIDE, e.getMount().getLocation());
             if (!response.getLeft()) {
                 MessageUtils.tell(p, response.getRight());

@@ -117,10 +117,9 @@ public class LandPerks {
             }
         }
 
-        if (land != null && land.getLandOwner() instanceof Settlement && !land.isOwnedBy(resident.getSettlement()) && land.getMode(PlotMode.buff)) {
-            Settlement landOwner = (Settlement) land.getLandOwner();
-            for (Perk perk : landOwner.getPerks()) {
-                if (!landOwner.getPerkData(perk).isActive()) {
+        if (land != null && land.getLandOwner() instanceof Settlement settlement && !land.isOwnedBy(resident.getSettlement()) && land.getMode(PlotMode.buff)) {
+            for (Perk perk : settlement.getPerks()) {
+                if (!settlement.getPerkData(perk).isActive()) {
                     continue;
                 }
 
@@ -134,36 +133,37 @@ public class LandPerks {
                     }
 
                     switch (effect.getApplyIn()) {
-                        case PLOT:
+                        case PLOT -> {
                             if (!land.isPlotOwner(p.getUniqueId())) {
                                 continue;
                             }
-                            break;
-                        case PLOT_FRIENDS:
+                        }
+                        case PLOT_FRIENDS -> {
                             if (!land.isPlot() || !resident.isFriend(land.getPlotOwner())) {
                                 continue;
                             }
-                            break;
-                        case ENEMY_SETTLEMENT:
-                            if (landOwner.isTrusted(resident.getSettlement())) {
+                        }
+                        case ENEMY_SETTLEMENT -> {
+                            if (settlement.isTrusted(resident.getSettlement())) {
                                 continue;
                             }
-                            break;
-                        case TRUSTED_SETTLEMENT:
-                            if (!landOwner.isTrusted(resident.getSettlement())) {
+                        }
+                        case TRUSTED_SETTLEMENT -> {
+                            if (!settlement.isTrusted(resident.getSettlement())) {
                                 continue;
                             }
-                            break;
-                        case ALLIED_SETTLEMENT:
-                            if (!landOwner.isAlly(resident.getSettlement())) {
+                        }
+                        case ALLIED_SETTLEMENT -> {
+                            if (!settlement.isAlly(resident.getSettlement())) {
                                 continue;
                             }
-                            break;
-                        case UNCLAIMED:
+                        }
+                        case UNCLAIMED -> {
                             continue;
+                        }
                     }
 
-                    if (appliesTo(effect, resident, landOwner)) {
+                    if (appliesTo(effect, resident, settlement)) {
                         effects.add(effect);
                     }
                 }

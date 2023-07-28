@@ -1570,8 +1570,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         if (!values.isEmpty()) {
             Object value = values.values().iterator().next();
             Set<String> columns = new LinkedHashSet<>();
-            if (value instanceof ConfigurationSerializable) {
-                value = ((ConfigurationSerializable) value).serialize();
+            if (value instanceof ConfigurationSerializable serializable) {
+                value = serializable.serialize();
             }
             if (value instanceof Map && mapValueColumns.length == 0) {
                 if (((Map) value).keySet().iterator().next() instanceof String) {
@@ -1698,8 +1698,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         deleteSta.setInt(1, keyId);
         int i = 2;
         for (Object entry : entries) {
-            if (entry instanceof DatabaseSerializable) {
-                deleteSta.setObject(i++, toDbType(((DatabaseSerializable) entry).getId()));
+            if (entry instanceof DatabaseSerializable serializable) {
+                deleteSta.setObject(i++, toDbType(serializable.getId()));
             } else {
                 deleteSta.setObject(i++, toDbType(entry));
             }
@@ -1709,8 +1709,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         if (!entries.isEmpty()) {
             String insertSql = getInsertIgnore() + " INTO " + tablePrefix + tableName + " (" + keyColumn; // TODO: Insert update
             Object o = entries.iterator().next();
-            if (o instanceof DatabaseSerializable) {
-                Collection<String> keys = ((DatabaseSerializable) o).serialize().keySet();
+            if (o instanceof DatabaseSerializable serializable) {
+                Collection<String> keys = serializable.serialize().keySet();
                 for (String key : keys) {
                     insertSql += ", " + entryColumn + "_" + key;
                 }
@@ -1722,9 +1722,9 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             PreparedStatement insertSta = conn.prepareStatement(insertSql);
             for (Object entry : entries) {
                 insertSta.setInt(1, keyId);
-                if (entry instanceof DatabaseSerializable) {
+                if (entry instanceof DatabaseSerializable serializable) {
                     int j = 2;
-                    for (Map.Entry<String, Object> e : ((DatabaseSerializable) entry).serialize().entrySet()) {
+                    for (Map.Entry<String, Object> e : serializable.serialize().entrySet()) {
                         insertSta.setObject(j++, toDbType(e.getValue()));
                     }
                 } else {

@@ -59,25 +59,25 @@ public class LandBlockListener implements LandAccessChecker, Listener {
         Player player = null;
         if (e.getCause() == TNTPrimeEvent.PrimeCause.PROJECTILE && e.getPrimingEntity() instanceof Projectile projectile) {
             ProjectileSource source = projectile.getShooter();
-            if (source instanceof Player) {
-                player = (Player) projectile.getShooter();
+            if (source instanceof Player shooter) {
+                player = shooter;
             } else if (source instanceof Entity || projectile.getShooter() == null) {
                 // directly cancel any shooter that isn't a player
                 OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
                 if (land != null) {
                     e.setCancelled(true);
                 }
-            } else if (source instanceof BlockProjectileSource) {
+            } else if (source instanceof BlockProjectileSource projsource) {
                 OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
                 if (land != null) {
-                    OwnedLand originLand = LandManager.getInstance().getLand(((BlockProjectileSource) projectile.getShooter()).getBlock().getLocation());
+                    OwnedLand originLand = LandManager.getInstance().getLand(projsource.getBlock().getLocation());
                     if (originLand == null || !land.isOwnedBy(originLand.getLandOwner())) {
                         e.setCancelled(true);
                     }
                 }
             }
-        } else if (e.getCause() == TNTPrimeEvent.PrimeCause.PLAYER && e.getPrimingEntity() instanceof Player) {
-            player = (Player) e.getPrimingEntity();
+        } else if (e.getCause() == TNTPrimeEvent.PrimeCause.PLAYER && e.getPrimingEntity() instanceof Player primer) {
+            player = primer;
         }
         if (player != null) {
             Pair<Boolean, String> response = this.getCanBuildAll(player, e.getBlock().getLocation());
@@ -162,11 +162,11 @@ public class LandBlockListener implements LandAccessChecker, Listener {
                 || damaged instanceof Boat || damaged instanceof Minecart
                 || damaged instanceof EnderCrystal) {
             Player p = null;
-            if (damager instanceof Player) {
-                p = (Player) damager;
-            } else if (damager instanceof Projectile) {
-                if (((Projectile) damager).getShooter() instanceof Player) {
-                    p = (Player) ((Projectile) damager).getShooter();
+            if (damager instanceof Player playerDamager) {
+                p = playerDamager;
+            } else if (damager instanceof Projectile projectileDamager) {
+                if (projectileDamager.getShooter() instanceof Player playerProjDamager) {
+                    p = playerProjDamager;
                 } else if (this.isLandClaimed(damaged.getLocation())) {
                     return true;
                 }

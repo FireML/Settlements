@@ -137,8 +137,8 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
                 break;
             case PRIVATE:
                 resident = ResidentManager.getInstance().getResident(building);
-                if (landOwner instanceof Empire) {
-                    allowed = ((Empire) landOwner).getCapital().isMember(resident);
+                if (landOwner instanceof Empire empire) {
+                    allowed = empire.getCapital().isMember(resident);
                 } else {
                     allowed = landOwner.isMember(resident);
                 }

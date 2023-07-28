@@ -503,7 +503,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
                             "playerid", resident.getUUID().toString(),
                             "settlement", getName(),
                             "state", getStateTag(),
-                            "level", LandOwner.this instanceof Settlement ? String.valueOf(((Settlement) LandOwner.this).getLevel()) : "-1",
+                            "level", LandOwner.this instanceof Settlement ? String.valueOf(LandOwner.this.getLevel()) : "-1",
                             "perk", perk.getTag()
                     ));
                 }
@@ -531,16 +531,16 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     }
 
     public boolean isBanished(Targetable target) {
-        if (target instanceof Resident) {
-            Resident res = (Resident) target;
+        if (target instanceof Resident resident) {
+            Resident res = resident;
             return banished.contains("player", IdObject.get(res.getUUID()))
                     || (res.hasSettlement() && isBanished(res.getSettlement()))
                     || (res.hasEmpire() && isBanished(res.getSettlement().getEmpire()));
-        } else if (target instanceof LandOwner) {
-            if (banished.contains(((LandOwner<?, ?>) target).getKey(), ((LandOwner<?, ?>) target).getId())) {
+        } else if (target instanceof LandOwner owner) {
+            if (banished.contains(owner.getKey(), owner.getId())) {
                 return true;
-            } else if (target instanceof Settlement && ((Settlement) target).hasEmpire()) {
-                return isBanished(((Settlement) target).getEmpire());
+            } else if (target instanceof Settlement settlement && settlement.hasEmpire()) {
+                return isBanished(settlement.getEmpire());
             }
         }
         return false;
@@ -551,17 +551,17 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
             return false;
         }
         Banished entry;
-        if (target instanceof Resident) {
+        if (target instanceof Resident res) {
             entry = new Banished(
                     "player",
-                    IdObject.get(((Resident) target).getUUID()),
+                    IdObject.get(res.getUUID()),
                     System.currentTimeMillis(),
                     sender != null ? sender.getUUID() : Utils.ZERO_UUID,
                     reason
             );
-        } else if (target instanceof LandOwner) {
+        } else if (target instanceof LandOwner owner) {
             entry = new Banished(
-                    ((LandOwner<?, ?>) target).getKey(),
+                    owner.getKey(),
                     target.getId(),
                     System.currentTimeMillis(),
                     sender != null ? sender.getUUID() : Utils.ZERO_UUID,
@@ -574,15 +574,15 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     }
 
     public boolean removeBanished(Resident sender, Targetable target) {
-        if (target instanceof Resident) {
-            Banished entry = banished.remove("player", IdObject.get(((Resident) target).getUUID()));
+        if (target instanceof Resident res) {
+            Banished entry = banished.remove("player", IdObject.get(res.getUUID()));
             if (entry != null) {
                 unbanished.add(entry.toUnbanish(sender));
                 return true;
             }
             return false;
-        } else if (target instanceof LandOwner) {
-            Banished entry = banished.remove(((LandOwner<?, ?>) target).getDbName(), ((LandOwner<?, ?>) target).getId());
+        } else if (target instanceof LandOwner owner) {
+            Banished entry = banished.remove(owner.getDbName(), owner.getId());
             if (entry != null) {
                 unbanished.add(entry.toUnbanish(sender));
                 return true;

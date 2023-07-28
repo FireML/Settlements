@@ -79,8 +79,8 @@ public enum BuildState implements NameTag, Rankable {
         EMPIRE;
 
         public static AppliesTo get(Object o) {
-            if (o instanceof FlagAble) {
-                return ((FlagAble) o).getBuildStateType();
+            if (o instanceof FlagAble flagAble) {
+                return flagAble.getBuildStateType();
             }
             return null;
         }
