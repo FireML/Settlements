@@ -2920,11 +2920,11 @@ command:
     create:
       success: |-
         &7
-        &a&l               Congratulations
-        &r&7        You have created a new settlement!
-        &r&7    Start by creating your first claim with [&e/s claim](/s claim)
-        &r&7 That will also set your Settlement Home and Manager
-        &r&7              (Both can be moved later)
+        &a&l                     Congratulations
+        &r&7             You have created a new settlement!
+        &r&7You may grow your land by claiming with [&e/s claim](/s claim)
+        &r&7    That will also set your Settlement Home and Manager
+        &r&7                (Both can be moved later)
         &7
       broadcast: "&e{player} has made a settlement called {name}!"
       description: Create a new settlement.
