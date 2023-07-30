@@ -2920,8 +2920,10 @@ command:
     create:
       success: |-
         &7
-        &a&l          Congratulations on your new settlement!!
-        &r&7You may grow your claims with [&e/s claim&r&7](&r&e/s claim&r&7)
+        &a&l       Congratulations on your new settlement!!
+        &r&7               You may grow your claims with [&r&e/s claim&r&7](&r&e/s claim&r&7)
+        &r&7                Currently, your settlement is a campsite.
+        &r&7                       To upgrade: [&r&e/s upgrade&r&7]
         &7
       broadcast: "&e{player} has made a settlement called {name}!"
       description: Create a new settlement.
