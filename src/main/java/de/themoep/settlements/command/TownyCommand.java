@@ -10,8 +10,7 @@ public class TownyCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        if (sender instanceof Player) {
-            Player p = (Player) sender;
+        if (sender instanceof Player p) {
             p.sendMessage("§bWe are using a Custom Towny Plugin. Please use §6/s §binstead.");
         }
 

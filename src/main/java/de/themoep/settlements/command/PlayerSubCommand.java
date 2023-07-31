@@ -13,8 +13,8 @@ public abstract class PlayerSubCommand extends SubCommand {
 
     @Override
     public boolean run(CommandSender sender, String base, String alias, String... args) {
-        if (sender instanceof Player) {
-            return run((Player) sender, base, alias, args);
+        if (sender instanceof Player player) {
+            return run(player, base, alias, args);
         }
         getError("only-player").tell(sender);
         return true;
@@ -22,12 +22,12 @@ public abstract class PlayerSubCommand extends SubCommand {
 
     @Override
     public boolean hasAccess(CommandSender sender) {
-        return super.hasAccess(sender) && sender instanceof Player && hasAccess((Player) sender);
+        return super.hasAccess(sender) && sender instanceof Player player && hasAccess(player);
     }
 
     @Override
     public boolean testAccess(CommandSender sender) {
-        return sender instanceof Player && testAccess((Player) sender) && super.testAccess(sender);
+        return sender instanceof Player player && testAccess(player) && super.testAccess(sender);
     }
 
     public boolean testAccess(Player player) {

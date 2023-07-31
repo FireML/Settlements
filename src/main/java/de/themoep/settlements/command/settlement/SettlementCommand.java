@@ -96,8 +96,8 @@ public class SettlementCommand extends SubCommand {
 
     @Override
     public boolean run(CommandSender p, String base, String alias, String... args) {
-        if (p instanceof Player) {
-            Resident resident = ResidentManager.getInstance().getResident((Player) p);
+        if (p instanceof Player player) {
+            Resident resident = ResidentManager.getInstance().getResident(player);
             if (resident.hasSettlement()) {
                 new OverviewGUI(resident).open();
             } else {
