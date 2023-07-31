@@ -2517,7 +2517,7 @@ command:
     active: "&7Active Chat Channel: &6{name}"
     already-joined: "&7Already in Chat Channel &6{name}"
     channel-entry:
-      active: "&e• &e{name} &7[&a&lActive&7] &3&l<"
+      active: "&e• &e{name} &7[&2&lActive&7] &3&l<"
       enabled: "&e• [&e{name}](suggest_command=/chat {name}) &7[&a&lEnabled&7]"
       disabled: "&e• [&e{name}](suggest_command=/chat {name}) &7[&cDisabled&7]"
     "<channel>":
