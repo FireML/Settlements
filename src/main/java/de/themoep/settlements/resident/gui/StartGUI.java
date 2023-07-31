@@ -20,6 +20,7 @@ import de.themoep.settlements.utils.config.Config;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -37,21 +38,7 @@ public class StartGUI extends ConfigurableGui {
         }
 
         gui.addElement(new StaticGuiElement('s', getIcon("start"), click -> {
-            List<BaseComponent[]> pages = new ArrayList<>();
-            for (int i = 0; i < 100; i++) {
-                Message page = Message.get("start-guide.book.page" + i);
-                if (page.exists()) {
-                    pages.add(page.getReplacedComponents("playername", resident.getName(), "playerid", resident.getUUID().toString()));
-                } else {
-                    break;
-                }
-            }
-
-            resident.getPlayer().openBook(SettlementsPlugin.getInstance().getServerAdapter().createBook(
-                    "Start Guide",
-                    SettlementsPlugin.getInstance().getName(),
-                    pages
-            ));
+            Bukkit.dispatchCommand(resident.getPlayer(), "cp nosettlement");
             return true;
         }, getText("start", "playername", resident.getName())));
 
@@ -136,19 +123,11 @@ public class StartGUI extends ConfigurableGui {
                     click.getGui().draw();
                 }
             }, settlement -> {
-                String action;
-                switch (settlement.getJoinType()) {
-                    case ANYONE:
-                        action = "unlocked.join";
-                        break;
-                    case INVITE_ONLY:
-                        action = "locked.invite-only";
-                        break;
-                    case APPLY:
-                    default:
-                        action = "locked.application-required";
-                        break;
-                }
+                String action = switch (settlement.getJoinType()) {
+                    case ANYONE -> "unlocked.join";
+                    case INVITE_ONLY -> "locked.invite-only";
+                    default -> "locked.application-required";
+                };
 
                 if (InviteManager.getInstance().getInvite(resident, settlement) != null) {
                     action = "unlocked.invited";
