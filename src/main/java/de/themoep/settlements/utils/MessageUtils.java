@@ -253,4 +253,18 @@ public class MessageUtils {
         }
         return false;
     }
+
+    public static boolean isContainedIn(List<String> strings, BaseComponent... components) {
+        for (BaseComponent component : components) {
+            for (String string : strings) {
+                if (component instanceof TextComponent && ((TextComponent) component).getText().toLowerCase().contains(string.toLowerCase())) {
+                    return true;
+                }
+                if (component.getExtra() != null && isContainedIn(string, component.getExtra().toArray(new BaseComponent[0]))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
