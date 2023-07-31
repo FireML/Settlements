@@ -339,6 +339,12 @@ public class ChatManager implements ConfigMessages, Listener {
         if (player == null) {
             return;
         }
+        if (MessageUtils.isContainedIn(resident.getName(), components)) {
+            notify(resident);
+            components = notifyReplacer.copy()
+                    .replace(resident.getName(), TextComponent.fromLegacyText(getText("nick-hilight") + resident.getName()))
+                    .replaceIn(components);
+        }
         if (MessageUtils.isContainedIn("@" + resident.getName(), components)) {
             notify(resident);
             components = notifyReplacer.copy()
