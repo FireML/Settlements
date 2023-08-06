@@ -233,7 +233,8 @@ public class EmpireManager {
                 "name", settlement.getName(),
                 "mission", mission.getTag(),
                 "missionpoints", String.valueOf(settlement.getMissionPoints()),
-                "finishedmissions", String.valueOf(empire.getFinishedMissions())
+                "finishedmissions", String.valueOf(empire.getFinishedMissions()),
+                "player", resident.getName()
         );
         SettlementsPlugin.logDebug(settlement.getStateTag() + " " + settlement.getName() + " finished mission " + mission.getTag() + " for empire " + empire.getName());
         settlement.checkLevelUp(resident);

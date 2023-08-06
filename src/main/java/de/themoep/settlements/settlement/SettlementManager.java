@@ -442,7 +442,8 @@ public class SettlementManager {
                 "name", settlement.getName(),
                 "mission", mission.getTag(),
                 "missionpoints", String.valueOf(resident.getMissionPoints()),
-                "finishedmissions", String.valueOf(settlement.getFinishedMissions())
+                "finishedmissions", String.valueOf(settlement.getFinishedMissions()),
+                "player", resident.getName()
         );
         SettlementsPlugin.logDebug(resident.getName() + " finished mission " + mission.getTag() + " for " + settlement.getStateTag() + " " + settlement.getName());
         settlement.checkLevelUp(resident);
