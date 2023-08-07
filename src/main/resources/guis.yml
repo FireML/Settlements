@@ -9,7 +9,7 @@ guis:
       - "         "
       - " ooobooo "
       elements:
-        o: brown_stained_glass_pane
+        o: lime_stained_glass_pane
         start: book
         friends: player_head
         requests: crimson_door
@@ -26,7 +26,7 @@ guis:
       - "         "
       - " ooobooo "
       elements:
-        o: brown_stained_glass_pane
+        o: lime_stained_glass_pane
         settlement: white_bed
         rules: writable_book
         lock: chest
@@ -46,7 +46,7 @@ guis:
       - "eeeeeeeee"
       - "ppoobooo "
       elements:
-        o: brown_stained_glass_pane
+        o: lime_stained_glass_pane
         page: paper
         sort: hopper
         back: structure_void
@@ -59,7 +59,7 @@ guis:
       - "eeeeeeeee"
       - "ppooboors"
       elements:
-        o: brown_stained_glass_pane
+        o: lime_stained_glass_pane
         page: paper
         sort: hopper
         requests: crimson_door
@@ -73,7 +73,7 @@ guis:
       - "eeeeeeeee"
       - "ppoobooos"
       elements:
-        o: brown_stained_glass_pane
+        o: lime_stained_glass_pane
         page: paper
         sort: hopper
         back: structure_void
@@ -86,7 +86,7 @@ guis:
       - "eeeeeeeee"
       - "ppoobooos"
       elements:
-        o: brown_stained_glass_pane
+        o: lime_stained_glass_pane
         page: paper
         sort: hopper
         back: structure_void
@@ -99,7 +99,7 @@ guis:
       - "eeeeeeeee"
       - "ppoobooos"
       elements:
-        o: brown_stained_glass_pane
+        o: lime_stained_glass_pane
         page: paper
         sort: hopper
         back: structure_void
@@ -115,7 +115,7 @@ guis:
       alignments:
         c: center
       elements:
-        o: brown_stained_glass_pane
+        o: lime_stained_glass_pane
         back: structure_void
     color-select:
       setup:
@@ -128,7 +128,7 @@ guis:
       alignments:
         c: center
       elements:
-        o: brown_stained_glass_pane
+        o: lime_stained_glass_pane
         back: structure_void
     color-type-select:
       setup:
@@ -141,7 +141,7 @@ guis:
       alignments:
         c: center
       elements:
-        o: brown_stained_glass_pane
+        o: lime_stained_glass_pane
         back: structure_void
   resident:
     title:
@@ -227,14 +227,14 @@ guis:
         black-market: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMmZlYmI0YzUyZGIxZmI5ZTFlNWM4NTJhNGU3MmQ4ZGZlNmM0YzA1NWE0NjQ5YWJmM2QzNTdkMjMzZmMxYiJ9fX0=
     elder:
       setup:
-      - "ooooooooo"
+      - "oooomoooo"
       - "         "
       - "    e    "
       - "    r    "
       - "         "
       - " ooobooo "
       elements:
-        o: blue_stained_glass_pane
+        o: lime_stained_glass_pane
         recruit: crimson_door
         missions: orange_banner
         redistribute: bell
@@ -250,7 +250,7 @@ guis:
       alignments:
         m: center
       elements:
-        o: blue_stained_glass_pane
+        o: lime_stained_glass_pane
         info: orange_banner
         back: structure_void
 
@@ -319,7 +319,7 @@ guis:
         - "         "
         - " ooobooo "
         elements:
-          o: yellow_stained_glass_pane
+          o: lime_stained_glass_pane
           confirm: red_dye
           cancel: structure_void
     bank:
@@ -331,7 +331,7 @@ guis:
       - "         "
       - " ooobooo "
       elements:
-        o: yellow_stained_glass_pane
+        o: lime_stained_glass_pane
         donations: hopper
         storage: chest
         history: book
@@ -348,7 +348,7 @@ guis:
       - "         "
       - " ooobooo "
       elements:
-        o: yellow_stained_glass_pane
+        o: lime_stained_glass_pane
         tax: name_tag
         auctiontax: beacon
         deposit: hopper
@@ -363,7 +363,7 @@ guis:
       - "rrrrrrrrr"
       - " oipdobo "
       elements:
-        o: orange_stained_glass_pane
+        o: lime_stained_glass_pane
         settlement: cobblestone_wall
         progress: anvil
         deposit: composter
@@ -382,7 +382,7 @@ guis:
           missions: red_banner
     shop:
       setup:
-      - "ooooooooo"
+      - "oooosoooo"
       - " ggggggg "
       - " ggggggg "
       - " ggggggg "
@@ -393,6 +393,7 @@ guis:
       elements:
         o: lime_stained_glass_pane
         back: structure_void
+        settlement: white_bed
     perks:
       setup:
       - "ooooooooo"
@@ -478,7 +479,7 @@ guis:
         - "         "
         - " ooobooo "
         elements:
-          o: yellow_stained_glass_pane
+          o: lime_stained_glass_pane
           confirm: red_dye
           cancel: structure_void
     banished:
@@ -490,7 +491,7 @@ guis:
       - "eeeeeeeee"
       - "ppppppsub"
       elements:
-        o: magenta_stained_glass_pane
+        o: lime_stained_glass_pane
         page: paper
         sort: hopper
         unbanished: book
@@ -504,7 +505,7 @@ guis:
       - "eeeeeeeee"
       - "ppppbooos"
       elements:
-        o: magenta_stained_glass_pane
+        o: lime_stained_glass_pane
         page: paper
         sort: hopper
         back: structure_void
@@ -582,7 +583,7 @@ guis:
       - "         "
       - " ooobooo "
       elements:
-        o: yellow_stained_glass_pane
+        o: lime_stained_glass_pane
         confirm: green_wool
         cancel: structure_void
     setrank:
@@ -610,7 +611,7 @@ guis:
         - "         "
         - " ooobooo "
         elements:
-          o: yellow_stained_glass_pane
+          o: lime_stained_glass_pane
           confirm: green_wool
           cancel: structure_void
     titles:
@@ -667,7 +668,7 @@ guis:
       - "         "
       - " opobooo "
       elements:
-        o: white_stained_glass_pane
+        o: lime_stained_glass_pane
         outpost: acacia_sapling
         public: beacon
         back: structure_void
@@ -680,7 +681,7 @@ guis:
       - "         "
       - " ooobooo "
       elements:
-        o: white_stained_glass_pane
+        o: lime_stained_glass_pane
         info: acacia_sapling
         rename: anvil
         sethome: purple_banner
@@ -817,7 +818,7 @@ guis:
       alignments:
         p: center
       elements:
-        o: yellow_stained_glass_pane
+        o: lime_stained_glass_pane
         donations: hopper
         storage: chest
         history: book
@@ -901,7 +902,7 @@ guis:
       - "         "
       - " ooobooo "
       elements:
-        o: yellow_stained_glass_pane
+        o: lime_stained_glass_pane
         tax: name_tag
         auction: beacon
         deposit: hopper
@@ -918,7 +919,7 @@ guis:
       alignments:
         p: center
       elements:
-        o: orange_stained_glass_pane
+        o: lime_stained_glass_pane
         empire: cobblestone_wall
         progress: anvil
         deposit: composter
@@ -966,7 +967,7 @@ guis:
       - "         "
       - " ooobooo "
       elements:
-        o: blue_stained_glass_pane
+        o: lime_stained_glass_pane
         recruit: crimson_door
         missions: orange_banner
         back: structure_void
@@ -981,7 +982,7 @@ guis:
       alignments:
         m: center
       elements:
-        o: blue_stained_glass_pane
+        o: lime_stained_glass_pane
         info: orange_banner
         back: structure_void
     shop:
@@ -1019,7 +1020,7 @@ guis:
       - "eeeeeeeee"
       - "ppppppsub"
       elements:
-        o: magenta_stained_glass_pane
+        o: lime_stained_glass_pane
         page: paper
         sort: hopper
         unbanished: book
@@ -1033,7 +1034,7 @@ guis:
       - "eeeeeeeee"
       - "pppobooos"
       elements:
-        o: magenta_stained_glass_pane
+        o: lime_stained_glass_pane
         page: paper
         sort: hopper
         back: structure_void
@@ -1061,7 +1062,7 @@ guis:
         - "         "
         - " ooobooo "
         elements:
-          o: yellow_stained_glass_pane
+          o: lime_stained_glass_pane
           confirm: green_wool
           cancel: structure_void
     setrank:
@@ -1134,7 +1135,7 @@ guis:
         - "         "
         - " ooobooo "
       elements:
-        o: blue_stained_glass_pane
+        o: lime_stained_glass_pane
         world: map
         back: structure_void
   plot:
@@ -1270,7 +1271,7 @@ guis:
       - "         "
       - "pooobooon"
       elements:
-        o: purple_stained_glass_pane
+        o: lime_stained_glass_pane
         previous: arrow
         next: arrow
         back: structure_void
@@ -1283,7 +1284,7 @@ guis:
       - "         "
       - "pooobooon"
       elements:
-        o: purple_stained_glass_pane
+        o: lime_stained_glass_pane
         previous: arrow
         next: arrow
         back: structure_void
@@ -1296,7 +1297,7 @@ guis:
       - "         "
       - "pooobooon"
       elements:
-        o: purple_stained_glass_pane
+        o: lime_stained_glass_pane
         previous: arrow
         next: arrow
         back: structure_void
