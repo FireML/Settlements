@@ -98,6 +98,7 @@ help-order:
     - e joinfee
     - e list
     - e memberlist
+    - e rules
     - e show
     - e tax
     - e upkeep
@@ -115,6 +116,7 @@ help-order:
     - e invite
     - e joinfee set
     - e kick
+    - e kicknotice
     - e leave
     - e mail
     - e mode
