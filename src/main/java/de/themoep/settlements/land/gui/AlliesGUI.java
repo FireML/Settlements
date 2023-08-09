@@ -4,7 +4,6 @@ import de.themoep.inventorygui.*;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.AllyRequest;
 import de.themoep.settlements.land.LandOwner;

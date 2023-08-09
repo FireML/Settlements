@@ -1,9 +1,7 @@
 package de.themoep.settlements.npc;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.perk.LevelPerk;

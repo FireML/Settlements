@@ -17,7 +17,6 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.utils.*;
 import de.themoep.settlements.utils.config.Config;
-import net.md_5.bungee.api.chat.BaseComponent;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
@@ -25,7 +24,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 

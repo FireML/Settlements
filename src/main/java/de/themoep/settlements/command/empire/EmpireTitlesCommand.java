@@ -1,7 +1,6 @@
 package de.themoep.settlements.command.empire;
 
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.land.gui.RankSelectGUI;
 import de.themoep.settlements.land.gui.TitlesGUI;
 import de.themoep.settlements.rank.EmpireRank;

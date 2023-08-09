@@ -3,7 +3,6 @@ package de.themoep.settlements.empire;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.*;
 import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerCreatedEvent;

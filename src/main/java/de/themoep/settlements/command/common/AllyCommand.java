@@ -1,8 +1,6 @@
 package de.themoep.settlements.command.common;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.AllyRequest;
 import de.themoep.settlements.land.LandManager;

@@ -4,7 +4,6 @@ import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.events.LandChangeEvent;
-import de.themoep.settlements.land.events.LandEnterEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

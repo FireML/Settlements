@@ -1,7 +1,5 @@
 package de.themoep.settlements.banish;
 
-import com.Zrips.CMI.CMI;
-import com.Zrips.CMI.Containers.CMIUser;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
 import de.themoep.settlements.land.LandManager;
