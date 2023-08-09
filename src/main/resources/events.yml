@@ -207,7 +207,7 @@ events:
       - participation
     actions:
       break:
-      - beetroot
+      - beetroots
   potato:
     worlds:
     - Kingdoms
@@ -226,7 +226,7 @@ events:
       - participation
     actions:
       break:
-      - potato
+      - potatoes
   carrots:
     worlds:
     - Kingdoms
