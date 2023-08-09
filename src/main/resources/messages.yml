@@ -1,28 +1,33 @@
 server-rules: "&6https://poleismc.com/rules"
 rules:
   book-text: |-
-    Terms and Conditions
-    1) Follow server rules
+    &3&n&lRules&r&0
+    Follow all server rules
     poleismc.com/rules
     
-    2) Respect everyone
+    All other rules should be posted somewhere. Ask where these are!
     
     {rules}
-    
     {accept}
   accept-action: |-
     [&1\[Accept\]](/s rules accept)
 start-guide:
   book:
     page1: |-
-      Welcome to PoleisMC
+      &3Welcome to PoleisMC!&r&0
       
       Explore the previous
       GUI to get started!
     page2: |-
-      Page 2
+      To check out most of our content and features, check out our Menu!
+
+      /menu
     page3: |-
-      etc
+      We do have a tutorial as well!
+
+      /tutorial
+    page4: |-
+      Please do not hesitate to ask questions and have fun!
 error:
   missing-settlement-id: "&cInternal error. Settlement ID is null?"
   missing-empire-id: "&cInternal error. Empire ID is null?"
@@ -114,13 +119,13 @@ close-claims:
   player:
     break: |-
       &cYou are breaking a block near a claim of {state} {name}! Avoid doing this!
-      &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for the next {time} minutes.
+      &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for {time} minutes.
     place: |-
       &cYou are placing a block near a claim of {state} {settlement}! Avoid doing this! 
-      &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for the next {time} minutes.
+      &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for {time} minutes.
     block: |-
       &cYou can only place or break blocks near claims!
-      &7Only Shulker Boxes can be places/broken.
+      &7Only Shulker Boxes can be placed/broken.
 banished:
   move:
     message: "&cYou're banished from the {state} {name}!"
@@ -186,24 +191,26 @@ scoreboard:
         &aBal &e%vault_eco_balance_formatted%
         &aChat &e%settlements_player_info_activechannel%
         &7/scoreboard
-empire-world-generated: "&lCreated your own empire world!"
+empire-world-generated: "&lCreated your empire world!"
 levels:
   upgrade: "&d{state}&7 was upgraded to level &d{level}"
   perks: |-
-    &7Access granted to:
+    &ePerks granted:
+
     {perks}
   perks-entry: "&7- &f{perk}"
   mail-upgrade:
     general: "{name} was upgraded to {level}!"
     perks: |-
-      Access granted to:
+      &ePerks granted:
+
       {perks}
     perks-entry: "- {perk}"
   upgrade-settlement: "&7The settlement has been upgraded to &e{state}!"
   perk-available: "&7Perk &6{perk} &7can be unlocked!"
   perk-unlocked: "&6{perk} &7has been unlocked!"
 missions:
-  completed: "&e&l(!) &r&e{state} {name}&7 has completed the mission &e{mission}&7! {finishedmissions} missions finished!"
+  completed: "&e&l(!) &r&b{player} &r&7completed mission: &r&e{mission} &r&7for &r&e{state} {name}&r&7! &b({finishedmissions})"
 upkeep:
   alert:
     level-removed: "&a&l(!) &7Your settlement has had a level removed because you couldn't pay the upkeep!"
@@ -780,20 +787,23 @@ gui:
   disabled: "&cDisabled"
   general:
     start:
-      title: "General Information"
+      title: "&x&0&0&8&2&0&0&lGeneral Information"
       start: |-
         &eGetting Started
+
         &fBasic information about settlements
         
         &bClick for more info
       requests: |-
         &eInvitations
+
         &fCheck if you have any pending invites
         
         &bClick to check
       create:
         entry: |-
           &eCreate Settlement
+
           &fStart a new settlement, a place to build
           Price to create: &e☧ {amount}
           
@@ -802,25 +812,28 @@ gui:
           title: "Name your Settlement"
       join: |-
         &eJoin a Settlement
+
         &fSee the list of settlements that might
         &fsuit your taste! Choose carefully.
         
         &bClick to browse
       public: |-
         &eBrowse Public Settlements
+
         &fBrowse settlements that are
         &fopen to public visiting
         
         &bClick to browse
       friends: |-
         &eFriends and requests
+
         &fSee your friends and see if
         &fyou have any new requests!
         
         &bClick to browse
       back: Close
     overview:
-      title: "{state} Information"
+      title: "&x&0&0&8&2&0&0&l{state} Information"
       settlement:
         no-empire: |-
           &e{name}
@@ -871,9 +884,11 @@ gui:
         entry: "{title} {online}{name}"
       rules: |-
         &eRule Book
-        &fRead this first!
+
+        &fRead the rules first!
       lock: |-
         &eToggle Lock
+
         &fLock your private containers
         
         &fCurrent: {status}
@@ -881,6 +896,7 @@ gui:
         &bClick to toggle
       unlock: |-
         &eToggle Unlock
+
         &fUnlock your private containers
         
         &fCurrent: {status}
@@ -891,6 +907,7 @@ gui:
         disabled: "&cDisabled"
       npc: |-
         &eNPC
+
         &fManage your NPCs
         
         &bClick to view
@@ -898,26 +915,30 @@ gui:
         &e{state} Home
       plot: |-
         &ePlot Settings
+
         &fYou must be standing in your plot
         
         {action}
       friends: |-
         &eFriends and requests
+
         &fSee your friends and see if
         &fyou have any new requests!
         
         &bClick to browse
       back: Close
     requests:
-      title: "Requests"
+      title: "&x&0&0&8&2&0&0&lRequests"
       sort: |-
         &fSorted by {state}
+
         &bClick to sort by {nextstate}
       page: "Page {page}"
       back: "&cBack"
       entry:
         settlementinvite: |-
           &e{name}
+
           &fState: &e{state} {level}
           &fBoard: &e{description}
           &fJoin Fee: &e☧ {joinfee}
@@ -932,14 +953,16 @@ gui:
           
           &bClick to accept!
     friends:
-      title: "Friends"
+      title: "&x&0&0&8&2&0&0&lFriends"
       sort: |-
         &fSorted by {state}
+
         &bClick to sort by {nextstate}
       page: "Page {page}"
       back: "&cBack"
       entry: |-
         {online}{name}
+
         &f{settlementstate} {settlement}
         
         &bRight-Click to remove!
@@ -947,13 +970,15 @@ gui:
       offline: "&c"
       requests: |-
         &eFriend requests
+        
         &fCheck if you have any friend requests
         
         &bClick to check
     friend-requests:
-      title: "Friend Requests"
+      title: "&x&0&0&8&2&0&0&lFriend Requests"
       sort: |-
         &fSorted by {state}
+
         &bClick to sort by {nextstate}
       page: "Page {page}"
       back: "&cBack"
@@ -964,14 +989,16 @@ gui:
         
         &bClick to accept!
     settlements:
-      title: "All Settlements"
+      title: "&x&0&0&8&2&0&0&lAll Settlements"
       sort: |-
         &fSorted by {state}
+
         &bClick to sort by {nextstate}
       page: "Page {page}"
       back: "&cBack"
       entry: |-
         &e{name}
+
         &fState: &e{state} {level}
         &fBoard: &e{description}
         &fJoin Fee: &e☧ {joinfee}
@@ -979,14 +1006,16 @@ gui:
         &fPopulation: &e{size}
         &b{action}
     public:
-      title: "Public Settlements"
+      title: "&x&0&0&8&2&0&0&lPublic Settlements"
       sort: |-
         &fSorted by {state}
+
         &bClick to sort by {nextstate}
       page: "Page {page}"
       back: "&cBack"
       entry: |-
         &e{name}
+
         &fState: &e{state} {level}
         &fBoard: &e{description}
         
@@ -994,18 +1023,19 @@ gui:
         &bClick to teleport
   chat:
     channel-select:
-      title: "&2&l/chat colour"
+      title: "&x&0&0&8&2&0&0&l/chat colour"
       channel-entry: "{color}{channel}"
     color-type-select:
-      title: "&2&lSelect the type"
+      title: "&x&0&0&8&2&0&0&lSelect the type"
       entry: |-
         &e{type} colour
+
         &7Click to change
         &7Middle click to reset
       color-reset: "&7Reset {type} color of channel {channel} to &r{color}{color-name}"
       back: "&cBack To Channel Selection"
     color-select:
-      title: "&2&lSelect colour"
+      title: "&x&0&0&8&2&0&0&lSelect colour"
       color-entry: |-
         {color}{name}
         &7Click to select
@@ -1015,7 +1045,7 @@ gui:
       color-changed: "&7Changed {type} color of channel {channel} to &r{color}{color-name}"
       back: "&cBack To Type Selection"
   allies:
-    title: "Manage Allies"
+    title: "&x&0&0&8&2&0&0&lManage Allies"
     entry:
       settlement: |-
         &e{name}
@@ -1038,10 +1068,11 @@ gui:
         &bClick for more options
     sort: |-
       &fSorted by {state}
+
       &bClick to sort by {nextstate}
     page: "Page {page}"
   ally:
-    title: "Manage Ally"
+    title: "&x&0&0&8&2&0&0&lManage Ally"
     info:
       settlement: |-
         &e{name}
@@ -1099,22 +1130,24 @@ gui:
       title: "&cUnally from {name}?"
       confirm: |-
         &a&lConfirm
+
         &7Click to confirm that you
         &7want to remove ally with
         &7{state} {name}
       cancel: |-
         &cCancel
+
         &7Click to cancel the unally
         &7from {state} {name}.
   access:
-    title: "Select access"
+    title: "&x&0&0&8&2&0&0&lSelect access"
     back: "&cBack"
     selected: "&a&lCurrently set to &b&l{access}"
     available: "&7{access}"
     i: |-
       &eVillage Privacy
-      &fPermit certain players to
-      &fteleport to your /s home
+
+      &3&nSet who can teleport to your ''/s home''&r
       &fPublic - Everyone
       &fTrusted - Residents, Empire, Allies
       &fAllies - Residents and Allies
@@ -1124,24 +1157,28 @@ gui:
         &7Everyone can teleport to home
       trusted: |-
         &7Can teleport to {state} home:
+
         &7- Allies
         &7- Empire Members
         &7- Residents
       ally: |-
         &7Can teleport to {state} home:
+
         &7- Allies
         &7- Residents
       private: |-
         &7Only Residents can teleport to home
   bank:
-    title: "Banker"
+    title: "&x&0&0&8&2&0&0&lBanker"
     donations: |-
       &eDonations
+
       &fGive me your money!
       
       {action}
     donations-locked: |-
       &eDonations
+
       &fGive me your money!
       
       &cUpgrade NPC to accept
@@ -1149,7 +1186,7 @@ gui:
       &coutside the {state}
       {action}
     donations-anvil:
-      title: "Set amount to deposit"
+      title: "&x&0&0&8&2&0&0Amount to deposit:"
       placeholder: "0"
     balance: |-
       &eBalance
@@ -1157,16 +1194,19 @@ gui:
       &fCurrent Balance: &e☧ {balance}
     storage: |-
       &eStorage Chest
+
       &fShared storage of the {state}
       
       {action}
     history: |-
       &eBank History
+
       &fList of recent bank donations
       
       {action}
     upkeep: |-
       &eUpkeep
+
       &fPrepare for upkeep to prevent
       &fyour {state} from degrading
       
@@ -1188,13 +1228,14 @@ gui:
       
       {action}
   manage-finances:
-    title: "Manage Finances"
+    title: "&x&0&0&8&2&0&0&lManage Finances"
     tax:
       button: |-
         &eChange Taxes
-        &fCharge your residents with taxes!
+
+        &fCharge your residents taxes!
         &fThese taxes will be taken from their
-        &fbalance every {hour}. Server time.
+        &fbalance every {hour} server time (UTC).
         
         &fCurrent Tax: &e☧ {tax}
         
@@ -1202,11 +1243,12 @@ gui:
         
         &fCooldown on change: {cooldown}
       anvil:
-        title: "Set tax"
+        title: "&x&0&0&8&2&0&0Set tax amount:"
         placeholder: "{tax}"
     auctiontax:
       button: |-
         &eAuction Taxes
+
         &fCharge players for using the
         &fAuctioneer!
         
@@ -1216,7 +1258,7 @@ gui:
         
         &fCooldown on change: {cooldown}
       anvil:
-        title: "Set auction tax percentage"
+        title: "&x&0&0&8&2&0&0Set auction tax %:"
         placeholder: "{auctiontax}"
     deposit:
       button: |-
@@ -1224,7 +1266,7 @@ gui:
         
         {action}
       anvil:
-        title: "Set amount to deposit"
+        title: "&x&0&0&8&2&0&0Amount to deposit:"
         placeholder: "0"
     withdraw:
       button: |-
@@ -1232,17 +1274,19 @@ gui:
         
         {action}
       anvil:
-        title: "Set amount to withdraw"
+        title: "&x&0&0&8&2&0&0Amount to withdraw:"
         placeholder: "0"
   banished:
-    title: "Manage Banished"
+    title: "&x&0&0&8&2&0&0&lManage Banished"
     sort: |-
       &fSorted by {state}
+
       &bClick to sort by {nextstate}
     page: "Page {page}"
     back: "&cBack"
     entry: |-
       &e&l{name}
+
       &fBanished Date: &e{date}
       &fReason: &e{reason}
       &fBanisher: &e{banisher}
@@ -1253,14 +1297,16 @@ gui:
       
       &bClick to browse
   unbanished:
-    title: "Unbanishment History"
+    title: "&x&0&0&8&2&0&0&lUnbanishment History"
     sort: |-
       &fSorted by {state}
+
       &bClick to sort by {nextstate}
     page: "Page {page}"
     back: "&cBack"
     entry: |-
       &e&l{name}
+
       &fBanished Date: &e{date}
       &fReason: &e{reason}
       &fBanisher: &e{banisher}
@@ -1268,53 +1314,65 @@ gui:
       &fUnbanished by: &e{unbanisher}
       &fDate: &e{unbanishdate}
   management:
-    title: "Manage {state}"
+    title: "&x&0&0&8&2&0&0&lManage {state}"
     recruitment: |-
       &eView Join Requests
+
       &fSee a list of everyone who
-      &fapplied to join the {state}
-      &fand accept or reject them
+      &fapplied to join the {state}.
+
+      &fYou may handle the applications
+      &fthrough the browsing screen.
       
       {action}
     reslist: |-
       &eManage Residents
+
       &fInformation about the residents
       &fSet their Rank, Title and Taxes
       
       {action}
     banished: |-
       &eBanished List
+
       &fPlayers who had been restricted
       &ffrom entering the {state}
       
       {action}
     npc: |-
       &eNPC
+
       &fManage your NPCs
       
       &bClick to view
     allies: |-
       &eManage Allies
+
+      &fManage your current allies.
       
       {action}
     ranks: |-
       &eManage Ranks and Titles
+
       &f{state} Rank management
       
       {action}
     settings: |-
       &eManage {state}
-      &fManage Perks and Settings
+
+      &fManage the settings for
+      &fthe {state}.
       
       {action}
     land: |-
       &eManage Land Settings
+
       &fModify the modes and access
       &fto your claimed land
       
       {action}
   npclist:
-    title: "Manage your NPCs"
+    title: "&x&0&0&8&2&0&0&lManage your NPCs"
     entry:
       unlocked: |-
         &e{name}
@@ -1326,14 +1384,14 @@ gui:
         
         &cNot unlocked yet
   elder:
-    title: "{type}"
+    title: "&x&0&0&8&2&0&0&l{type}"
     not-unlocked: |-
       &cThe {state} does not have
-      &cthe {function} function
-      &cunlocked yet!"
+      &cthe {function} unlocked yet!
     recruit:
       apply: |-
         &eApply to join!
+
         &fRequest to join the {state}
         &fJoin Fee: &e☧ {joinfee}
         &fTaxes: &e☧ {tax}
@@ -1341,22 +1399,25 @@ gui:
         &bClick here to request
       cancel-apply: |-
         &eYou have applied to join!
-        &fWait until you have been approved!
+
+        &fWait until your app has been reviewed!
         &fJoin Fee: &e☧ {joinfee}
         &fTaxes: &e☧ {tax}
         
         &cClick to cancel your request
       invite-only: |-
         &cYou can only join after
-        &cbeing invited
+        &cyou have been invited.
       invited: |-
         &eYou have been invited!
+
         &fJoin Fee: &e☧ {joinfee}
         &fTaxes: &e☧ {tax}
         
         &bClick to join
       anyone: |-
-        &eAnyone can join the {state}
+        &eAnyone can join {state}
+
         &fJoin Fee: &e☧ {joinfee}
         &fTaxes: &e☧ {tax}
         
@@ -1383,13 +1444,13 @@ gui:
     mission-entry: "&f{action} &e{title}"
     wait-for-missions: |-
       &cYou do not have any missions
-      &cfrom your {state} yet.
+      &cfor your {state}.
       
       &cWait for the next distribution!
     back: "&cClose"
 
   build:
-    title: "Manage {type}"
+    title: "&x&0&0&8&2&0&0&lManage {type}"
     set-state: "&7Allow &b&l{state}&7 to {type}"
     selected-state: "&e&l{type} is currently set to &a&l{state}"
     individual-state: "&7Plot {type} is set to &a&l{state}&7 but overridden!"
@@ -1398,32 +1459,44 @@ gui:
     back: "&cBack To Settings"
     build:
       public: |-
-        &7Allows everyone to {type}
+        &7Allows:
+        
+        &7- Everyone
+        &7to {type}
       trusted: |-
         &7Allows:
+
         &7- {state} Residents
         &7- Empire Members
         &7to {type}.
       ally: |-
         &7Allows
+
         &7- {state} Residents
         &7- Allies
         &7to {type}.
       residents: |-
-        &7Allows {state} Residents to {type}
+        &7Allows:
+        
+        &7 - {state} Residents
+        &7to {type}.
       officers: |-
         &7Allows:
+
         &7- Recruiter
         &7- Builder
         &7- Elder
         &7- Assistant
         &7to {type}.
   missions:
-    title: "Available Missions"
+    title: "&x&0&0&8&2&0&0&lAvailable Missions"
     info: |-
       &eDaily Missions
+
       &fDoing missions will reward
-      &fMission Points
+      &fMission Points to purchase
+      &fperks and are required to
+      &fupgrade your {state}.
     entry: |-
       &e{title}
       &f{requirements}
@@ -1449,17 +1522,19 @@ gui:
     mission-finished: "&r&cMission {mission} is already finished!"
     list-entry: "&6{amount} {icon}&e{material}"
   mode:
-    title: "Toggle Modes"
+    title: "&x&0&0&8&2&0&0&lToggle Modes"
     entry:
-      title: "&a&l{mode}"
-      lore: "&7Enabled: &a&l{value}"
+      title: "&e{mode}"
+      lore: |-
+        
+        &7Enabled: &l{value}
       state:
-        true: "Yes"
-        false: "No"
+        true: "&a&lYes"
+        false: "&c&lNo"
     back: "&cBack To Settings"
   empire:
     access:
-      title: "Set Empire Access"
+      title: "&x&0&0&8&2&0&0&lSet Empire Access"
       access:
         open: |-
           &7Everyone can teleport to home
@@ -1478,23 +1553,33 @@ gui:
           &7Can teleport to {state} home:
           &7- Residents of the capital
     build:
-      title: "Manage {type}"
+      title: "&x&0&0&8&2&0&0&lManage {type}"
       individual-state: "&7Plot {type} is set to &a&l{state}&7 but overridden!"
       inherited-state: "&e&l{type} state &a&l{state}&e&l is default!"
       build:
         public: |-
           &7Allows everyone to {type}
         ally: |-
-          &7Allows
+          &7Allows:
+
           &7- Members
           &7- Allies
           &7to {type}
         officers: |-
-          &7Allows senators to {type}
+          &7Allows:
+          
+          &7- senators
+          &7to {type}
         trusted: |-
-          &7Allows all members to {type}
+          &7Allows:
+
+          &7- All members
+          &7to {type}
         private: |-
-          &7Allows only capital residents to {type}
+          &7Allows:
+
+          &7- Only capital residents
+          &7to {type}
     bank:
       taxes: |-
         &eCurrent Taxes
@@ -1502,9 +1587,10 @@ gui:
         &fMember taxes: &e☧ {tax}
 
     management:
-      title: "Manage {state}"
+      title: "&x&0&0&8&2&0&0&lManage {state}"
       memberlist: |-
         &eView Members
+
         &fInformation about the members
         
         {action}
@@ -1537,7 +1623,7 @@ gui:
             &eNight
             &bClick to set to morning (6:00)!
     settings:
-      title: "&2&lEmpire Settings"
+      title: "&x&0&0&8&2&0&0&lEmpire Settings"
       home: |-
         &e{state} Home
         
@@ -1555,13 +1641,15 @@ gui:
 
       build: |-
         &eBuild
-        &fSet who can build on
-        &fun-owned plots
+
+        &fSet who can build in
+        &fthe empire
         
         &fCurrent Settings: &e{build}
         &bClick to change settings
       access: |-
         &eAccess
+
         &fSet who can use your &e/e home
         &fSet who can join the {state}
         
@@ -1569,13 +1657,15 @@ gui:
         
         &bClick to change settings
       perms: |-
-        &ePerms
+        &ePermissions
+
         &fSet different usage rights
         &fin your {state}
         
         &bClick to change settings
       mode: |-
         &eMode
+
         &fToggle settings including
         &fexplosions, mob spawning,
         &fPvP and more!
@@ -1583,22 +1673,26 @@ gui:
         &bClick to change settings
       ranks: |-
         &eRanks
+
         &fSet your {state}'s
         &fpermissions by rank
         
         &bClick to change settings
       perks: |-
         &ePerks
+
         &7Toggle your {state} perks
         
         &bClick to change settings
       shop: |-
         &eShop
+
         &fUnlock new {state} perks
         
         &bClick to open shop
       titles: |-
         &eTitle
+
         &fSet your {state} title
         
         &fYour Title: &e{title}
@@ -1606,6 +1700,7 @@ gui:
         {change}
       titles-edit: |-
         &eTitle
+
         &fSet your {state} title
         
         &fYour Title: &e{title}
@@ -1643,15 +1738,17 @@ gui:
         entry: "&7{name}"
         separator: "&8, "
       states: |-
-        &eStates
-        &fGroups that you let access to
+        &eAccess Groups
+
+        &fAvailable settings:
+
         &a➤ &fPrivate = &eCapital Residents
         &a➤ &fOfficers = &eSenators & Assistant
         &a➤ &fAlly = &eAllies & Member Residents
         &a➤ &fTrusted = &eMember Residents
         &a➤ &fPublic = &eEveryone
     world:
-      title: "Empire World"
+      title: "&x&0&0&8&2&0&0&lEmpire World"
       world: |-
         &eTeleport to World
         
@@ -1661,14 +1758,13 @@ gui:
         &bspawn to your location
       no-world: |-
         &cWorld not unlocked yet!
-        &fLevel up your Empire and
-        &fpurchase the World perk
   rank-perms:
-    title: "Rank Permissions"
+    title: "&x&0&0&8&2&0&0&lRank Permissions"
     previous: "&7Previous page"
     next: "&7Next page"
     titles: |-
       &eManage Titles
+
       &fAdd/Edit titles for &e{rank}
       
       &bClick for more options
@@ -1699,19 +1795,21 @@ gui:
       revoke: |-
         &bClick to revoke from &f{rank}
   reset-rank-perms:
-    title: "&cReset all {rank} perms?"
+    title: "&x&0&0&8&2&0&0&lReset all {rank} perms?"
     confirm: |-
       &a&lConfirm
+
       &7Click to reset the permissions
       &7of {rank} in {state} {name}
       &7to their default values!
     cancel: |-
       &cCancel
+
       &7Click to cancel the reseting
       &7of all rank permissions.
   setrank:
     rank-select:
-      title: "Select the {state} rank"
+      title: "&x&0&0&8&2&0&0&lSelect the {state} rank"
       entry: |-
         &e{rank}
         
@@ -1723,6 +1821,7 @@ gui:
         &cRank insufficient
       entry-chief: |-
         &eTransfer Ownership
+
         &fMake sure the player is abiding all
         &fthe server rules to avoid any issues!
         
@@ -1733,7 +1832,7 @@ gui:
         &cNot selectable!
         &cRank insufficient
     transfer:
-      title: "Tranfer to {target}?"
+      title: "&x&0&0&8&2&0&0&lTranfer to {target}?"
       confirm: |-
         &a&lConfirm
         &7Click to transfer {state}
@@ -1742,7 +1841,7 @@ gui:
         &cCancel
         &7Click to not transfer
   outposts:
-    title: "Outposts"
+    title: "&x&0&0&8&2&0&0&lOutposts"
     entry: |-
       &e{name}
       
@@ -1750,13 +1849,14 @@ gui:
     options: "&bShift-Click for more options"
     public: |-
       &eBrowse Public Settlements
+
       &fBrowse settlements that are
       &fopen to public visiting
       
       &bClick to browse
     back: "&cClose"
   outpost:
-    title: "Outpost {name}"
+    title: "&x&0&0&8&2&0&0&lOutpost {name}"
     info: |-
       &eOutpost {name}
       &7World: {world}
@@ -1764,14 +1864,16 @@ gui:
     rename:
       button: |-
         &eRename
-        &7Rename the outpost
+
+        &7Renames the outpost
         
         {action}
       anvil:
-        title: "Set the new name"
+        title: "&x&0&0&8&2&0&0&lSet the new name"
         placeholder: "{name}"
     sethome: |-
-      &eSet your location
+      &eSet your outpost home
+
       &7Set outpost teleport
       &7location to your current
       &7player location
@@ -1779,6 +1881,7 @@ gui:
       {action}
     unclaim: |-
       &cDelete Outpost
+      
       &7This removes the oupost
       &7and unclaims all chunks
       &7that are not connected
@@ -1787,12 +1890,14 @@ gui:
       
       {action}
   reslist:
-    title: "Residents"
+    title: "&x&0&0&8&2&0&0&lResidents"
     sort: |-
       &fSorted by {state}
+
       &bClick to sort by {nextstate}
     entry: |-
       &e&l{name}
+
       &fTown Info:
       &f➤ Rank {rank}
       &f➤ Plots Owned {plots}
@@ -1804,9 +1909,10 @@ gui:
       
       &bClick for more options
   resident:
-    title: "Resident {name}"
+    title: "&x&0&0&8&2&0&0&lResident {name}"
     info: |-
       &e&l{name}
+
       &fTown Info:
       &f➤ Rank: &6{rank}
       &f➤ Plots Owned: &6{plots}
@@ -1818,7 +1924,8 @@ gui:
       &f➤ Last Login &c{lastloginduration}
     accepted:
       entry: |-
-        &eTerms and Conditions
+        &e{state}'s Rules accepted status
+
         &fIf they have accepted the
         &f{state} rule book
         
@@ -1827,6 +1934,7 @@ gui:
       not-accepted: "&cNot yet"
     tax-evasion: |-
       &eTax Evasion action
+
       &fWhat action should be taken if
       &fthe resident can't pay taxes
       
@@ -1837,6 +1945,7 @@ gui:
     taxes:
       entry: |-
         &eTaxes
+
         &fTotal Donation: &e☧ {donated}
         &fTotal Tax: &e☧ {taxpaid}
         &fTax Exemption: &a{exempted}
@@ -1846,6 +1955,7 @@ gui:
       paying: Paying
     settitle: |-
       &eChange title
+
       &fChange title of the resident! It does not
       &fgive any new powers and is purely cosmetic!
       
@@ -1854,6 +1964,7 @@ gui:
       {action}
     rank: |-
       &eChange rank
+
       &fChange the rank of the resident!
       &fThis changes their settlement permission!
       
@@ -1862,6 +1973,7 @@ gui:
       {action}
     eviction: |-
       &cSend Eviction Letter
+
       &fMail the player for their
       &f7 days kick notice
       
@@ -1869,6 +1981,7 @@ gui:
     kick:
       entry: |-
         &cKick
+
         &fSend an Eviction Letter first if the
         &fplayer has not violated any rules!
         
@@ -1879,6 +1992,7 @@ gui:
     banish:
       entry: |-
         &cBanish the player
+
         &fKick and block a player from your
         &fsettlement if they violated the rules!
         
@@ -1887,9 +2001,10 @@ gui:
         title: "&cBanish &e{player}?"
         placeholder: "Reason"
   rewards:
-    title: "Rewards"
+    title: "&x&0&0&8&2&0&0&lRewards"
     entry: |-
       &e{reward}
+
       &7Click to claim!
   plot:
     link: |-
@@ -1899,7 +2014,7 @@ gui:
     linked: "&e{amount}&b other plots are linked to this one"
     unlink: "&7Click to unlink!"
     perms:
-      title: "&2&l/plot perms"
+      title: "&x&0&0&8&2&0&0&l/plot perms"
       unset-all: |-
         &7Click to unset all states and
         &7inherit from parent {parent}
@@ -1909,9 +2024,10 @@ gui:
           &7Middle click to inherit &b{value}
           &7from parent {parent} again
     members:
-      title: "&2&l/plot members"
+      title: "&x&0&0&8&2&0&0&l/plot members"
       element: |-
         &6{name}
+
         &7Click to remove
       add: "&7Click to add members"
       back: "&cBack to plot settings"
@@ -1919,20 +2035,21 @@ gui:
         next: "&7Go to next page {page}"
         previous: "&7Go to previous page {page}"
       players:
-        title: "Select player to add"
+        title: "&x&0&0&8&2&0&0&lSelect player to add"
         player: |-
           &6{name}
+
           &7Click to add
         back: "&cBack to member list"
     mode:
-      title: "&2&l/plot mode"
+      title: "&x&0&0&8&2&0&0&l/plot mode"
       entry:
         parent: "&7(Inherited from parent {parent})"
         click-to-unset: |-
           &7Middle click to inherit &b{value}
           &7from parent {parent} again
     build:
-      title: "&2&l/plot perms"
+      title: "&x&0&0&8&2&0&0&l/plot perms"
       individual-state: "&7Plot {type} is set to &a&l{state}&7 but overridden!"
       inherited-state: "&e&l{type} state &a&l{state}&e&l is inherited!"
       build:
@@ -1940,18 +2057,24 @@ gui:
           &7Allows everyone to {type}
         trusted: |-
           &7Allows:
+
           &7- {state} Residents
           &7- Empire Members
           &7to {type}
         ally: |-
-          &7Allows
+          &7Allows:
+
           &7- {state} Residents
           &7- Allies
           &7to {type}
         residents: |-
-          &7Allows {state} Residents to {type}
+          &7Allows:
+
+          &7- {state} Residents
+          &7to {type}
         officers: |-
           &7Allows {state}:
+
           &7- Recruiter
           &7- Builder
           &7- Elder
@@ -1959,15 +2082,25 @@ gui:
           &7- Plot Owner
           &7to {type}.
         friends: |-
-          &7Allows only your friends and members to {type}
+          &7Allows:
+          
+          &7- only your friends and members
+          &7to {type}
         members: |-
-          &7Allows only members of the plot to {type}
+          &7Allows:
+
+          &7- only members of the plot
+          &7to {type}
         private: |-
-          &7Allows only you to {type}
+          &7Allows:
+          
+          &7- only you
+          &7to {type}
     settings:
-      title: "&2&l/plot settings"
+      title: "&x&0&0&8&2&0&0&l/plot settings"
       perms: |-
-        &ePerms
+        &ePermissons
+
         &fSet different build and
         &fusage rights in the plot
         
@@ -1976,6 +2109,7 @@ gui:
         &a➤ /plot perms
       mode: |-
         &eMode
+
         &fToggle settings including
         &fexplosions, mob spawning,
         &fPvP and more!
@@ -1986,6 +2120,7 @@ gui:
       name:
         button: |-
           &a&lName
+
           &fSet the name of the plot
           
           &fCurrent Name: &e{name}
@@ -1994,11 +2129,12 @@ gui:
           
           &a➤ /plot name <name>
         anvil:
-          title: "Set the name"
+          title: "&x&0&0&8&2&0&0&lSet the name"
           placeholder: "{name}"
       desc:
         button: |-
           &eDescription
+
           &fSet the description of the plot
           
           &fCurrent Description: &e{description}
@@ -2007,11 +2143,12 @@ gui:
           
           &a➤ /plot description <description>
         anvil:
-          title: "Set the description"
+          title: "&x&0&0&8&2&0&0&lSet the description"
           placeholder: "{description}"
       sale:
         button-not-for-sale: |-
           &eSell plot
+
           &fSet the price for the plot
           
           &bClick to set price
@@ -2019,6 +2156,7 @@ gui:
           &a➤ /plot sale <price>
         button: |-
           &eSell plot
+
           &fSet the price for the plot
           
           &fCurrent Price: &e{price}
@@ -2028,10 +2166,11 @@ gui:
           
           &a➤ /plot sale <price>|false
         anvil:
-          title: "Set price"
+          title: "&x&0&0&8&2&0&0&lSet price"
           placeholder: "{price}"
       members: |-
         &eMembers
+
         &fGrant individual players
         &fbuild rights on the plot!
         &f{amount} players added.
@@ -2052,19 +2191,21 @@ gui:
         &fPvP: &e{pvp}
         &fBuild: &e{build}
     states: |-
-      &eStates
-      &fGroups that you let access to
+      &eAccess Groups
+
+      &fAvailable settings:
+
       &a➤ &fPrivate = &eOnly the plot owner
       &a➤ &fMembers = &eMembers of the plot
       &a➤ &fFriends = &eFriends & Members
       &a➤ &fOfficers = &e{state} Officers
       &a➤ &fResidents = &e{state} Residents
       &a➤ &fAlly = &eAllies & Residents
-      &a➤ &fTrusted = &eEmpire & Allies & Residents
+      &a➤ &fTrusted = &eEmpire, Allies, & Residents
       &a➤ &fPublic = &eEveryone
   portal:
     teleport:
-      title: "&5Select target"
+      title: "&x&0&0&8&2&0&0&lSelect target"
       portal: |-
         &5Click to Teleport
         &7Target: &f{world} {x}/{y}/{z}
@@ -2072,7 +2213,7 @@ gui:
       next: "Next Page"
       back: "&cClose"
     link:
-      title: "&5/portal link"
+      title: "&x&0&0&8&2&0&0&l/portal link"
       portal: |-
         &5{world} {x}/{y}/{z}t
         &cClick to link
@@ -2082,7 +2223,7 @@ gui:
       success: "&aLinked to Portal at &e{world} {x}/{y}/{z}"
       error: "&cAn error occurred while linking! Please contact an admin."
     unlink:
-      title: "&5/portal unlink"
+      title: "&x&0&0&8&2&0&0&l/portal unlink"
       portal: |-
         &5{world} {x}/{y}/{z}
         &cClick to unlink
@@ -2092,109 +2233,134 @@ gui:
       success: "&aUnlinked from Portal at &e{world} {x}/{y}/{z}"
       error: "&cAn error occurred while unlinking! Please contact an admin."
   settings:
-    title: "&2&lSettlement Settings"
+    title: "&x&0&0&8&2&0&0&lSettlement Settings"
     rename:
       entry: |-
-        &eRename {state}
+        &eRename the {state}
+
+        &fWill allow you to change your
+        &f{state}'s name. 
         
         {action}
       anvil:
-        title: "Input new name"
+        title: "&x&0&0&8&2&0&0&lInput new name"
         placeholder: "{name}"
     perks:
       entry: |-
-        &eControl your perks!
-        {perks}
+        &eManage your perks!
+        
+        &fWhere you can toggle what
+        &fperks are active.
+
+        &f/s perks
         
         {action}
       list: "&f{name}"
     toggle-npc:
       entry: |-
         &eToggle NPCs
-        &fClick here to remove NPCs
-        &ffrom your town.
+
+        &fClick here to toggle NPCs
+        &ffor your settlement.
         
         &fCurrent: &e{npc-toggle}
     rules:
       entry: |-
         &e{state} rules
-        &fEdit your settlement rules.
-        &fThis will notify everyone if
-        &fyou made any changes
+
+        &fUse a signed book to add to
+        &fthe first page of your rules.
         
-        &bClick with a book to use
-        &bbook text as rules!
-        
-        {action}
+        &fThis will not create more
+        &fpages in your rule book.
+
+        &dLeft click with a signed
+        &dbook to add some text.
+
+        &5Right click to edit with a sign.
+        &5Text must be in sign to update.
       info:
         actionbar: "Write your new rules or leave empty to keep old ones!"
       updated: "&7{state} rules been updated! Read them with [&e/s rules](/s rules)"
       mail: "{state} rules have been updated! Date: {date}"
     discord:
       entry: |-
-        &eSet Discord link
+        &eSet a Discord link
+
         &f{discord}
         
         {action}
       anvil:
-        title: "Input new discord link"
+        title: "&x&0&0&8&2&0&0&lInput new discord link"
         placeholder: "{discord}"
     joinfee:
       entry: |-
-        &eSet Join Fee
-        &fAdd a charge for joining
+        &eManage your Join Fee
+
+        &fAdd or change a charge
+        &ffor joining!
+
+        &fRemember to disclose if the
+        &famount is &c&LNOT&r &e☧ 0&r&f!
         
         &fCurrent Joining fee: &e☧ {joinfee}
         
         {action}
       anvil:
-        title: "Input new join fee"
+        title: "&x&0&0&8&2&0&0&lInput new join fee"
         placeholder: "{joinfee}"
     description:
       entry: |-
         &e{state} Board
-        &fSlogan or short summary about
+
+        &fSlogan, catch phrase, or
+        &fshort summary about
         &fyour settlement!
         
         &fCurrent: &e{description}
         
         {action}
       anvil:
-        title: "Input new message"
+        title: "&x&0&0&8&2&0&0&lInput new message"
         placeholder: "{description}"
     access: |-
       &e{state} Privacy
-      &fPermit certain players to
-      &fteleport to your /s home
+
+      &d&nSet access to your '/s home'
       &fPublic - Everyone
       &fTrusted - Residents, Empire, Allies
       &fAllies - Residents and Allies
       &fResidents - Residents only
       
-      &fState: &e{access}
+      &fAccess: &a{access}
       {action}
     recruitment: |-
       &eRecruitment
-      &fMethod of joining the settlement
+
+      &fHow others can join the settlement.
+
+      &fYou will need to exit this
+      &fscreen for updates to show.
       
-      &fCurrent: &e{jointype}
+      &fCurrent: &a{jointype}
       {action}
   recruitment:
-    title: "Select recruitment type"
+    title: "&x&0&0&8&2&0&0&lSelect recruitment type"
     back: "&cBack"
     selected: "&a&lCurrently set to &b&l{jointype}"
     available: "&7{jointype}"
     jointype:
       invite-only: |-
-        &7Requires invite to join
+        &fRequires an invite to join
       anyone: |-
-        &7Anyone can join
+        &fAnyone can join
       apply: |-
-        &7Apply at Elder
+        &fApply through the Elder NPC
   requests:
-    title: "Join Requests"
+    title: "&x&0&0&8&2&0&0&lJoin Requests"
     entry: |-
       &e{name}
+
       &fBalance: &e☧ {balance}
       
       &bLeft-Click to accept
@@ -2216,6 +2382,7 @@ gui:
       &a➤ /s sethome
     build: |-
       &eBuild
+
       &fSet who can build on
       &fun-owned plots
 
@@ -2223,13 +2390,15 @@ gui:
       
       &bClick to change settings
     use: |-
-      &ePerms
+      &ePermissions
+
       &fSet different usage rights
       &fin your {state}
       
       &bClick to change settings
     mode: |-
       &eMode
+
       &fToggle settings including
       &fexplosions, mob spawning,
       &fPvP and more!
@@ -2237,18 +2406,21 @@ gui:
       &bClick to change settings
     ranks: |-
       &eRanks
+
       &fSet your {state}'s
       &fpermissions by rank
       
       &bClick to change settings
     shop: |-
       &eShop
-      &fUnlock new {state} perks
+
+      &fUnlock perks for {state}
       
       &bClick to open shop
     titles: |-
       &eTitle
-      &fSet your {state} title
+
+      &fSet your {state}'s title
       
       &fCurrent title: &e{title}
       
@@ -2257,7 +2429,8 @@ gui:
       &a▶ /s titles
     titles-edit: |-
       &eTitle
-      &fSet your {state} title
+
+      &fSet your {state}'s title
       &fEdit available titles
       
       &fCurrent title: &e{title}
@@ -2294,23 +2467,26 @@ gui:
       entry: "{online}{name}"
     back: "&cClose"
   title:
-    title: "&2&lSelect your title"
+    title: "&x&0&0&8&2&0&0&lSelect your title"
     entry:
       title: |-
         &e{title}
+
         &7Title of rank {rank}
       select: "&bClick to select"
       current: "&7Your current title!"
       default: "&7This is the default title!"
     edit: |-
       &eManage Titles
+
       &fAdd/edit titles for {rank}
     back: "&cBack"
   titles:
-    title: "Manage Titles"
+    title: "&x&0&0&8&2&0&0&lManage Titles"
     entry:
       title: |-
         &e{title}
+
         &7Title of rank {rank}
       default: "&eDefault title!"
       set: "&bLeft click to set as default title"
@@ -2322,7 +2498,7 @@ gui:
         placeholder: "Input Title"
     back: "&cBack To Title"
     rank-select:
-      title: "&2&lSelect the {state} rank"
+      title: "&x&0&0&8&2&0&0&lSelect the {state} rank"
       entry: |-
         &e{rank}
         
@@ -2342,7 +2518,7 @@ gui:
         &cNot selectable!
         &cRank insufficient
   perks:
-    title: "Manage Perks"
+    title: "&x&0&0&8&2&0&0&lManage Perks"
     entry: |-
       &e{name}
     toggleable: "&bClick to toggle."
@@ -2353,19 +2529,40 @@ gui:
       plot:
         purchased: "&7Click to teleport"
   shop:
-    title: "Perks Shop"
+    title: "&x&0&0&8&2&0&0&lPerks Shop"
     entry:
+      settlement:
+        no-empire: |-
+          &e{name}
+          &fState: &e{state}
+          &fLevel: &e{level}
+          &fBank: &e{bank}
+          &fMission Points: &e{missionpoints}
+          &fLand: &e{land}&f/&e{maxland}{bonusclaims}
+          &fOutposts: &e{outposts}&f/&e{maxoutposts}
+        empire: |-
+          &e{name}
+          &fState: &e{state}
+          &fLevel: &e{level}
+          &fBank: &e{bank}
+          &fMission Points: &e{missionpoints}
+          &fLand: &e{land}&f/&e{maxland}{bonusclaims}
+          &fOutposts: &e{outposts}&f/&e{maxoutposts}
       locked: |-
         &e{name}
+
         &cReach {state} {level} to unlock!
       unlockable: |-
         &e{name}
+
         &bClick to purchase!
       purchased: |-
         &e{name}
+
         &dPurchased!
       repeat: |-
         &e{name}
+
         &7Used {used} times.
         &bClick to buy again!
     repeatable: "&7Usable {times} times. {left} times left!"
@@ -2378,25 +2575,29 @@ gui:
     cooldown: "&aCan be repeated in {cooldown}"
     back: "&cClose"
   perms:
-    title: "Manage Perms"
+    title: "&x&0&0&8&2&0&0&lManage Perms"
     back: "&eBack"
     entry: |-
       &e{flag}
+
       &f{description} in your {state}
       {flags}
       
       &fAccess: &e{access}
+
       &aClick&b to set
       &aShift click &bfor more options
     build: |-
       &eBuild
-      &fSet who can build
+
+      &fSet who can build in your {state}
       
       &fCurrent Settings: &e{build}
       
       &bClick to change settings
     modes: |-
-      &eModes
+      &ePlot Modes
+
       &fToggle plot modes
       
       &bClick to change settings
@@ -2412,7 +2613,7 @@ gui:
       npc: Use NPCs
     flag-line: "&a➤ &f{name}"
   use:
-    title: "&2&l/s perms"
+    title: "&x&0&0&8&2&0&0&l/s perms"
     back: "&eBack"
     toggle-all: "&bClick to toggle all to &a&l{access}"
     entry:
@@ -2430,15 +2631,17 @@ gui:
       next: "&7Go to next page ({page})"
       previous: "&7Go to previous page ({page})"
   states: |-
-    &eStates
-    &fGroups that you let access to
+    &eAccess Groups
+
+    &fAvailable settings:
+
     &a➤ &fResidents = &eResidents
     &a➤ &fOfficers = &eElder & Assistant
     &a➤ &fAlly = &eAllies & Residents
-    &a➤ &fTrusted = &eEmpire & Allies & Residents
+    &a➤ &fTrusted = &eEmpire, Allies, & Residents
     &a➤ &fPublic = &eEveryone
   upgrade:
-    title: "Quarter Master"
+    title: "&x&0&0&8&2&0&0&lQuarter Master"
     back: "&cClose"
     navigation:
       entry: |-
@@ -2461,18 +2664,22 @@ gui:
     requirement:
       left: |-
         &e{name}
+
         &f(&e{progress}&f/&e{required}&f)
       reached: |-
         &e{name}
+
         &f(&a{progress}&f/&a{required}&f) &aCompleted!
     info: |-
       &eProgress for {name}
+
       &fUpgrading this to the next level
       &fwill unlock the following benefits:
       {benefits}
     benefit: "&a➤ {name}"
     progress: |-
       &eHow to upgrade
+
       &fYou will need to collect the materials that
       &fare listed above and deposit them to complete
       &fthe upgrade process!
@@ -2483,12 +2690,13 @@ gui:
       unfinished: "&c{bars}"
     deposit: |-
       &eDeposit Here!
+
       &fDeposit the required materials here
       &fin order to upgrade your {name}
       
       &bClick to deposit!
   deposit:
-    title: "Deposit Materials"
+    title: "&x&0&0&8&2&0&0&lDeposit Materials"
     description: Deposit materials for your upgrade
     success-deposit: "&6{player} &7has deposited towards your {state}:"
     fail-deposit: "&cFailed Deposited Items: {reason}"
@@ -2774,6 +2982,7 @@ command:
       manage-res:
         description: |-
           &fManage Members
+
           &f- View active
           &f- Send kick notices
           &f- Set ranks
@@ -2783,10 +2992,12 @@ command:
       manage-allies:
         description: |-
           &fManage Allies
+
           &f- Set nearby Claim
       admin-allies:
         description: |-
-          &fAdministrate Allies
+          &fAdministrative Allies
+
           &f- Create new ally
           &f- Break an ally
       manage-ranks:
@@ -2796,12 +3007,14 @@ command:
       manage-notes:
         description: |-
           &fManage Minor Settings
+
           &f- Change Home Location
           &f- Change rules
           &f- Set Discord Link
       manage-bank:
         description: |-
           &fManage Bank
+
           &f- Withdraw Money
           &f- Set Resident Taxes
           &f- Set Tax Debt Action
@@ -2809,6 +3022,7 @@ command:
       use-bank:
         description: |-
           &fUse Bank
+
           &f- Use Storage
           &f- See History
       use-outpost:
@@ -3529,6 +3743,7 @@ command:
       manage-member:
         description: |-
           &9Manage Members
+
           &9- Send kick notices
           &9- Set ranks
           &9- Set titles
@@ -3536,10 +3751,12 @@ command:
       manage-allies:
         description: |-
           &9Manage Allies
+
           &9- Set nearby Claim
       admin-allies:
         description: |-
-          &9Administrate Allies
+          &9Administrative Allies
+
           &9- Create new ally
           &9- Break an ally
       manage-ranks:
@@ -3549,16 +3766,19 @@ command:
       manage-notes:
         description: |-
           &9Manage Minor Settings
+
           &9- Change Home Location
           &9- Change rules
           &9- Set Discord Link
       manage-bank:
         description: |-
           &9Manage Bank
+
           &9- Set Taxes
       use-bank:
         description: |-
           &9Use Bank
+
           &9- Use Storage
           &9- See History
       use-outpost:
@@ -3645,8 +3865,6 @@ command:
         &r&7
         &r&7   Make sure to deposit money into your [&a/e bank](/e bank)&7
         &r&7                  for the [&a/e upkeep](/e upkeep)
-        &r&7
-        &r&7  Start by creating your first claim with [&e/e claim](/e claim)
         &7
       broadcast: "&e{player} has made a empire called {name}!"
       description: Create a new empire.
