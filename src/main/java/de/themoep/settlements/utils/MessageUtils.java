@@ -8,6 +8,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
+import net.Zrips.CMILib.Colors.CMIChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -169,15 +170,7 @@ public class MessageUtils {
     }
 
     public static String replaceColorCodes(String message) {
-        BaseComponent[] components = toColoredComponents(message);
-        if (components == null) {
-            return null;
-        }
-        String colored = TextComponent.toLegacyText(components);
-        if (colored.startsWith(ChatColor.WHITE.toString()) && !message.startsWith("&f") && !message.startsWith(ChatColor.WHITE.toString())) {
-            colored = colored.substring(2);
-        }
-        return colored;
+        return CMIChatColor.colorize(message);
     }
 
     public static BaseComponent[] toColoredComponents(String message) {

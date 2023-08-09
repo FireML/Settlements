@@ -348,5 +348,11 @@
             <version>4.12.3</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.zrips</groupId>
+            <artifactId>CMILib</artifactId>
+            <version>2f4fe444d6</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
