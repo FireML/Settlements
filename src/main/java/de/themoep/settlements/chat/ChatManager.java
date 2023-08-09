@@ -198,7 +198,7 @@ public class ChatManager implements ConfigMessages, Listener {
         ChatColor channelPrefixDefault = Utils.getChannelColor(channel, ChatColorType.PREFIX);
 
         switch (channel) {
-            case LOCAL:
+            case LOCAL -> {
                 tell(sender, res, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, unfilteredMessage);
                 List<Resident> nearbyPlayers = new ArrayList<>(sender.getWorld().getPlayers()).stream()
                         .filter(p -> !p.equals(sender)
@@ -206,14 +206,14 @@ public class ChatManager implements ConfigMessages, Listener {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .collect(Collectors.toList());
+                        .toList();
                 if (!nearbyPlayers.isEmpty()) {
                     nearbyPlayers.forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 } else {
                     getMessage("chat.nobody-nearby").tell(sender);
                 }
-                break;
-            case HELP:
+            }
+            case HELP -> {
                 if (!channel.autoJoin(sender)) {
                     Resident sRes = ResidentManager.getInstance().getResident(sender);
                     if (sRes.getActiveChannel() != channel) {
@@ -227,18 +227,14 @@ public class ChatManager implements ConfigMessages, Listener {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.getActiveChannel() == channel || r.isListening(channel))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
-                break;
-            case ADMIN:
-            case CCEM:
-            case STAFF:
-                new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
-                        .filter(channel::canChat)
-                        .map(p -> ResidentManager.getInstance().getResident(p))
-                        .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
-                break;
-            case ALLY:
+            }
+            case ADMIN, CCEM, STAFF -> new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
+                    .filter(channel::canChat)
+                    .map(p -> ResidentManager.getInstance().getResident(p))
+                    .filter(r -> r.isListening(channel)
+                            && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
+                    .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+            case ALLY -> {
                 Set<Resident> residentSet = settlement.getAllies().stream()
                         .map(Ally::getLandOwner)
                         .filter(a -> a instanceof Settlement)
@@ -249,8 +245,8 @@ public class ChatManager implements ConfigMessages, Listener {
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
-                break;
-            case EMPIREALLY:
+            }
+            case EMPIREALLY -> {
                 Set<Resident> eAllySet = settlement.getAllies().stream()
                         .map(Ally::getLandOwner)
                         .filter(a -> a instanceof Empire)
@@ -268,47 +264,43 @@ public class ChatManager implements ConfigMessages, Listener {
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
-                break;
-            case EMPIRE:
+            }
+            case EMPIRE -> {
                 if (settlement.hasEmpire()) {
                     settlement.getEmpire().getOnlineResidents().stream()
                             .filter(r -> r.isListening(channel)
                                     && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                             .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
                 }
-                break;
-            case SETTLEMENT:
-                settlement.getOnlineResidents().stream()
-                        .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
-                break;
-            case EVENT:
+            }
+            case SETTLEMENT -> settlement.getOnlineResidents().stream()
+                    .filter(r -> r.isListening(channel)
+                            && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
+                    .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+            case EVENT -> {
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")
                         && !sender.hasPermission("settlements.bypass.chatlock")) {
                     getMessage("locked").tell(sender, "channel", channel.name());
                     return;
                 }
-
                 new ArrayList<>(sender.getWorld().getPlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
-                break;
-            default:
+            }
+            default -> {
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")
                         && !sender.hasPermission("settlements.bypass.chatlock")) {
                     getMessage("locked").tell(sender, "channel", channel.name());
                     return;
                 }
-
                 new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
-                break;
+            }
         }
         Bukkit.getLogger().info(TextComponent.toPlainText(replacer.replace("message", unfilteredMessage).replaceIn(getFormat(sender, channel, channelDefault, channelPrefixDefault))));
     }
