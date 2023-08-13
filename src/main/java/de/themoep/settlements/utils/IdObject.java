@@ -24,11 +24,12 @@ public class IdObject {
                 e.printStackTrace();
                 return new IdObject(null);
             }
-        if (id instanceof Map)
-            if (((Map) id).containsKey("id"))
-                return new IdObject(((Map) id).get("id"));
-            else
-                return new IdObject(((Map) id).get("_id"));
+        if (id instanceof Map map)
+            if (map.containsKey("id")) {
+                return new IdObject(map.get("id"));
+            } else {
+                return new IdObject(map.get("_id"));
+            }
         return new IdObject(id);
     }
 
