@@ -243,7 +243,7 @@ public enum MySqlTable {
             + "npcId INTEGER NOT NULL,"
             + "level INTEGER NOT NULL,"
             + "npcSkinName VARCHAR(255) NOT NULL,"
-            + "enabled BOOLEAN,"
+            + "enabled BOOLEAN NOT NULL,"
             + "UNIQUE (settlementId, type)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 

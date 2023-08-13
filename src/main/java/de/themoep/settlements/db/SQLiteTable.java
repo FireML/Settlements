@@ -258,6 +258,7 @@ public enum SQLiteTable {
             + "npcId INTEGER NOT NULL,"
             + "level INTEGER NOT NULL,"
             + "npcSkinName VARCHAR(255) NOT NULL,"
+            + "enabled BOOLEAN NOT NULL,"
             + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, type)"
             + ");"
