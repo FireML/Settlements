@@ -105,7 +105,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                     Location location = npc.getStoredLocation();
                     if (location != null) {
                         OwnedLand land = LandManager.getInstance().getLand(location);
-                        if (land != null && land.isOwnedBy(landOwner)) {
+                        if (land != null && land.isOwnedBy(landOwner) && landOwner.isEnableNPCs()) {
                             npc.spawn(location);
                         }
                     }
@@ -487,6 +487,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
     }
 
     public void validateNPCSpawning(LandOwner<?, ?> landOwner, boolean newState, boolean modifyData) {
+        checkForNew(landOwner.getChief(), landOwner);
         if (newState) {
             for (NpcData npcData : landOwner.getNpcData()) {
                 if (modifyData) npcData.toggle();
