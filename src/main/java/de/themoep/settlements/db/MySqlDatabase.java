@@ -51,7 +51,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
         try {
             return ds.getConnection();
         } catch (SQLException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to get database connction", e);
+            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to get database connection", e);
         }
         return null;
     }
