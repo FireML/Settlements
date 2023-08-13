@@ -13,6 +13,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.Bukkit;
 
 import java.util.regex.Pattern;
 
@@ -54,8 +55,7 @@ public class SettlementCreateCommand extends ResidentSubCommand {
             Settlement settlement = new Settlement(name, resident.getUUID(), 1, SettlementState.VILLAGE);
             SettlementManager.getInstance().registerNew(resident, settlement);
             if (settlement.getMaxClaimableChunks() > 0) {
-                LandManager.getInstance().claimLand(new SimpleChunkLocation(resident.getPlayer().getChunk()), resident.getPlayer().getLocation(), settlement);
-                settlement.save();
+                Bukkit.dispatchCommand(resident.getPlayer(), "s claim");
             }
 
             getMessage("broadcast").broadcast(
