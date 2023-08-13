@@ -37,7 +37,7 @@ public enum MySqlTable {
             + "homeLoc_z DOUBLE,"
             + "homeLoc_yaw FLOAT,"
             + "homeLoc_pitch FLOAT,"
-            + "enableNPCs BOOLEAN"
+            + "enableNPCs BOOLEAN NOT NULL"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
     EMPIRE_BANISHED("CREATE TABLE IF NOT EXISTS {tablePrefix}empire_banished ("
