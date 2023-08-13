@@ -177,23 +177,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
                 }
             }
         }
-
-        String mail;
-        if (level > 1) {
-             mail = Message.get("levels.mail-upgrade.general").getReplacedText(
-                    "name", getTag(),
-                    "level", String.valueOf(level)
-            );
-        } else {
-            mail = Message.get("levels.perk-unlocked").getReplacedText(
-                    "perk", getTag()
-            );
-        }
         if (!perksDesc.isEmpty()) {
-            mail += "\n" + Message.get("levels.mail-upgrade.perks").getReplacedText(
-                    "perks", perksDesc.stream().map(p -> Message.get("levels.mail-upgrade.perks-entry").getReplacedText("perk", p))
-                            .collect(Collectors.joining("\n"))
-            );
             Message.get("levels.perks").tell(owner,
                     "perks", perksDesc.stream().map(p -> Message.get("levels.perks-entry").getReplacedText("perk", p))
                             .collect(Collectors.joining("\n")));
