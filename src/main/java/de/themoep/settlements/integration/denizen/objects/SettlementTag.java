@@ -248,6 +248,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // -->
         if (mechanism.matches("set_balance") && mechanism.requireInteger()) {
             settlement.setBank(mechanism.getValue().asLong());
+            settlement.save();
         }
 
         // <--[mechanism]
@@ -263,6 +264,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // -->
         if (mechanism.matches("add_balance") && mechanism.requireInteger()) {
             settlement.addToBank(mechanism.getValue().asLong());
+            settlement.save();
         }
 
         // <--[mechanism]
@@ -278,6 +280,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // -->
         if (mechanism.matches("remove_balance") && mechanism.requireInteger()) {
             settlement.removeFromBank(mechanism.getValue().asLong());
+            settlement.save();
         }
     }
 

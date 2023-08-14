@@ -225,6 +225,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // -->
         if (mechanism.matches("set_balance") && mechanism.requireInteger()) {
             empire.setBank(mechanism.getValue().asLong());
+            empire.save();
         }
 
         // <--[mechanism]
@@ -240,6 +241,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // -->
         if (mechanism.matches("add_balance") && mechanism.requireInteger()) {
             empire.addToBank(mechanism.getValue().asLong());
+            empire.save();
         }
 
         // <--[mechanism]
@@ -255,6 +257,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         // -->
         if (mechanism.matches("remove_balance") && mechanism.requireInteger()) {
             empire.removeFromBank(mechanism.getValue().asLong());
+            empire.save();
         }
     }
 

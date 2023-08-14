@@ -1,6 +1,7 @@
 package de.themoep.settlements.integration.denizen.objects;
 
 import com.denizenscript.denizen.objects.PlayerTag;
+import com.denizenscript.denizen.scripts.commands.world.CreateWorldCommand;
 import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -205,6 +206,7 @@ public class ResidentTag implements ObjectTag, Adjustable {
             }
             if (channel != null) {
                 resident.addChannel(channel);
+                resident.save();
             }
         }
 
@@ -226,6 +228,7 @@ public class ResidentTag implements ObjectTag, Adjustable {
             }
             if (channel != null) {
                 resident.removeChannel(channel);
+                resident.save();
             }
         }
     }
