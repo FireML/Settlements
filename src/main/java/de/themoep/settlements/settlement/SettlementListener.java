@@ -89,15 +89,11 @@ public class SettlementListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onPlayerPlaceHanging(HangingPlaceEvent event) {
-        Material type = null;
-        switch (event.getEntity().getType()) {
-            case ITEM_FRAME:
-                type = Material.ITEM_FRAME;
-                break;
-            case PAINTING:
-                type = Material.PAINTING;
-                break;
-        }
+        Material type = switch (event.getEntity().getType()) {
+            case ITEM_FRAME -> Material.ITEM_FRAME;
+            case PAINTING -> Material.PAINTING;
+            default -> null;
+        };
         handleNearbyLandOwners(event, event.getEntity().getLocation(), type, event.getPlayer(), "place");
     }
 

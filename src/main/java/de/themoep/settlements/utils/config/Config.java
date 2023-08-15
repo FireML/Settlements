@@ -119,11 +119,11 @@ public class Config {
 
             public static class Building {
                 @ConfigEntry(old = {"close-building-notification-distance", "settlement.close.building-notification.distance"}, reload = false)
-                @ConfigComment("The distance in chunks to other settlements in which to allow building\n" +
-                        "Outside of this distance building will not be allowed.\n" +
-                        "If a notification message is set in the messages.yml at 'close-claims'" +
-                        "then that will be sent to the player or members of the settlement.\n" +
-                        "Set to 0 to disable")
+                @ConfigComment("""
+                        The distance in chunks to other settlements in which to allow building
+                        Outside of this distance building will not be allowed.
+                        If a notification message is set in the messages.yml at 'close-claims'then that will be sent to the player or members of the settlement.
+                        Set to 0 to disable""")
                 public static int DISTANCE = 4;
 
                 @ConfigComment("Whether or not to block building outside the range.")
@@ -484,19 +484,21 @@ public class Config {
                 "Linking of portals will still be restricted to claimed land only!")
         public static boolean ONLY_INSIDE_CLAIMS = true;
 
-        @ConfigComment("Whether portals in unclaimable worlds should just work like Vanilla nether portals\n" +
-                "If set to true but only-inside-claims is true too then players will not be able to manually link to portals in unclaimable worlds\n" +
-                "If set to false then players will not be able to create portals in unclaimable worlds if only-inside-claims is true.\n" +
-                "If set to false and only-inside-claims is false then portals will just work like normal nether portals in unclaimable worlds")
+        @ConfigComment("""
+                Whether portals in unclaimable worlds should just work like Vanilla nether portals
+                If set to true but only-inside-claims is true too then players will not be able to manually link to portals in unclaimable worlds
+                If set to false then players will not be able to create portals in unclaimable worlds if only-inside-claims is true.
+                If set to false and only-inside-claims is false then portals will just work like normal nether portals in unclaimable worlds""")
         public static boolean IGNORE_UNCLAIMABLE_WORLDS = false;
 
     }
 
     public static class Teleport {
         @ConfigEntry(old = {"spawn-command"})
-        @ConfigComment("The command to run to teleport the player to spawn via the GUI,\n" +
-                "when a player is kicked from a settlement's claim or when an Empire world is made private/removed\n" +
-                "If not set it will teleport to the world spawn of the default world")
+        @ConfigComment("""
+                The command to run to teleport the player to spawn via the GUI,
+                when a player is kicked from a settlement's claim or when an Empire world is made private/removed
+                If not set it will teleport to the world spawn of the default world""")
         public static String SPAWN_COMMAND = "";
 
         @ConfigComment("The amount of time in seconds which a player needs to stand still before being teleported to an outpost/home\n" +

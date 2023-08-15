@@ -81,13 +81,12 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof SimpleChunkLocation)) {
+        if (!(other instanceof SimpleChunkLocation location)) {
             return false;
         }
         if (this == other) {
             return true;
         }
-        SimpleChunkLocation location = (SimpleChunkLocation) other;
         return location.world.equals(world) && location.x == x && location.z == z;
     }
 
@@ -137,6 +136,6 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
 
     @Override
     public String toString() {
-        return "SimpleChunkLocation" + serialize().toString();
+        return "SimpleChunkLocation" + serialize();
     }
 }

@@ -5,5 +5,5 @@ import de.themoep.settlements.utils.NameTag;
 
 public enum SettlementState implements NameTag, Rankable {
     KINGDOM,
-    VILLAGE;
+    VILLAGE
 }

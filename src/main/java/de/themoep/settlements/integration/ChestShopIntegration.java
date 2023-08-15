@@ -225,18 +225,16 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 // Short name is possible kingdoms sign creation, check if user has access of type
                 Resident resident = ResidentManager.getInstance().getResident(event.getPlayer());
                 switch (name.toLowerCase().charAt(0)) {
-                    case 's':
-                    case 'v':
-                    case 'k':
+                    case 's', 'v', 'k' -> {
                         if (resident.hasSettlement() && resident.hasPermission("settlement.chestshop.admin")) {
                             event.setOwnerAccount(createAccount(resident.getSettlement()));
                         }
-                        break;
-                    case 'e':
+                    }
+                    case 'e' -> {
                         if (resident.hasEmpire() && resident.hasPermission("empire.chestshop.admin")) {
                             event.setOwnerAccount(createAccount(resident.getSettlement().getEmpire()));
                         }
-                        break;
+                    }
                 }
             }
             if (event.getOwnerAccount() != null) {
@@ -293,15 +291,14 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
     @EventHandler(priority = EventPriority.MONITOR)
     public void onMessage(PreTransactionEvent event) {
         switch (event.getTransactionOutcome()) {
-            case SHOP_DOES_NOT_HAVE_ENOUGH_MONEY: {
+            case SHOP_DOES_NOT_HAVE_ENOUGH_MONEY -> {
                 LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
                 if (landOwner != null && checkCoolDown(event)) {
                     sendMessage(landOwner, event.getOwnerAccount().getName(), getMessage("not-enough-money"),
                             event.getSign(), event.getExactPrice(), event.getStock(), "seller", event.getClient().getName());
                 }
-                break;
             }
-            case NOT_ENOUGH_SPACE_IN_CHEST: {
+            case NOT_ENOUGH_SPACE_IN_CHEST -> {
                 if (Properties.SHOW_MESSAGE_FULL_SHOP && !Properties.CSTOGGLE_TOGGLES_FULL_SHOP || !Toggle.isIgnoring(event.getOwnerAccount().getUuid())) {
                     LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
                     if (landOwner != null && checkCoolDown(event)) {
@@ -309,9 +306,8 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                                 event.getSign(), event.getExactPrice(), event.getStock(), "seller", event.getClient().getName());
                     }
                 }
-                break;
             }
-            case NOT_ENOUGH_STOCK_IN_CHEST: {
+            case NOT_ENOUGH_STOCK_IN_CHEST -> {
                 if (Properties.SHOW_MESSAGE_OUT_OF_STOCK && !Properties.CSTOGGLE_TOGGLES_OUT_OF_STOCK || !Toggle.isIgnoring(event.getOwnerAccount().getUuid())) {
                     LandOwner landOwner = getLandOwner(event.getOwnerAccount().getUuid());
                     if (landOwner != null && checkCoolDown(event)) {
@@ -319,7 +315,6 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                                 event.getSign(), event.getExactPrice(), event.getStock(), "buyer", event.getClient().getName());
                     }
                 }
-                break;
             }
         }
     }

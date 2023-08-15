@@ -73,9 +73,7 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
                     Message.get("command." + landOwner.getKey() + ".unally.success").tell(target, "name", landOwner.getName(), "state", landOwner.getStateTag());
                     Message.get("command." + landOwner.getKey() + ".unally.success").tell(landOwner, "name", target.getName(), "state", target.getStateTag());
                     c.getGui().close();
-                }, c -> {
-                    InventoryGui.goBack(c.getWhoClicked());
-                }, "name", ally.getLandOwner().getName(), "state", ally.getLandOwner().getStateTag()).open(resident.getPlayer());
+                }, c -> InventoryGui.goBack(c.getWhoClicked()), "name", ally.getLandOwner().getName(), "state", ally.getLandOwner().getStateTag()).open(resident.getPlayer());
                 return true;
             }, getText("unally.entry")));
 

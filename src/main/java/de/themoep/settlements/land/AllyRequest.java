@@ -32,13 +32,11 @@ public class AllyRequest extends Invite<LandOwner, LandOwner> {
     }
 
     private LandOwner getLandOwner(String type, IdObject id) {
-        switch (type) {
-            case "settlement":
-                return SettlementManager.getInstance().getFromId(id);
-            case "empire":
-                return EmpireManager.getInstance().getEmpireFromId(id);
-        }
-        return null;
+        return switch (type) {
+            case "settlement" -> SettlementManager.getInstance().getFromId(id);
+            case "empire" -> EmpireManager.getInstance().getEmpireFromId(id);
+            default -> null;
+        };
     }
 
     @Override

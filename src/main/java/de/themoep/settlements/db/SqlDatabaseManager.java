@@ -1061,12 +1061,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 "FROM " + tablePrefix + "logs AS l " +
                 "WHERE l." + column + "=?";
         switch (type) {
-            case BANK:
-                sql += " AND l.type = 'cash'";
-                break;
-            case VAULT:
-                sql += " AND l.type != 'cash' AND l.type != 'claim'";
-                break;
+            case BANK -> sql += " AND l.type = 'cash'";
+            case VAULT -> sql += " AND l.type != 'cash' AND l.type != 'claim'";
         }
         if (!resident.getSettlementRank().atLeast(SettlementRank.getChief())) {
             sql += " AND (l.action = 'deposit' OR l.action = 'donate')";
@@ -1115,12 +1111,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 "LEFT JOIN " + tablePrefix + "residents AS r ON l.residentId = r.id " +
                 "WHERE l." + column + "=?";
         switch (type) {
-            case BANK:
-                sql += " AND l.type = 'cash'";
-                break;
-            case VAULT:
-                sql += " AND l.type != 'cash' AND l.type != 'claim'";
-                break;
+            case BANK -> sql += " AND l.type = 'cash'";
+            case VAULT -> sql += " AND l.type != 'cash' AND l.type != 'claim'";
         }
         if (!resident.getSettlementRank().atLeast(SettlementRank.getChief())) {
             sql += " AND (l.action = 'deposit' OR l.action = 'donate')";
@@ -1923,7 +1915,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 SettlementsPlugin.logDebug("Triggering " + type + " save queue due to add reaching max size (" + queue.size() + ")");
                 Utils.runAsync(saving);
             } else if (!forceSave && task == null && SettlementsPlugin.getInstance().isEnabled()) {
-                task = Bukkit.getScheduler().runTaskLaterAsynchronously(SettlementsPlugin.getInstance(), saving, saveWait * 20);
+                task = Bukkit.getScheduler().runTaskLaterAsynchronously(SettlementsPlugin.getInstance(), saving, saveWait * 20L);
             }
         }
 

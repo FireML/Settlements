@@ -350,7 +350,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
             }
 
             switch (typeTrait.type) {
-                case MANAGER: {
+                case MANAGER -> {
                     if (landOwner.hasPermission(resident, "settings")) {
                         if (landOwner instanceof Settlement) {
                             new de.themoep.settlements.settlement.gui.ManagementGUI(resident).open();
@@ -361,27 +361,24 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                         event.setCancelled(true);
                         getError("no-permission").tell(resident);
                     }
-                    return;
                 }
-                case QUARTER_MASTER: {
+                case QUARTER_MASTER -> {
                     if (landOwner.hasPermission(resident, "upgrade")) {
                         new UpgradeGUI(resident, landOwner).open();
                     } else {
                         event.setCancelled(true);
                         getError("no-permission").tell(resident);
                     }
-                    return;
                 }
-                case BANKER: {
+                case BANKER -> {
                     if (landOwner.hasPermission(resident, "bank") || landOwner.hasUnlocked("donation")) {
                         new BankGUI(resident, landOwner).open();
                     } else {
                         event.setCancelled(true);
                         getError("no-permission").tell(resident);
                     }
-                    return;
                 }
-                case BLACK_MARKET: {
+                case BLACK_MARKET -> {
                     if (landOwner.hasPermission(resident, "shop")) {
                         if (landOwner instanceof Settlement) {
                             new de.themoep.settlements.settlement.gui.ShopGUI(resident).open();
@@ -392,9 +389,8 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                         event.setCancelled(true);
                         getError("no-permission").tell(resident);
                     }
-                    return;
                 }
-                case TRAVELING_MERCHANT: {
+                case TRAVELING_MERCHANT -> {
                     if (landOwner instanceof Settlement) {
                         if (landOwner.isMember(resident) || landOwner.getAccess() == LandAccess.PUBLIC) {
                             new OutpostsGUI(resident, (Settlement) landOwner).open();
@@ -404,19 +400,9 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                             new WorldGUI(resident, (Empire) landOwner).open();
                         }
                     }
-                    return;
                 }
-                case ELDER: {
-                    new ElderGUI(resident, landOwner).open();
-                    return;
-                }
-                case AUCTIONEER: {
-                    Bukkit.dispatchCommand(resident.getPlayer(), "ah");
-                    return;
-                }
-                case BLACKSMITH: {
-                    // Handled in refine plugin
-                }
+                case ELDER -> new ElderGUI(resident, landOwner).open();
+                case AUCTIONEER -> Bukkit.dispatchCommand(resident.getPlayer(), "ah");
             }
         }
     }

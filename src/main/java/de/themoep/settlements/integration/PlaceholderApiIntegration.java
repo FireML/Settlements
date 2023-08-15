@@ -76,47 +76,48 @@ public class PlaceholderApiIntegration implements ConfigMessages {
             String[] args = params.split("_");
             if (args.length > 0) {
                 switch (args[0].toLowerCase(Locale.ROOT)) {
-                    case "relationcolor": {
+                    case "relationcolor" -> {
                         if (args.length > 1) {
                             Player target = p.getServer().getPlayer(args[1]);
                             if (target != null) {
                                 return getRelationColor(p, target);
                             }
                         }
-                        break;
                     }
-                    case "relation": {
+                    case "relation" -> {
                         if (args.length > 1) {
                             Player target = p.getServer().getPlayer(args[1]);
                             if (target != null) {
                                 return getRelation(p, target);
                             }
                         }
-                        break;
                     }
-                    case "top": {
+                    case "top" -> {
                         if (args.length > 1) {
                             switch (args[1].toLowerCase(Locale.ROOT)) {
-                                case "settlements":
+                                case "settlements" -> {
                                     return getReplacedSettlementString(SettlementManager.getInstance().getSettlements().stream(), args);
-                                case "villages":
+                                }
+                                case "villages" -> {
                                     return getReplacedSettlementString(SettlementManager.getInstance().getSettlements().stream().filter(v -> v.getState() == SettlementState.VILLAGE), args);
-                                case "kingdoms":
+                                }
+                                case "kingdoms" -> {
                                     return getReplacedSettlementString(SettlementManager.getInstance().getSettlements().stream().filter(v -> v.getState() == SettlementState.KINGDOM), args);
-                                case "empires":
+                                }
+                                case "empires" -> {
                                     return getReplacedEmpireString(EmpireManager.getInstance().getEmpires().stream(), args);
+                                }
                             }
                         }
-                        break;
                     }
-                    case "player": {
+                    case "player" -> {
                         if (p != null && args.length > 1) {
                             Resident resident = ResidentManager.getInstance().getResident(p);
                             switch (args[1].toLowerCase(Locale.ROOT)) {
-                                case "info": {
+                                case "info" -> {
                                     return resident.getReplacement(args[2]);
                                 }
-                                case "settlement": {
+                                case "settlement" -> {
                                     if (args.length > 2) {
                                         if (resident.hasSettlement()) {
                                             return Utils.toMap(resident.getSettlement().getReplacements(PlaceholderApiIntegration.this))
@@ -125,9 +126,8 @@ public class PlaceholderApiIntegration implements ConfigMessages {
                                             return "";
                                         }
                                     }
-                                    break;
                                 }
-                                case "empire": {
+                                case "empire" -> {
                                     if (args.length > 2) {
                                         if (resident.hasEmpire()) {
                                             return resident.getSettlement().getEmpire().getReplacement(PlaceholderApiIntegration.this, args[2]);
@@ -135,13 +135,11 @@ public class PlaceholderApiIntegration implements ConfigMessages {
                                             return "";
                                         }
                                     }
-                                    break;
                                 }
                             }
                         }
-                        break;
                     }
-                    case "landowner": {
+                    case "landowner" -> {
                         if (p != null && args.length > 1) {
                             Settlement v = SettlementManager.getInstance().getAt(p.getLocation());
                             if (v != null) {
@@ -154,9 +152,8 @@ public class PlaceholderApiIntegration implements ConfigMessages {
                             }
                             return "";
                         }
-                        break;
                     }
-                    case "land": {
+                    case "land" -> {
                         if (p != null && args.length > 1) {
                             OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                             if (land != null && land.isPlot()) {
@@ -165,9 +162,8 @@ public class PlaceholderApiIntegration implements ConfigMessages {
                                 return "";
                             }
                         }
-                        break;
                     }
-                    case "plot": {
+                    case "plot" -> {
                         if (p != null && args.length > 1) {
                             OwnedLand land = LandManager.getInstance().getLand(p.getLocation());
                             if (land != null) {
@@ -176,7 +172,6 @@ public class PlaceholderApiIntegration implements ConfigMessages {
                                 return "";
                             }
                         }
-                        break;
                     }
                 }
             }

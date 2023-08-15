@@ -19,5 +19,5 @@ public interface HumanReadable {
         );
     }
 
-    public String name();
+    String name();
 }

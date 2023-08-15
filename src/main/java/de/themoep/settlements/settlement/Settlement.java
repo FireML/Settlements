@@ -116,7 +116,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
 
         for (Map.Entry<Resident, Long> entry : getLandTaxes().entrySet()) {
-            taxes.merge(entry.getKey(), entry.getValue(), (l1, l2) -> l1 + l2);
+            taxes.merge(entry.getKey(), entry.getValue(), Long::sum);
         }
 
         long totalTax = 0;
@@ -695,7 +695,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                     World world = Bukkit.getWorld(land.getWorldName());
                     if (world != null && world.isChunkLoaded(land.getX(), land.getZ())) {
                         for (Entity entity : land.getChunk().getEntities()) {
-                            if (entity instanceof LivingEntity && Utils.isHostile((LivingEntity) entity)) {
+                            if (entity instanceof LivingEntity && Utils.isHostile(entity)) {
                                 entity.remove();
                             }
                         }
@@ -756,7 +756,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         map.put("missionPoints", getMissionPoints());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
-        map.put("missiondata", getMissionData().stream().collect(Collectors.toMap(md -> md.getMission().getDbId(), md -> md.getProgress())));
+        map.put("missiondata", getMissionData().stream().collect(Collectors.toMap(md -> md.getMission().getDbId(), MissionData::getProgress)));
         map.put("enableNPCs", isEnableNPCs());
         return map;
     }
@@ -788,8 +788,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     public void addMember(Targetable target) {
-        if (target instanceof Resident && !isMember((Resident) target)) {
-            Resident resident = (Resident) target;
+        if (target instanceof Resident resident && !isMember(resident)) {
             Utils.callEvent(new SettlementJoinEvent(this, resident));
             resident.setSettlement(this);
             resident.setSettlementRank(SettlementRank.getDefault());
@@ -1130,8 +1129,8 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         LEVEL(Settlement::compareTo),
         SIZE((s1, s2) -> Integer.compare(s2.getResidentIds().size(), s1.getResidentIds().size())),
         NAME((s1, s2) -> s1.getName().compareToIgnoreCase(s2.getName())),
-        PRIVACY((s1, s2) -> s1.getAccess().compareTo(s2.getAccess())),
-        RECRUITMENT((s1, s2) -> s1.getJoinType().compareTo(s2.getJoinType())),
+        PRIVACY(Comparator.comparing(LandOwner::getAccess)),
+        RECRUITMENT(Comparator.comparing(LandOwner::getJoinType)),
         AGE((s1, s2) -> Long.compare(s2.getCreated(), s1.getCreated())),
         ;
 

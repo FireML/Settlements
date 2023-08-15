@@ -427,16 +427,12 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         LandOwner landOwner = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
         if (landOwner == null) {
             switch ((String) map.get("landOwnerType")) {
-                case "settlement":
-                    landOwner = map.get("landOwner") != null
-                            ? SettlementManager.getInstance().getFromName((String) map.get("landOwner"))
-                            : SettlementManager.getInstance().getFromId(IdObject.get(map.get("landOwnerId")));
-                    break;
-                case "empire":
-                    landOwner = map.get("landOwner") != null
-                            ? EmpireManager.getInstance().getEmpireFromName((String) map.get("landOwner"))
-                            : EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("landOwnerId")));
-                    break;
+                case "settlement" -> landOwner = map.get("landOwner") != null
+                        ? SettlementManager.getInstance().getFromName((String) map.get("landOwner"))
+                        : SettlementManager.getInstance().getFromId(IdObject.get(map.get("landOwnerId")));
+                case "empire" -> landOwner = map.get("landOwner") != null
+                        ? EmpireManager.getInstance().getEmpireFromName((String) map.get("landOwner"))
+                        : EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("landOwnerId")));
             }
         }
         if (landOwner == null) {

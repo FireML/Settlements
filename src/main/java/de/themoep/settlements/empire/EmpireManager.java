@@ -77,7 +77,7 @@ public class EmpireManager {
 
         if (Config.Empire.World.ENABLED) {
             // Loop through all worlds to find empire ones
-            for (File world : SettlementsPlugin.getInstance().getServer().getWorldContainer().listFiles(f -> f.isDirectory())) {
+            for (File world : SettlementsPlugin.getInstance().getServer().getWorldContainer().listFiles(File::isDirectory)) {
                 Empire empire = getEmpireFromWorld(world);
                 if (empire != null && getLevel(empire.getLevel()).map(EmpireLevel::getWorldRadius).orElse(0) > 0) {
                     empire.setWorldName(world.getName());
@@ -281,9 +281,7 @@ public class EmpireManager {
                         Message.get("empire-world-generated").tell(empire.getOnlineResidents());
                     });
                 }
-                Utils.runSync(() -> {
-                    Utils.callEvent(new LandownerCreatedEvent(empire, resident));
-                });
+                Utils.runSync(() -> Utils.callEvent(new LandownerCreatedEvent(empire, resident)));
             } else {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }
@@ -554,16 +552,6 @@ public class EmpireManager {
         for (NpcType npc : empire.getLevelInfo().getNPCs()) {
             NpcData npcData = empire.getNpcData(npc);
             perksDesc.add(npcData.getTag());
-        }
-
-        String mail = Message.get("levels.mail-upgrade.general").getReplacedText(
-                "name", empire.getStateTag(),
-                "level", String.valueOf(empire.getLevel())
-        );
-        if (!perksDesc.isEmpty()) {
-            mail += "\n" + Message.get("levels.mail-upgrade.perks").getReplacedText(
-                    "perks", String.join(", ", perksDesc)
-            );
         }
 
         Utils.callEvent(new LandownerLeveledEvent(empire, res));

@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class IconRpMapping {
 
-    private Map<String, Integer> encodingNames = new HashMap<String, Integer>();
+    private Map<String, Integer> encodingNames = new HashMap<>();
 
     private final String[] potionids = {
             "unused", 
@@ -85,18 +85,17 @@ public class IconRpMapping {
         ItemMeta meta = item.getItemMeta();
         String iconstr = null;
         if (meta instanceof LeatherArmorMeta) {
-            iconstr = ColorUtils.getNearestChatColor(((LeatherArmorMeta) meta).getColor()) + getIcon("white_" + item.getType().toString(), false) + ChatColor.RESET;
-        } else if (meta instanceof PotionMeta) {
-            PotionMeta pm = (PotionMeta) meta;
+            iconstr = ColorUtils.getNearestChatColor(((LeatherArmorMeta) meta).getColor()) + getIcon("white_" + item.getType(), false) + ChatColor.RESET;
+        } else if (meta instanceof PotionMeta pm) {
             try {
-                iconstr = getIcon(item.getType().toString() + "_" + pm.getBasePotionData().getType().toString(), escape);
+                iconstr = getIcon(item.getType() + "_" + pm.getBasePotionData().getType(), escape);
             } catch (NoSuchMethodError e) {
                 if (pm.hasCustomEffects()) {
-                    iconstr = getIcon(item.getType().toString() + "_" + pm.getCustomEffects().get(0).getType().toString(), escape);
+                    iconstr = getIcon(item.getType() + "_" + pm.getCustomEffects().get(0).getType(), escape);
                 }
             }
             if (iconstr == null) {
-                iconstr = getIcon(item.getType().toString() + "_water", escape);
+                iconstr = getIcon(item.getType() + "_water", escape);
             }
         } else if (item.getType() == Material.POTION) {
             String key = "water_potion";
@@ -120,11 +119,10 @@ public class IconRpMapping {
             FireworkEffect fe = ((FireworkEffectMeta) meta).getEffect();
             if (fe != null && !fe.getColors().isEmpty()) {
                 Color median = fe.getColors().get(0).mixColors((Color[]) fe.getColors().stream().skip(1).toArray());
-                iconstr = getIcon(item.getType().toString() + "_" + ColorUtils.getNearestChatColor(median).name(), escape);
+                iconstr = getIcon(item.getType() + "_" + ColorUtils.getNearestChatColor(median).name(), escape);
             }
-        } else if (item.getType() == Material.SHIELD && meta instanceof BannerMeta) {
-            BannerMeta bm = (BannerMeta) meta;
-            iconstr = getIcon(item.getType().toString() + "_" + bm.getBaseColor(), escape);
+        } else if (item.getType() == Material.SHIELD && meta instanceof BannerMeta bm) {
+            iconstr = getIcon(item.getType() + "_" + bm.getBaseColor(), escape);
             if (iconstr == null) {
                 iconstr = getIcon(item.getType() + "_" + DyeColor.getByDyeData(item.getData().getData()), escape);
             }
@@ -133,14 +131,14 @@ public class IconRpMapping {
         if (iconstr == null) {
             isUnbreakable = item.getItemMeta().isUnbreakable();
             if (isUnbreakable) {
-                iconstr = getIcon(item.getType().toString() + ":unbreakable:" + item.getDurability(), escape);
+                iconstr = getIcon(item.getType() + ":unbreakable:" + item.getDurability(), escape);
             }
         }
         if (iconstr == null) {
-            iconstr = getIcon(item.getType().toString() + ":" + item.getDurability(), escape);
+            iconstr = getIcon(item.getType() + ":" + item.getDurability(), escape);
         }
         if (iconstr == null && isUnbreakable) {
-            iconstr = getIcon(item.getType().toString() + ":unbreakable", escape);
+            iconstr = getIcon(item.getType() + ":unbreakable", escape);
         }
         if (iconstr == null) {
             iconstr = getIcon(item.getType().toString(), escape);

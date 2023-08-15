@@ -26,7 +26,7 @@ public class WorldUtils {
     public static Collection<SimpleChunkLocation> getChunksAround(SimpleChunkLocation location, int radius) {
         Collection<SimpleChunkLocation> chunksAround = new HashSet<>();
         for (int x = -radius; x <= radius; x++) {
-            for (int z = -radius; z <= +radius; z++) {
+            for (int z = -radius; z <= radius; z++) {
                 if (x != 0 || z != 0) {
                     chunksAround.add(location.copy().add(x, z));
                 }

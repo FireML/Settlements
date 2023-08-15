@@ -129,12 +129,12 @@ public class ShopGUI extends ConfigurableGui {
 
                     if (!perk.getEffects().isEmpty()) {
                         ItemMeta itemMeta = item.getItemMeta();
-                        if (itemMeta instanceof PotionMeta) {
+                        if (itemMeta instanceof PotionMeta potionMeta) {
                             PotionType type = PotionType.getByEffect(perk.getEffects().get(0).getType());
                             if (type != null) {
-                                ((PotionMeta) itemMeta).setBasePotionData(new PotionData(type));
+                                potionMeta.setBasePotionData(new PotionData(type));
                             } else {
-                                ((PotionMeta) itemMeta).setMainEffect(perk.getEffects().get(0).getType());
+                                potionMeta.setMainEffect(perk.getEffects().get(0).getType());
                             }
                             item.setItemMeta(itemMeta);
                         }

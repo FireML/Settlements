@@ -26,12 +26,10 @@ import java.util.*;
 
 public class UpgradeGUI extends ConfigurableGui {
 
-    private final LandOwner<?, ? extends LandownerLevel> landOwner;
     private Levelable<? extends LevelInfo> selected = null;
 
     public UpgradeGUI(Resident resident, LandOwner<?, ? extends LandownerLevel> landOwner) {
         super(resident, landOwner.getKey() + ".upgrade", "state", landOwner.getStateTag());
-        this.landOwner = landOwner;
 
         List<Levelable<? extends LevelInfo>> levelables = new ArrayList<>();
         levelables.add(landOwner);

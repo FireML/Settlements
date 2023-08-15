@@ -7,5 +7,5 @@ public enum LandAccess implements NameTag, Rankable {
     PUBLIC,
     TRUSTED,
     ALLY,
-    PRIVATE;
+    PRIVATE
 }

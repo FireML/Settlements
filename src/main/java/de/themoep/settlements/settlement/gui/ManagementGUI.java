@@ -169,7 +169,7 @@ public class ManagementGUI extends SettlementsGUI {
             Message.get("command.settlement.recruitment.is-full").actionbar(sender, replacements);
         } else if (settlement.isBanished(resident)) {
             Message.get("command.settlement.recruitment.banished").actionbar(sender, replacements);
-        } else if (settlement.getJoinFee() > 0 && !SettlementsPlugin.getInstance().getEconomy().has(resident.getName(), settlement.getJoinFee())) {
+        } else if (settlement.getJoinFee() > 0 && !SettlementsPlugin.getInstance().getEconomy().has(resident.getPlayer(), settlement.getJoinFee())) {
             Message.get("command.settlement.recruitment.not-enough-money").actionbar(sender, replacements);
         } else {
             if (settlement.getJoinFee() > 0) {

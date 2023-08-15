@@ -87,6 +87,6 @@ public enum PlotMode implements NameTag {
 
     public enum AppliesTo {
         LAND,
-        LAND_OWNER;
+        LAND_OWNER
     }
 }

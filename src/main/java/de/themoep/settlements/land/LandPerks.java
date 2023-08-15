@@ -215,37 +215,36 @@ public class LandPerks {
                     }
                 } else {
                     switch (effect.getApplyIn()) {
-                        case PLOT:
+                        case PLOT -> {
                             if (!land.isPlotOwner(p.getUniqueId())) {
                                 continue;
                             }
-                            break;
-                        case PLOT_FRIENDS:
+                        }
+                        case PLOT_FRIENDS -> {
                             if (!land.isPlot() || !resident.isFriend(land.getPlotOwner())) {
                                 continue;
                             }
-                            break;
-                        case EMPIRE_WORLD:
-                        case OWN_SETTLEMENT:
+                        }
+                        case EMPIRE_WORLD, OWN_SETTLEMENT -> {
                             if (!land.isOwnedBy(perkable)) {
                                 continue;
                             }
-                            break;
-                        case ENEMY_SETTLEMENT:
+                        }
+                        case ENEMY_SETTLEMENT -> {
                             if (land.isOwnedBy(perkable) || landOwner.isTrusted(perkable)) {
                                 continue;
                             }
-                            break;
-                        case ALLIED_SETTLEMENT:
+                        }
+                        case ALLIED_SETTLEMENT -> {
                             if (!land.isOwnedBy(perkable) && !landOwner.isAlly(perkable)) {
                                 continue;
                             }
-                            break;
-                        case TRUSTED_SETTLEMENT:
+                        }
+                        case TRUSTED_SETTLEMENT -> {
                             if (!land.isOwnedBy(perkable) && !landOwner.isTrusted(perkable)) {
                                 continue;
                             }
-                            break;
+                        }
                     }
                 }
 

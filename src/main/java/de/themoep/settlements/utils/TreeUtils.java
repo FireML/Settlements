@@ -106,22 +106,14 @@ public class TreeUtils {
      * @return The logs or null if the species doesn't have them or is unknown
      */
     public static Material getLogs(TreeSpecies species) {
-        switch (species) {
-            case ACACIA:
-                return Material.ACACIA_LOG;
-            case BIRCH:
-                return Material.BIRCH_LOG;
-            case DARK_OAK:
-                return Material.DARK_OAK_LOG;
-            case GENERIC:
-                return Material.OAK_LOG;
-            case JUNGLE:
-                return Material.JUNGLE_LOG;
-            case REDWOOD:
-                return Material.SPRUCE_LOG;
-            default:
-                return null;
-        }
+        return switch (species) {
+            case ACACIA -> Material.ACACIA_LOG;
+            case BIRCH -> Material.BIRCH_LOG;
+            case DARK_OAK -> Material.DARK_OAK_LOG;
+            case GENERIC -> Material.OAK_LOG;
+            case JUNGLE -> Material.JUNGLE_LOG;
+            case REDWOOD -> Material.SPRUCE_LOG;
+        };
     }
 
     /**
@@ -130,22 +122,14 @@ public class TreeUtils {
      * @return The leaves or null if the species doesn't have them or is unknown
      */
     public static Material getLeaves(TreeSpecies species) {
-        switch (species) {
-            case ACACIA:
-                return Material.ACACIA_LEAVES;
-            case BIRCH:
-                return Material.BIRCH_LEAVES;
-            case DARK_OAK:
-                return Material.DARK_OAK_LEAVES;
-            case GENERIC:
-                return Material.OAK_LEAVES;
-            case JUNGLE:
-                return Material.JUNGLE_LEAVES;
-            case REDWOOD:
-                return Material.SPRUCE_LEAVES;
-            default:
-                return null;
-        }
+        return switch (species) {
+            case ACACIA -> Material.ACACIA_LEAVES;
+            case BIRCH -> Material.BIRCH_LEAVES;
+            case DARK_OAK -> Material.DARK_OAK_LEAVES;
+            case GENERIC -> Material.OAK_LEAVES;
+            case JUNGLE -> Material.JUNGLE_LEAVES;
+            case REDWOOD -> Material.SPRUCE_LEAVES;
+        };
     }
 
     /**
@@ -154,111 +138,20 @@ public class TreeUtils {
      * @return The TreeSpecies or null if the block can't belong to a tree
      */
     public static TreeSpecies getSpecies(Block block) {
-        switch (block.getType()) {
-            case ACACIA_BOAT:
-            case ACACIA_BUTTON:
-            case ACACIA_DOOR:
-            case ACACIA_FENCE:
-            case ACACIA_FENCE_GATE:
-            case ACACIA_LEAVES:
-            case ACACIA_LOG:
-            case ACACIA_PLANKS:
-            case ACACIA_PRESSURE_PLATE:
-            case ACACIA_SAPLING:
-            case ACACIA_SIGN:
-            case ACACIA_SLAB:
-            case ACACIA_STAIRS:
-            case ACACIA_TRAPDOOR:
-            case ACACIA_WALL_SIGN:
-            case ACACIA_WOOD:
-                return TreeSpecies.ACACIA;
-            case BIRCH_BOAT:
-            case BIRCH_BUTTON:
-            case BIRCH_DOOR:
-            case BIRCH_FENCE:
-            case BIRCH_FENCE_GATE:
-            case BIRCH_LEAVES:
-            case BIRCH_LOG:
-            case BIRCH_PLANKS:
-            case BIRCH_PRESSURE_PLATE:
-            case BIRCH_SAPLING:
-            case BIRCH_SIGN:
-            case BIRCH_SLAB:
-            case BIRCH_STAIRS:
-            case BIRCH_TRAPDOOR:
-            case BIRCH_WALL_SIGN:
-            case BIRCH_WOOD:
-                return TreeSpecies.BIRCH;
-            case DARK_OAK_BOAT:
-            case DARK_OAK_BUTTON:
-            case DARK_OAK_DOOR:
-            case DARK_OAK_FENCE:
-            case DARK_OAK_FENCE_GATE:
-            case DARK_OAK_LEAVES:
-            case DARK_OAK_LOG:
-            case DARK_OAK_PLANKS:
-            case DARK_OAK_PRESSURE_PLATE:
-            case DARK_OAK_SAPLING:
-            case DARK_OAK_SIGN:
-            case DARK_OAK_SLAB:
-            case DARK_OAK_STAIRS:
-            case DARK_OAK_TRAPDOOR:
-            case DARK_OAK_WALL_SIGN:
-            case DARK_OAK_WOOD:
-                return TreeSpecies.DARK_OAK;
-            case JUNGLE_BOAT:
-            case JUNGLE_BUTTON:
-            case JUNGLE_DOOR:
-            case JUNGLE_FENCE:
-            case JUNGLE_FENCE_GATE:
-            case JUNGLE_LEAVES:
-            case JUNGLE_LOG:
-            case JUNGLE_PLANKS:
-            case JUNGLE_PRESSURE_PLATE:
-            case JUNGLE_SAPLING:
-            case JUNGLE_SIGN:
-            case JUNGLE_SLAB:
-            case JUNGLE_STAIRS:
-            case JUNGLE_TRAPDOOR:
-            case JUNGLE_WALL_SIGN:
-            case JUNGLE_WOOD:
-                return TreeSpecies.JUNGLE;
-            case OAK_BOAT:
-            case OAK_BUTTON:
-            case OAK_DOOR:
-            case OAK_FENCE:
-            case OAK_FENCE_GATE:
-            case OAK_LEAVES:
-            case OAK_LOG:
-            case OAK_PLANKS:
-            case OAK_PRESSURE_PLATE:
-            case OAK_SAPLING:
-            case OAK_SIGN:
-            case OAK_SLAB:
-            case OAK_STAIRS:
-            case OAK_TRAPDOOR:
-            case OAK_WALL_SIGN:
-            case OAK_WOOD:
-                return TreeSpecies.GENERIC;
-            case SPRUCE_BOAT:
-            case SPRUCE_BUTTON:
-            case SPRUCE_DOOR:
-            case SPRUCE_FENCE:
-            case SPRUCE_FENCE_GATE:
-            case SPRUCE_LEAVES:
-            case SPRUCE_LOG:
-            case SPRUCE_PLANKS:
-            case SPRUCE_PRESSURE_PLATE:
-            case SPRUCE_SAPLING:
-            case SPRUCE_SIGN:
-            case SPRUCE_SLAB:
-            case SPRUCE_STAIRS:
-            case SPRUCE_TRAPDOOR:
-            case SPRUCE_WALL_SIGN:
-            case SPRUCE_WOOD:
-                return TreeSpecies.REDWOOD;
-            default:
-                return null;
-        }
+        return switch (block.getType()) {
+            case ACACIA_BOAT, ACACIA_BUTTON, ACACIA_DOOR, ACACIA_FENCE, ACACIA_FENCE_GATE, ACACIA_LEAVES, ACACIA_LOG, ACACIA_PLANKS, ACACIA_PRESSURE_PLATE, ACACIA_SAPLING, ACACIA_SIGN, ACACIA_SLAB, ACACIA_STAIRS, ACACIA_TRAPDOOR, ACACIA_WALL_SIGN, ACACIA_WOOD ->
+                    TreeSpecies.ACACIA;
+            case BIRCH_BOAT, BIRCH_BUTTON, BIRCH_DOOR, BIRCH_FENCE, BIRCH_FENCE_GATE, BIRCH_LEAVES, BIRCH_LOG, BIRCH_PLANKS, BIRCH_PRESSURE_PLATE, BIRCH_SAPLING, BIRCH_SIGN, BIRCH_SLAB, BIRCH_STAIRS, BIRCH_TRAPDOOR, BIRCH_WALL_SIGN, BIRCH_WOOD ->
+                    TreeSpecies.BIRCH;
+            case DARK_OAK_BOAT, DARK_OAK_BUTTON, DARK_OAK_DOOR, DARK_OAK_FENCE, DARK_OAK_FENCE_GATE, DARK_OAK_LEAVES, DARK_OAK_LOG, DARK_OAK_PLANKS, DARK_OAK_PRESSURE_PLATE, DARK_OAK_SAPLING, DARK_OAK_SIGN, DARK_OAK_SLAB, DARK_OAK_STAIRS, DARK_OAK_TRAPDOOR, DARK_OAK_WALL_SIGN, DARK_OAK_WOOD ->
+                    TreeSpecies.DARK_OAK;
+            case JUNGLE_BOAT, JUNGLE_BUTTON, JUNGLE_DOOR, JUNGLE_FENCE, JUNGLE_FENCE_GATE, JUNGLE_LEAVES, JUNGLE_LOG, JUNGLE_PLANKS, JUNGLE_PRESSURE_PLATE, JUNGLE_SAPLING, JUNGLE_SIGN, JUNGLE_SLAB, JUNGLE_STAIRS, JUNGLE_TRAPDOOR, JUNGLE_WALL_SIGN, JUNGLE_WOOD ->
+                    TreeSpecies.JUNGLE;
+            case OAK_BOAT, OAK_BUTTON, OAK_DOOR, OAK_FENCE, OAK_FENCE_GATE, OAK_LEAVES, OAK_LOG, OAK_PLANKS, OAK_PRESSURE_PLATE, OAK_SAPLING, OAK_SIGN, OAK_SLAB, OAK_STAIRS, OAK_TRAPDOOR, OAK_WALL_SIGN, OAK_WOOD ->
+                    TreeSpecies.GENERIC;
+            case SPRUCE_BOAT, SPRUCE_BUTTON, SPRUCE_DOOR, SPRUCE_FENCE, SPRUCE_FENCE_GATE, SPRUCE_LEAVES, SPRUCE_LOG, SPRUCE_PLANKS, SPRUCE_PRESSURE_PLATE, SPRUCE_SAPLING, SPRUCE_SIGN, SPRUCE_SLAB, SPRUCE_STAIRS, SPRUCE_TRAPDOOR, SPRUCE_WALL_SIGN, SPRUCE_WOOD ->
+                    TreeSpecies.REDWOOD;
+            default -> null;
+        };
     }
 }

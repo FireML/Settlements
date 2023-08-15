@@ -164,9 +164,7 @@ public class ShopGUI extends ConfigurableGui {
                                 Message.get("command.settlement.shop.unlock.success")
                                         .tell(resident.getSettlement(), "perk", perk.getTag());
                                 resident.getSettlement().save();
-                                Utils.runAsync(() -> {
-                                    DatabaseManager.getInstance().log(resident.getSettlement(), resident, "perk-unlock", perk.getUnlockCost());
-                                });
+                                Utils.runAsync(() -> DatabaseManager.getInstance().log(resident.getSettlement(), resident, "perk-unlock", perk.getUnlockCost()));
                                 gui.draw();
                             }
                         }

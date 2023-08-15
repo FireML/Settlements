@@ -147,13 +147,12 @@ public class SimpleLocation implements ConfigurationSerializable {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof SimpleLocation)) {
+        if (!(other instanceof SimpleLocation location)) {
             return false;
         }
         if (this == other) {
             return true;
         }
-        SimpleLocation location = (SimpleLocation) other;
         if (location.world == null) {
             return world == null;
         }
@@ -205,6 +204,6 @@ public class SimpleLocation implements ConfigurationSerializable {
 
     @Override
     public String toString() {
-        return "SimpleLocation" + serialize().toString();
+        return "SimpleLocation" + serialize();
     }
 }

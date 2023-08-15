@@ -839,7 +839,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     private enum State implements NameTag {
-        EMPIRE;
+        EMPIRE
     }
 
     public String getWorldName() {
@@ -1109,8 +1109,8 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         LEVEL(Empire::compareTo),
         SIZE((e1, e2) -> Integer.compare(e2.getMemberIds().size(), e1.getMemberIds().size())),
         NAME((e1, e2) -> e1.getName().compareToIgnoreCase(e2.getName())),
-        PRIVACY((e1, e2) -> e1.getAccess().compareTo(e2.getAccess())),
-        RECRUITMENT((e1, e2) -> e1.getJoinType().compareTo(e2.getJoinType())),
+        PRIVACY(Comparator.comparing(LandOwner::getAccess)),
+        RECRUITMENT(Comparator.comparing(LandOwner::getJoinType)),
         AGE((e1, e2) -> Long.compare(e2.getCreated(), e1.getCreated())),
         ;
 

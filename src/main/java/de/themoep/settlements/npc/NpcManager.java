@@ -87,18 +87,18 @@ public class NpcManager {
                                     SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Duplicate " + type + " NPC perk " + perkName + "!");
                                 }
                                 switch (type) {
-                                    case SETTLEMENT:
+                                    case SETTLEMENT -> {
                                         SettlementManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
                                         for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
                                             checkNpcUnlocks(settlement, npcType, perk);
                                         }
-                                        break;
-                                    case EMPIRE:
+                                    }
+                                    case EMPIRE -> {
                                         EmpireManager.getInstance().getUnlockables().addAll(perk.getUnlockables());
                                         for (Empire empire : EmpireManager.getInstance().getEmpires()) {
                                             checkNpcUnlocks(empire, npcType, perk);
                                         }
-                                        break;
+                                    }
                                 }
                             }
                         } catch (IllegalArgumentException e) {

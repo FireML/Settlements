@@ -52,7 +52,6 @@ public class MaterialUtils {
             Material.BROWN_MUSHROOM,
             Material.RED_MUSHROOM,
             Material.VINE,
-            Material.CHORUS_FLOWER,
             Material.BAMBOO,
             Material.BAMBOO_SAPLING,
             Material.SWEET_BERRY_BUSH
@@ -82,7 +81,6 @@ public class MaterialUtils {
             Material.CHORUS_FRUIT,
             Material.KELP,
             Material.KELP_PLANT,
-            Material.CHORUS_FRUIT,
             Material.BAMBOO,
             Material.BAMBOO_SAPLING,
             Material.SWEET_BERRIES
@@ -137,24 +135,14 @@ public class MaterialUtils {
             return true;
         }
 
-        switch (item.getType()) {
-            case BEETROOT_SEEDS:
-            case MELON_SEEDS:
-            case WHEAT_SEEDS:
-            case PUMPKIN_SEEDS:
-            case SWEET_BERRIES:
-            case STRING:
-            case ARMOR_STAND:
-            case ITEM_FRAME:
-            case PAINTING:
-            case WATER_BUCKET:
-            case LAVA_BUCKET:
-                return true;
-        }
+        return switch (item.getType()) {
+            case BEETROOT_SEEDS, MELON_SEEDS, WHEAT_SEEDS, PUMPKIN_SEEDS, SWEET_BERRIES, STRING, ARMOR_STAND, ITEM_FRAME, PAINTING, WATER_BUCKET, LAVA_BUCKET ->
+                    true;
+            default -> Tag.ITEMS_BOATS.isTagged(item.getType())
+                    || MINECARTS.contains(item.getType())
+                    || BUCKETS.contains(item.getType());
+        };
 
-        return Tag.ITEMS_BOATS.isTagged(item.getType())
-                || MINECARTS.contains(item.getType())
-                || BUCKETS.contains(item.getType());
     }
 
     public static Material getMaterial(String matStr) {
@@ -167,10 +155,12 @@ public class MaterialUtils {
             Material mat = Material.matchMaterial(matStr);
             if (mat == null) {
                 switch (matStr.toUpperCase()) {
-                    case "WALL_SIGN":
+                    case "WALL_SIGN" -> {
                         return Material.OAK_WALL_SIGN;
-                    case "SIGN":
+                    }
+                    case "SIGN" -> {
                         return Material.OAK_SIGN;
+                    }
                 }
             }
             return mat;

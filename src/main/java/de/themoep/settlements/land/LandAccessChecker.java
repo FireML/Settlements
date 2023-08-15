@@ -132,34 +132,31 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
 
         Resident resident = null;
         switch (state) {
-            case OFFICERS:
-                allowed = landOwner.isOfficer(building);
-                break;
-            case PRIVATE:
+            case OFFICERS -> allowed = landOwner.isOfficer(building);
+            case PRIVATE -> {
                 resident = ResidentManager.getInstance().getResident(building);
                 if (landOwner instanceof Empire empire) {
                     allowed = empire.getCapital().isMember(resident);
                 } else {
                     allowed = landOwner.isMember(resident);
                 }
-                break;
-            case RESIDENTS:
+            }
+            case RESIDENTS -> {
                 resident = ResidentManager.getInstance().getResident(building);
                 allowed = landOwner.isMember(resident);
-                break;
-            case ALLY:
+            }
+            case ALLY -> {
                 resident = ResidentManager.getInstance().getResident(building);
                 allowed = landOwner.isMember(resident) || landOwner.isAlly(resident);
-                break;
-            case TRUSTED:
+            }
+            case TRUSTED -> {
                 resident = ResidentManager.getInstance().getResident(building);
                 allowed = landOwner.isMember(resident) || landOwner.isTrusted(resident);
-                break;
-            case PUBLIC:
-                allowed = true;
-                break;
-            default:
+            }
+            case PUBLIC -> allowed = true;
+            default -> {
                 return null;
+            }
         }
 
         if (allowed && resident != null && landOwner.useGuestRank() && landOwner.getRank(resident) == landOwner.getDefaultRank()) {

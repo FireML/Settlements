@@ -64,18 +64,17 @@ public class NpcCommand extends ResidentSubCommand {
         NPC npc = citizensIntegration.getNpc(npcData);
 
         switch (args[1].toLowerCase(Locale.ROOT)) {
-            case "tp":
-            case "teleport": {
+            case "tp", "teleport" -> {
                 Location location = resident.getPlayer().getLocation();
                 OwnedLand l = LandManager.getInstance().getLand(location);
                 if (l != null && l.isOwnedBy(landOwner)) {
                     if (type == NpcType.TRAVELING_MERCHANT) {
-                        boolean connectedToHome = LandManager.getInstance().getAllConnectedLand(l, search -> {
+                        boolean connectedToHome = !LandManager.getInstance().getAllConnectedLand(l, search -> {
                             if (search.containsHome()) {
                                 return LandManager.FilterResponse.RETURN;
                             }
                             return LandManager.FilterResponse.CONTINUE;
-                        }).size() > 0;
+                        }).isEmpty();
                         if (!connectedToHome) {
                             getError("requires-home").tell(resident, "npc", npcData.getTag());
                             return true;
@@ -88,7 +87,7 @@ public class NpcCommand extends ResidentSubCommand {
                 }
                 return true;
             }
-            case "skin": {
+            case "skin" -> {
                 if (!resident.hasPermission(getPermission() + ".skin")) {
                     getError("no-permission").tell(resident);
                     return true;

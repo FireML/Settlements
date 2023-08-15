@@ -55,26 +55,26 @@ public class EmpirePerk extends LevelPerk<Empire> {
                 if (world != null) {
                     WeatherState weather = WorldUtils.getWeatherState(world);
                     switch (weather.next()) {
-                        case CLEAR:
+                        case CLEAR -> {
                             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
                             world.setStorm(false);
                             world.setThundering(false);
-                            break;
-                        case RAIN:
+                        }
+                        case RAIN -> {
                             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
                             world.setStorm(true);
                             world.setThundering(false);
-                            break;
-                        case THUNDER:
+                        }
+                        case THUNDER -> {
                             world.setGameRule(GameRule.DO_WEATHER_CYCLE, false);
                             world.setStorm(true);
                             world.setThundering(true);
-                            break;
-                        case NORMAL:
+                        }
+                        case NORMAL -> {
                             world.setStorm(false);
                             world.setThundering(false);
                             world.setGameRule(GameRule.DO_WEATHER_CYCLE, true);
-                            break;
+                        }
                     }
                 }
             }

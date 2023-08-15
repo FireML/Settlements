@@ -57,7 +57,7 @@ public class UseFlagManager {
                     icon = null;
                 }
                 if (icon == null) {
-                    if (uses.size() > 0) {
+                    if (!uses.isEmpty()) {
                         Use use = uses.iterator().next();
                         for (Material material : use.getMaterials()) {
                             if (material.isItem()) {

@@ -18,7 +18,7 @@ public interface ModeAble {
      * Set a mode
      * @param mode The mode to set
      * @param value The value to set the mode to
-     * @return Whether or not the mode changed
+     * @return Whether the mode changed
      */
     default boolean setMode(PlotMode mode, boolean value) {
         if (!Objects.equals(getModes().get(mode), value)) {

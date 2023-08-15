@@ -9,7 +9,7 @@ public interface Rankable {
     /**
      * Check if this rankable is at equal or higher than another one
      * @param rankable What to compare this rankable to
-     * @return Whether or not the ordinal of this one is equal or below the other one
+     * @return Whether the ordinal of this one is equal or below the other one
      */
     default <R extends Rankable> boolean atLeast(R rankable) {
         return rankable == null || rankable.ordinal() >= this.ordinal();
@@ -18,7 +18,7 @@ public interface Rankable {
     /**
      * Check if this rankable is higher than another one
      * @param rankable What to compare this rankable to
-     * @return Whether or not the ordinal of this one is below the other one
+     * @return Whether the ordinal of this one is below the other one
      */
     default <R extends Rankable> boolean above(R rankable) {
         return rankable == null || rankable.ordinal() > this.ordinal();
@@ -27,7 +27,7 @@ public interface Rankable {
     /**
      * The opposite of {@link #atLeast(Rankable)}
      * @param rankable What to compare this rankable to
-     * @return Whether or not the ordinal of this one is above the other one
+     * @return Whether the ordinal of this one is above the other one
      */
     default <R extends Rankable> boolean below(R rankable) {
         return rankable != null && rankable.ordinal() < this.ordinal();

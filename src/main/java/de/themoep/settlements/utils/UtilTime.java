@@ -90,7 +90,7 @@ public class UtilTime {
         }
 
         public static MinecraftTime getClosest(long ticks) {
-            return values()[Math.round(ticks / 6000) % values().length];
+            return values()[Math.round(ticks / 6000F) % values().length];
         }
 
         @Override

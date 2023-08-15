@@ -97,42 +97,35 @@ public class PerkEffect {
         EVERYWHERE
     }
 
-    public static class EffectInfluenced implements NameTag {
-        private final String name;
+    public record EffectInfluenced(String name) implements NameTag {
+            private static final Map<String, EffectInfluenced> byName = new HashMap<>();
 
-        private static final Map<String, EffectInfluenced> byName = new HashMap<>();
+            public static final EffectInfluenced TRUSTED = new EffectInfluenced("trusted");
+            public static final EffectInfluenced ALLIES = new EffectInfluenced("allies");
+            public static final EffectInfluenced ENEMIES = new EffectInfluenced("enemies");
+            public static final EffectInfluenced MEMBERS = new EffectInfluenced("members");
+            public static final EffectInfluenced FREE = new EffectInfluenced("free");
+            public static final EffectInfluenced ALL = new EffectInfluenced("all");
 
-        public static final EffectInfluenced TRUSTED = new EffectInfluenced("trusted");
-        public static final EffectInfluenced ALLIES = new EffectInfluenced("allies");
-        public static final EffectInfluenced ENEMIES = new EffectInfluenced("enemies");
-        public static final EffectInfluenced MEMBERS = new EffectInfluenced("members");
-        public static final EffectInfluenced FREE = new EffectInfluenced("free");
-        public static final EffectInfluenced ALL = new EffectInfluenced("all");
-
-        public EffectInfluenced(String name) {
-            this.name = name;
-            register(this);
-        }
-
-        public static void register(EffectInfluenced influenced) {
-            byName.put(influenced.name.toLowerCase(), influenced);
-        }
-
-        public SettlementRank getRank() {
-            return SettlementRank.get(name);
-        }
-
-        public static EffectInfluenced valueOf(String string) {
-            EffectInfluenced influenced = byName.get(string.toLowerCase());
-            if (influenced == null) {
-                throw new IllegalArgumentException("No value for " + string + " exists!");
+            public EffectInfluenced(String name) {
+                this.name = name;
+                register(this);
             }
-            return influenced;
-        }
 
-        @Override
-        public String name() {
-            return name;
+            public static void register(EffectInfluenced influenced) {
+                byName.put(influenced.name.toLowerCase(), influenced);
+            }
+
+            public SettlementRank getRank() {
+                return SettlementRank.get(name);
+            }
+
+            public static EffectInfluenced valueOf(String string) {
+                EffectInfluenced influenced = byName.get(string.toLowerCase());
+                if (influenced == null) {
+                    throw new IllegalArgumentException("No value for " + string + " exists!");
+                }
+                return influenced;
+            }
         }
-    }
 }

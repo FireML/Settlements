@@ -36,15 +36,12 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
     }
 
     private Targetable getTargetAble(String type, IdObject id) {
-        switch (type) {
-            case "settlement":
-                return SettlementManager.getInstance().getFromId(id);
-            case "empire":
-                return EmpireManager.getInstance().getEmpireFromId(id);
-            case "resident":
-                return ResidentManager.getInstance().getResident(id);
-        }
-        return null;
+        return switch (type) {
+            case "settlement" -> SettlementManager.getInstance().getFromId(id);
+            case "empire" -> EmpireManager.getInstance().getEmpireFromId(id);
+            case "resident" -> ResidentManager.getInstance().getResident(id);
+            default -> null;
+        };
     }
 
     @Override

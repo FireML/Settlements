@@ -128,15 +128,12 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
     }
 
     public Targetable getTargetable() {
-        switch (type) {
-            case "player":
-                return ResidentManager.getInstance().getResident((UUID) getBanishedId().value());
-            case "settlement":
-                return SettlementManager.getInstance().getFromId(getBanishedId());
-            case "empire":
-                return EmpireManager.getInstance().getEmpireFromId(getBanishedId());
-        }
-        return null;
+        return switch (type) {
+            case "player" -> ResidentManager.getInstance().getResident((UUID) getBanishedId().value());
+            case "settlement" -> SettlementManager.getInstance().getFromId(getBanishedId());
+            case "empire" -> EmpireManager.getInstance().getEmpireFromId(getBanishedId());
+            default -> null;
+        };
     }
 
     @Override

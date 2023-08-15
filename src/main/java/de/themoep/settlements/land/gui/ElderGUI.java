@@ -118,9 +118,7 @@ public class ElderGUI extends ConfigurableGui {
             }
         } else if (landOwner.getJoinType() == JoinType.ANYONE || (landOwner.getJoinType() == JoinType.INVITE_ONLY && isInvited(resident, landOwner))) {
             gui.addElement(new StaticGuiElement('e', getIcon("recruit"), click -> {
-                if (landOwner instanceof Settlement) {
-                    Settlement settlement = (Settlement) landOwner;
-
+                if (landOwner instanceof Settlement settlement) {
                     if (settlement.isBanished(resident)) {
                         Message.get("command.settlement.join.banished").tell(resident, "state", settlement.getState().getTag(), "name", settlement.getName());
                     } else if (settlement.getJoinFee() > 0 && !SettlementsPlugin.getInstance().getEconomy().has(resident.getPlayer(), settlement.getJoinFee())) {

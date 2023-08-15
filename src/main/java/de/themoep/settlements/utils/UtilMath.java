@@ -44,7 +44,7 @@ public class UtilMath {
             return string;
         }
         for (int i = string.length() - 3; i > 0; i -= 3) {
-            string = String.valueOf(string.substring(0, i)) + "," + string.substring(i, string.length());
+            string = string.substring(0, i) + "," + string.substring(i, string.length());
         }
         return string;
     }

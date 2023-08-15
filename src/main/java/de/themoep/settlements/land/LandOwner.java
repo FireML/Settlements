@@ -532,10 +532,9 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
 
     public boolean isBanished(Targetable target) {
         if (target instanceof Resident resident) {
-            Resident res = resident;
-            return banished.contains("player", IdObject.get(res.getUUID()))
-                    || (res.hasSettlement() && isBanished(res.getSettlement()))
-                    || (res.hasEmpire() && isBanished(res.getSettlement().getEmpire()));
+            return banished.contains("player", IdObject.get(resident.getUUID()))
+                    || (resident.hasSettlement() && isBanished(resident.getSettlement()))
+                    || (resident.hasEmpire() && isBanished(resident.getSettlement().getEmpire()));
         } else if (target instanceof LandOwner owner) {
             if (banished.contains(owner.getKey(), owner.getId())) {
                 return true;
@@ -996,12 +995,12 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
                 .forEach(e -> landOwner.getPerksMap().put(e.getKey().toLowerCase(), PerkData.deserialize((Map<String, Object>) e.getValue())));
         ((Map<String, Object>) map.get("permissions")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Map)
-                .forEach(e -> landOwner.getRanksPermissions().put(e.getKey().toLowerCase(), (Map<String, Boolean>) e.getValue()));
+                .forEach(e -> landOwner.getRanksPermissions().put(e.getKey().toLowerCase(), e.getValue()));
         for (Map.Entry<String, Collection<String>> entry : ((Map<String, Collection<String>>) map.get("titles")).entrySet()) {
             landOwner.rankTitles.putAll(entry.getKey().toLowerCase(), entry.getValue());
         }
         ((Map<String, Object>) map.get("defaulttitles")).entrySet().stream()
-                .forEach(e -> landOwner.defaultRankTitles.put(e.getKey().toLowerCase(), (String) e.getValue()));
+                .forEach(e -> landOwner.defaultRankTitles.put(e.getKey().toLowerCase(), e.getValue()));
         for (NpcData npcData : ((Collection<NpcData>) map.get("npcs"))) {
             landOwner.addNpc(npcData);
         }

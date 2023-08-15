@@ -18,7 +18,6 @@ import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Rank<L, R>> extends SettlementsGUI {
     private final Resident res;
@@ -31,7 +30,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
         this.res = res;
         List<String> perms = landOwner.getToggleablePermissions().stream()
                 .filter(s -> !s.contains(".help"))
-                .collect(Collectors.toList());
+                .toList();
         rank = landOwner.getDefaultRank();
         if (landOwner.useGuestRank()) {
             rank = (R) rank.getParentRank();

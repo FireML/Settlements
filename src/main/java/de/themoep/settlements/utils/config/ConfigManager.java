@@ -90,9 +90,9 @@ public class ConfigManager {
         registerParser("StringSet", new TypelessConfigParser() {
             @Override
             public Object toJava(Object object) {
-                if (object instanceof Collection
-                        && ((Collection) object).size() > 0
-                        && ((Collection) object).iterator().next() instanceof String) {
+                if (object instanceof Collection collection
+                        && !collection.isEmpty()
+                        && collection.iterator().next() instanceof String) {
                     return new LinkedHashSet<>((Collection<String>) object);
                 }
                 return new LinkedHashSet<String>();
@@ -109,26 +109,26 @@ public class ConfigManager {
             @Override
             public Object toJava(Object object) {
                 EnumSet<Material> set = EnumSet.noneOf(Material.class);
-                if (object instanceof Collection) {
-                    for (Object o : (Collection) object) {
-                        if (o instanceof Material) {
-                            set.add((Material) o);
-                        } else if (o instanceof String) {
-                            if (((String) o).startsWith("*")) {
+                if (object instanceof Collection collection) {
+                    for (Object o : collection) {
+                        if (o instanceof Material material) {
+                            set.add(material);
+                        } else if (o instanceof String string) {
+                            if (string.startsWith("*")) {
                                 for (Material material : Material.values()) {
-                                    if (material.name().endsWith(((String) o).substring(1).toUpperCase())) {
+                                    if (material.name().endsWith(string.substring(1).toUpperCase())) {
                                         set.add(material);
                                     }
                                 }
-                            } else if (((String) o).endsWith("*")) {
+                            } else if (string.endsWith("*")) {
                                 for (Material material : Material.values()) {
-                                    if (material.name().startsWith(((String) o).substring(0, ((String) o).length() - 1).toUpperCase())) {
+                                    if (material.name().startsWith(string.substring(0, string.length() - 1).toUpperCase())) {
                                         set.add(material);
                                     }
                                 }
                             } else {
                                 try {
-                                    set.add(Material.valueOf(((String) o).toUpperCase(Locale.ROOT)));
+                                    set.add(Material.valueOf(string.toUpperCase(Locale.ROOT)));
                                 } catch (IllegalArgumentException e) {
                                     SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, o + " is not a valid Material name in the config!");
                                 }
@@ -141,8 +141,8 @@ public class ConfigManager {
 
             @Override
             public Object toYaml(Object object) {
-                if (object instanceof Collection) {
-                    return ((Collection) object).stream().map(Objects::toString).collect(Collectors.toList());
+                if (object instanceof Collection collection) {
+                    return (collection.stream().map(Objects::toString).collect(Collectors.toList()));
                 }
                 return object;
             }
@@ -368,7 +368,7 @@ public class ConfigManager {
                     Matcher keyMatcher = keyPattern.matcher(line);
                     if (keyMatcher.matches() && keyMatcher.groupCount() > 1) {
                         String indent = keyMatcher.group(1);
-                        if (indention == 0 && indent.length() > 0) {
+                        if (indention == 0 && !indent.isEmpty()) {
                             indention = indent.length();
                         }
 

@@ -93,10 +93,7 @@ public class ChatManager implements ConfigMessages, Listener {
         boolean resetChannel = false;
         if (settlement == null) {
             switch (channel) {
-                case EMPIRE:
-                case ALLY:
-                case SETTLEMENT:
-                    resetChannel = true;
+                case EMPIRE, ALLY, SETTLEMENT -> resetChannel = true;
             }
         } else if (!res.hasEmpire() && channel == ChatChannel.EMPIRE) {
             resetChannel = true;

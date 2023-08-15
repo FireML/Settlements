@@ -69,8 +69,7 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                     return new StaticGuiElement('t', item, click -> {
                         if (!rank.above(landOwner.getRank(resident))) {
                             switch (click.getType()) {
-                                case LEFT:
-                                case SHIFT_LEFT:
+                                case LEFT, SHIFT_LEFT -> {
                                     if (resident.hasPermission(type + ".titles.set")) {
                                         String oldRankName = rank.getTag(landOwner);
                                         landOwner.setDefaultTitle(rank, title);
@@ -78,8 +77,8 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                         gui.draw();
                                     }
                                     return true;
-                                case RIGHT:
-                                case SHIFT_RIGHT:
+                                }
+                                case RIGHT, SHIFT_RIGHT -> {
                                     if (resident.hasPermission(type + ".titles.remove")) {
                                         landOwner.removeTitle(rank, title);
                                         Message.get("command." + type + ".titles.remove.success").tell(resident,
@@ -89,6 +88,7 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                         new TitlesGUI<>(type, resident, landOwner, rank).open();
                                     }
                                     return true;
+                                }
                             }
                         }
                         return true;

@@ -67,26 +67,17 @@ public class ChatMap {
         }
         y %= 360.0f;
         int i = (int) (y / 45);
-        switch (i) {
-            case 0:
-                return "S";
-            case 1:
-                return "2/";
-            case 2:
-                return "W";
-            case 3:
-                return "0\\\\";
-            case 4:
-                return "N";
-            case 5:
-                return "0/";
-            case 6:
-                return "E";
-            case 7:
-                return "2\\\\";
-            default:
-                return "+";
-        }
+        return switch (i) {
+            case 0 -> "S";
+            case 1 -> "2/";
+            case 2 -> "W";
+            case 3 -> "0\\\\";
+            case 4 -> "N";
+            case 5 -> "0/";
+            case 6 -> "E";
+            case 7 -> "2\\\\";
+            default -> "+";
+        };
     }
 
     public List<String> getRowSymbols(Player p) {

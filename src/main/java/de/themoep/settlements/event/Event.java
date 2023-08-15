@@ -75,7 +75,7 @@ public class Event {
         return rewards;
     }
 
-    public static enum Action implements NameTag {
+    public enum Action implements NameTag {
         PLACE,
         BREAK,
         CRAFT,

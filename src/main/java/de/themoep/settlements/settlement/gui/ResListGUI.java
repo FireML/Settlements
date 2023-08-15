@@ -11,9 +11,7 @@ public class ResListGUI extends SettlementsGUI {
 
     public ResListGUI(Resident resident, Settlement settlement) {
         super("settlement.reslist");
-        gui = new ListGui<>(resident, name(), true, settlement::getResidents, (click, r) -> {
-            new ResidentGUI(resident, r).open();
-        }, r -> r.getReplacements(this));
+        gui = new ListGui<>(resident, name(), true, settlement::getResidents, (click, r) -> new ResidentGUI(resident, r).open(), r -> r.getReplacements(this));
     }
 
     public void open() {

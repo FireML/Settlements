@@ -15,11 +15,14 @@ public class CursesFilter {
     private static CursesFilter instance;
     private final Set<String> literalCurses = new HashSet<>();
     private final Set<Pattern> regexCurses = new HashSet<>();
-    private String replaceWith = "cookie";
+    private String replaceWith;
 
     public CursesFilter(FileConfiguration config) {
 
         replaceWith = config.getString("replace-with");
+        if (replaceWith == null) {
+            replaceWith = "cookie";
+        }
 
         literalCurses.addAll(config.getStringList("literal"));
         for (String regex : config.getStringList("regexes")) {

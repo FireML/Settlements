@@ -96,7 +96,7 @@ public class LandManager {
             }
             landOwner.save();
         }
-        SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " was claimed by " + landOwner.getStateTag() + " " + landOwner.getName() + "");
+        SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Chunk " + land.getKey() + " was claimed by " + landOwner.getStateTag() + " " + landOwner.getName());
         cacheLand(land);
         Utils.callEvent(new LandClaimEvent(land));
         return land;
@@ -405,7 +405,7 @@ public class LandManager {
                                 found.addAll(branchFound);
                                 return found;
                             case SKIP_ENTRY:
-                                continue BRANCH;
+                                continue;
                             case SKIP_BRANCH:
                                 skipBranch = true;
                             case ACCEPT:
@@ -604,6 +604,6 @@ public class LandManager {
         /**
          * Accept the entry and continue
          */
-        ACCEPT;
+        ACCEPT
     }
 }

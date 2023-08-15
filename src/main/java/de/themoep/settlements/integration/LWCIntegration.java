@@ -75,7 +75,7 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
                 continue;
             }
             switch (permission.getType()) {
-                case TOWN:
+                case TOWN -> {
                     if (resident.hasSettlement()) {
                         if (permission.getName().startsWith("empire:") || permission.getName().startsWith("e:")) {
                             Empire empire = EmpireManager.getInstance().getEmpireFromName(permission.getName().split(":")[1]);
@@ -94,8 +94,8 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
                             }
                         }
                     }
-                    break;
-                case REGION:
+                }
+                case REGION -> {
                     if ("#this".equalsIgnoreCase(permission.getName())) {
                         OwnedLand land = LandManager.getInstance().getLand(block.getLocation());
                         if (land != null) {
@@ -108,8 +108,8 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
                             }
                         }
                     }
-                    break;
-                case GROUP:
+                }
+                case GROUP -> {
                     if (resident.hasSettlement()) {
                         String[] split = permission.getName().split(":");
                         Settlement settlement;
@@ -132,7 +132,7 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
                             }
                         }
                     }
-                    break;
+                }
             }
         }
         event.setAccess(access);

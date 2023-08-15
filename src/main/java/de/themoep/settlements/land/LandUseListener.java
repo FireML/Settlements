@@ -22,6 +22,7 @@ import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.projectiles.BlockProjectileSource;
+import org.jetbrains.annotations.Nullable;
 import org.spigotmc.event.entity.EntityMountEvent;
 
 public class LandUseListener implements LandAccessChecker, Listener {
@@ -29,10 +30,9 @@ public class LandUseListener implements LandAccessChecker, Listener {
     @EventHandler(ignoreCancelled = true)
     public void on(EntityMountEvent e) {
         if (e.getEntity() instanceof Player player) {
-            Player p = player;
-            Pair<Boolean, String> response = this.canUse(p, Use.RIDE, e.getMount().getLocation());
+            Pair<Boolean, String> response = this.canUse(player, Use.RIDE, e.getMount().getLocation());
             if (!response.getLeft()) {
-                MessageUtils.tell(p, response.getRight());
+                MessageUtils.tell(player, response.getRight());
                 e.setCancelled(true);
             }
         }
@@ -248,12 +248,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
             } else if (e.getEntity() instanceof Mob) {
                 OwnedLand entityLand = LandManager.getInstance().getLand(e.getEntity().getLocation());
                 if (entityLand != null) {
-                    Location shooterLocation = null;
-                    if (((Projectile) e.getDamager()).getShooter() instanceof Entity) {
-                        shooterLocation = ((Entity) ((Projectile) e.getDamager()).getShooter()).getLocation();
-                    } else if (((Projectile) e.getDamager()).getShooter() instanceof BlockProjectileSource) {
-                        shooterLocation = ((BlockProjectileSource) ((Projectile) e.getDamager()).getShooter()).getBlock().getLocation();
-                    }
+                    Location shooterLocation = getLocation(e);
                     if (shooterLocation != null) {
                         OwnedLand shooterLand = LandManager.getInstance().getLand(shooterLocation);
                         if (shooterLand == null || !shooterLand.isOwnedBy(entityLand.getLandOwner())) {
@@ -264,8 +259,8 @@ public class LandUseListener implements LandAccessChecker, Listener {
             } else {
                 e.setCancelled(true);
             }
-        } else if (e.getDamager() instanceof Creeper && ((Creeper) e.getDamager()).getTarget() instanceof Player) {
-            damager = (Player) ((Creeper) e.getDamager()).getTarget();
+        } else if (e.getDamager() instanceof Creeper creeper && creeper.getTarget() instanceof Player player) {
+            damager = player;
         }
 
         if (damager != null) {
@@ -275,6 +270,17 @@ public class LandUseListener implements LandAccessChecker, Listener {
                 e.setCancelled(true);
             }
         }
+    }
+
+    @Nullable
+    private static Location getLocation(EntityDamageByEntityEvent e) {
+        Location shooterLocation = null;
+        if (((Projectile) e.getDamager()).getShooter() instanceof Entity) {
+            shooterLocation = ((Entity) ((Projectile) e.getDamager()).getShooter()).getLocation();
+        } else if (((Projectile) e.getDamager()).getShooter() instanceof BlockProjectileSource) {
+            shooterLocation = ((BlockProjectileSource) ((Projectile) e.getDamager()).getShooter()).getBlock().getLocation();
+        }
+        return shooterLocation;
     }
 
     @EventHandler(ignoreCancelled = true)

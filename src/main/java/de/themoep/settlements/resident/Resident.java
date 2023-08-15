@@ -128,7 +128,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
             rankPerm = permission.substring("settlements.command.".length());
         }
 
-        if (!hasSettlement() && !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent()) {
+        if (!hasSettlement() && SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isEmpty()) {
             return true;
         }
 
@@ -147,9 +147,9 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
             }
         }
         if (hasSettlement()) {
-            return !getSettlement().getEffectivePermissionValue(getSettlement().getHighestRank(), rankPerm).isPresent();
+            return getSettlement().getEffectivePermissionValue(getSettlement().getHighestRank(), rankPerm).isEmpty();
         }
-        return !SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isPresent();
+        return SettlementRank.getChief().getInheritedPermissionValue(rankPerm).isEmpty();
     }
 
     public boolean hasSettlement() {
@@ -637,7 +637,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public enum Sort implements Sortable.Sort<Resident> {
-        RANK((r1, r2) -> r1.getSettlementRank().compareTo(r2.getSettlementRank())),
+        RANK(Comparator.comparing(Resident::getSettlementRank)),
         LAST_LOGIN((r1, r2) -> Long.compare(r2.getLastLogin(), r1.getLastLogin())),
         ;
 
@@ -921,9 +921,9 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     /**
-     * Toggle whether or not to receive notifications about a certain settlement
+     * Toggle whether to receive notifications about a certain settlement
      * @param settlement The settlement
-     * @return Whether or not the resident will now be receiving notifications
+     * @return Whether the resident will now be receiving notifications
      */
     public boolean toggleCloseBuildingNotification(Settlement settlement) {
         if (isReceivingCloseBuildingNotification(settlement)) {

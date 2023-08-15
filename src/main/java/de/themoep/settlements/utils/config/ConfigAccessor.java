@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Objects;
 import java.util.logging.Level;
 
 public class ConfigAccessor {
@@ -65,11 +66,7 @@ public class ConfigAccessor {
 
     public FileConfiguration getConfig() {
         if (fileConfiguration == null) {
-            if (defaults != null) {
-                return defaults;
-            } else {
-                return new YamlConfiguration();
-            }
+            return Objects.requireNonNullElseGet(defaults, YamlConfiguration::new);
         }
         return fileConfiguration;
     }

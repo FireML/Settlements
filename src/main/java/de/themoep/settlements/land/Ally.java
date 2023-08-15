@@ -50,13 +50,11 @@ public class Ally implements DatabaseSerializable {
     }
 
     public LandOwner getLandOwner() {
-        switch (type) {
-            case "settlement":
-                return SettlementManager.getInstance().getFromId(id);
-            case "empire":
-                return EmpireManager.getInstance().getEmpireFromId(id);
-        }
-        return null;
+        return switch (type) {
+            case "settlement" -> SettlementManager.getInstance().getFromId(id);
+            case "empire" -> EmpireManager.getInstance().getEmpireFromId(id);
+            default -> null;
+        };
     }
 
     public long getCreationDate() {

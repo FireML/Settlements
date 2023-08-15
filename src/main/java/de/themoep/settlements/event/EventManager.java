@@ -158,7 +158,7 @@ public class EventManager implements ConfigMessages {
 
                 Event event = getRandomEventAt(dateTime.get(Calendar.YEAR), dateTime.get(Calendar.DAY_OF_YEAR), hours, minutes);
                 if (event == null) {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not schedule event as " + timeString + " at " + dateTime.getTime().toString() + " as the one selected doesn't exist?");
+                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not schedule event as " + timeString + " at " + dateTime.getTime() + " as the one selected doesn't exist?");
                     continue;
                 }
                 TimerTask task = new TimerTask() {
@@ -168,7 +168,7 @@ public class EventManager implements ConfigMessages {
                             if (activeEvent == null) {
                                 startEvent(event);
                             } else {
-                                SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Automatic event " + event.getId() + " was not run at " + dateTime.getTime().toString() + " as the event " + activeEvent.getId() + " was already running.");
+                                SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Automatic event " + event.getId() + " was not run at " + dateTime.getTime() + " as the event " + activeEvent.getId() + " was already running.");
                             }
                             nextEventTasks.remove(timeString);
                             if (nextEventTasks.isEmpty()) {
@@ -179,7 +179,7 @@ public class EventManager implements ConfigMessages {
                 };
                 nextEventTasks.put(timeString, task);
                 SettlementsPlugin.getTimer().schedule(task, dateTime.getTime());
-                SettlementsPlugin.logDebug("Scheduled event " + event.getId() + "/" + event.getTitle() + " as " + timeString + " event at " + dateTime.getTime().toString());
+                SettlementsPlugin.logDebug("Scheduled event " + event.getId() + "/" + event.getTitle() + " as " + timeString + " event at " + dateTime.getTime());
             } catch (NumberFormatException e) {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Automatic event time " + timeString + " is not in a valid format! " + e.getMessage());
             }
@@ -190,7 +190,7 @@ public class EventManager implements ConfigMessages {
         if (automaticEvents.isEmpty()) {
             return null;
         }
-        long seed = minutes + TimeUnit.HOURS.toMinutes(hours) + TimeUnit.DAYS.toMinutes(dayOfYear) + TimeUnit.DAYS.toMinutes((year - 2000) * 365);
+        long seed = minutes + TimeUnit.HOURS.toMinutes(hours) + TimeUnit.DAYS.toMinutes(dayOfYear) + TimeUnit.DAYS.toMinutes((year - 2000L) * 365);
         return getEvent(automaticEvents.get(new Random(seed).nextInt(automaticEvents.size())));
     }
 
@@ -385,7 +385,7 @@ public class EventManager implements ConfigMessages {
             return;
         }
 
-        EventData ed = eventData.computeIfAbsent(resident.getSettlement().getId(), id -> new EventData(id));
+        EventData ed = eventData.computeIfAbsent(resident.getSettlement().getId(), EventData::new);
         ed.increment(matches, amount);
 
         if (first == null || ed.getTotalAmount() > eventData.get(first.getId()).getTotalAmount()) {

@@ -88,13 +88,12 @@ public class Utils {
     }
 
     public static ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
-        switch (type) {
-            case PREFIX:
-                return ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), ChatColor.WHITE);
-            case MESSAGE:
-                return ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
-        }
-        return ChatColor.WHITE;
+        return switch (type) {
+            case PREFIX ->
+                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), ChatColor.WHITE);
+            case MESSAGE ->
+                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
+        };
     }
 
     public static boolean hasPlotMode(PlotMode mode, String type) {
@@ -142,7 +141,7 @@ public class Utils {
     /**
      * Make sure to run something not on the primary server thread.
      * @param run What to run
-     * @param force Whether or not we should force run this async (only works if the plugin is still running)
+     * @param force Whether we should force run this async (only works if the plugin is still running)
      * @return The BukkitTask that was started or null if we are already on an async thread
      */
     public static BukkitTask runAsync(Runnable run, boolean force) {
@@ -299,7 +298,7 @@ public class Utils {
         }
         StringBuilder sb = new StringBuilder();
         for (String line : string.split("\n")) {
-            if (sb.length() > 0) {
+            if (!sb.isEmpty()) {
                 sb.append("\n");
             }
             if (ChatColor.stripColor(line).length() < length) {
@@ -315,7 +314,7 @@ public class Utils {
                 for (i += 1; i < parts.length; i++) {
                     part2.append(" ").append(parts[i]);
                 }
-                while (part1.length() > 0 && part1.charAt(part1.length() - 1) == ChatColor.COLOR_CHAR
+                while (!part1.isEmpty() && part1.charAt(part1.length() - 1) == ChatColor.COLOR_CHAR
                         || part1.length() > 1 && part1.charAt(part1.length() - 2) == ChatColor.COLOR_CHAR) {
                     if (part1.charAt(part1.length() - 1) == ChatColor.COLOR_CHAR) {
                         part2.insert(0, ChatColor.COLOR_CHAR);
@@ -366,44 +365,42 @@ public class Utils {
             messages.getError("destination-unknown").tell(player, "type", loc == null ? "location" : "world");
             return false;
         }
-        return teleport(messages, player, type, () -> {
-            SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(loc).thenAccept(c -> {
-                if (c == null) {
-                    messages.getError("destination-obstructed").tell(player);
-                    SettlementsPlugin.logDebug("Could not load chunk at " + loc);
-                    return;
-                }
-                Block block = loc.getBlock();
-                Block up;
-                while (block.getY() < block.getWorld().getMaxHeight() && ((up = block.getRelative(BlockFace.UP)).isPassable() || !block.isPassable())) {
-                    block = up;
-                }
-                Block down;
-                while (!(down = block.getRelative(BlockFace.DOWN)).getType().isSolid() && down.getY() > down.getWorld().getMinHeight()) {
-                    block = down;
-                }
-                if (!down.getType().isSolid()) {
-                    messages.getError("destination-obstructed").tell(player);
-                    SettlementsPlugin.logDebug("Location " + loc + " is has no floor");
-                    return;
-                }
+        return teleport(messages, player, type, () -> SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(loc).thenAccept(c -> {
+            if (c == null) {
+                messages.getError("destination-obstructed").tell(player);
+                SettlementsPlugin.logDebug("Could not load chunk at " + loc);
+                return;
+            }
+            Block block = loc.getBlock();
+            Block up;
+            while (block.getY() < block.getWorld().getMaxHeight() && ((up = block.getRelative(BlockFace.UP)).isPassable() || !block.isPassable())) {
+                block = up;
+            }
+            Block down;
+            while (!(down = block.getRelative(BlockFace.DOWN)).getType().isSolid() && down.getY() > down.getWorld().getMinHeight()) {
+                block = down;
+            }
+            if (!down.getType().isSolid()) {
+                messages.getError("destination-obstructed").tell(player);
+                SettlementsPlugin.logDebug("Location " + loc + " is has no floor");
+                return;
+            }
 
-                player.sendBlockChange(down.getLocation(), down.getBlockData());
-                loc.setY(block.getY());
-                SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(player, loc).thenAccept(success -> {
-                    String path = success ? "success" : "fail";
-                    messages.getMessage(path).tell(player, replacements);
-                    new TitleBuilder()
-                            .withTitle(messages.getMessage(path + "-title.title"))
-                            .withSubtitle(messages.getMessage(path + "-title.subtitle"))
-                            .withActionbar(messages.getMessage(path + "-title.actionbar"))
-                            .send(player, replacements);
-                    if (!success) {
-                        SettlementsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);
-                    }
-                });
+            player.sendBlockChange(down.getLocation(), down.getBlockData());
+            loc.setY(block.getY());
+            SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(player, loc).thenAccept(success -> {
+                String path = success ? "success" : "fail";
+                messages.getMessage(path).tell(player, replacements);
+                new TitleBuilder()
+                        .withTitle(messages.getMessage(path + "-title.title"))
+                        .withSubtitle(messages.getMessage(path + "-title.subtitle"))
+                        .withActionbar(messages.getMessage(path + "-title.actionbar"))
+                        .send(player, replacements);
+                if (!success) {
+                    SettlementsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);
+                }
             });
-        });
+        }));
     }
 
     /**
@@ -414,7 +411,7 @@ public class Utils {
         boolean bypassDelay = player.hasPermission("settlements.bypass.teleport-delay");
         if (bypassDelay && !player.hasPermission("settlements.bypass.teleport-cooldown")) {
             long cooldown = TELEPORT_COOLDOWNS.getOrDefault(player.getUniqueId(), 0L)
-                    + Utils.getTeleportCooldown(type) * 1000
+                    + Utils.getTeleportCooldown(type) * 1000L
                     - System.currentTimeMillis();
             if (cooldown > 0) {
                 messages.getError("teleport-cooldown").tell(player, "cooldown", UtilTime.format(cooldown));
@@ -440,17 +437,12 @@ public class Utils {
 
     public static boolean parseBoolean(String arg) throws IllegalArgumentException {
         switch (arg.toLowerCase()) {
-            case "true":
-            case "on":
-            case "allow":
-            case "yes":
+            case "true", "on", "allow", "yes" -> {
                 return true;
-            case "false":
-            case "off":
-            case "deny":
-            case "disallow":
-            case "no":
+            }
+            case "false", "off", "deny", "disallow", "no" -> {
                 return false;
+            }
         }
         throw new IllegalArgumentException(arg + " is not a valid boolean!");
     }

@@ -39,8 +39,8 @@ public class Reward {
             if (!map.containsKey("v")) {
                 map.put("v", Bukkit.getUnsafe().getDataVersion());
             }
-            if (map.get("type") instanceof String) {
-                map.put("type", ((String) map.get("type")).toUpperCase());
+            if (map.get("type") instanceof String string) {
+                map.put("type", string.toUpperCase());
             } else {
                 throw new IllegalArgumentException("Item config does not contain type?");
             }
