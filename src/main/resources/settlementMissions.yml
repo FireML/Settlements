@@ -27,7 +27,7 @@ break_acacia_log:
   mission-points: 1
   type: break
   requirements:
-    acacia_log: 200
+    acacia_log: 128
 break_andesite:
   icon: andesite
   on-settlement-claim: false
@@ -48,7 +48,7 @@ break_birch_log:
   mission-points: 1
   type: break
   requirements:
-    birch_log: 300
+    birch_log: 144
 break_blue_ice:
   icon: blue_ice
   on-settlement-claim: false
@@ -69,7 +69,7 @@ break_cherry_log:
   mission-points: 1
   type: break
   requirements:
-    cherry_log: 200
+    cherry_log: 144
 break_crimson_stem:
   icon: crimson_stem
   on-settlement-claim: false
@@ -83,7 +83,7 @@ break_dark_oak_log:
   mission-points: 1
   type: break
   requirements:
-    dark_oak_log: 300
+    dark_oak_log: 144
 break_deepslate:
   icon: deepslate
   on-settlement-claim: false
@@ -118,7 +118,7 @@ break_end_stone:
   mission-points: 1
   type: break
   requirements:
-    end_stone: 300
+    end_stone: 128
 break_granite:
   icon: granite
   on-settlement-claim: false
@@ -139,14 +139,14 @@ break_jungle_log:
   mission-points: 1
   type: break
   requirements:
-    jungle_log: 300
+    jungle_log: 144
 break_mangrove_log:
   icon: mangrove_log
   on-settlement-claim: false
   mission-points: 1
   type: break
   requirements:
-    mangrove_log: 125
+    mangrove_log: 96
 break_mossy_cobblestone:
   icon: mossy_cobblestone
   on-settlement-claim: false
@@ -160,7 +160,7 @@ break_mushroom_stem:
   mission-points: 1
   type: break
   requirements:
-    mushroom_stem: 300
+    mushroom_stem: 64
 break_mycelium:
   icon: mycelium
   on-settlement-claim: false
@@ -174,7 +174,7 @@ break_oak_log:
   mission-points: 1
   type: break
   requirements:
-    oak_log: 300
+    oak_log: 144
 break_obsidian:
   icon: obsidian
   on-settlement-claim: false
@@ -223,7 +223,7 @@ break_spruce_log:
   mission-points: 1
   type: break
   requirements:
-    spruce_log: 300
+    spruce_log: 144
 break_stone:
   icon: stone
   on-settlement-claim: false
@@ -244,7 +244,7 @@ break_warped_stem:
   mission-points: 1
   type: break
   requirements:
-    warped_stem: 300
+    warped_stem: 144
 
 
         # Harvest section
