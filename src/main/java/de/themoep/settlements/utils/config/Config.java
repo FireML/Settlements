@@ -624,24 +624,6 @@ public class Config {
         }
     }
 
-    public static class Sidebar {
-        @ConfigEntry(reload = false)
-        @ConfigComment("Enable or disable the inbuilt sidebar")
-        public static boolean ENABLED = true;
-
-        @ConfigEntry(old = {"scoreboard.update"}, reload = false)
-        @ConfigComment("Seconds between scoreboard updates")
-        public static int UPDATE = 1;
-
-        @ConfigEntry(old = {"scoreboard.animation-speed"}, reload = false)
-        @ConfigComment("Ticks for the scoreboard header animation (set to 0 to disable it)")
-        public static int HEADER_SPEED = 2;
-
-        @ConfigEntry(old = {"placeholder-api.sidebar"})
-        @ConfigComment("Whether PlaceholderAPI placeholders should be replaced in the sidebar")
-        public static boolean PLACEHOLDER_API = true;
-    }
-
     public static class Titles {
         @ConfigComment("Whether or not to block curses inside player-set settlement/empire titles")
         public static boolean BLOCK_CURSES = true;

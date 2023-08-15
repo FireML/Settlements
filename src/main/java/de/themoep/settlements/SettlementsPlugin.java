@@ -25,7 +25,6 @@ import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.scoreboard.ScoreboardManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementListener;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -388,9 +387,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         }
         if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
             EventManager.load();
-        }
-        if (Config.Sidebar.ENABLED) {
-            ScoreboardManager.load();
         }
         if (Config.Chat.ENABLED) {
             ChatManager.load();

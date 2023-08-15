@@ -181,7 +181,6 @@ public class ConfigManager {
         if (Config.Chat.CHAT_ONLY) {
             Config.Lock.ENABLED = false;
             Config.Portal.ENABLED = false;
-            Config.Sidebar.ENABLED = false;
         } else if (SettlementsPlugin.getInstance().isRunning()) {
             EmpireManager.getInstance().loadConfig();
             SettlementManager.getInstance().loadConfig();

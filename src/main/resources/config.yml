@@ -458,16 +458,6 @@ chat:
       # Replace placeholders in the private message format
       private: true
 
-sidebar:
-  # Enable or disable the inbuilt sidebar
-  enabled: false
-  # Seconds between scoreboard updates
-  update: 1
-  # Ticks for the scoreboard header animation (set to 0 to disable it)
-  header-speed: 0
-  # Whether PlaceholderAPI placeholders should be replaced in the sidebar
-  placeholder-api: true
-
 titles:
   # Whether or not to block curses inside player-set settlement/empire titles
   block-curses: true
