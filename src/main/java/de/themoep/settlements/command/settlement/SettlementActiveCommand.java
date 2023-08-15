@@ -57,7 +57,7 @@ public class SettlementActiveCommand extends SettlementSubCommand {
                         }
                         return Long.compare(r1.getLastLogin(), r2.getLastLogin());
                     })
-                    .skip((finalPage - 1 )* Config.ENTRIES_PER_PAGE)
+                    .skip((long) (finalPage - 1) * Config.ENTRIES_PER_PAGE)
                     .limit(Config.ENTRIES_PER_PAGE)
                     .forEachOrdered(r -> getMessage("entry").tell(sender,
                             "title", r.getSettlementTitle(),

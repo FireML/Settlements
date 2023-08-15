@@ -61,7 +61,7 @@ public class PlotMembersCommand extends PlotSubCommand {
                                 return new Pair<>(id, name);
                             })
                             .sorted((p1, p2) -> p1.getRight().compareToIgnoreCase(p2.getRight()))
-                            .skip((finalPage - 1 ) * Config.ENTRIES_PER_PAGE)
+                            .skip((long) (finalPage - 1) * Config.ENTRIES_PER_PAGE)
                             .limit(Config.ENTRIES_PER_PAGE)
                             .forEach(pair -> getMessage("entry").tell(res, "name", pair.getRight(), "uuid", pair.getLeft().toString()));
 

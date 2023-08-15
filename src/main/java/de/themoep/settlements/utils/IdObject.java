@@ -1,5 +1,7 @@
 package de.themoep.settlements.utils;
 
+import de.themoep.settlements.SettlementsPlugin;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Map;
@@ -21,7 +23,7 @@ public class IdObject {
             try {
                 return new IdObject(((ResultSet) id).getInt(1));
             } catch (SQLException e) {
-                e.printStackTrace();
+                SettlementsPlugin.logException(e);
                 return new IdObject(null);
             }
         if (id instanceof Map map)

@@ -273,7 +273,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
             Statement sta = conn.createStatement();
             sta.execute(sql);
         } catch (SQLException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
     }
 }

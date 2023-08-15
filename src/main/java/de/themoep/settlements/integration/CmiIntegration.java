@@ -41,7 +41,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
             formatStringsField = FormattedCommandAlias.class.getDeclaredField("formatStrings");
             formatStringsField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
     }
 
@@ -76,7 +76,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
                         return;
                     }
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    SettlementsPlugin.logException(e);
                 }
             } else {
                 return;

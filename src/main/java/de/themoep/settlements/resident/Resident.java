@@ -641,7 +641,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         LAST_LOGIN((r1, r2) -> Long.compare(r2.getLastLogin(), r1.getLastLogin())),
         ;
 
-        private Comparator<Resident> comparator;
+        private final Comparator<Resident> comparator;
 
         Sort(Comparator<Resident> comparator) {
             this.comparator = comparator;

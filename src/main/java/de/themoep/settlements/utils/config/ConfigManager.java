@@ -242,7 +242,7 @@ public class ConfigManager {
                         }
                     }
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    SettlementsPlugin.logException(e);
                 } catch (IllegalArgumentException e) {
                     SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Unable to load value of " + path + "! (Was `" + rawValue + "`, expected " + field.getType().getSimpleName() + ".");
                     SettlementsPlugin.logDebug(e.getMessage());
@@ -287,7 +287,7 @@ public class ConfigManager {
     private String getConfigKey(String className) {
         StringBuilder configKey = new StringBuilder();
         for (char c : className.toCharArray()) {
-            if (configKey.length() != 0 && Character.isUpperCase(c)) {
+            if (!configKey.isEmpty() && Character.isUpperCase(c)) {
                 configKey.append('-');
             }
             configKey.append(Character.toLowerCase(c));
@@ -334,7 +334,7 @@ public class ConfigManager {
                         config.set(path, value);
                     }
                 } catch (IllegalAccessException e) {
-                    e.printStackTrace();
+                    SettlementsPlugin.logException(e);
                 }
             }
         }
@@ -405,7 +405,7 @@ public class ConfigManager {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
@@ -414,7 +414,7 @@ public class ConfigManager {
                 writer.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
     }
 
@@ -465,7 +465,7 @@ public class ConfigManager {
         try {
             fileConfiguration.save(file);
         } catch (IOException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
     }
 

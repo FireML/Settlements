@@ -492,12 +492,12 @@ public class LandManager {
     }
 
     public boolean isConnected(OwnedLand land) {
-        return getAllConnectedLand(land, search -> {
+        return !getAllConnectedLand(land, search -> {
             if (search.isOutpost() || search.containsHome()) {
                 return FilterResponse.RETURN;
             }
             return FilterResponse.CONTINUE;
-        }).size() > 0;
+        }).isEmpty();
     }
 
     public void checkClaimDistance(LandOwner source, LandOwner oldAlly) {

@@ -17,9 +17,9 @@ public enum PlotMode implements NameTag {
     explosions(Material.TNT),
     buff(Material.POTION, true),
     embassy(Material.RED_BANNER, AppliesTo.LAND);
-    private Material icon;
+    private final Material icon;
     private final Set<AppliesTo> appliesTo;
-    private boolean defaultValue;
+    private final boolean defaultValue;
 
     PlotMode(Material icon, AppliesTo... appliesTo) {
         this(icon, false, appliesTo);

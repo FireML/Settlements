@@ -33,12 +33,12 @@ public class BitUtils {
 
         if(end > bits.length || start > end) return 0;
         
-        String range = "";
+        StringBuilder range = new StringBuilder();
         for (int i = end; i >= start; i--) {
-            range += (bits[15 - i]) ? 1 : 0;
+            range.append((bits[15 - i]) ? 1 : 0);
         }
         try {
-            return Integer.parseInt(range, 2);
+            return Integer.parseInt(range.toString(), 2);
         } catch (NumberFormatException e) {
             return 0;
         }

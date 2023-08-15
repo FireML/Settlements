@@ -2,6 +2,7 @@ package de.themoep.settlements.utils.adapter;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import de.themoep.settlements.SettlementsPlugin;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -36,14 +37,14 @@ public class SpigotAdapter implements ServerAdapter {
             profileField = skullMeta.getClass().getDeclaredField("profile");
             profileField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
         try {
             Field f = Bukkit.getServer().getClass().getDeclaredField("commandMap");
             f.setAccessible(true);
             commandMap = (CommandMap) f.get(Bukkit.getServer());
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
     }
 

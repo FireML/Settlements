@@ -58,10 +58,6 @@ public class Utils {
         return PERCENTAGE_FORMAT.format(v * 100);
     }
 
-    /**
-     * @deprecated Use {@link LandOwner#canClaim(World)} whenever possible!
-     */
-    @Deprecated
     public static boolean isWorldClaimable(World world) {
         return !Config.Claiming.DISABLED_WORLDS.contains(world.getName())
                 || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
@@ -72,7 +68,7 @@ public class Utils {
             Field f = Config.Teleport.Delay.class.getField(type.toUpperCase());
             return (int) f.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
         return 0;
     }
@@ -82,7 +78,7 @@ public class Utils {
             Field f = Config.Teleport.Cooldown.class.getField(type.toUpperCase());
             return (int) f.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
         return 0;
     }

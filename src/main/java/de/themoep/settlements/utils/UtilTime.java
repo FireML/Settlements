@@ -70,7 +70,7 @@ public class UtilTime {
         DUSK(12000),
         NIGHT(18000);
 
-        private int ticks;
+        private final int ticks;
 
         MinecraftTime(final int ticks) {
             this.ticks = ticks;

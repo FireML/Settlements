@@ -132,7 +132,7 @@ public enum ChatChannel implements NameTag {
     PRIVATE_SENT(true),
     PRIVATE_RECEIVED(true);
 
-    private static Map<String, ChatChannel> BY_ALIAS = new HashMap<>();
+    private static final Map<String, ChatChannel> BY_ALIAS = new HashMap<>();
 
     private List<String> aliases = new ArrayList<>();
 

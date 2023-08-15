@@ -35,10 +35,10 @@ import java.util.logging.Level;
 
 public class LWCIntegration extends JavaModule implements LockProvider, ConfigMessages {
     private final LWC lwc;
-    private final SettlementsPlugin plugin = SettlementsPlugin.getInstance();
 
     public LWCIntegration() {
         this.lwc = LWC.getInstance();
+        SettlementsPlugin plugin = SettlementsPlugin.getInstance();
         lwc.getModuleLoader().registerModule(plugin, this);
         plugin.getLockProviders().add(this);
     }

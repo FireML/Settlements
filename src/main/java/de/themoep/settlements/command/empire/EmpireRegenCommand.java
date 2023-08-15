@@ -24,7 +24,7 @@ public class EmpireRegenCommand extends EmpireSubCommand {
             getError("not-possible").tell(res);
         } else if (empire.isInRegen()) {
             getError("in-progress").tell(res);
-        } else if (Config.Empire.World.REGEN_DURATION > -1 && empire.getCreated() + Config.Empire.World.REGEN_DURATION * 1000 < System.currentTimeMillis()) {
+        } else if (Config.Empire.World.REGEN_DURATION > -1 && empire.getCreated() + Config.Empire.World.REGEN_DURATION * 1000L < System.currentTimeMillis()) {
             getError("no-longer-possible").tell(res, "duration", String.valueOf(TimeUnit.SECONDS.toMinutes(Config.Empire.World.REGEN_DURATION)));
         } else if (EmpireManager.getInstance().regenWorld(empire)) {
             getMessage("success").tell(empire.getOnlineResidents(), "name", empire.getName());

@@ -127,7 +127,6 @@ public class ChatMap {
         private final OwnedLand playerLand;
         private final boolean claimable;
 
-        private Set<SimpleChunkLocation> ownOutposts = new HashSet<>();
         private boolean canClaimCoords = false;
         private boolean canUnclaimCoords = false;
         private boolean canLinkPlot;
@@ -147,6 +146,7 @@ public class ChatMap {
                     for (NamedLocation o : settlement.getOutpostHomes().values()) {
                         OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
                         if (outpostLand != null && !outpostLand.containsHome()) {
+                            Set<SimpleChunkLocation> ownOutposts = new HashSet<>();
                             ownOutposts.addAll(LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
                                 if (search.isOutpost()) {
                                     return LandManager.FilterResponse.SKIP_BRANCH;

@@ -1039,7 +1039,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             }
             sta.executeBatch();
         } catch (SQLException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
     }
 
@@ -1094,7 +1094,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         try {
             closeConnection();
         } catch (SQLException e) {
-            e.printStackTrace();
+            SettlementsPlugin.logException(e);
         }
     }
 
@@ -1699,19 +1699,19 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         deleteSta.executeUpdate();
 
         if (!entries.isEmpty()) {
-            String insertSql = getInsertIgnore() + " INTO " + tablePrefix + tableName + " (" + keyColumn; // TODO: Insert update
+            StringBuilder insertSql = new StringBuilder(getInsertIgnore() + " INTO " + tablePrefix + tableName + " (" + keyColumn); // TODO: Insert update
             Object o = entries.iterator().next();
             if (o instanceof DatabaseSerializable serializable) {
                 Collection<String> keys = serializable.serialize().keySet();
                 for (String key : keys) {
-                    insertSql += ", " + entryColumn + "_" + key;
+                    insertSql.append(", ").append(entryColumn).append("_").append(key);
                 }
-                insertSql += ") VALUES (?, " + String.join(", ", Collections.nCopies(keys.size(), "?")) + ");";
+                insertSql.append(") VALUES (?, ").append(String.join(", ", Collections.nCopies(keys.size(), "?"))).append(");");
             } else {
-                insertSql += ", " + entryColumn + ") VALUES (?,?);";
+                insertSql.append(", ").append(entryColumn).append(") VALUES (?,?);");
             }
 
-            PreparedStatement insertSta = conn.prepareStatement(insertSql);
+            PreparedStatement insertSta = conn.prepareStatement(insertSql.toString());
             for (Object entry : entries) {
                 insertSta.setInt(1, keyId);
                 if (entry instanceof DatabaseSerializable serializable) {

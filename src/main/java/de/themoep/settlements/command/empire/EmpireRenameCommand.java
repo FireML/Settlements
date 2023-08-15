@@ -30,7 +30,7 @@ public class EmpireRenameCommand extends EmpireSubCommand {
             getError("invalid-characters").tell(res, "input", name);
         } else if (empire.isInRegen()) {
             getError("rename-in-progress").tell(res);
-        } else if (empire.getLastRename() + Config.Empire.RENAME_COOLDOWN * 1000 > System.currentTimeMillis()) {
+        } else if (empire.getLastRename() + Config.Empire.RENAME_COOLDOWN * 1000L > System.currentTimeMillis()) {
             getError("rename-on-cooldown").tell(res, "cooldown", String.valueOf(Config.Empire.RENAME_COOLDOWN));
         } else if (EmpireManager.getInstance().changeName(empire, name)){
             getMessage("success").tell(empire.getOnlineResidents(), "name", empire.getName());

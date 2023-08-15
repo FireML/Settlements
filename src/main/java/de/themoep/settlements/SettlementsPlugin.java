@@ -495,4 +495,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             SettlementsPlugin.getInstance().getLogger().info("[DEBUG] " + message);
         }
     }
+
+    public static void logException(Throwable throwable) {
+        instance.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
+    }
 }

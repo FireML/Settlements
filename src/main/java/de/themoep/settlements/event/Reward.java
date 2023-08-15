@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Reward {
-    private final String rewardId;
 
     private final String name;
 
@@ -21,7 +20,6 @@ public class Reward {
     private final List<String> commands;
 
     public Reward(String rewardId, ConfigurationSection config) throws IllegalArgumentException {
-        this.rewardId = rewardId;
         this.name = config.getString("name", rewardId);
         this.money = config.getLong("money", config.getInt("money"));
         if (config.isString("icon")) {
