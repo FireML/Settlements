@@ -106,7 +106,7 @@ events:
       # - itemtype
       # kill:
       # - entityname
-      # distance: Walk, Sneak, Run, Swim, Enderpearl, Rideable entity, etc
+      # distance: Walk, Sneak, Run, Swim, Enderpearl, Rideable entity, etc.
       # - sneak
   dirt:
     worlds:

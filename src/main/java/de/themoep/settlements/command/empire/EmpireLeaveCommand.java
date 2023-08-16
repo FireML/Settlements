@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class EmpireLeaveCommand extends EmpireSubCommand {
 
-    private Cache<UUID, Long> confirm;
+    private final Cache<UUID, Long> confirm;
 
     public EmpireLeaveCommand(SubCommand parent) {
         super(parent, "leave");

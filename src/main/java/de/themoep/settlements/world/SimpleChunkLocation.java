@@ -6,6 +6,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -99,7 +100,7 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
     }
 
     @Override
-    public LinkedHashMap<String, Object> serialize() {
+    public @NotNull LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("x", getX());
         map.put("z", getZ());

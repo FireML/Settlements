@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class ManagementGUI extends SettlementsGUI {
     private final Resident resident;
-    public InventoryGui gui;
+    public final InventoryGui gui;
 
     public ManagementGUI(Resident resident) {
         super("empire.management");

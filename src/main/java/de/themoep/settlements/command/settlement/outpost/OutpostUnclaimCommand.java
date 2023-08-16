@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class OutpostUnclaimCommand extends SettlementSubCommand {
 
-    private Cache<UUID, Runnable> confirm = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+    private final Cache<UUID, Runnable> confirm = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
 
     public OutpostUnclaimCommand(SettlementSubCommand parent) {
         super(parent, "unclaim");

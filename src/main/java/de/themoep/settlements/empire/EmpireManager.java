@@ -42,9 +42,9 @@ public class EmpireManager {
     private final Map<UUID, Empire> empireUuids = new ConcurrentHashMap<>();
     private final Map<String, Empire> empireWorlds = new ConcurrentHashMap<>();
 
-    private List<EmpireLevel> levels = new ArrayList<>();
+    private final List<EmpireLevel> levels = new ArrayList<>();
 
-    private Map<String, EmpireMission> missions = new HashMap<>();
+    private final Map<String, EmpireMission> missions = new HashMap<>();
 
     private Map<String, EmpirePerk> perks;
     private Map<String, EmpirePerk> perkTags;
@@ -498,10 +498,10 @@ public class EmpireManager {
     }
 
     /**
-     * Check whether or not an empire can level up
+     * Check Whether an empire can level up
      * @param empire The Empire to check
      * @param res
-     * @return Whether or not the empire was leveled up
+     * @return Whether the empire was leveled up
      */
     public boolean checkLevelUp(Empire empire, Resident res) {
         if (!empire.canLevelUp()) {

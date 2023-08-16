@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class PlotBuyCommand extends ResidentSubCommand {
-    private Cache<UUID, String> plotBuyTimeout = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+    private final Cache<UUID, String> plotBuyTimeout = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
 
     public PlotBuyCommand(PlotCommand parent) {
         super(parent, "buy");
@@ -48,7 +48,7 @@ public class PlotBuyCommand extends ResidentSubCommand {
                     getError("not-enough-money").tell(res, "amount", String.valueOf(land.getPrice()));
                     return true;
                 }
-                SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(res.getPlayer(), (double) land.getPrice());
+                SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(res.getPlayer(), land.getPrice());
                 land.getLandOwner().setBank(land.getLandOwner().getBank() + land.getPrice());
                 Utils.runAsync(() -> DatabaseManager.getInstance().save(land.getLandOwner()));
             }

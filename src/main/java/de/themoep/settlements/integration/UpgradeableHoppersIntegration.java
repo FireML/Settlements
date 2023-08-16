@@ -1,6 +1,7 @@
 package de.themoep.settlements.integration;
 
 import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
 import me.angeschossen.upgradeablehoppers.api.events.HopperPlaceEvent;
 import org.bukkit.Bukkit;
@@ -16,7 +17,7 @@ public class UpgradeableHoppersIntegration implements Listener {
         Player p = Bukkit.getPlayer(e.getHopperPlayer().getUID());
         if (p != null && !Config.Claiming.DISABLED_WORLDS.contains(hopperLoc.getWorld().getName()) && !LandManager.getInstance().isLandClaimed(hopperLoc)) {
             e.setCancelled(true);
-            p.sendMessage("§cYou cannot place Chunk Hoppers outside of claims.");
+            p.sendMessage(MessageUtils.toComponent("&cYou cannot place Chunk Hoppers outside of claims."));
         }
     }
 }

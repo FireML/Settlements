@@ -7,9 +7,9 @@
 #  in-empire-world: false
 #  # Only count if action occurs on empire claim (should be false when using turn_in)
 #  on-empire-claim: false
-#  # How many mission points the empire receives when the missions was completed
+#  # How many mission points the empire receives when the missions were completed
 #  mission-points: 1
-#  # How many contribution points a empire receives for finishing those
+#  # How many contribution points an empire receives for finishing those
 #  contribution-points: 1
 #  # The type of this mission. Available ones are:
 #  # - turn_in: Deposit items into GUI

@@ -67,7 +67,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
     //   Instance Fields/Methods
     /////////////////
 
-    private Empire empire;
+    private final Empire empire;
 
     public Empire getEmpire() {
         return empire;
@@ -261,7 +261,7 @@ public class EmpireTag implements ObjectTag, Adjustable {
         }
     }
 
-    public static ObjectTagProcessor<EmpireTag> tagProcessor = new ObjectTagProcessor<>();
+    public static final ObjectTagProcessor<EmpireTag> tagProcessor = new ObjectTagProcessor<>();
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

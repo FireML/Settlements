@@ -1,7 +1,6 @@
 package de.themoep.settlements.integration.denizen.objects;
 
 import com.denizenscript.denizen.objects.PlayerTag;
-import com.denizenscript.denizen.scripts.commands.world.CreateWorldCommand;
 import com.denizenscript.denizencore.objects.Adjustable;
 import com.denizenscript.denizencore.objects.Fetchable;
 import com.denizenscript.denizencore.objects.Mechanism;
@@ -75,7 +74,7 @@ public class ResidentTag implements ObjectTag, Adjustable {
     //   Instance Fields/Methods
     /////////////////
 
-    private Resident resident;
+    private final Resident resident;
 
     public Resident getResident() {
         return resident;
@@ -183,7 +182,7 @@ public class ResidentTag implements ObjectTag, Adjustable {
         });
     }
 
-    public static ObjectTagProcessor<ResidentTag> tagProcessor = new ObjectTagProcessor<>();
+    public static final ObjectTagProcessor<ResidentTag> tagProcessor = new ObjectTagProcessor<>();
 
     @Override
     public void adjust(Mechanism mechanism) {

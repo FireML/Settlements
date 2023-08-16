@@ -8,8 +8,8 @@ import java.util.Locale;
 import java.util.Set;
 
 public class NpcLevel extends LevelInfo {
-    private long upkeep;
-    private Set<String> perks = new LinkedHashSet<>();
+    private final long upkeep;
+    private final Set<String> perks = new LinkedHashSet<>();
 
     public NpcLevel(int level, NpcLevel previous, ConfigurationSection config) {
         super(level, previous, config);

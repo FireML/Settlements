@@ -4364,7 +4364,7 @@ command:
       toggled: "&aToggled removing of {name} from containers!&7 Run [&e/lock remove {target} toggle](/lock remove {target} toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled removing of {name} from containers!"
     hoppers:
-      description: Toggle whether or not hoppers are allowed
+      description: Toggle Whether hoppers are allowed
       click-to-toggle: "&aClick a container in the next &e10 seconds&a to toggle hoppers!"
       toggled: "&aToggled lock hopper allowance!&7 Run [&e/lock hoppers toggle](/lock hoppers toggle)&7 again to toggle it off!"
       untoggled: "&7Disabled hopper toggle!"

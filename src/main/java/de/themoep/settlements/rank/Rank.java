@@ -89,7 +89,7 @@ public abstract class Rank<L extends LandOwner, R extends Rankable> implements N
         return permissions.contains(permission);
     }
 
-    public Optional<Boolean> getInheritedPermissionValue(String permission) {
+    public Optional getInheritedPermissionValue(String permission) {
         boolean value = getPermissionValue(permission);
         if (value) {
             return Optional.of(true);
@@ -115,7 +115,7 @@ public abstract class Rank<L extends LandOwner, R extends Rankable> implements N
 
     public Collection<Rank> getParentRanks() {
         List<Rank> ranks = new ArrayList<>();
-        Rank rank = this;
+        Rank<L, R> rank = this;
         while (rank.getParent() != null) {
             ranks.add(rank.getParentRank());
             rank = rank.getParentRank();

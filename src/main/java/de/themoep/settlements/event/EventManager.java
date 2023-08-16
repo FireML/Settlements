@@ -29,11 +29,11 @@ public class EventManager implements ConfigMessages {
 
     private static EventManager instance;
 
-    private Map<String, Event> events = new LinkedHashMap<>();
-    private Map<String, Reward> rewards = new LinkedHashMap<>();
+    private final Map<String, Event> events = new LinkedHashMap<>();
+    private final Map<String, Reward> rewards = new LinkedHashMap<>();
     private List<String> automaticEvents = new ArrayList<>();
 
-    private Map<String, TimerTask> nextEventTasks = new LinkedHashMap<>();
+    private final Map<String, TimerTask> nextEventTasks = new LinkedHashMap<>();
 
     private String bossBarFormat;
     private BarColor bossBarColor = BarColor.YELLOW;
@@ -45,10 +45,10 @@ public class EventManager implements ConfigMessages {
     private BossBar activeBar = null;
     private long activeEventStart = -1;
 
-    private Map<IdObject, EventData> eventData = new HashMap<>();
+    private final Map<IdObject, EventData> eventData = new HashMap<>();
     private Settlement first = null;
     private BukkitTask firstAnnounceTask = null;
-    private Map<IdObject, Set<String>> settlementRewards = new HashMap<>();
+    private final Map<IdObject, Set<String>> settlementRewards = new HashMap<>();
 
 
     private void setup() {
@@ -274,9 +274,9 @@ public class EventManager implements ConfigMessages {
         Utils.runLater(this::finishActiveEvent, activeEvent.getTime(), TimeUnit.SECONDS);
     }
 
-    public boolean finishActiveEvent() {
+    public void finishActiveEvent() {
         if (activeEvent == null) {
-            return false;
+            return;
         }
         if (first != null) {
             getMessage("ended").broadcast(
@@ -326,7 +326,6 @@ public class EventManager implements ConfigMessages {
         activeEventStart = -1;
         activeEvent = null;
         first = null;
-        return true;
     }
 
     public Set<String> getRewards(Settlement settlement) {
@@ -447,10 +446,10 @@ public class EventManager implements ConfigMessages {
         return eventData.values().stream().sorted(Comparator.reverseOrder()).limit(amount).collect(Collectors.toList());
     }
 
-    public class EventData implements Comparable<EventData>{
+    public static class EventData implements Comparable<EventData>{
         private final IdObject id;
         private int totalAmount = 0;
-        private Map<String, Integer> counts = new HashMap<>();
+        private final Map<String, Integer> counts = new HashMap<>();
 
         public EventData(IdObject id) {
             this.id = id;

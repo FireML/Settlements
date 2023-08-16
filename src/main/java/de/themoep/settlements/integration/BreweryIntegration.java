@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class BreweryIntegration implements Listener, ConfigMessages {
-    private P instance;
+    private final P instance;
 
     public BreweryIntegration() {
         instance = P.p;

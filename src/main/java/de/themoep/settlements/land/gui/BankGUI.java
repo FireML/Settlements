@@ -15,6 +15,8 @@ import net.milkbowl.vault.economy.EconomyResponse;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
+
 public class BankGUI extends ConfigurableGui {
 
     public BankGUI(Resident resident, LandOwner<?, ?> landOwner) {
@@ -36,21 +38,21 @@ public class BankGUI extends ConfigurableGui {
                             if (!landOwner.hasUnlocked("donation") && !landOwner.hasPermission(resident, "bank.deposit")) {
                                 getError("no-permission").actionbar(resident);
                                 Utils.runLater(() -> new BankGUI(resident, landOwner).open(), 1);
-                                return AnvilGUI.Response.close();
+                                return Collections.singletonList(AnvilGUI.ResponseAction.close());
                             }
                             try {
                                 long amount = Long.parseLong(text);
                                 if (amount < 0) {
-                                    return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
+                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("not-a-number").getReplacedText("input", text)));
                                 }
                                 if (!SettlementsPlugin.getInstance().getEconomy().has(player, amount)) {
-                                    return AnvilGUI.Response.text(getError("not-enough-money").getReplacedText(
+                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("not-enough-money").getReplacedText(
                                             "amount", String.valueOf(amount)
-                                    ));
+                                    )));
                                 }
                                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) amount);
                                 if (!r2.transactionSuccess()) {
-                                    return AnvilGUI.Response.text("&cAn error occurred, please tell an admin!");
+                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText("&cAn error occurred, please tell an admin!"));
                                 }
                                 landOwner.addToBank(amount);
                                 landOwner.save();
@@ -73,9 +75,9 @@ public class BankGUI extends ConfigurableGui {
                                             "name", landOwner.getName()
                                     );
                                 }
-                                return AnvilGUI.Response.close();
+                                return Collections.singletonList(AnvilGUI.ResponseAction.close());
                             } catch (NumberFormatException e) {
-                                return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
+                                return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("not-a-number").getReplacedText("input", text)));
                             }
                         })
                         .plugin(SettlementsPlugin.getInstance())
@@ -94,15 +96,6 @@ public class BankGUI extends ConfigurableGui {
             gui.addElement(new StaticGuiElement('a', getIcon("balance"), getText("balance",
                     "balance", Utils.CURRENCY_FORMAT.format(landOwner.getBank()),
                     "state", landOwner.getStateTag())));
-
-            /* Remove for now while not working
-            gui.addElement(new StaticGuiElement('s', getIcon("storage"), click -> {
-                // TODO: Storage GUI
-                return true;
-            }, getText("storage",
-                    "state", landOwner.getStateTag(),
-                    "action", landOwner.hasUnlocked("storage") ? getText("unlockables.unlocked.open") : getText("unlockables.locked.npc"))));
-            */
 
             gui.addElement(new StaticGuiElement('h', getIcon("history"), click -> {
                 // TODO: GUI?

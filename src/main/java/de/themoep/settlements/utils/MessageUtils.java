@@ -9,6 +9,9 @@ import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
 import net.Zrips.CMILib.Colors.CMIChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -21,6 +24,19 @@ import java.util.List;
 import java.util.Map;
 
 public class MessageUtils {
+
+    public static Component toComponent(String s, String... replacements) {
+        if (s == null) {
+            return Component.text("");
+        }
+        s = CMIChatColor.colorize(s);
+        s = new Replacer()
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
+                .replace(replacements)
+                .replaceIn(s);
+        return LegacyComponentSerializer.legacySection().deserialize(s.replace('&', '§')).decoration(TextDecoration.ITALIC, false);
+    }
 
     public static void tell(CommandSender sender, Message message, String... replacements) {
         tell(sender, message.getComponents(), replacements);

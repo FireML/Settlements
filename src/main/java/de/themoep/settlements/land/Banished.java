@@ -7,6 +7,7 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.*;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -69,7 +70,7 @@ public class Banished implements DatabaseSerializable, Sortable<Banished> {
     }
 
     @Override
-    public LinkedHashMap<String, Object> serialize() {
+    public @NotNull LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("id", getId().value());
         map.put("date", getBanishDate());

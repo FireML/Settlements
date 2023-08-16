@@ -45,10 +45,10 @@ public class ChatManager implements ConfigMessages, Listener {
 
     private final Replacer notifyReplacer = new Replacer().placeholderPrefix("@").placeholderSuffix("");
 
-    private Map<UUID, UUID> lastMessage = new HashMap<>();
+    private final Map<UUID, UUID> lastMessage = new HashMap<>();
 
     private final static DecimalFormat BALANCE_FORMAT = new DecimalFormat("#,###.##");
-    private Cache<UUID, Boolean> notifyCooldowns = Caffeine.newBuilder().expireAfterAccess(Config.Chat.Notify.COOLDOWN, TimeUnit.SECONDS).build();
+    private final Cache<UUID, Boolean> notifyCooldowns = Caffeine.newBuilder().expireAfterAccess(Config.Chat.Notify.COOLDOWN, TimeUnit.SECONDS).build();
 
     private void setup() {
 

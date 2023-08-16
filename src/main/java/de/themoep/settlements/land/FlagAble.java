@@ -38,13 +38,12 @@ public interface FlagAble extends BuildStateable {
 
     boolean setUseState(Use u, BuildState state);
 
-    default boolean setUseState(UseFlag u, BuildState state) {
+    default void setUseState(UseFlag u, BuildState state) {
         boolean r = false;
         state = u.getDefault(getDefaultBuildState()) == state ? null : state;
         for (Use useType : u.getUseTypes()) {
             r |= setUseState(useType, state);
         }
-        return r;
     }
 
     boolean unsetUseState(UseFlag u);

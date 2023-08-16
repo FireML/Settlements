@@ -15,19 +15,19 @@ public class Perk implements NameTag {
         registerAction("toggle", null, null);
     }
 
-    private String name;
+    private final String name;
     private Material icon = Material.LINGERING_POTION;
 
     private int repeat = 0;
     private long cooldown = 0;
-    private List<PerkEffect> effects = new ArrayList<>();
+    private final List<PerkEffect> effects = new ArrayList<>();
     private int bonusClaims = 0;
     private int bonusOutposts = 0;
-    private List<String> commands;
-    private Collection<String> unlockables = new LinkedHashSet<>();
-    private Map<String, Long> unlockCost = new HashMap<>();
-    private Map<String, Long> repeatCost = new HashMap<>();
-    protected Map<String, Action> actions = new LinkedHashMap<>();
+    private final List<String> commands;
+    private final Collection<String> unlockables = new LinkedHashSet<>();
+    private final Map<String, Long> unlockCost = new HashMap<>();
+    private final Map<String, Long> repeatCost = new HashMap<>();
+    protected final Map<String, Action> actions = new LinkedHashMap<>();
 
     public Perk(ConfigurationSection config) throws IllegalArgumentException {
         if (config == null) {
@@ -183,8 +183,8 @@ public class Perk implements NameTag {
 
     public static class Action implements ActionExecutor, StateQuery, ConfigKey {
         private final String name;
-        private ActionExecutor actionExecutor;
-        private StateQuery stateQuery;
+        private final ActionExecutor actionExecutor;
+        private final StateQuery stateQuery;
 
         public Action(String name, ActionExecutor actionExecutor, StateQuery stateQuery) {
             this.name = name;

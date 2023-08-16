@@ -17,6 +17,8 @@ import de.themoep.settlements.utils.*;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
+
 public class ResidentGUI extends ConfigurableGui {
 
     public ResidentGUI(Resident sender, Resident resident) {
@@ -196,7 +198,7 @@ public class ResidentGUI extends ConfigurableGui {
                         } else {
                             getError("no-permission").tell(player);
                         }
-                        return AnvilGUI.Response.close();
+                        return Collections.singletonList(AnvilGUI.ResponseAction.close());
                     })
                     .plugin(SettlementsPlugin.getInstance())
                     .open(sender.getPlayer());

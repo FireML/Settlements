@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class SettlementRank extends Rank<Settlement, SettlementRank> {
 
-    private Multimap<SettlementState, String> titles = MultimapBuilder.enumKeys(SettlementState.class).arrayListValues().build();
+    private final Multimap<SettlementState, String> titles = MultimapBuilder.enumKeys(SettlementState.class).arrayListValues().build();
 
     public SettlementRank(String name, ConfigurationSection config) {
         super(name, config);

@@ -79,7 +79,7 @@ public class OutpostClaimCommand extends SettlementSubCommand {
                 if (!checkLand.isOwnedBy(resident.getSettlement()) && (
                         !checkLand.getLandOwner().isAlly(resident.getSettlement()) || (
                                 !(checkLand.getLandOwner() instanceof Settlement)
-                                        || !((Settlement) checkLand.getLandOwner()).isAllowAllyClaim()))) {
+                                        || !checkLand.getLandOwner().isAllowAllyClaim()))) {
                     resident.tell(getError("claim-too-close"), "owner", checkLand.getLandOwner().getName());
                     return true;
                 }

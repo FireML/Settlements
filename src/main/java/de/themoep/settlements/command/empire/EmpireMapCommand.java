@@ -37,9 +37,7 @@ public class EmpireMapCommand extends ResidentSubCommand implements Listener {
             return true;
         }
 
-        Utils.runAsync(() -> {
-            new ChatMap(resident.getPlayer(), empire, this);
-        });
+        Utils.runAsync(() -> new ChatMap(resident.getPlayer(), empire, this));
         if (args.length > 0 && "auto".equalsIgnoreCase(args[0])) {
             boolean enable = autoMap.getIfPresent(player.getUniqueId()) == null;
             if (enable) {

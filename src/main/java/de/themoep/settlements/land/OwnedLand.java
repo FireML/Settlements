@@ -20,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.Function;
@@ -30,17 +31,17 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     private IdObject id = IdObject.get(null);
     private LandOwner landOwner;
     private UUID plotOwner = null;
-    private Set<UUID> plotMembers = new HashSet<>();
+    private final Set<UUID> plotMembers = new HashSet<>();
     private int unclaimIn = 0;
     private int price = 0;
     private boolean forSale = false;
     private int tax = 0;
-    private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
+    private final Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private String outpost = null;
     private String name = "";
     private String description = "";
     private BuildState buildState = null;
-    private EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
+    private final EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
     private UUID link;
 
     public OwnedLand(LandOwner landOwner, SimpleChunkLocation location) {
@@ -60,12 +61,11 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         }
     }
 
-    public boolean setUseState(UseFlag useFlag, BuildState state) {
+    public void setUseState(UseFlag useFlag, BuildState state) {
         boolean r = false;
         for (Use u : useFlag.getUseTypes()) {
             r |= setUseState(u, state);
         }
-        return r;
     }
 
     public boolean hasUseState(Use u) {
@@ -395,7 +395,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     @Override
-    public LinkedHashMap<String, Object> serialize() {
+    public @NotNull LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("landOwner", getLandOwner().getName());
         map.put("landOwnerType", getLandOwner().getDbName());

@@ -15,15 +15,15 @@ import java.util.stream.Collectors;
 
 public abstract class SubCommand implements ConfigMessages, Rankable {
     protected static final String PERMISSION_PREFIX = "settlements.command.";
-    private SubCommand parent;
-    private List<String> aliases;
+    private final SubCommand parent;
+    private final List<String> aliases;
     private String usage;
     private String permission = "";
     private boolean visible = true;
-    private String name;
+    private final String name;
 
-    private Map<String, SubCommand> subCommands = new LinkedHashMap<>();
-    private Map<String, SubCommand> subCommandAliases = new LinkedHashMap<>();
+    private final Map<String, SubCommand> subCommands = new LinkedHashMap<>();
+    private final Map<String, SubCommand> subCommandAliases = new LinkedHashMap<>();
     private boolean forceOwnUsage = false;
     private HelpCommand helpCommand = null;
 

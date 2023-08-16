@@ -32,7 +32,7 @@ import java.util.UUID;
  */
 public class ColorUtils {
 
-    private static Color[] colors = {
+    private static final Color[] colors = {
             Color.fromRGB(0, 0, 0),
             Color.fromRGB(0, 0, 170),
             Color.fromRGB(0, 170, 0),
@@ -51,7 +51,7 @@ public class ColorUtils {
             Color.fromRGB(255, 255, 255)
     };
 
-    private static Map<ChatColor, ItemStack> colorHeads = new EnumMap<>(ChatColor.class);
+    private static final Map<ChatColor, ItemStack> colorHeads = new EnumMap<>(ChatColor.class);
 
     static {
         addHead(ChatColor.BLACK, "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOTY3YTJmMjE4YTZlNmUzOGYyYjU0NWY2YzE3NzMzZjRlZjliYmIyODhlNzU0MDI5NDljMDUyMTg5ZWUifX19");

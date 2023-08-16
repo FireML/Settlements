@@ -1,4 +1,4 @@
-package de.themoep.settlements.land.events.Listeners;
+package de.themoep.settlements.land.events.listeners;
 
 import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
 import de.themoep.settlements.land.LandManager;

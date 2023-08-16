@@ -5,6 +5,7 @@ import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -115,7 +116,7 @@ public abstract class Invite<T extends Targetable & DatabaseSerializable, S exte
     }
 
     @Override
-    public LinkedHashMap<String, Object> serialize() {
+    public @NotNull LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("id", id);
         map.put("type", name());

@@ -9,6 +9,7 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Next;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -75,7 +76,7 @@ public class Ally implements DatabaseSerializable {
     }
 
     @Override
-    public LinkedHashMap<String, Object> serialize() {
+    public @NotNull LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("id", getId());
         map.put("created", getCreationDate());
@@ -95,12 +96,11 @@ public class Ally implements DatabaseSerializable {
                 (Boolean) map.get("nearbyClaim"));
     }
 
-    public Ally removeAlly(LandOwner landOwner) {
+    public void removeAlly(LandOwner landOwner) {
         LandOwner ally = getLandOwner();
         if (ally != null) {
-            return ally.removeAlly(landOwner);
+            ally.removeAlly(landOwner);
         }
-        return null;
     }
 
     public int compareTo(Sort sort, Ally other) {

@@ -23,7 +23,7 @@ storage:
   database: live_towny
   table-prefix: settlements_
   url-parameters: ""
-  # MySQL connection timeout in ms
+  # MySQL's connection timeout in ms
   connection-timeout: 30000
   # Should all data be saved again on shutdown? Normally modifications
   # are saved directly, this just makes sure it's all saved!
@@ -74,11 +74,11 @@ claiming:
       # then that will be sent to the player or members of the settlement.
       # Set to 0 to disable
       distance: 4
-      # Whether or not to block building outside the range.
+      # Whether to block building outside the range.
       block-outside: false
-      # Whether or not to block building inside the range.
+      # Whether to block building inside the range.
       block-inside: false
-      # Which blocks are allowed to get built anyways.
+      # Which blocks are allowed to be placed anyway.
       allowed-blocks:
       - "*shulker_box"
       allowed-worlds:
@@ -93,7 +93,7 @@ claiming:
       # How many days to wait before automatically unclaiming claims that are too close when unallying
       # Set to -1 to disable the automatic unclaiming of too close lands
       grace-days: 0
-      # Whether or not outposts are unclaimed
+      # Whether outposts are unclaimed
       outposts: true
       
 settlement:
@@ -122,7 +122,7 @@ settlement:
     kingdom-max-level: 15
 
   missions:
-    # Whether or not settlement missions should be given to residents
+    # Whether settlement missions should be given to residents
     enabled: true
     # Should newly joined residents be granted missions instantly or do they need to wait until the upkeep?
     distribute-on-join: true
@@ -163,7 +163,7 @@ settlement:
     inactive-time: 60
 
 empire:
-  # Whether or not a player can transfer their bought claims to an empire
+  # Whether a player can transfer their bought claims to an empire
   claim-transfer: false
   # How much a settlement must pay to create an empire
   creation-cost: 2000000
@@ -189,7 +189,7 @@ empire:
     max-level: 6
   
   missions:
-    # Whether or not empire missions should be given to empire member settlements
+    # Whether empire missions should be given to empire member settlements
     enabled: true
     # Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?
     distribute-on-join: true
@@ -226,7 +226,7 @@ empire:
     prefix: ''
     # The suffix of all empire worlds. WARNING: Changing this with existing worlds will break them!
     suffix: _Domain
-    # Whether or not worlds should be renamed on empire rename. Might cause issues with some plugins.
+    # Whether worlds should be renamed on empire rename. Might cause issues with some plugins.
     rename: true
     # The environment of the world. Can be normal, nether or the_end
     environment: normal
@@ -238,7 +238,7 @@ empire:
     generator-settings: ''
     # The seed to be used for the generator. Set to empty to use a random one for each world.
     seed: ''
-    # Whether or not to generate structures
+    # Whether to generate structures
     structures: false
     # The radius that an empire world will have by default
     border-radius: 500
@@ -313,7 +313,7 @@ modes:
 lock:
   # Enable or disable the inbuilt locking
   enabled: true
-  # Whether or not locks are only allowed in settlement claims and empire worlds
+  # Whether locks are only allowed in settlement claims and empire worlds
   only-in-claim: false
   # This checks if a block is protected by checking on hopper place
   #  rather than using the InventoryMoveItemEvent stealing of items
@@ -459,11 +459,11 @@ chat:
       private: true
 
 titles:
-  # Whether or not to block curses inside player-set settlement/empire titles
+  # Whether to block curses inside player-set settlement/empire titles
   block-curses: true
 
 chestshop:
-  # Whether or not it is allowed for a settlement's/empire's shop to be sold to if the owner goes below their next upkeep
+  # Whether it is allowed for a settlement's/empire's shop to be sold to if the owner goes below their next upkeep
   allow-selling-below-upkeep: false
   # The seconds between shop transaction notifications
   notification-cooldown: 5

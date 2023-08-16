@@ -3,7 +3,7 @@ package de.themoep.settlements.command.admin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import org.bukkit.ChatColor;
+import de.themoep.settlements.utils.MessageUtils;
 import org.bukkit.command.CommandSender;
 
 public class AdminEmpireLevelCommand extends SubCommand {
@@ -32,11 +32,11 @@ public class AdminEmpireLevelCommand extends SubCommand {
             int oldRadius = empire.getWorldRadius();
             empire.setLevel(level);
 
-            sender.sendMessage(ChatColor.RED + "Set " + empire.getName() + " to " + level);
+            sender.sendMessage(MessageUtils.toComponent("&cSet " + empire.getName() + " to " + level));
 
             if (args.length < 3 || !"false".equalsIgnoreCase(args[2])) {
                 EmpireManager.getInstance().onLevelUp(empire, empire.getChief(), oldRadius);
-                sender.sendMessage(ChatColor.RED + "Triggered level up events!");
+                sender.sendMessage(MessageUtils.toComponent("&cTriggered level up events!"));
             }
             empire.save();
         } catch (NumberFormatException e) {

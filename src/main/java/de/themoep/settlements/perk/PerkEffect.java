@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PerkEffect {
-    private PotionEffectType type;
+    private final PotionEffectType type;
     private int strength = 1;
     private int length = 0;
     private boolean ambient = true;

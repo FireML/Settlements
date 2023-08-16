@@ -1,5 +1,5 @@
 # Explanation: https://wiki.phoenix616.dev/plugin:settlements:config:cursesforced.yml
-# These will always get replaced in chat messages, no matter whether or not the player turned curse filtering off
+# These will always get replaced in chat messages, no matter whether the player turned curse filtering off
 replace-with: "i love you all"
 regexes:
 - "h[i|1]tl[e|3]r"

@@ -63,12 +63,11 @@ public class InviteManager {
         return true;
     }
 
-    private boolean addInvite(SettlementInvite invite) {
+    private void addInvite(SettlementInvite invite) {
         if (invite == null) {
-            return false;
+            return;
         }
         playerInvites.put(invite.getTarget().getUUID(), invite);
-        return true;
     }
 
     public void removeInvite(Resident resident, Settlement settlement) {

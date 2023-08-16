@@ -34,6 +34,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Date;
 import java.util.*;
@@ -45,7 +46,7 @@ import java.util.stream.Collectors;
 
 public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, MissionTaker<SettlementMission>, Sortable<Resident> {
     private IdObject id = IdObject.get(null);
-    private UUID uuid;
+    private final UUID uuid;
     private String name;
     private SettlementRank rank = SettlementRank.getDefault();
     private EmpireRank empireRank = EmpireRank.getDefault();
@@ -53,15 +54,15 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private String empireTitle = null;
     private Settlement settlement = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
-    private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
-    private Table<ChatChannel, ChatColorType, ChatColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
-    private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    private Map<UUID, Friend> friends = new ConcurrentHashMap<>();
-    private Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
+    private final Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
+    private final Table<ChatChannel, ChatColorType, ChatColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
+    private final Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Map<UUID, Friend> friends = new ConcurrentHashMap<>();
+    private final Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
     private boolean swear = true;
     private boolean socialSpy = false;
     private long missionPoints = 0;
-    private Map<String, MissionData> missionData = new LinkedHashMap<>();
+    private final Map<String, MissionData> missionData = new LinkedHashMap<>();
     private int bonusClaims = 0;
     private long lastLogin = 0;
     private long settlementJoin;
@@ -76,7 +77,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private boolean hasEmpireFlight = false;
     private boolean hasMessagesEnabled = true;
     private boolean notifyEnabled = true;
-    private Cache<IdObject, Boolean> closeBuildingNotificationToggles = CacheBuilder.newBuilder()
+    private final Cache<IdObject, Boolean> closeBuildingNotificationToggles = CacheBuilder.newBuilder()
             .expireAfterWrite(Config.Claiming.Close.Building.TOGGLE_TIME, TimeUnit.MINUTES)
             .build();
 
@@ -172,8 +173,8 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return friends.put(friend.getPlayerId(), friend) == null;
     }
 
-    public boolean addFriend(UUID id, String name) {
-        return friends.put(id, new Friend(id, name)) == null;
+    public void addFriend(UUID id, String name) {
+        friends.put(id, new Friend(id, name));
     }
 
     public boolean removeFriend(UUID id) {
@@ -258,13 +259,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return false;
     }
 
-    public boolean removeChannel(ChatChannel channel) {
+    public void removeChannel(ChatChannel channel) {
         if (channels.remove(channel)) {
             Message.get("command.chat.leave.success").tell(this, "name", channel.getTag());
-            return true;
+            return;
         }
         Message.get("command.chat.leave.not-joined").tell(this, "name", channel.getTag());
-        return false;
     }
 
     public ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
@@ -276,8 +276,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return color != null ? color : def;
     }
 
-    public ChatColor setChannelColor(ChatChannel channel, ChatColorType type, ChatColor chatColor) {
-        return chatColor != null ? channelColors.put(channel, type, chatColor) : removeChannelColor(channel, type);
+    public void setChannelColor(ChatChannel channel, ChatColorType type, ChatColor chatColor) {
+        if (chatColor != null) {
+            channelColors.put(channel, type, chatColor);
+        } else {
+            removeChannelColor(channel, type);
+        }
     }
 
     public ChatColor removeChannelColor(ChatChannel channel, ChatColorType type) {
@@ -360,12 +364,10 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return settlement;
     }
 
-    public boolean leaveSettlement() {
+    public void leaveSettlement() {
         if (hasSettlement()) {
             getSettlement().removeMember(this);
-            return true;
         }
-        return false;
     }
 
     public void setSettlementRank(SettlementRank rank) {
@@ -719,7 +721,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     @Override
-    public LinkedHashMap<String, Object> serialize() {
+    public @NotNull LinkedHashMap<String, Object> serialize() {
         if (hasSettlement() && getSettlement().getId().isNull()) {
             throw new IllegalArgumentException("Resident had settlement but settlement has no ID?");
         }

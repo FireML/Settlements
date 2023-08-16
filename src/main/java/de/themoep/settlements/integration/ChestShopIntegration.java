@@ -143,7 +143,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         // No need, ChestShop doesn't store shop information outside of signs
     }
 
-    private int removeInChunk(Chunk chunk) {
+    private void removeInChunk(Chunk chunk) {
         int amount = 0;
         for (BlockState blockState : chunk.getTileEntities()) {
             if (blockState instanceof Sign s && ChestShopSign.isValid(s)) {
@@ -153,7 +153,6 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 amount++;
             }
         }
-        return amount;
     }
 
     @Override
@@ -512,7 +511,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         removeInChunk(event.getLand().getChunk());
     }
 
-    private class ChestShopMessage extends Messages.Message {
+    private static class ChestShopMessage extends Messages.Message {
         private final Message message;
         private final String[] replacements;
 
