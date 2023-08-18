@@ -195,6 +195,10 @@
             <id>OnARandomBox</id>
             <url>https://repo.onarandombox.com/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>firedev-repo</id>
+            <url>https://repo.firedev.uk/repository/maven-public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -352,6 +356,12 @@
             <groupId>com.github.zrips</groupId>
             <artifactId>CMILib</artifactId>
             <version>2f4fe444d6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>uk.firedev</groupId>
+            <artifactId>PoleisLib</artifactId>
+            <version>1.0</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
