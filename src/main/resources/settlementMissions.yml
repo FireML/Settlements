@@ -360,7 +360,7 @@ harvest_vines:
   mission-points: 1
   type: harvest
   requirements:
-    vines: 300
+    vine: 300
 
 
         # Plant section
