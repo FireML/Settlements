@@ -10,7 +10,6 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.HumanReadable;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -23,7 +22,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     private final NpcType type;
     private int level = 0;
     private String npcSkinName = "";
-    private final Map<String, Long> vault = new HashMap<>();
+    private Map<String, Long> vault = new HashMap<>();
     private boolean enabled = false;
 
     public NpcData(int npcId, NpcType type) {
@@ -59,7 +58,7 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     }
 
     @Override
-    public @NotNull LinkedHashMap<String, Object> serialize() {
+    public LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("id", id.value());
         map.put(owner.getDbName() + "Id", owner.getId());

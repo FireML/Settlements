@@ -59,11 +59,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     private UUID chief;
     private Empire empire;
     private SettlementState settlementState;
-    private final Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
-    private final Set<UUID> residents = new LinkedHashSet<>();
+    private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
+    private Set<UUID> residents = new LinkedHashSet<>();
     private long missionPoints = 0;
     private long finishedMissions = 0;
-    private final Map<String, MissionData> missionData = new LinkedHashMap<>();
+    private Map<String, MissionData> missionData = new LinkedHashMap<>();
     private long empireDisband = 0;
 
     protected Settlement() {
@@ -204,14 +204,15 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     @Override
-    public void distributeAdditionalMissions() {
+    public int distributeAdditionalMissions() {
         if (!hasUnlocked("missions")) {
-            return;
+            return -1;
         }
         int distributed = 0;
         for (Resident resident : getResidents()) {
             distributed += distributeAdditionalMissions(resident);
         }
+        return distributed;
     }
 
     @Override
@@ -745,7 +746,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     @Override
-    public @NotNull LinkedHashMap<String, Object> serialize() {
+    public LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = super.serialize();
         map.put("chief", getChiefId());
         map.put("level", getLevel());
@@ -878,10 +879,12 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return Config.Settlement.MAX_AUCTION_TAX;
     }
 
-    public void leaveEmpire() {
+    public boolean leaveEmpire() {
         if (hasEmpire()) {
             getEmpire().removeMember(this);
+            return true;
         }
+        return false;
     }
 
     public boolean isCapital() {

@@ -48,7 +48,10 @@ public class SettlementsEmpireScriptEvent extends BukkitScriptEvent implements L
             return false;
         }
         String type = path.eventArgLowerAt(2);
-        return type.equals("join") || type.equals("leave");
+        if (!type.equals("join") && !type.equals("leave")) {
+            return false;
+        }
+        return true;
     }
 
     @Override

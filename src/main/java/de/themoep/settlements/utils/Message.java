@@ -152,7 +152,7 @@ public class Message {
         MessageUtils.broadcast(this, replacements);
     }
 
-    private static final Map<String, Message> messages = new HashMap<>();
+    private static Map<String, Message> messages = new HashMap<>();
 
     public static Message get(String key) {
         Message message = messages.get(key);
@@ -182,7 +182,7 @@ public class Message {
         messages.clear();
     }
 
-    public static class MessageReplacer extends Replacer {
+    public class MessageReplacer extends Replacer {
         private Message message;
 
         public MessageReplacer(Message message) {

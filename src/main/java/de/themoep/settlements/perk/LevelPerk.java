@@ -4,7 +4,7 @@ import de.themoep.settlements.leveling.Levelable;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class LevelPerk<L extends Levelable<?>> extends Perk {
-    private final int level;
+    private int level;
 
     public LevelPerk(ConfigurationSection config) throws IllegalArgumentException {
         super(config);

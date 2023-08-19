@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 
 public class SignGui {
     private static boolean registered = false;
-    private static final Map<Long, SignGui> signs = new HashMap<>();
+    private static Map<Long, SignGui> signs = new HashMap<>();
 
     private final Consumer<String[]> inputConsumer;
 
@@ -35,7 +35,7 @@ public class SignGui {
         if (!block.isEmpty()) {
             block = block.getRelative(BlockFace.UP);
             if (!block.isEmpty()) {
-                player.sendMessage(MessageUtils.toComponent("&cUnable to open sign editor."));
+                player.sendMessage("Unable to open sign editor.");
                 return;
             }
         }

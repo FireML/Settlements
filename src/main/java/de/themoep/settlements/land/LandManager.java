@@ -32,12 +32,12 @@ import java.util.stream.Collectors;
 public class LandManager {
     private static LandManager instance;
     private final int nearbyRadius;
-    private final Table<String, String, OwnedLand> landTable = HashBasedTable.create();
-    private final Multimap<String, SimpleChunkLocation> nearbyTable = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final Multimap<IdObject, OwnedLand> settlementLands = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final Multimap<IdObject, OwnedLand> empireLands = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final Multimap<UUID, OwnedLand> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Table<String, String, OwnedLand> landTable = HashBasedTable.create();
+    private Multimap<String, SimpleChunkLocation> nearbyTable = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<IdObject, OwnedLand> settlementLands = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<IdObject, OwnedLand> empireLands = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<UUID, OwnedLand> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
+    private Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
 
     private LandManager() {
         nearbyRadius = Config.Claiming.Close.Building.DISTANCE;
@@ -390,6 +390,7 @@ public class LandManager {
             List<OwnedLand> branchFound = new ArrayList<>();
 
             boolean skipBranch = false;
+            BRANCH:
             while (!toSearch.isEmpty()) {
                 SimpleChunkLocation search = Utils.poll(toSearch);
                 OwnedLand foundLand = getLand(search);

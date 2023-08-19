@@ -40,23 +40,27 @@ public interface Vaultable extends DatabaseSerializable {
         return getVault().getOrDefault(key, (long) 0);
     }
 
-    default void add(String key, long amount) {
+    default boolean add(String key, long amount) {
         setAmount(key, getAmount(key) + amount);
+        return true;
     }
 
-    default void add(Map<String, Long> toAdd) {
+    default boolean add(Map<String, Long> toAdd) {
         if (toAdd == null || toAdd.isEmpty()) {
-            return;
+            return false;
         }
         for (Map.Entry<String, Long> entry : toAdd.entrySet()) {
             add(entry.getKey(), entry.getValue());
         }
+        return true;
     }
 
-    default void remove(String key, long amount) {
+    default boolean remove(String key, long amount) {
         if (has(key, amount)) {
             setAmount(key, getAmount(key) - amount);
+            return true;
         }
+        return false;
     }
 
     default boolean remove(Map<String, Long> toRemove) {

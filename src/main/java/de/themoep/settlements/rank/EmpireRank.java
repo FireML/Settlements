@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class EmpireRank extends Rank<Empire, EmpireRank> implements Next<EmpireRank>, Rankable {
 
-    private final List<String> titles;
+    private List<String> titles;
 
     public EmpireRank(String name, ConfigurationSection config) {
         super(name, config);

@@ -21,13 +21,13 @@ public class NpcManager {
 
     private static NpcManager instance;
 
-    private final Table<String, NpcType, NpcConfig> npcConfigs = HashBasedTable.create();
+    private Table<String, NpcType, NpcConfig> npcConfigs = HashBasedTable.create();
 
-    private final Multimap<NpcType, NpcLevel> settlementLevels = MultimapBuilder.enumKeys(NpcType.class).arrayListValues().build();
-    private final Map<String, NpcPerk> settlementPerks = new LinkedHashMap<>();
+    private Multimap<NpcType, NpcLevel> settlementLevels = MultimapBuilder.enumKeys(NpcType.class).arrayListValues().build();
+    private Map<String, NpcPerk> settlementPerks = new LinkedHashMap<>();
 
-    private final Multimap<NpcType, NpcLevel> empireLevels = MultimapBuilder.enumKeys(NpcType.class).arrayListValues().build();
-    private final Map<String, NpcPerk> empirePerks = new LinkedHashMap<>();
+    private Multimap<NpcType, NpcLevel> empireLevels = MultimapBuilder.enumKeys(NpcType.class).arrayListValues().build();
+    private Map<String, NpcPerk> empirePerks = new LinkedHashMap<>();
 
     private void setup() {
         loadConfig();

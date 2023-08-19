@@ -34,7 +34,9 @@ public class EmpireShopCommand extends EmpireSubCommand {
                         resident.getSettlement().getEmpire().unlockPerk(resident, perk);
                         getMessage("success").tell(resident.getSettlement().getEmpire(), "perk", perk.getTag());
                         resident.getSettlement().getEmpire().save();
-                        Utils.runAsync(() -> DatabaseManager.getInstance().log(resident.getSettlement().getEmpire(), resident, "perk-unlock", perk.getUnlockCost()));
+                        Utils.runAsync(() -> {
+                            DatabaseManager.getInstance().log(resident.getSettlement().getEmpire(), resident, "perk-unlock", perk.getUnlockCost());
+                        });
                     } else {
                         getError("not-possible").tell(resident,
                                 "perk", perk.getTag(),

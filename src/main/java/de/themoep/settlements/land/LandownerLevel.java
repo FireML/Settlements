@@ -7,7 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.*;
 
 public abstract class LandownerLevel extends LevelInfo {
-    private final Set<NpcType> npcs = new LinkedHashSet<>();
+    private Set<NpcType> npcs = new LinkedHashSet<>();
     protected final long claimUpkeep;
     protected final Map<String, Long> worldClaimUpkeep = new LinkedHashMap<>();
     private final int chunks;

@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class ConfigManager {
     private static ConfigManager instance;
 
-    private final Map<String, ConfigParser> parsers = new HashMap<>();
+    private Map<String, ConfigParser> parsers = new HashMap<>();
     private static final ConfigParser DEFAULT_PARSER = (TypelessConfigParser) object -> {
         if (object instanceof ConfigurationSection) {
             Map<String, List<String>> map = new HashMap<>();

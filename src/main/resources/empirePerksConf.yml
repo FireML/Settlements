@@ -20,11 +20,11 @@
       # the length of the effect after applying in seconds
       # leave empty or set to -1 (default) to make it indefinite
 #      length: -1
-      # Whether particles should be more translucent (default is true)
+      # Whether or not particles should be more translucent (default is true)
 #      ambient: true
-      # Whether to show potion particles, default is to not show them (false)
+      # Whether or not to show potion particles, default is to not show them (false)
 #      particles: false
-      # Whether to show the icon of the effect
+      # Whether or not to show the icon of the effect
 #      icon: true
 #      apply:
         # Where the effect should happen

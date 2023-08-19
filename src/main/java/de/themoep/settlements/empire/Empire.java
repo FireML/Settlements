@@ -34,7 +34,6 @@ import org.bukkit.World;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -50,7 +49,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     private int level;
     private IdObject capital;
     private String symbol = "";
-    private final Set<IdObject> members = new LinkedHashSet<>();
+    private Set<IdObject> members = new LinkedHashSet<>();
     private boolean inRegen = false;
     private long lastRename = 0;
     private String worldName;
@@ -229,14 +228,15 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public void distributeAdditionalMissions() {
+    public int distributeAdditionalMissions() {
         if (!hasUnlocked("missions")) {
-            return;
+            return -1;
         }
         int distributed = 0;
         for (Settlement member : getMembers()) {
             distributed += distributeAdditionalMissions(member);
         }
+        return distributed;
     }
 
     @Override
@@ -278,7 +278,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public @NotNull LinkedHashMap<String, Object> serialize() {
+    public LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = super.serialize();
         map.put("capitalId", getCapitalId().value());
         map.put("lastRename", getLastRename());
@@ -413,7 +413,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public int compareTo(@NotNull Empire e) {
+    public int compareTo(Empire e) {
         if (isAbandoned()) {
             return -1;
         }

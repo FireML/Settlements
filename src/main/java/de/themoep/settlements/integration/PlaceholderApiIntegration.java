@@ -18,7 +18,6 @@ import me.clip.placeholderapi.PlaceholderAPIPlugin;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import me.clip.placeholderapi.expansion.Relational;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class PlaceholderApiIntegration implements ConfigMessages {
-    private final PlaceholderAPIPlugin apiPlugin;
+    private PlaceholderAPIPlugin apiPlugin;
 
     public PlaceholderApiIntegration() {
         apiPlugin = PlaceholderAPIPlugin.getInstance();
@@ -44,12 +43,12 @@ public class PlaceholderApiIntegration implements ConfigMessages {
         }
 
         @Override
-        public @NotNull String getIdentifier() {
+        public String getIdentifier() {
             return identifier;
         }
 
         @Override
-        public @NotNull String getAuthor() {
+        public String getAuthor() {
             return String.join(", ", SettlementsPlugin.getInstance().getDescription().getAuthors());
         }
 
@@ -57,17 +56,19 @@ public class PlaceholderApiIntegration implements ConfigMessages {
         public boolean persist() { return true; }
 
         @Override
-        public @NotNull String getVersion() {
+        public String getVersion() {
             return SettlementsPlugin.getInstance().getDescription().getVersion();
         }
 
         @Override
         public String onPlaceholderRequest(Player viewer, Player target, String params) {
-            return switch (params.toLowerCase(Locale.ROOT)) {
-                case "relationcolor" -> getRelationColor(viewer, target);
-                case "relation" -> getRelation(viewer, target);
-                default -> null;
-            };
+            switch (params.toLowerCase(Locale.ROOT)) {
+                case "relationcolor":
+                    return getRelationColor(viewer, target);
+                case "relation":
+                    return getRelation(viewer, target);
+            }
+            return null;
         }
 
         @Override

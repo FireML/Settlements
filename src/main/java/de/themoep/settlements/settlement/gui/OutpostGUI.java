@@ -17,7 +17,6 @@ import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
-import java.util.Collections;
 
 public class OutpostGUI extends ConfigurableGui {
 
@@ -49,7 +48,7 @@ public class OutpostGUI extends ConfigurableGui {
                                     }
                                     getError("outpost-not-claimed").tell(resident, "name", outpost.getName(), "state", resident.getSettlement().getStateTag());
                                     Utils.runLater(() -> new OutpostGUI(resident, settlement, outpost), 1);
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.close());
+                                    return AnvilGUI.Response.close();
                                 }
 
                                 String oldName = outpost.getName();
@@ -69,7 +68,7 @@ public class OutpostGUI extends ConfigurableGui {
                             } else {
                                 getError("no-permission").tell(player);
                             }
-                            return Collections.singletonList(AnvilGUI.ResponseAction.close());
+                            return AnvilGUI.Response.close();
                         })
                         .plugin(SettlementsPlugin.getInstance())
                         .open(resident.getPlayer());

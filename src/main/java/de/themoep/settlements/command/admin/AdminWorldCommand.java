@@ -7,6 +7,7 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class AdminWorldCommand extends PlayerSubCommand {
@@ -15,12 +16,12 @@ public class AdminWorldCommand extends PlayerSubCommand {
         registerCommand(new PlayerSubCommand(this, "info") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {
-                player.sendMessage(MessageUtils.toComponent("&aInfo for world " + "&e" + player.getWorld().getName() + "&a" + ":"));
+                player.sendMessage(ChatColor.GREEN + "Info for world " + ChatColor.YELLOW + player.getWorld().getName() + ChatColor.GREEN + ":");
                 Empire empire = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
-                player.sendMessage(MessageUtils.toComponent("&eClaimable: "
-                        + (Utils.isWorldClaimable(player.getWorld()) && empire == null ? "&ayes" : "&cno" + (empire != null ? " (empire world)" : ""))));
-                player.sendMessage(MessageUtils.toComponent("&eEmpire World: "
-                        + (empire != null ? "&ayes (" + empire.getName() + ")" : "&cno")));
+                player.sendMessage(ChatColor.YELLOW + "Claimable: "
+                        + (Utils.isWorldClaimable(player.getWorld()) && empire == null ? ChatColor.GREEN + "yes" : ChatColor.RED + "no" + (empire != null ? " (empire world)" : "")));
+                player.sendMessage(ChatColor.YELLOW + "Empire World: "
+                        + (empire != null ? ChatColor.GREEN + "yes (" + empire.getName() + ")" : ChatColor.RED + "no"));
                 for (PlotMode mode : PlotMode.values()) {
                     if (mode != PlotMode.embassy && mode != PlotMode.buff) {
                         if (empire == null) {
@@ -36,10 +37,10 @@ public class AdminWorldCommand extends PlayerSubCommand {
                             } else {
                                 allowed = Utils.getPlotMode(mode, "unclaimed");
                             }
-                            player.sendMessage(MessageUtils.toComponent("&e" + mode.getTag() + ": "
-                                    + (allowed ? "&ayes" : "&cno") + (Utils.hasPlotMode(mode, "worlds." + player.getWorld().getName()) ? " (world specific)" : "")));
+                            player.sendMessage(ChatColor.YELLOW + mode.getTag() + ": "
+                                    + (allowed ? ChatColor.GREEN + "yes" : ChatColor.RED + "no") + (Utils.hasPlotMode(mode, "worlds." + player.getWorld().getName()) ? " (world specific)" : ""));
                         } else {
-                            player.sendMessage(MessageUtils.toComponent("&e" + mode.getTag() + ": " + (mode.get(empire) ? "&ayes" : "&cno") + " (empire settings)"));
+                            player.sendMessage(ChatColor.YELLOW + mode.getTag() + ": " + (mode.get(empire) ? ChatColor.GREEN + "yes" : ChatColor.RED + "no") + " (empire settings)");
                         }
                     }
                 }

@@ -7,7 +7,6 @@ import de.themoep.settlements.command.settlement.SettlementDepositCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.LogType;
 import de.themoep.settlements.land.gui.BankGUI;
-import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -45,7 +44,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                         EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                         if (r2.transactionSuccess()) {
                             resident.getSettlement().getEmpire().addToBank(deposit);
-                            Levelable<? extends LevelInfo> levelable = SettlementDepositCommand.getLevellable(resident.getSettlement().getEmpire());
+                            Levelable levelable = SettlementDepositCommand.getLevellable(resident.getSettlement().getEmpire());
                             if (levelable != null) {
                                 levelable.checkLevelUp(resident);
                             }

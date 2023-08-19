@@ -11,7 +11,7 @@ public interface MissionProvider<M extends Mission> {
 
     <T extends MissionTaker<M>> int distributeNewMissions(T taker);
 
-    void distributeAdditionalMissions();
+    int distributeAdditionalMissions();
 
     <T extends MissionTaker<M>> int distributeAdditionalMissions(T taker);
 

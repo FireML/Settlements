@@ -15,9 +15,9 @@ import de.themoep.settlements.integration.citizens.CitizensIntegration;
 import de.themoep.settlements.integration.denizen.DenizenIntegration;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.*;
-import de.themoep.settlements.land.events.listeners.LandChangeListener;
-import de.themoep.settlements.land.events.listeners.LandEnterListener;
-import de.themoep.settlements.land.events.listeners.LandLeaveListener;
+import de.themoep.settlements.land.events.Listeners.LandChangeListener;
+import de.themoep.settlements.land.events.Listeners.LandEnterListener;
+import de.themoep.settlements.land.events.Listeners.LandLeaveListener;
 import de.themoep.settlements.lock.LockManager;
 import de.themoep.settlements.lock.LockProvider;
 import de.themoep.settlements.missions.MissionListener;
@@ -73,7 +73,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private final List<Settlement> newlyDeletedSettlements = new ArrayList<>();
     private final List<Empire> newlyAbandonedEmpires = new ArrayList<>();
     private final List<Empire> newlyDeletedEmpires = new ArrayList<>();
-    private final Map<String, Function<Plugin, Boolean>> dependencies = new HashMap<>();
+    private Map<String, Function<Plugin, Boolean>> dependencies = new HashMap<>();
 
     @Override
     public void onDisable() {
@@ -394,18 +394,19 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private void setupChat() {
+    private boolean setupChat() {
         if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
             this.getLogger().log(Level.SEVERE, "Vault is not available?");
-            return;
+            return false;
         }
         RegisteredServiceProvider<Chat> rsp = this.getServer().getServicesManager().getRegistration(Chat.class);
         if (rsp == null) {
             this.getLogger().log(Level.WARNING, "No chat service provider registered!");
-            return;
+            return false;
         }
         chat = rsp.getProvider();
         this.getLogger().log(Level.INFO, "Hooked into chat service provider " + chat.getName() + " " + rsp.getPlugin().getDescription().getVersion());
+        return chat != null;
     }
 
     private boolean setupEconomy() {

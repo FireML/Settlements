@@ -3,7 +3,6 @@ package de.themoep.settlements.perk;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -58,7 +57,7 @@ public class PerkData implements ConfigurationSerializable {
     }
 
     @Override
-    public @NotNull Map<String, Object> serialize() {
+    public Map<String, Object> serialize() {
         return ImmutableMap.of(
                 "times", times,
                 "lastUsed", lastUsed,

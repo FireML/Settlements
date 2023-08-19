@@ -116,7 +116,7 @@ public class HelpCommand extends SubCommand {
                 String base1 = base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : "";
                 getParent().getMessage("usage.head").tell(sender,
                         "type", direct ? "" : WordUtils.capitalizeFully(type) + " ",
-                        "usage", getParent().getUsage(base1),
+                        "usage", getParent().getUsage(base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : ""),
                         "name", WordUtils.capitalizeFully(getParent().name()),
                         "aliases", getParent().getAliases().isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getParent().getAliases())),
                         "path", WordUtils.capitalizeFully(base)
@@ -190,7 +190,7 @@ public class HelpCommand extends SubCommand {
                 });
                 getParent().getMessage("usage.footer").tell(sender,
                         "type", direct ? "" : WordUtils.capitalizeFully(type) + " ",
-                        "usage", getParent().getUsage(base1),
+                        "usage", getParent().getUsage(base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : ""),
                         "name", WordUtils.capitalizeFully(getParent().name()),
                         "aliases", getParent().getAliases().isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getParent().getAliases())),
                         "path", WordUtils.capitalizeFully(base)

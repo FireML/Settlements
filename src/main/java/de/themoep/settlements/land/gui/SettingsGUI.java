@@ -24,7 +24,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Collections;
 import java.util.stream.Collectors;
 
 public class SettingsGUI extends ConfigurableGui {
@@ -49,33 +48,33 @@ public class SettingsGUI extends ConfigurableGui {
                                 String name = Utils.filterAllCurses(text.trim());
                                 if (name.toLowerCase().contains("claims")) {
                                     getError("invalid-characters").tell(player, "input", name);
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("invalid-characters").getReplacedText("input", name)));
+                                    return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", name));
                                 } else if (landOwner instanceof Settlement && SettlementManager.getInstance().getFromName(name) != null) {
                                     getError("settlement-exists").tell(player, "input", name);
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("settlement-exists").getReplacedText("name", name)));
+                                    return AnvilGUI.Response.text(getError("settlement-exists").getReplacedText("name", name));
                                 } else if (landOwner instanceof Settlement && name.length() > Config.Settlement.NAME_LENGTH) {
                                     getError("too-long").tell(player, "input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH));
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("too-long").getReplacedText("input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH))));
+                                    return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH)));
                                 } else if (landOwner instanceof Empire && EmpireManager.getInstance().getEmpireFromName(name) != null) {
                                     getError("empire-exists").tell(player, "input", name);
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("empire-exists").getReplacedText("name", name)));
+                                    return AnvilGUI.Response.text(getError("empire-exists").getReplacedText("name", name));
                                 } else if (landOwner instanceof Empire && name.length() > Config.Empire.NAME_LENGTH) {
                                     getError("too-long").tell(player, "input", name, "amount", String.valueOf(Config.Empire.NAME_LENGTH));
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("too-long").getReplacedText("input", name, "amount", String.valueOf(Config.Empire.NAME_LENGTH))));
+                                    return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", name, "amount", String.valueOf(Config.Empire.NAME_LENGTH)));
                                 } else if (!landOwner.isValidName(name)) {
                                     getError("invalid-characters").tell(player, "input", name);
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("invalid-characters").getReplacedText("input", name)));
+                                    return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", name));
                                 } else if (landOwner.changeName(name)) {
                                     Message.get("command." + landOwner.getKey() + ".rename.success").tell(landOwner, "name", landOwner.getName(), "state", landOwner.getStateTag());
                                     Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1);
                                 } else {
                                     getError("cant-rename").tell(player);
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getErrorText("cant-rename")));
+                                    return AnvilGUI.Response.text(getErrorText("cant-rename"));
                                 }
                             } else {
                                 getError("no-permission").tell(player);
                             }
-                            return Collections.singletonList(AnvilGUI.ResponseAction.close());
+                            return AnvilGUI.Response.close();
                         })
                         .plugin(SettlementsPlugin.getInstance())
                         .open(resident.getPlayer());
@@ -194,7 +193,7 @@ public class SettingsGUI extends ConfigurableGui {
                             } else {
                                 getError("no-permission").tell(player);
                             }
-                            return Collections.singletonList(AnvilGUI.ResponseAction.close());
+                            return AnvilGUI.Response.close();
                         })
                         .plugin(SettlementsPlugin.getInstance())
                         .open(resident.getPlayer());
@@ -254,12 +253,12 @@ public class SettingsGUI extends ConfigurableGui {
                                     }
                                     Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1);
                                 } catch (NumberFormatException e) {
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("not-a-number").getReplacedText("input", text)));
+                                    return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
                                 }
                             } else {
                                 getError("no-permission").tell(player);
                             }
-                            return Collections.singletonList(AnvilGUI.ResponseAction.close());
+                            return AnvilGUI.Response.close();
                         })
                         .plugin(SettlementsPlugin.getInstance())
                         .open(resident.getPlayer());
@@ -299,7 +298,7 @@ public class SettingsGUI extends ConfigurableGui {
                             } else {
                                 getError("no-permission").tell(player);
                             }
-                            return Collections.singletonList(AnvilGUI.ResponseAction.close());
+                            return AnvilGUI.Response.close();
                         })
                         .plugin(SettlementsPlugin.getInstance())
                         .open(resident.getPlayer());

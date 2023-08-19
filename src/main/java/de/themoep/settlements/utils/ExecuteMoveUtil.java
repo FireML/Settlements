@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecuteMoveUtil implements Listener {
     private static ExecuteMoveUtil instance;
-    final Map<UUID, ActionRunnable> scheduled = new HashMap<>();
+    Map<UUID, ActionRunnable> scheduled = new HashMap<>();
 
     public ExecuteMoveUtil() {
         super();
@@ -83,7 +83,7 @@ public class ExecuteMoveUtil implements Listener {
         return instance;
     }
 
-    private abstract static class ActionRunnable extends BukkitRunnable {
+    private abstract class ActionRunnable extends BukkitRunnable {
         private final String action;
 
         public ActionRunnable(String action) {

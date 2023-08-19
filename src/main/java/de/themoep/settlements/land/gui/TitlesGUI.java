@@ -20,7 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Rank<L, R>> extends SettlementsGUI {
@@ -122,23 +121,23 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                     String text = stateSnapshot.getText();
                                     text = ChatColor.stripColor(text);
                                     if (rank.above(landOwner.getRank(resident))) {
-                                        return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("cant-edit-higher").getReplacedText("rank", rank.getTag(landOwner))));
+                                        return AnvilGUI.Response.text(getError("cant-edit-higher").getReplacedText("rank", rank.getTag(landOwner)));
                                     } else if (landOwner.getTitles(rank).size() >= landOwner.getTitlesPerRank()) {
-                                        return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("too-many").getReplacedText(
+                                        return AnvilGUI.Response.text(getError("too-many").getReplacedText(
                                                 "rank", landOwner.getRank(resident).getTag(),
                                                 "max", String.valueOf(landOwner.getTitlesPerRank())
-                                        )));
+                                        ));
                                     } else if (text.length() > 16) {
-                                        return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("too-long").getReplacedText("input", text, "amount", "16")));
+                                        return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", text, "amount", "16"));
                                     } else if (!SettlementTitlesCommand.TITLE_PATTERN.matcher(text).matches()) {
-                                        return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("invalid-characters").getReplacedText("input", text)));
+                                        return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", text));
                                     } else if (Config.Titles.BLOCK_CURSES && Utils.containsAnyCurses(text)) {
-                                        return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("prohibited-words").getReplacedText("input", text)));
+                                        return AnvilGUI.Response.text(getError("prohibited-words").getReplacedText("input", text));
                                     } else if (landOwner.addTitle(rank, text)) {
                                         Message.get("command." + type + ".titles.add.success").tell(resident, "title", text, "rank", rank.getTag(landOwner));
-                                        return Collections.singletonList(AnvilGUI.ResponseAction.close());
+                                        return AnvilGUI.Response.close();
                                     } else {
-                                        return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getError("already-exists").getReplacedText("input", text, "rank", rank.getTag(landOwner))));
+                                        return AnvilGUI.Response.text(getError("already-exists").getReplacedText("input", text, "rank", rank.getTag(landOwner)));
                                     }
                                 })
                                 .plugin(SettlementsPlugin.getInstance())

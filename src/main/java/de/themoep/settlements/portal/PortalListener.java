@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 public class PortalListener implements Listener, ConfigMessages {
 
-    private final Cache<UUID, Long> lastPortalInteract = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build();
+    private Cache<UUID, Long> lastPortalInteract = Caffeine.newBuilder().expireAfterWrite(1, TimeUnit.SECONDS).build();
 
     @EventHandler(ignoreCancelled = true)
     public void onPortalCreate(PortalCreateEvent e) {

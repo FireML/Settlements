@@ -74,6 +74,7 @@ public interface AllyCommand extends LandOwnerCommand {
 
         if (target.equals(source) || target.equals(resident.getSettlement())) {
             resident.tell(getMessage("cant-unally-yourself"));
+        } else if (source.hasAllyRequest(target)) {
 
         } else if (!source.isAlly(target)) {
             getMessage("not-allied").tell(resident, "name", target.getName(), "state", target.getStateTag());

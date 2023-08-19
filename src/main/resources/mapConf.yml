@@ -28,7 +28,7 @@ symbol:
   for-sale: "$"
   # A settlement/empire member's plot
   plot: "p"
-  # And embassy (plot that can be bought by players outside the settlement/empire)
+  # And embassy (plot that can be bought by players outside of the settlement/empire)
   embassy: "e"
   # The claim that contains the settlement/empire home
   home: "H"

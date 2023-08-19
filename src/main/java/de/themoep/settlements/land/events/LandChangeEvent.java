@@ -4,7 +4,6 @@ import de.themoep.settlements.land.OwnedLand;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
-import org.jetbrains.annotations.NotNull;
 
 public class LandChangeEvent extends PlayerEvent {
     private static final HandlerList handlers = new HandlerList();
@@ -21,7 +20,7 @@ public class LandChangeEvent extends PlayerEvent {
 
     public OwnedLand getFrom() { return from; }
 
-    public @NotNull HandlerList getHandlers() { return handlers; }
+    public HandlerList getHandlers() { return handlers; }
 
     public static HandlerList getHandlerList() { return handlers; }
 }

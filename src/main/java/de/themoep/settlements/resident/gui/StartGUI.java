@@ -24,7 +24,6 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -70,22 +69,22 @@ public class StartGUI extends ConfigurableGui {
                             String name = stateSnapshot.getText();
                             name = Utils.filterAllCurses(name.trim());
                             if (name.toLowerCase().contains("claims")) {
-                                return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getErrorText("invalid-characters", "input", name)));
+                                return AnvilGUI.Response.text(getErrorText("invalid-characters", "input", name));
                             } else if (SettlementManager.getInstance().getFromName(name) != null) {
-                                return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getErrorText("settlement-exists", "name", name)));
+                                return AnvilGUI.Response.text(getErrorText("settlement-exists", "name", name));
                             } else if (name.length() > Config.Settlement.NAME_LENGTH) {
-                                return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getErrorText("too-long", "input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH))));
+                                return AnvilGUI.Response.text(getErrorText("too-long", "input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH)));
                             } else if (!Pattern.compile(Config.Settlement.NAME_VALIDATION).matcher(name).matches()) {
-                                return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getErrorText("invalid-characters", "input", name)));
+                                return AnvilGUI.Response.text(getErrorText("invalid-characters", "input", name));
                             }
 
                             if (Config.Settlement.CREATION_COST != 0) {
                                 if (!SettlementsPlugin.getInstance().getEconomy().has(resident.getPlayer(), Config.Settlement.CREATION_COST)) {
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText(getErrorText("not-enough-money", "amount", String.valueOf(Config.Settlement.CREATION_COST))));
+                                    return AnvilGUI.Response.text(getErrorText("not-enough-money", "amount", String.valueOf(Config.Settlement.CREATION_COST)));
                                 }
                                 EconomyResponse r = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) Config.Settlement.CREATION_COST);
                                 if (!r.transactionSuccess()) {
-                                    return Collections.singletonList(AnvilGUI.ResponseAction.replaceInputText("An error occurred, please tell an admin!"));
+                                    return AnvilGUI.Response.text("An error occurred, please tell an admin!");
                                 }
                             }
 
@@ -100,7 +99,7 @@ public class StartGUI extends ConfigurableGui {
                                     "name", settlement.getName(),
                                     "cost", Utils.CURRENCY_FORMAT.format(Config.Settlement.CREATION_COST)
                             );
-                            return Collections.singletonList(AnvilGUI.ResponseAction.close());
+                            return AnvilGUI.Response.close();
                         })
                         .plugin(SettlementsPlugin.getInstance())
                         .open((Player) click.getWhoClicked());

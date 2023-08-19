@@ -15,7 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.permissions.Permission;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,7 +23,7 @@ import java.util.logging.Level;
 
 public class CommandManager implements TabExecutor {
     private static CommandManager instance;
-    private final Map<String, SubCommand> commandMap = new LinkedHashMap<>();
+    private Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
     private void setup() {
         registerCommand(new AdminCommand(), false);
@@ -70,7 +69,7 @@ public class CommandManager implements TabExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, Command command, @NotNull String alias, String[] args) {
+    public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
         SubCommand cmd = getCommand(command.getName());
         if (cmd == null) {
             MessageUtils.tell(sender, "&c&lUnknown command!");
@@ -105,7 +104,7 @@ public class CommandManager implements TabExecutor {
     }
 
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Command command, @NotNull String alias, String[] args) {
+    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         SubCommand cmd = getCommand(command.getName());
         if (cmd != null) {
             return cmd.onTabComplete(sender, alias, args);

@@ -1,7 +1,6 @@
 package de.themoep.settlements.world;
 
 import org.bukkit.Location;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
@@ -42,7 +41,7 @@ public class NamedLocation extends SimpleLocation {
     }
 
     @Override
-    public @NotNull Map<String, Object> serialize() {
+    public Map<String, Object> serialize() {
         Map<String, Object> map = super.serialize();
         map.put("name", getName());
         return map;

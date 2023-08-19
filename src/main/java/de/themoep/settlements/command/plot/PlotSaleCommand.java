@@ -30,7 +30,7 @@ public class PlotSaleCommand extends PlotSubCommand {
             res.tell(getMessage("success"), "price", String.valueOf(land.getPrice()));
         } else {
             try {
-                int price = Integer.parseInt(args[0]);
+                int price = Integer.valueOf(args[0]);
                 if (price < 0) {
                     getError("not-a-number").tell(res, "input", args[0]);
                     return true;

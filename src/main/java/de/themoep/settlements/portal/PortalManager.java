@@ -37,10 +37,10 @@ import java.util.stream.Collectors;
 public class PortalManager {
     private static PortalManager instance;
 
-    private final Map<IdObject, Portal> portals = new HashMap<>();
-    private final Table<String, SimpleBlockLocation, Portal> portalLocations = HashBasedTable.create();
-    private final Multimap<IdObject, IdObject> portalLinks = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final List<Player> portalCooldown = new ArrayList<>();
+    private Map<IdObject, Portal> portals = new HashMap<>();
+    private Table<String, SimpleBlockLocation, Portal> portalLocations = HashBasedTable.create();
+    private Multimap<IdObject, IdObject> portalLinks = MultimapBuilder.hashKeys().hashSetValues().build();
+    private List<Player> portalCooldown = new ArrayList<>();
 
     private void setup() {
         for (Portal portal : DatabaseManager.getInstance().getAllPortals()) {
@@ -236,7 +236,7 @@ public class PortalManager {
         return true;
     }
 
-    public void removePortals(Collection<Portal> toRemove) {
+    public boolean removePortals(Collection<Portal> toRemove) {
         for (Portal portal : toRemove) {
             portalLocations.remove(portal.getLocation().getChunkKey(), portal.getLocation());
             if (portal.getId().isNull()) {
@@ -253,6 +253,7 @@ public class PortalManager {
             portals.remove(portal.getId());
         }
         Utils.runAsync(() -> DatabaseManager.getInstance().deletePortals(toRemove.toArray(new Portal[0])));
+        return true;
     }
 
     public boolean linkPortals(Portal source, Portal target) {

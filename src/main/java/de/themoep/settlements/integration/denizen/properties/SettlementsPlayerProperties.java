@@ -44,7 +44,7 @@ public class SettlementsPlayerProperties implements Property {
         this.resident = ResidentManager.getInstance().getResident(player.getOfflinePlayer());
     }
 
-    final Resident resident;
+    Resident resident;
 
     public static void register() {
 

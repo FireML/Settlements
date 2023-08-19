@@ -66,7 +66,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
     //   Instance Fields/Methods
     /////////////////
 
-    private final Settlement settlement;
+    private Settlement settlement;
 
     public Settlement getSettlement() {
         return settlement;
@@ -284,7 +284,7 @@ public class SettlementTag implements ObjectTag, Adjustable {
         }
     }
 
-    public static final ObjectTagProcessor<SettlementTag> tagProcessor = new ObjectTagProcessor<>();
+    public static ObjectTagProcessor<SettlementTag> tagProcessor = new ObjectTagProcessor<>();
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {

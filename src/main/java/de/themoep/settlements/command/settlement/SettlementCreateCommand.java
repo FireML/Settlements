@@ -16,7 +16,7 @@ import org.bukkit.Bukkit;
 import java.util.regex.Pattern;
 
 public class SettlementCreateCommand extends ResidentSubCommand {
-    private final Pattern allowed = Pattern.compile(Config.Settlement.NAME_VALIDATION);
+    private Pattern allowed = Pattern.compile(Config.Settlement.NAME_VALIDATION);
 
     public SettlementCreateCommand(SubCommand parent) {
         super(parent, "create <name>");

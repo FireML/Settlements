@@ -34,7 +34,7 @@ import java.util.Map;
  */
 public class IconRpMapping {
 
-    private final Map<String, Integer> encodingNames = new HashMap<>();
+    private Map<String, Integer> encodingNames = new HashMap<>();
 
     private final String[] potionids = {
             "unused", 
@@ -54,7 +54,7 @@ public class IconRpMapping {
             "invisibility" 
     };
     
-    private final int offset;
+    private int offset;
 
     public IconRpMapping(JavaPlugin plugin) {
         plugin.getLogger().info("Loading Text Icon Resourcepack mapping...");

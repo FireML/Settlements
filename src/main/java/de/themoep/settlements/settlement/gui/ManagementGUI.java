@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class ManagementGUI extends SettlementsGUI {
     private final Resident resident;
-    public final InventoryGui gui;
+    public InventoryGui gui;
 
     public ManagementGUI(Resident resident) {
         super("settlement.management");

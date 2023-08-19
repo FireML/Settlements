@@ -578,8 +578,8 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         @Persist(value = "ownerId", required = true)
         private int ownerId;
 
-        private final Map<UUID, Long> speakCooldown = new HashMap<>();
-        private final Multimap<UUID, String> spokenMessages = MultimapBuilder.hashKeys().hashSetValues().build();
+        private Map<UUID, Long> speakCooldown = new HashMap<>();
+        private Multimap<UUID, String> spokenMessages = MultimapBuilder.hashKeys().hashSetValues().build();
 
         public LandOwner<?, ?> getOwner() {
             if ("settlement".equals(ownerType)) {
@@ -612,7 +612,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                 return;
             }
 
-            LandOwner<?, ?> landOwner = getOwner();
+            LandOwner landOwner = getOwner();
             if (landOwner == null) {
                 npc.despawn();
                 CitizensAPI.getNPCRegistry().deregister(npc);

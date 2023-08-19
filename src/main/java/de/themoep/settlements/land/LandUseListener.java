@@ -209,6 +209,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
+            e.getPlayer().updateInventory();
         }
     }
 
@@ -218,6 +219,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), response.getRight());
             e.setCancelled(true);
+            e.getPlayer().updateInventory();
         }
     }
 

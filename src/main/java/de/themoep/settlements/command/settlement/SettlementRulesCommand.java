@@ -38,6 +38,7 @@ public class SettlementRulesCommand extends SettlementSubCommand {
 
         String rules = resident.getSettlement().getRules();
         if (rules.length() > Config.MAX_RULES_LENGTH) {
+            rules = rules.substring(0, Config.MAX_RULES_LENGTH);
         }
 
         String rawRules = Message.get("rules.book-text").getReplacedText(

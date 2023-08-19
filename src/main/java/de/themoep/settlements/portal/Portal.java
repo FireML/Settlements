@@ -18,7 +18,7 @@ public class Portal implements DatabaseSerializable {
     private final SimpleBlockLocation location;
     private final BlockFace direction;
 
-    private final Set<IdObject> links = new LinkedHashSet<>();
+    private Set<IdObject> links = new LinkedHashSet<>();
 
 
     public Portal(SimpleBlockLocation location, BlockFace direction) {

@@ -28,7 +28,7 @@ public class LandPerks {
 
     /**
      * Update the effects for all players at the location that they are in
-     * @param refresh Whether the updating is a result of a refresh or just granting a new effect.
+     * @param refresh Whether or not the updating is a result of a refresh or just granting a new effect.
      *                Refreshing will not give effects with a non-permanent duration.
      */
     public void updateEffects(boolean refresh) {

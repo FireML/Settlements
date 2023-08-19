@@ -4,7 +4,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
@@ -47,7 +46,7 @@ public class SettlementDonateCommand extends ResidentSubCommand {
                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) donate);
                 if (r2.transactionSuccess()) {
                     settlement.addToBank(donate);
-                    Levelable<? extends LevelInfo> levelable = SettlementDepositCommand.getLevellable(settlement);
+                    Levelable levelable = SettlementDepositCommand.getLevellable(settlement);
                     if (levelable != null) {
                         levelable.checkLevelUp(resident);
                     }

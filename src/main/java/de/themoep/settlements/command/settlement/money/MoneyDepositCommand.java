@@ -5,7 +5,6 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.settlement.SettlementDepositCommand;
 import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Utils;
@@ -37,7 +36,7 @@ public class MoneyDepositCommand extends SettlementSubCommand {
                 if (r2.transactionSuccess()) {
                     resident.getSettlement().addToBank(deposit);
                     resident.addDonated(deposit);
-                    Levelable<? extends LevelInfo> levelable = SettlementDepositCommand.getLevellable(resident.getSettlement());
+                    Levelable levelable = SettlementDepositCommand.getLevellable(resident.getSettlement());
                     if (levelable != null) {
                         levelable.checkLevelUp(resident);
                     }

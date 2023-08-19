@@ -38,9 +38,9 @@ public class ConfigAccessor {
     private final String fileName;
     protected final Plugin plugin;
 
-    private final File configFile;
+    private File configFile;
     private FileConfiguration fileConfiguration;
-    private final FileConfiguration defaults;
+    private FileConfiguration defaults;
 
     public ConfigAccessor(Plugin plugin, String fileName) {
         if (plugin == null)

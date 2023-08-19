@@ -6,6 +6,7 @@ import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -126,11 +127,11 @@ public class Utils {
     /**
      * Make sure to run something not on the primary server thread.
      * A new task is started if this is the primary thread, if not the current one is used!
-     *
      * @param run What to run
+     * @return The BukkitTask that was started or null if we are already on an async thread
      */
-    public static void runAsync(Runnable run) {
-        runAsync(run, false);
+    public static BukkitTask runAsync(Runnable run) {
+        return runAsync(run, false);
     }
 
     /**
@@ -151,24 +152,25 @@ public class Utils {
     /**
      * Make sure to run something on the primary server thread.
      * A new task is started if this is not the primary thread, if not the main one is used!
-     *
      * @param run What to run
+     * @return The BukkitTask that was started or null if we are already on the main thread
      */
-    public static void runSync(Runnable run) {
+    public static BukkitTask runSync(Runnable run) {
         if (!Bukkit.isPrimaryThread()) {
-            Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), run);
+            return Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), run);
         } else {
             run.run();
         }
+        return null;
     }
 
     /**
      * Run something in the next tick on the primary server thread.
-     *
      * @param run What to run
+     * @return The BukkitTask that was started
      */
-    public static void runNextTick(Runnable run) {
-        Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), run);
+    public static BukkitTask runNextTick(Runnable run) {
+        return Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), run);
     }
 
     /**
@@ -183,12 +185,12 @@ public class Utils {
 
     /**
      * Run something later on the primary server thread.
-     *
-     * @param run    What to run
-     * @param amount The amount of time to wait
-     * @param unit   The time unit the amount is in
+     * @param run       What to run
+     * @param amount    The amount of time to wait
+     * @param unit      The time unit the amount is in
+     * @return The TimerTask that was started
      */
-    public static void runLater(Runnable run, long amount, TimeUnit unit) {
+    public static TimerTask runLater(Runnable run, long amount, TimeUnit unit) {
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
@@ -196,6 +198,7 @@ public class Utils {
             }
         };
         SettlementsPlugin.getTimer().schedule(task, unit.toMillis(amount));
+        return task;
     }
 
     /**
@@ -351,13 +354,14 @@ public class Utils {
 
     /**
      * Teleports a player. Checks cooldown and delay bypass permissions
+     * @return false if teleport occurred instantly and no wait task was started
      */
-    public static void teleport(ConfigMessages messages, Player player, Location loc, String type, String... replacements) {
+    public static boolean teleport(ConfigMessages messages, Player player, Location loc, String type, String... replacements) {
         if (loc == null || loc.getWorld() == null) {
             messages.getError("destination-unknown").tell(player, "type", loc == null ? "location" : "world");
-            return;
+            return false;
         }
-        teleport(messages, player, type, () -> SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(loc).thenAccept(c -> {
+        return teleport(messages, player, type, () -> SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(loc).thenAccept(c -> {
             if (c == null) {
                 messages.getError("destination-obstructed").tell(player);
                 SettlementsPlugin.logDebug("Could not load chunk at " + loc);
@@ -582,11 +586,12 @@ public class Utils {
         return playerId.toString();
     }
 
-    public static void callEvent(Event event) {
+    public static boolean callEvent(Event event) {
         SettlementsPlugin.getInstance().getServer().getPluginManager().callEvent(event);
         if (event instanceof Cancellable) {
-            ((Cancellable) event).isCancelled();
+            return ((Cancellable) event).isCancelled();
         }
+        return false;
     }
 
     public static <R> void addAmount(Map<R, Long> m, R r, Long amount) {

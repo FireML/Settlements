@@ -63,7 +63,7 @@ public class SettlementListCommand extends SubCommand {
             List<Settlement> settlements = SettlementManager.getInstance().getSettlements().stream()
                     .filter(finalFilter)
                     .sorted(Settlement::compareTo)
-                    .toList();
+                    .collect(Collectors.toList());
 
             int pages = (int) Math.ceil(settlements.size() / (double) Config.ENTRIES_PER_PAGE);
             getMessage("head").tell(sender,

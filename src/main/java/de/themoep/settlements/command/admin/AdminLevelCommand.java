@@ -4,7 +4,7 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
-import de.themoep.settlements.utils.MessageUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class AdminLevelCommand extends SubCommand {
@@ -34,11 +34,11 @@ public class AdminLevelCommand extends SubCommand {
             settlement.setState(state);
             settlement.setLevel(level);
 
-            sender.sendMessage(MessageUtils.toComponent("&cSet " + settlement.getName() + " to " + state.getTag() + "/" + level));
+            sender.sendMessage(ChatColor.RED + "Set " + settlement.getName() + " to " + state.getTag() + "/" + level);
 
             if (args.length < 4 || !"false".equalsIgnoreCase(args[3])) {
                 SettlementManager.getInstance().onLevelUp(settlement, settlement.getChief());
-                sender.sendMessage(MessageUtils.toComponent("&cTriggered level up events!"));
+                sender.sendMessage(ChatColor.RED + "Triggered level up events!");
             }
             settlement.save();
         } catch (NumberFormatException e) {

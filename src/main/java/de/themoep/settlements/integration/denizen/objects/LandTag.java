@@ -72,7 +72,7 @@ public class LandTag implements ObjectTag {
     //   Instance Fields/Methods
     /////////////////
 
-    private final OwnedLand land;
+    private OwnedLand land;
 
     public OwnedLand getLand() {
         return land;
@@ -148,7 +148,7 @@ public class LandTag implements ObjectTag {
         });
     }
 
-    public static final ObjectTagProcessor<LandTag> tagProcessor = new ObjectTagProcessor<>();
+    public static ObjectTagProcessor<LandTag> tagProcessor = new ObjectTagProcessor<>();
 
     @Override
     public ObjectTag getObjectAttribute(Attribute attribute) {
