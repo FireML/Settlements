@@ -76,7 +76,7 @@ break_crimson_stem:
   mission-points: 1
   type: break
   requirements:
-    crimson_stem: 300
+    crimson_stem: 144
 break_dark_oak_log:
   icon: dark_oak_log
   on-settlement-claim: false
