@@ -67,6 +67,9 @@ public class InviteManager {
         if (invite == null) {
             return false;
         }
+        if (invite.getTarget() == null) {
+            return false;
+        }
         playerInvites.put(invite.getTarget().getUUID(), invite);
         return true;
     }
