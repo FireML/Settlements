@@ -1,7 +1,7 @@
 package de.themoep.settlements.integration;
 
 import com.dre.brewery.BPlayer;
-import com.dre.brewery.P;
+import com.dre.brewery.Brewery;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.events.ChannelChatEvent;
 import de.themoep.settlements.utils.ConfigMessages;
@@ -10,10 +10,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 public class BreweryIntegration implements Listener, ConfigMessages {
-    private P instance;
+    private Brewery instance;
 
     public BreweryIntegration() {
-        instance = P.p;
+        instance = Brewery.getInstance();
         SettlementsPlugin.getInstance().registerListener(this);
     }
 
@@ -32,7 +32,7 @@ public class BreweryIntegration implements Listener, ConfigMessages {
         }
     }
 
-    public P getBrewery() {
+    public Brewery getBrewery() {
         return instance;
     }
 
