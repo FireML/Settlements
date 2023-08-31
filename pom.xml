@@ -350,7 +350,7 @@
         <dependency>
             <groupId>com.github.angeschossen</groupId>
             <artifactId>UpgradeableHoppersAPI</artifactId>
-            <version>4.13.5</version>
+            <version>4.13.10</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
