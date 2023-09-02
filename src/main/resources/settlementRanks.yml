@@ -108,6 +108,7 @@ ranks:
   chief:
     icon: netherite_chestplate
     permissions:
+    - settlement.togglenpc
     - settlement.group.manage-res
     - settlement.kick
     - settlement.titles
