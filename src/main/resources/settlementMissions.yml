@@ -427,7 +427,7 @@ place_melon_seed:
   mission-points: 1
   type: place
   requirements:
-    melon_seed: 25
+    melon_stem: 25
 place_oak_sapling:
   icon: oak_sapling
   on-settlement-claim: false
@@ -448,7 +448,7 @@ place_pumpkin_seed:
   mission-points: 1
   type: place
   requirements:
-    pumpkin_seed: 25
+    pumpkin_stem: 25
 place_spruce_sapling:
   icon: spruce_sapling
   on-settlement-claim: false
