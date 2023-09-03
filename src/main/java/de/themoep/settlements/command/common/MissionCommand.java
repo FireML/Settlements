@@ -28,6 +28,7 @@ public interface MissionCommand<M extends Mission> extends ConfigMessages {
                     confirmation.remove(resident);
                 }
             }.runTaskLater(SettlementsPlugin.getInstance(), 100L);
+            return;
         }
 
          confirmation.remove(resident);
