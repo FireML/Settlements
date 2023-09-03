@@ -3339,9 +3339,10 @@ command:
       wait-for-missions: "&cYou do not have any missions from your {state} yet. Wait for the next distribution!"
       description: View missions available to your settlement
       redistribute:
+        confirm: "&eThe redistribution cost is ☧ {price}. &ePlease run this command again within 5 seconds to continue."
         success: "&eGot {amount} new missions for ☧ {price}"
         fail: "&cUnable to distribute new missions. Please complete your started ones!"
-        description: Get new new missions for a price
+        description: Get new missions for a price
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Settlement mode &6{mode}&7: &6{value}"
