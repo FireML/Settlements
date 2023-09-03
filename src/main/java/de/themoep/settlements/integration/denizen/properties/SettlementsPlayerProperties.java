@@ -7,10 +7,6 @@ import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.utils.Utils;
-import org.bukkit.OfflinePlayer;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class SettlementsPlayerProperties implements Property {
 
@@ -45,7 +41,7 @@ public class SettlementsPlayerProperties implements Property {
     };
 
     public SettlementsPlayerProperties(PlayerTag player) {
-        this.resident = getResident(player.getOfflinePlayer());
+        this.resident = ResidentManager.getInstance().getResident(player.getOfflinePlayer());
     }
 
     Resident resident;
@@ -60,14 +56,5 @@ public class SettlementsPlayerProperties implements Property {
         // Returns the Player's ResidentTag
         // -->
         PropertyParser.registerTag(SettlementsPlayerProperties.class, ResidentTag.class, "resident", (attribute, object) -> new ResidentTag(object.resident));
-    }
-
-    private Resident getResident(OfflinePlayer player) {
-        for (Resident res : ResidentManager.getInstance().getCachedResidents()) {
-            if (res.getPlayer() == player) {
-                return res;
-            }
-        }
-        return null;
     }
 }
