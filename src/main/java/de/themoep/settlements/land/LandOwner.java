@@ -183,8 +183,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
             }
         }
         for (Perk perk : NpcManager.getInstance().getPerks(this)) {
-            if (perk.getUnlockables().contains(unlockable.toLowerCase(Locale.ROOT))
-                    && hasUnlocked(perk)) {
+            if (perk.getUnlockables().contains(unlockable.toLowerCase(Locale.ROOT))) {
                 return true;
             }
         }
