@@ -474,14 +474,6 @@ place_wheat_seeds:
 
         # Kill section
 
-kill_camel:
-  icon: saddle
-  in-empire-world: true
-  on-empire-claim: false
-  mission-points: 1
-  type: kill
-  requirements:
-    camel: 20
 kill_cave_spider:
   icon: spider_eye
   on-settlement-claim: false
