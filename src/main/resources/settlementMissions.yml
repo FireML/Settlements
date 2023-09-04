@@ -462,7 +462,7 @@ place_torchflower:
   mission-points: 1
   type: place
   requirements:
-    torchflower: 100
+    torchflower_seeds: 16
 place_wheat_seeds:
   icon: wheat_seeds
   on-settlement-claim: false
