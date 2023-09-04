@@ -337,6 +337,7 @@ lock:
   - lever
   - note_block
   - jukebox
+  - barrel
   unclaim:
     # Remove all locks in a chunk when it gets unclaimed
     remove: true

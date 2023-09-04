@@ -204,7 +204,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             newlyAbandonedEmpires.clear();
             newlyDeletedEmpires.clear();
 
-            for (Empire empire : new ArrayList<>(EmpireManager.getInstance().getEmpires())) {
+            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
                 empire.doUpkeep();
             }
 
