@@ -399,7 +399,7 @@ place_cocoa_beans:
   mission-points: 1
   type: place
   requirements:
-    cocoa: 100
+    cocoa_beans: 100
 place_dark_oak_sapling:
   icon: dark_oak_sapling
   on-settlement-claim: false
@@ -441,7 +441,7 @@ place_pitcher_pod:
   mission-points: 1
   type: place
   requirements:
-    pitcher_pod: 16
+    pitcher_crop: 16
 place_pumpkin_seed:
   icon: pumpkin_seeds
   on-settlement-claim: false
