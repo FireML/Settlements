@@ -51,7 +51,7 @@ village:
     chunks: 40
     outposts: 1
     # The amount of settlement missions available to residents per day
-    missions: 2
+    missions: 3
     extra-missions: 1
     size: 10
     # To get to Level 2 Village
@@ -74,7 +74,7 @@ village:
       Kingdoms_the_end: 920
     chunks: 60
     outposts: 1
-    missions: 3
+    missions: 4
     extra-missions: 1
     size: 17
     # To get to Level 3 Village
@@ -97,7 +97,7 @@ village:
       Kingdoms_the_end: 880
     chunks: 80
     outposts: 2
-    missions: 4
+    missions: 5
     extra-missions: 2
     size: 25
     # To get to Level 4 Village
@@ -121,7 +121,7 @@ village:
       Kingdoms_the_end: 840
     chunks: 100
     outposts: 3
-    missions: 5
+    missions: 6
     extra-missions: 3
     size: -1
     # To get to Level 5 Village
@@ -147,7 +147,7 @@ kingdom:
       Kingdoms_the_end: 800
     chunks: 150
     outposts: 4
-    missions: 6
+    missions: 7
     extra-missions: 3
     # To get to Level 1 Kingdom
     requirements:
@@ -173,7 +173,7 @@ kingdom:
       Kingdoms_the_end: 760
     chunks: 175
     outposts: 4
-    missions: 7
+    missions: 8
     extra-missions: 4
     # To get to Level 2 Kingdom
     requirements:
@@ -200,7 +200,7 @@ kingdom:
       Kingdoms_the_end: 720
     chunks: 200
     outposts: 6
-    missions: 8
+    missions: 9
     extra-missions: 5
     # To get to Level 3 Kingdom
     requirements:

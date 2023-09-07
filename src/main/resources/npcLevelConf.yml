@@ -2,86 +2,22 @@
 
 settlement:
   manager:
-    level-1:
-      # Npc upkeep per level
-      upkeep: 0
-      perks:
-        allies:
-          unlockables:
-            - allies
-            - command.allyclaim
-        mail:
-          unlockables:
-            - command.mail
-        manager-command:
-          unlockables:
-            - command.settings
-            - command.perms
-            - command.build
-            - command.access
-            - command.privacy
-            - command.setdescription
-            - command.discord.set
-            - command.joinfee.set
-            - command.mode
-            - command.ranks
-            - command.setrank
-            - command.setrecruitment
-            - command.titles
-        npc-skin-command:
-          unlockables:
-            - command.npc.skin # TODO
+    level-1: {}
 
   quarter-master:
-    level-1:
-      perks:
-        upgrade-command:
-          unlockables:
-            - command.upgrade
-
+    level-1: {}
+    
   banker:
-    level-1:
-      perks:
-        storage:
-          unlockables:
-            - storage
-        bank-command:
-          unlockables:
-            - command.bank
-            - command.tax.set
-            - command.tax.action
-            - command.auctiontax.set
-        donations:
-          unlockables:
-            - command.donate
+    level-1: {}
 
   elder:
-    level-1:
-      perks:
-        recruitment:
-          unlockables:
-          - recruitment
-        missions:
-          unlockables:
-          - missions
-        recruitment-command:
-          unlockables:
-            - command.recruitment
-            - command.missions
+    level-1: {}
 
   traveling-merchant:
-    level-1:
-      perks:
-        outpost-teleport-command:
-          unlockables:
-            - command.outpost.teleport
+    level-1: {}
 
   black-market:
-    level-1:
-      perks:
-        shop-command:
-          unlockables:
-            - command.shop
+    level-1: {}
 
   auctioneer:
     level-1: {}

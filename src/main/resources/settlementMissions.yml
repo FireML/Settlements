@@ -441,7 +441,7 @@ place_pitcher_pod:
   mission-points: 1
   type: place
   requirements:
-    pitcher_pod: 16
+    pitcher_crop: 16
 place_pumpkin_seed:
   icon: pumpkin_seeds
   on-settlement-claim: false
