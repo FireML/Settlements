@@ -283,7 +283,7 @@ harvest_cocoa:
   mission-points: 1
   type: harvest
   requirements:
-    cocoa_beans: 300
+    cocoa: 300
 harvest_glow_berries:
   icon: glow_berries
   on-settlement-claim: false
@@ -378,7 +378,7 @@ place_beetroot_seeds:
   mission-points: 1
   type: place
   requirements:
-    beetroot_seeds: 100
+    beetroots: 100
 place_birch_sapling:
   icon: birch_sapling
   on-settlement-claim: false
