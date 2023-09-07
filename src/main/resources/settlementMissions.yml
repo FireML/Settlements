@@ -399,7 +399,7 @@ place_cocoa_beans:
   mission-points: 1
   type: place
   requirements:
-    cocoa_beans: 100
+    cocoa: 100
 place_dark_oak_sapling:
   icon: dark_oak_sapling
   on-settlement-claim: false
