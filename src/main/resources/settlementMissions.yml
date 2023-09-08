@@ -311,7 +311,7 @@ harvest_pitcher_plant:
   mission-points: 1
   type: harvest
   requirements:
-    pitcher_plant: 16
+    pitcher_crop: 16
 harvest_potatoes:
   icon: potato
   on-settlement-claim: false
