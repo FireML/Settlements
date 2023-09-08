@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Utils.BlockUtils;
 
 public class EventListener implements Listener {
 
@@ -26,11 +27,17 @@ public class EventListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockPlace(BlockPlaceEvent event) {
+        if (BlockUtils.isPlayerBroken(event.getBlockPlaced().getLocation(), event.getPlayer().getUniqueId())) {
+            return;
+        }
         EventManager.getInstance().handle(event.getPlayer(), Event.Action.PLACE, event.getBlockPlaced().getType().toString(), event.getItemInHand().getType().toString());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event) {
+        if (BlockUtils.isPlayerPlaced(event.getBlock())) {
+            return;
+        }
         if (shouldBreakCount(event.getPlayer().getEquipment().getItemInMainHand(), event.getBlock())) {
             EventManager.getInstance().handle(event.getPlayer(), Event.Action.BREAK, event.getBlock().getType().toString());
         }
