@@ -182,7 +182,7 @@ permissions:
       settlements.bypass.restriction.chestshop: true
       settlements.bypass.restriction.lwc: true
       settlements.bypass.banish: true
-      settlements.bypass.locks: true
+      settlements.bypass.lock: true
       settlements.bypass.use: true
       settlements.bypass.build: true
       settlements.bypass.buildingradius: true
