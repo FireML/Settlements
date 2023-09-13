@@ -10,7 +10,7 @@ settlement:
       signature: texturesignature
   quarter-master:
     type: villager
-    name: Quarter Master
+    name: Quartermaster
     villager:
       profession: librarian
       type: plains
