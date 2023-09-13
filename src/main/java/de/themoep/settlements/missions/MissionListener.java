@@ -36,7 +36,7 @@ public class MissionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (BlockUtils.isPlayerBroken(event.getBlock().getLocation(), event.getPlayer().getUniqueId())) {
+        if (BlockUtils.isPlayerBroken(event.getBlockPlaced().getLocation(), event.getPlayer().getUniqueId())) {
             return;
         }
         handle(event.getPlayer(), event.getBlock().getType().name(), Mission.Type.PLACE);
@@ -44,14 +44,15 @@ public class MissionListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
+        if (BlockUtils.isPlayerPlaced(event.getBlock())) {
+            return;
+        }
         Mission.Type[] types;
         BlockData data = event.getBlock().getBlockData();
         if (!(data instanceof Ageable ageable) || ageable.getAge() == ageable.getMaximumAge()) {
             types = new Mission.Type[] {Mission.Type.HARVEST, Mission.Type.BREAK};
-        } else if (!BlockUtils.isPlayerPlaced(event.getBlock())) {
-            types = new Mission.Type[] {Mission.Type.BREAK};
         } else {
-            return;
+            types = new Mission.Type[] {Mission.Type.BREAK};
         }
         handle(event.getPlayer(), event.getBlock().getType().name(), types);
     }
@@ -59,12 +60,12 @@ public class MissionListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onEntityKill(EntityDeathEvent event) {
         Player killer = null;
-        if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
-            Entity damager = ((EntityDamageByEntityEvent) event.getEntity().getLastDamageCause()).getDamager();
-            if (damager instanceof Player) {
-                killer = (Player) damager;
-            } else if (damager instanceof Projectile && ((Projectile) damager).getShooter() instanceof Player) {
-                killer = ((Player) ((Projectile) damager).getShooter());
+        if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent damageEvent) {
+            Entity damager = damageEvent.getDamager();
+            if (damager instanceof Player player) {
+                killer = player;
+            } else if (damager instanceof Projectile projectile && projectile.getShooter() instanceof Player player) {
+                killer = player;
             }
         }
         if (killer != null) {
