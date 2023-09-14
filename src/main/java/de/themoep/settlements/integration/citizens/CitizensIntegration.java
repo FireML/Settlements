@@ -488,7 +488,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                 int id;
                 if ((id = npcData.getNpcId()) < 0) return;
                 NPC npc = CitizensAPI.getNPCRegistry().getById(id);
-                if (npc != null) {
+                if (npc != null && npc.isSpawned()) {
                     npc.despawn();
                 }
             }
