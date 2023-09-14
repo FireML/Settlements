@@ -435,13 +435,6 @@ place_oak_sapling:
   type: place
   requirements:
     oak_sapling: 50
-place_pitcher_pod:
-  icon: pitcher_pod
-  on-settlement-claim: false
-  mission-points: 1
-  type: place
-  requirements:
-    pitcher_crop: 16
 place_pumpkin_seed:
   icon: pumpkin_seeds
   on-settlement-claim: false
