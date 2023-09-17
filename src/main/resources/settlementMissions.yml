@@ -579,13 +579,6 @@ kill_slime:
   type: kill
   requirements:
     slime: 20
-kill_sniffer:
-  icon: torchflower
-  on-settlement-claim: false
-  mission-points: 1
-  type: kill
-  requirements:
-    sniffer: 10
 kill_spider:
   icon: string
   on-settlement-claim: false
@@ -681,7 +674,7 @@ deposit_netherite_ingot:
   mission-points: 1
   type: turn_in
   requirements:
-    netherite_ingot: 4
+    netherite_ingot: 2
 deposit_redstone:
   icon: redstone
   on-settlement-claim: false
