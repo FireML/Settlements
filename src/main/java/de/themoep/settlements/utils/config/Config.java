@@ -544,6 +544,8 @@ public class Config {
         @ConfigComment("Should all channels be set to the default config on player login or be the same as on logout")
         public static boolean RESET_CHANNELS_ON_LOGIN = true;
 
+        public static String DEFAULT_CHANNEL = "none";
+
         @ConfigComment("The default chat channel colors")
         public static class ChannelColors {
             public static String GENERAL = "white";

@@ -390,6 +390,8 @@ chat:
   chat-only: false
   # Should all channels be set to the default config on player login or be the same as on logout
   reset-channels-on-login: false
+  # Which channel should players be put in when they rejoin the server? Set to none to disable.
+  default-channel: none
   
   # The default chat channel colors
   channel-colors:

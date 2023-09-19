@@ -54,6 +54,11 @@ public class ChatListener implements Listener {
                     }
                 }
             }
+
+            if (!Config.Chat.DEFAULT_CHANNEL.equals("none")) {
+                res.setActiveChannel(ChatChannel.valueOf(Config.Chat.DEFAULT_CHANNEL.toUpperCase()));
+            }
+
             if (activeChanged) {
                 Message.get("command.chat.active").tell(res, "name", res.getActiveChannel().getTag());
             }
