@@ -1,10 +1,10 @@
 package de.themoep.settlements.land;
 
 import de.themoep.settlements.rank.Rankable;
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Utils.ItemUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;

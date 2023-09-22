@@ -1,12 +1,12 @@
 package de.themoep.settlements.rank;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.MaterialUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Utils.ItemUtils;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

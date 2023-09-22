@@ -4,7 +4,6 @@ name: Settlements
 depend:
   - Vault
   - Citizens
-  - CMILib
   - PoleisLib
 softdepend:
   - LWCX

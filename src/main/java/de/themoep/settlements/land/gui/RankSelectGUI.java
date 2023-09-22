@@ -1,5 +1,6 @@
 package de.themoep.settlements.land.gui;
 
+import uk.firedev.poleislib.Utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
 import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
 import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
@@ -8,7 +9,6 @@ import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.rank.Rank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
-import de.themoep.settlements.utils.ItemUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.Comparator;

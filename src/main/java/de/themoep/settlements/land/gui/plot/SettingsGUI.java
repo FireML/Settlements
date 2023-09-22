@@ -1,5 +1,6 @@
 package de.themoep.settlements.land.gui.plot;
 
+import uk.firedev.poleislib.Utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
@@ -12,7 +13,6 @@ import de.themoep.settlements.land.gui.BuildGUI;
 import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;

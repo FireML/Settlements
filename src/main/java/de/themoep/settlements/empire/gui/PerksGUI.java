@@ -1,5 +1,6 @@
 package de.themoep.settlements.empire.gui;
 
+import uk.firedev.poleislib.Utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
@@ -10,7 +11,6 @@ import de.themoep.settlements.perk.EmpirePerk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
-import de.themoep.settlements.utils.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;

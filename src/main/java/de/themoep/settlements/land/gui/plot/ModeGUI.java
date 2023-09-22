@@ -1,5 +1,6 @@
 package de.themoep.settlements.land.gui.plot;
 
+import uk.firedev.poleislib.Utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
@@ -8,7 +9,6 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.event.inventory.ClickType;
 

@@ -1,12 +1,12 @@
 package de.themoep.settlements.land;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Utils.ItemUtils;
 
 import java.util.*;
 import java.util.logging.Level;

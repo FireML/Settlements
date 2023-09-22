@@ -4,12 +4,12 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Utils.ItemUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;

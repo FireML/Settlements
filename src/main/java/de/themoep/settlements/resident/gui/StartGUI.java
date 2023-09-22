@@ -1,5 +1,6 @@
 package de.themoep.settlements.resident.gui;
 
+import uk.firedev.poleislib.Utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;

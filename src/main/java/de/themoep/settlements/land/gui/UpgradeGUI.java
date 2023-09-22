@@ -1,5 +1,6 @@
 package de.themoep.settlements.land.gui;
 
+import uk.firedev.poleislib.Utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
@@ -17,7 +18,6 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.SettlementLevel;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.HumanReadable;
-import de.themoep.settlements.utils.ItemUtils;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;

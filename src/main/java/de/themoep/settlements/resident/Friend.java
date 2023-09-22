@@ -2,10 +2,10 @@ package de.themoep.settlements.resident;
 
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.ConfigMessages;
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Sortable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Utils.ItemUtils;
 
 import java.util.Comparator;
 import java.util.Map;

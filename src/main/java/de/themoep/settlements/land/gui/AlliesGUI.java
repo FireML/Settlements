@@ -1,5 +1,6 @@
 package de.themoep.settlements.land.gui;
 
+import uk.firedev.poleislib.Utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
@@ -8,7 +9,6 @@ import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.AllyRequest;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.inventory.ItemStack;

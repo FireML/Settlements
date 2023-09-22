@@ -8,10 +8,10 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
-import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Targetable;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Utils.ItemUtils;
 
 import java.util.Map;
 
