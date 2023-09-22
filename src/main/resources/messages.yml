@@ -785,6 +785,10 @@ gui:
   close: "&cClose"
   enabled: "&aEnabled"
   disabled: "&cDisabled"
+  settlement:
+    missions:
+      next: "&x&8&7&c&e&e&bNext Page"
+      previous: "&x&8&7&c&e&e&bPrevious Page"
   general:
     start:
       title: "&x&0&0&8&2&0&0&lGeneral Information"

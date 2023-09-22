@@ -2,12 +2,12 @@ guis:
   general:
     start:
       setup:
-      - "ooooooooo"
-      - "    s    "
-      - "    f    "
-      - "  ic jp  "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    s    "
+        - "    f    "
+        - "  ic jp  "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         start: book
@@ -19,12 +19,12 @@ guis:
         back: structure_void
     overview:
       setup:
-      - "oooosoooo"
-      - "    r    "
-      - "    n    "
-      - " lu h pf "
-      - "         "
-      - " ooobooo "
+        - "oooosoooo"
+        - "    r    "
+        - "    n    "
+        - " lu h pf "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         settlement: white_bed
@@ -39,12 +39,12 @@ guis:
         back: structure_void
     requests:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "ppoobooo "
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "ppoobooo "
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -52,12 +52,12 @@ guis:
         back: structure_void
     friends:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "ppooboors"
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "ppooboors"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -66,12 +66,12 @@ guis:
         back: structure_void
     friend-requests:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "ppoobooos"
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "ppoobooos"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -79,12 +79,12 @@ guis:
         back: structure_void
     settlements:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "ppoobooos"
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "ppoobooos"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -92,12 +92,12 @@ guis:
         back: structure_void
     public:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "ppoobooos"
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "ppoobooos"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -106,12 +106,12 @@ guis:
   chat:
     channel-select:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " ccccccc "
-      - " ccccccc "
-      - " ccccccc "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " ccccccc "
+        - " ccccccc "
+        - " ccccccc "
+        - " ooobooo "
       alignments:
         c: center
       elements:
@@ -119,12 +119,12 @@ guis:
         back: structure_void
     color-select:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " ccccccc "
-      - " ccccccc "
-      - " ccccccc "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " ccccccc "
+        - " ccccccc "
+        - " ccccccc "
+        - " ooobooo "
       alignments:
         c: center
       elements:
@@ -132,12 +132,12 @@ guis:
         back: structure_void
     color-type-select:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " ccccccc "
-      - " ccccccc "
-      - " ccccccc "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " ccccccc "
+        - " ccccccc "
+        - " ccccccc "
+        - " ooobooo "
       alignments:
         c: center
       elements:
@@ -146,12 +146,12 @@ guis:
   resident:
     title:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " ttttttt "
-      - " ttttttt "
-      - "    a    "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " ttttttt "
+        - " ttttttt "
+        - "    a    "
+        - " ooobooo "
       alignments:
         t: center
       elements:
@@ -162,12 +162,12 @@ guis:
   settlement:
     management:
       setup:
-      - "ooooooooo"
-      - "    n    "
-      - "  r e s  "
-      - " d a t l "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    n    "
+        - "  r e s  "
+        - " d a t l "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         npc: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTY5ODQ3N2Q3ZDUzMjc0OGFmNGUwOTExNWVmMTZiYjk1OTk0ZjBlNThiMDkwZTZkMzA2NDQ1OGJiOWFlMTY4NyJ9fX0=
@@ -180,12 +180,12 @@ guis:
         back: structure_void
     mode:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " mmmmmmm "
-      - " mmmmmmm "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " mmmmmmm "
+        - " mmmmmmm "
+        - "         "
+        - " ooobooo "
       allignment:
         m: center
       elements:
@@ -193,12 +193,12 @@ guis:
         back: structure_void
     requests:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "pppppps b"
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "pppppps b"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -206,12 +206,12 @@ guis:
         back: structure_void
     npclist:
       setup:
-      - "ooooooooo"
-      - "         "
-      - "  nnnnn  "
-      - "  nnnnn  "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - "  nnnnn  "
+        - "  nnnnn  "
+        - "         "
+        - " ooobooo "
       alignments:
         n: center
       elements:
@@ -227,12 +227,12 @@ guis:
         black-market: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMmZlYmI0YzUyZGIxZmI5ZTFlNWM4NTJhNGU3MmQ4ZGZlNmM0YzA1NWE0NjQ5YWJmM2QzNTdkMjMzZmMxYiJ9fX0=
     elder:
       setup:
-      - "oooomoooo"
-      - "         "
-      - "    e    "
-      - "    r    "
-      - "         "
-      - " ooobooo "
+        - "oooomoooo"
+        - "         "
+        - "    e    "
+        - "    r    "
+        - "         "
+        - "pooobooon"
       elements:
         o: lime_stained_glass_pane
         recruit: crimson_door
@@ -241,27 +241,29 @@ guis:
         back: structure_void
     missions:
       setup:
-      - "ooooioooo"
-      - "         "
-      - " mmmmmmm "
-      - " mmmmmmm "
-      - "         "
-      - " ooobooo "
+        - "ooooioooo"
+        - "         "
+        - " mmmmmmm "
+        - " mmmmmmm "
+        - "         "
+        - "pooobooon"
       alignments:
         m: center
       elements:
         o: lime_stained_glass_pane
         info: orange_banner
         back: structure_void
+        previous: spectral_arrow
+        next: arrow
 
     settings:
       setup:
-      - "ooooooooo"
-      - "         "
-      - "  nptje  "
-      - "  rd ac  "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - "  nptje  "
+        - "  rd ac  "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         rename: anvil
@@ -276,12 +278,12 @@ guis:
         back: structure_void
     allies:
       setup:
-      - "ooooooooo"
-      - "aaaaaaaaa"
-      - "aaaaaaaaa"
-      - "aaaaaaaaa"
-      - "aaaaaaaaa"
-      - "ppppppsrb"
+        - "ooooooooo"
+        - "aaaaaaaaa"
+        - "aaaaaaaaa"
+        - "aaaaaaaaa"
+        - "aaaaaaaaa"
+        - "ppppppsrb"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -291,19 +293,19 @@ guis:
         a: player_head
     ally:
       setup-advanced:
-      - "ooooioooo"
-      - "      cr "
-      - "    a    "
-      - " uuuuuuu "
-      - " uuuuuuu "
-      - " ooobooo "
+        - "ooooioooo"
+        - "      cr "
+        - "    a    "
+        - " uuuuuuu "
+        - " uuuuuuu "
+        - " ooobooo "
       setup:
-      - "ooooioooo"
-      - "         "
-      - "  c   r  "
-      - "         "
-      - "         "
-      - " ooobooo "
+        - "ooooioooo"
+        - "         "
+        - "  c   r  "
+        - "         "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         info: player_head
@@ -312,24 +314,24 @@ guis:
         back: structure_void
       unally:
         setup:
-        - "ooooooooo"
-        - "         "
-        - "    c    "
-        - "         "
-        - "         "
-        - " ooobooo "
+          - "ooooooooo"
+          - "         "
+          - "    c    "
+          - "         "
+          - "         "
+          - " ooobooo "
         elements:
           o: lime_stained_glass_pane
           confirm: red_dye
           cancel: structure_void
     bank:
       setup:
-      - "ooooooooo"
-      - "    d    "
-      - "    a    "
-      - " sh u tm "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    d    "
+        - "    a    "
+        - " sh u tm "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         donations: hopper
@@ -341,12 +343,12 @@ guis:
         back: structure_void
     manage-finances:
       setup:
-      - "ooooooooo"
-      - "         "
-      - "         "
-      - " ta   dw "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - "         "
+        - " ta   dw "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         tax: name_tag
@@ -356,12 +358,12 @@ guis:
         back: structure_void
     upgrade:
       setup:
-      - "lllllllll"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - " oipdobo "
+        - "lllllllll"
+        - "rrrrrrrrr"
+        - "rrrrrrrrr"
+        - "rrrrrrrrr"
+        - "rrrrrrrrr"
+        - " oipdobo "
       elements:
         o: lime_stained_glass_pane
         settlement: cobblestone_wall
@@ -382,12 +384,12 @@ guis:
           missions: red_banner
     shop:
       setup:
-      - "oooosoooo"
-      - " ggggggg "
-      - " ggggggg "
-      - " ggggggg "
-      - " ggggggg "
-      - " ooobooo "
+        - "oooosoooo"
+        - " ggggggg "
+        - " ggggggg "
+        - " ggggggg "
+        - " ggggggg "
+        - " ooobooo "
       alignments:
         g: center
       elements:
@@ -396,12 +398,12 @@ guis:
         settlement: white_bed
     perks:
       setup:
-      - "ooooooooo"
-      - "opppppppo"
-      - "opppppppo"
-      - "opppppppo"
-      - "opppppppo"
-      - "ooooboooo"
+        - "ooooooooo"
+        - "opppppppo"
+        - "opppppppo"
+        - "opppppppo"
+        - "opppppppo"
+        - "ooooboooo"
       alignments:
         p: center
       elements:
@@ -409,12 +411,12 @@ guis:
         back: structure_void
     access:
       setup:
-      - "ooooooooo"
-      - "    i    "
-      - " aaaaaaa "
-      - " aaaaaaa "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    i    "
+        - " aaaaaaa "
+        - " aaaaaaa "
+        - "         "
+        - " ooobooo "
       alignments:
         a: center
       elements:
@@ -425,12 +427,12 @@ guis:
         back: structure_void
     recruitment:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " jjjjjjj "
-      - " jjjjjjj "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " jjjjjjj "
+        - " jjjjjjj "
+        - "         "
+        - " ooobooo "
       alignments:
         j: center
       elements:
@@ -440,12 +442,12 @@ guis:
         back: structure_void
     reslist:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "pooobooos"
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "pooobooos"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -453,12 +455,12 @@ guis:
         back: structure_void
     resident:
       setup:
-      - "ooooooooo"
-      - "    pa   "
-      - "         "
-      - " extr lks"
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    pa   "
+        - "         "
+        - " extr lks"
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         accepted: book
@@ -472,24 +474,24 @@ guis:
         back: structure_void
       kick:
         setup:
-        - "ooooooooo"
-        - "         "
-        - "    c    "
-        - "         "
-        - "         "
-        - " ooobooo "
+          - "ooooooooo"
+          - "         "
+          - "    c    "
+          - "         "
+          - "         "
+          - " ooobooo "
         elements:
           o: lime_stained_glass_pane
           confirm: red_dye
           cancel: structure_void
     banished:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "ppppppsub"
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "ppppppsub"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -498,12 +500,12 @@ guis:
         back: structure_void
     unbanished:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "ppppbooos"
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "ppppbooos"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -511,12 +513,12 @@ guis:
         back: structure_void
     perms:
       setup:
-      - "ooooooooo"
-      - "    s    "
-      - "   a m   "
-      - " uuuuuuu "
-      - " uuuuuuu "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    s    "
+        - "   a m   "
+        - " uuuuuuu "
+        - " uuuuuuu "
+        - " ooobooo "
       alignments:
         u: center
       elements:
@@ -527,12 +529,12 @@ guis:
         back: structure_void
     build:
       setup:
-      - "ooooooooo"
-      - "    s    "
-      - "         "
-      - "ggggggggg"
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    s    "
+        - "         "
+        - "ggggggggg"
+        - "         "
+        - " ooobooo "
       alignments:
         g: center
       elements:
@@ -545,12 +547,12 @@ guis:
         unset: light_gray_wool
     use:
       setup:
-      - "ooooooooo"
-      - "    s    "
-      - "         "
-      - " uuuuuuu "
-      - " uuuuuuu "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    s    "
+        - "         "
+        - " uuuuuuu "
+        - " uuuuuuu "
+        - " ooobooo "
       alignments:
         u: center
       elements:
@@ -561,12 +563,12 @@ guis:
         back: structure_void
     rank-perms:
       setup:
-      - "ppppppppp"
-      - "ppppppppp"
-      - "ppppppppp"
-      - "ppppppppp"
-      - "ppppppppp"
-      - "rrrrrrtob"
+        - "ppppppppp"
+        - "ppppppppp"
+        - "ppppppppp"
+        - "ppppppppp"
+        - "ppppppppp"
+        - "rrrrrrtob"
       elements:
         set: lime_wool
         inherited: green_wool
@@ -576,12 +578,12 @@ guis:
         back: structure_void
     reset-rank-perms:
       setup:
-      - "ooooooooo"
-      - "         "
-      - "    c    "
-      - "         "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - "    c    "
+        - "         "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         confirm: green_wool
@@ -589,12 +591,12 @@ guis:
     setrank:
       rank-select:
         setup:
-        - "ooooooooo"
-        - "    c    "
-        - "         "
-        - " rrrrrrr "
-        - "         "
-        - " ooobooo "
+          - "ooooooooo"
+          - "    c    "
+          - "         "
+          - " rrrrrrr "
+          - "         "
+          - " ooobooo "
         alignments:
           r: center
         elements:
@@ -604,24 +606,24 @@ guis:
           back: structure_void
       transfer:
         setup:
-        - "ooooooooo"
-        - "         "
-        - "    c    "
-        - "         "
-        - "         "
-        - " ooobooo "
+          - "ooooooooo"
+          - "         "
+          - "    c    "
+          - "         "
+          - "         "
+          - " ooobooo "
         elements:
           o: lime_stained_glass_pane
           confirm: green_wool
           cancel: structure_void
     titles:
       setup:
-      - "ooooooooo"
-      - "    a    "
-      - "         "
-      - " ttttttt "
-      - " ttttttt "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    a    "
+        - "         "
+        - " ttttttt "
+        - " ttttttt "
+        - " ooobooo "
       alignments:
         t: center
       elements:
@@ -631,12 +633,12 @@ guis:
         back: structure_void
       rank-select:
         setup:
-        - "ooooooooo"
-        - "         "
-        - "         "
-        - " rrrrrrc "
-        - "         "
-        - " ooobooo "
+          - "ooooooooo"
+          - "         "
+          - "         "
+          - " rrrrrrc "
+          - "         "
+          - " ooobooo "
         alignments:
           r: center
         elements:
@@ -646,12 +648,12 @@ guis:
           back: structure_void
     title:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " ttttttt "
-      - " ttttttt "
-      - "    a    "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " ttttttt "
+        - " ttttttt "
+        - "    a    "
+        - " ooobooo "
       alignments:
         t: center
       elements:
@@ -661,12 +663,12 @@ guis:
         back: structure_void
     outposts:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " eeeeeee "
-      - " eeeeeee "
-      - "         "
-      - " opobooo "
+        - "ooooooooo"
+        - "         "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "         "
+        - " opobooo "
       elements:
         o: lime_stained_glass_pane
         outpost: acacia_sapling
@@ -674,12 +676,12 @@ guis:
         back: structure_void
     outpost:
       setup:
-      - "ooooioooo"
-      - "         "
-      - "    h    "
-      - "  r   u  "
-      - "         "
-      - " ooobooo "
+        - "ooooioooo"
+        - "         "
+        - "    h    "
+        - "  r   u  "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         info: acacia_sapling
@@ -690,12 +692,12 @@ guis:
   empire:
     access:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " aaaaaaa "
-      - " aaaaaaa "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " aaaaaaa "
+        - " aaaaaaa "
+        - "         "
+        - " ooobooo "
       alignments:
         a: center
       elements:
@@ -705,12 +707,12 @@ guis:
         back: structure_void
     recruitment:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " jjjjjjj "
-      - " jjjjjjj "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " jjjjjjj "
+        - " jjjjjjj "
+        - "         "
+        - " ooobooo "
       alignments:
         j: center
       elements:
@@ -720,12 +722,12 @@ guis:
         back: structure_void
     perms:
       setup:
-      - "ooooooooo"
-      - "    s    "
-      - "   a m   "
-      - " uuuuuuu "
-      - " uuuuuuu "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    s    "
+        - "   a m   "
+        - " uuuuuuu "
+        - " uuuuuuu "
+        - " ooobooo "
       alignments:
         u: center
       elements:
@@ -736,12 +738,12 @@ guis:
         back: structure_void
     build:
       setup:
-      - "ooooooooo"
-      - "    s    "
-      - "         "
-      - "ggggggggg"
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    s    "
+        - "         "
+        - "ggggggggg"
+        - "         "
+        - " ooobooo "
       alignments:
         g: center
       elements:
@@ -754,12 +756,12 @@ guis:
         unset: light_gray_wool
     use:
       setup:
-      - "ooooooooo"
-      - "    s    "
-      - "         "
-      - " uuuuuuu "
-      - " uuuuuuu "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    s    "
+        - "         "
+        - " uuuuuuu "
+        - " uuuuuuu "
+        - " ooobooo "
       alignments:
         u: center
       elements:
@@ -783,12 +785,12 @@ guis:
         back: structure_void
     mode:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " mmmmmmm "
-      - " mmmmmmm "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " mmmmmmm "
+        - " mmmmmmm "
+        - "         "
+        - " ooobooo "
       allignment:
         m: center
       elements:
@@ -809,12 +811,12 @@ guis:
         back: structure_void
     bank:
       setup:
-      - "ooooooooo"
-      - "    d    "
-      - "    a    "
-      - " sh u tm "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    d    "
+        - "    a    "
+        - " sh u tm "
+        - "         "
+        - " ooobooo "
       alignments:
         p: center
       elements:
@@ -866,12 +868,12 @@ guis:
         back: structure_void
     allies:
       setup:
-      - "ooooooooo"
-      - "aaaaaaaaa"
-      - "aaaaaaaaa"
-      - "aaaaaaaaa"
-      - "aaaaaaaaa"
-      - "ppppppsrb"
+        - "ooooooooo"
+        - "aaaaaaaaa"
+        - "aaaaaaaaa"
+        - "aaaaaaaaa"
+        - "aaaaaaaaa"
+        - "ppppppsrb"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -880,27 +882,27 @@ guis:
         back: structure_void
     ally:
       setup-advanced:
-      - "ooooioooo"
-      - "      cr "
-      - "    a    "
-      - " uuuuuuu "
-      - " uuuuuuu "
-      - " ooobooo "
+        - "ooooioooo"
+        - "      cr "
+        - "    a    "
+        - " uuuuuuu "
+        - " uuuuuuu "
+        - " ooobooo "
       setup:
-      - "ooooioooo"
-      - "         "
-      - "  c   r  "
-      - "         "
-      - "         "
-      - " ooobooo "
+        - "ooooioooo"
+        - "         "
+        - "  c   r  "
+        - "         "
+        - "         "
+        - " ooobooo "
     manage-finances:
       setup:
-      - "ooooooooo"
-      - "         "
-      - "         "
-      - " ta   dw "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - "         "
+        - " ta   dw "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         tax: name_tag
@@ -910,12 +912,12 @@ guis:
         back: structure_void
     upgrade:
       setup:
-      - "lllllllll"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - "rrrrrrrrr"
-      - " oipdobo "
+        - "lllllllll"
+        - "rrrrrrrrr"
+        - "rrrrrrrrr"
+        - "rrrrrrrrr"
+        - "rrrrrrrrr"
+        - " oipdobo "
       alignments:
         p: center
       elements:
@@ -939,12 +941,12 @@ guis:
           world: map
     npclist:
       setup:
-      - "ooooooooo"
-      - "         "
-      - "  nnnnn  "
-      - "  nnnnn  "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - "  nnnnn  "
+        - "  nnnnn  "
+        - "         "
+        - " ooobooo "
       alignments:
         n: center
       elements:
@@ -960,12 +962,12 @@ guis:
         black-market: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMmZlYmI0YzUyZGIxZmI5ZTFlNWM4NTJhNGU3MmQ4ZGZlNmM0YzA1NWE0NjQ5YWJmM2QzNTdkMjMzZmMxYiJ9fX0=
     elder:
       setup:
-      - "ooooooooo"
-      - "         "
-      - "    e    "
-      - "         "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - "    e    "
+        - "         "
+        - "         "
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
         recruit: crimson_door
@@ -973,26 +975,28 @@ guis:
         back: structure_void
     missions:
       setup:
-      - "ooooioooo"
-      - "         "
-      - " mmmmmmm "
-      - " mmmmmmm "
-      - "         "
-      - " ooobooo "
+        - "ooooioooo"
+        - "         "
+        - " mmmmmmm "
+        - " mmmmmmm "
+        - "         "
+        - "pooobooon"
       alignments:
         m: center
       elements:
         o: lime_stained_glass_pane
         info: orange_banner
         back: structure_void
+        previous: spectral_arrow
+        next: arrow
     shop:
       setup:
-      - "ooooooooo"
-      - " ggggggg "
-      - " ggggggg "
-      - " ggggggg "
-      - " ggggggg "
-      - " ooobooo "
+        - "ooooooooo"
+        - " ggggggg "
+        - " ggggggg "
+        - " ggggggg "
+        - " ggggggg "
+        - " ooobooo "
       alignments:
         g: center
       elements:
@@ -1000,12 +1004,12 @@ guis:
         back: structure_void
     perks:
       setup:
-      - "ooooooooo"
-      - "opppppppo"
-      - "opppppppo"
-      - "opppppppo"
-      - "opppppppo"
-      - "ooooboooo"
+        - "ooooooooo"
+        - "opppppppo"
+        - "opppppppo"
+        - "opppppppo"
+        - "opppppppo"
+        - "ooooboooo"
       alignments:
         p: center
       elements:
@@ -1013,12 +1017,12 @@ guis:
         back: structure_void
     banished:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "ppppppsub"
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "ppppppsub"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -1027,12 +1031,12 @@ guis:
         back: structure_void
     unbanished:
       setup:
-      - "ooooooooo"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "eeeeeeeee"
-      - "pppobooos"
+        - "ooooooooo"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "eeeeeeeee"
+        - "pppobooos"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -1040,12 +1044,12 @@ guis:
         back: structure_void
     rank-perms:
       setup:
-      - "ppppppppp"
-      - "ppppppppp"
-      - "ppppppppp"
-      - "ppppppppp"
-      - "ppppppppp"
-      - "rrrrrrtob"
+        - "ppppppppp"
+        - "ppppppppp"
+        - "ppppppppp"
+        - "ppppppppp"
+        - "ppppppppp"
+        - "rrrrrrtob"
       elements:
         set: lime_wool
         inherited: green_wool
@@ -1055,12 +1059,12 @@ guis:
         back: structure_void
       reset-perms:
         setup:
-        - "ooooooooo"
-        - "         "
-        - "    c    "
-        - "         "
-        - "         "
-        - " ooobooo "
+          - "ooooooooo"
+          - "         "
+          - "    c    "
+          - "         "
+          - "         "
+          - " ooobooo "
         elements:
           o: lime_stained_glass_pane
           confirm: green_wool
@@ -1068,12 +1072,12 @@ guis:
     setrank:
       rank-select:
         setup:
-        - "ooooooooo"
-        - "    c    "
-        - "         "
-        - " rrrrrrr "
-        - "         "
-        - " ooobooo "
+          - "ooooooooo"
+          - "    c    "
+          - "         "
+          - " rrrrrrr "
+          - "         "
+          - " ooobooo "
         alignments:
           r: center
         elements:
@@ -1083,12 +1087,12 @@ guis:
           back: structure_void
     titles:
       setup:
-      - "ooooooooo"
-      - "    a    "
-      - "         "
-      - " ttttttt "
-      - " ttttttt "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    a    "
+        - "         "
+        - " ttttttt "
+        - " ttttttt "
+        - " ooobooo "
       alignments:
         t: center
       elements:
@@ -1098,12 +1102,12 @@ guis:
         back: structure_void
       rank-select:
         setup:
-        - "ooooooooo"
-        - "         "
-        - "         "
-        - " rrrrrrc "
-        - "         "
-        - " ooobooo "
+          - "ooooooooo"
+          - "         "
+          - "         "
+          - " rrrrrrc "
+          - "         "
+          - " ooobooo "
         alignments:
           r: center
         elements:
@@ -1113,12 +1117,12 @@ guis:
           back: structure_void
     title:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " ttttttt "
-      - " ttttttt "
-      - "    a    "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " ttttttt "
+        - " ttttttt "
+        - "    a    "
+        - " ooobooo "
       alignments:
         t: center
       elements:
@@ -1141,12 +1145,12 @@ guis:
   plot:
     settings:
       setup:
-      - "ooooioooo"
-      - "         "
-      - " pe s nd "
-      - "    l    "
-      - "         "
-      - "ooooboooo"
+        - "ooooioooo"
+        - "         "
+        - " pe s nd "
+        - "    l    "
+        - "         "
+        - "ooooboooo"
       elements:
         o: lime_stained_glass_pane
         info: green_banner
@@ -1159,12 +1163,12 @@ guis:
         back: structure_void
     members:
       setup:
-      - "ooooooooo"
-      - "mmmmmmmmm"
-      - "mmmmmmmmm"
-      - "mmmmmmmmm"
-      - "mmmmmmmmm"
-      - "pppppp ab"
+        - "ooooooooo"
+        - "mmmmmmmmm"
+        - "mmmmmmmmm"
+        - "mmmmmmmmm"
+        - "mmmmmmmmm"
+        - "pppppp ab"
       elements:
         o: lime_stained_glass_pane
         page: paper
@@ -1172,12 +1176,12 @@ guis:
         back: structure_void
       players:
         setup:
-        - "ooooooooo"
-        - "ggggggggg"
-        - "ggggggggg"
-        - "ggggggggg"
-        - "ggggggggg"
-        - "pppoboooo"
+          - "ooooooooo"
+          - "ggggggggg"
+          - "ggggggggg"
+          - "ggggggggg"
+          - "ggggggggg"
+          - "pppoboooo"
         elements:
           o: lime_stained_glass_pane
           page: paper
@@ -1185,12 +1189,12 @@ guis:
           back: structure_void
     mode:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " mmmmmmm "
-      - " mmmmmmm "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " mmmmmmm "
+        - " mmmmmmm "
+        - "         "
+        - " ooobooo "
       allignment:
         m: center
       elements:
@@ -1198,12 +1202,12 @@ guis:
         back: structure_void
     perms:
       setup:
-      - "ooooooooo"
-      - "    s    "
-      - "   a m   "
-      - " uuuuuuu "
-      - " uuuuuuu "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    s    "
+        - "   a m   "
+        - " uuuuuuu "
+        - " uuuuuuu "
+        - " ooobooo "
       alignments:
         u: center
       elements:
@@ -1214,12 +1218,12 @@ guis:
         back: structure_void
     build:
       setup:
-      - "ooooooooo"
-      - "    s    "
-      - "         "
-      - "ggggggggg"
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    s    "
+        - "         "
+        - "ggggggggg"
+        - "         "
+        - " ooobooo "
       alignments:
         g: center
       elements:
@@ -1232,12 +1236,12 @@ guis:
         unset: light_gray_wool
     use:
       setup:
-      - "ooooooooo"
-      - "    s    "
-      - "         "
-      - " uuuuuuu "
-      - " uuuuuuu "
-      - " ooobooo "
+        - "ooooooooo"
+        - "    s    "
+        - "         "
+        - " uuuuuuu "
+        - " uuuuuuu "
+        - " ooobooo "
       alignments:
         u: center
       elements:
@@ -1248,12 +1252,12 @@ guis:
         back: structure_void
     rank-select:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " rrrrrrr "
-      - " rrrrrrr "
-      - "         "
-      - " ooobooo "
+        - "ooooooooo"
+        - "         "
+        - " rrrrrrr "
+        - " rrrrrrr "
+        - "         "
+        - " ooobooo "
       alignments:
         r: center
       elements:
@@ -1264,12 +1268,12 @@ guis:
   portal:
     teleport:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " ttttttt "
-      - " ttttttt "
-      - "         "
-      - "pooobooon"
+        - "ooooooooo"
+        - "         "
+        - " ttttttt "
+        - " ttttttt "
+        - "         "
+        - "pooobooon"
       elements:
         o: lime_stained_glass_pane
         previous: arrow
@@ -1277,12 +1281,12 @@ guis:
         back: structure_void
     link:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " ttttttt "
-      - " ttttttt "
-      - "         "
-      - "pooobooon"
+        - "ooooooooo"
+        - "         "
+        - " ttttttt "
+        - " ttttttt "
+        - "         "
+        - "pooobooon"
       elements:
         o: lime_stained_glass_pane
         previous: arrow
@@ -1290,12 +1294,12 @@ guis:
         back: structure_void
     unlink:
       setup:
-      - "ooooooooo"
-      - "         "
-      - " ttttttt "
-      - " ttttttt "
-      - "         "
-      - "pooobooon"
+        - "ooooooooo"
+        - "         "
+        - " ttttttt "
+        - " ttttttt "
+        - "         "
+        - "pooobooon"
       elements:
         o: lime_stained_glass_pane
         previous: arrow
