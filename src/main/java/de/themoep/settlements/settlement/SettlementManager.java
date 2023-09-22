@@ -16,7 +16,6 @@ import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.perk.SettlementPerk;
-import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.SettlementRank;

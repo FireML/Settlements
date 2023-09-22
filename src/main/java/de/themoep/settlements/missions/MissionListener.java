@@ -1,17 +1,10 @@
 package de.themoep.settlements.missions;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.perk.events.PerkUnlockedEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.utils.WorldUtils;
-import de.themoep.settlements.utils.config.Config;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
@@ -27,7 +20,6 @@ import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.inventory.ItemStack;
 import uk.firedev.poleislib.Utils.BlockUtils;
 
-import java.util.concurrent.TimeUnit;
 
 public class MissionListener implements Listener {
 

@@ -6,7 +6,6 @@ import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
