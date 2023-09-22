@@ -1441,7 +1441,7 @@ gui:
     finished: "&aFinished&f "
     only-in-empire: "&7In {name} Domain:&f "
     only-on-claim: "&7On {state} claim:&f "
-    mission-entry: "&f{action} &e{title}"
+    mission-entry: "&f- &e{title}"
     wait-for-missions: |-
       &cYou do not have any missions
       &cfor your {state}.
