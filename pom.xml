@@ -94,18 +94,6 @@
                             <shadedPattern>de.themoep.settlements.libs.hikari</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>de.themoep.minedown</pattern>
-                            <shadedPattern>de.themoep.settlements.libs.minedown</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>net.wesjd.anvilgui</pattern>
-                            <shadedPattern>de.themoep.settlements.libs.anvilgui</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>de.themoep.inventorygui</pattern>
-                            <shadedPattern>de.themoep.settlements.libs.inventorygui</shadedPattern>
-                        </relocation>
-                        <relocation>
                             <pattern>org.intellij</pattern>
                             <shadedPattern>de.themoep.settlements.libs.jetbrains</shadedPattern>
                         </relocation>
@@ -240,24 +228,6 @@
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>2.20.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.themoep</groupId>
-            <artifactId>minedown</artifactId>
-            <version>1.7.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.wesjd</groupId>
-            <artifactId>anvilgui</artifactId>
-            <version>1.7.0-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.themoep</groupId>
-            <artifactId>inventorygui</artifactId>
-            <version>1.6.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
