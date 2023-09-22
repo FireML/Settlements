@@ -1,8 +1,8 @@
 package de.themoep.settlements.utils;
 
-import de.themoep.inventorygui.GuiElement;
-import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Material;

@@ -1,7 +1,7 @@
 package de.themoep.settlements.utils;
 
-import de.themoep.minedown.MineDown;
-import de.themoep.minedown.Replacer;
+import uk.firedev.poleislib.libs.themoep.minedown.MineDown;
+import uk.firedev.poleislib.libs.themoep.minedown.Replacer;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.ConfigManager;

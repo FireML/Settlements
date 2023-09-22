@@ -1,6 +1,6 @@
 package de.themoep.settlements.land.gui;
 
-import de.themoep.inventorygui.StaticGuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.land.Banished;
 import de.themoep.settlements.land.LandOwner;

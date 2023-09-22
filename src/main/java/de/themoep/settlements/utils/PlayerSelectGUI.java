@@ -1,6 +1,6 @@
 package de.themoep.settlements.utils;
 
-import de.themoep.inventorygui.*;
+import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 import de.themoep.settlements.resident.Resident;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

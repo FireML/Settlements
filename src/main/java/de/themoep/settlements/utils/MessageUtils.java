@@ -2,8 +2,8 @@ package de.themoep.settlements.utils;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import de.themoep.minedown.MineDownParser;
-import de.themoep.minedown.Replacer;
+import uk.firedev.poleislib.libs.themoep.minedown.MineDownParser;
+import uk.firedev.poleislib.libs.themoep.minedown.Replacer;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;

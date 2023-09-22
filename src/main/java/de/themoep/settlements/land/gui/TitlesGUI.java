@@ -1,6 +1,6 @@
 package de.themoep.settlements.land.gui;
 
-import de.themoep.inventorygui.*;
+import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.settlement.SettlementTitlesCommand;
@@ -12,7 +12,7 @@ import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import net.wesjd.anvilgui.AnvilGUI;
+import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -1,6 +1,6 @@
 package de.themoep.settlements.settlement.gui;
 
-import de.themoep.inventorygui.StaticGuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.db.DatabaseManager;
@@ -13,7 +13,7 @@ import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.NamedLocation;
-import net.wesjd.anvilgui.AnvilGUI;
+import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;

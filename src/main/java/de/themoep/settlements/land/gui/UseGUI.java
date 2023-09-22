@@ -1,6 +1,6 @@
 package de.themoep.settlements.land.gui;
 
-import de.themoep.inventorygui.*;
+import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.*;

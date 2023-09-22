@@ -1,6 +1,6 @@
 package de.themoep.settlements.resident.gui;
 
-import de.themoep.inventorygui.StaticGuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.settlement.SettlementHomeCommand;
@@ -18,7 +18,7 @@ import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.utils.*;
 import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
-import net.wesjd.anvilgui.AnvilGUI;
+import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
