@@ -133,8 +133,8 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                 resident.save();
                 addToBank(tax);
                 totalTax += tax;
-                if (player instanceof Player) {
-                    Message.get("tax.removed").tell((Player) player,
+                if (player instanceof Player pl) {
+                    Message.get("tax.removed").tell(pl,
                             "amount", String.valueOf(tax),
                             "state", getState().getTag(),
                             "name", getName());
