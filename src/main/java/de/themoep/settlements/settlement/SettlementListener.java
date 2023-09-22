@@ -134,6 +134,7 @@ public class SettlementListener implements Listener {
                         if (r.isReceivingCloseBuildingNotification(landOwner)) {
                             notification.tell(r,
                                     "name", landOwner.getName(),
+                                    "settlement", landOwner.getName(),
                                     "state", landOwner.getStateTag(),
                                     "time", String.valueOf(Config.Claiming.Close.Building.TOGGLE_TIME)
                             );
@@ -143,6 +144,7 @@ public class SettlementListener implements Listener {
                 if (resident.isReceivingCloseBuildingNotification(landOwner)) {
                     Message.get("close-claims.player." + type).tell(player,
                             "name", landOwner.getName(),
+                            "settlement", landOwner.getName(),
                             "state", landOwner.getStateTag(),
                             "time", String.valueOf(Config.Claiming.Close.Building.TOGGLE_TIME)
                     );
