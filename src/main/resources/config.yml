@@ -30,15 +30,15 @@ storage:
   save-on-shutdown: true
   queue:
     # Max size of the queue before saving happens
-    size: 100
+    size: 50
     # Time to wait in seconds before saving queued entries
     wait: 2
     # Queue settings for mission data
     missions:
       # Max size of the queue before saving happens
-      size: 100
+      size: 50
       # Time to wait in seconds before saving queued entries
-      wait: 30
+      wait: 15
     
 # Upkeep scheduler settings
 upkeep:
