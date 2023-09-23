@@ -18,3 +18,15 @@ literal:
 - "nigger"
 - "niggre"
 - "niggers"
+
+replace-with: "who?"
+regexes:
+- "A[p]e[i]r[o]n"
+- "Z[h]u[g]e"
+literal:
+- "Apeiron"
+- "apeiron"
+- "A p e i r o n"
+- "Zhuge"
+- "zhuge"
+- "Z h u g e"
