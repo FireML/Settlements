@@ -33,6 +33,8 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.logging.Level;
@@ -218,6 +220,16 @@ public class LandModeListener implements LandAccessChecker {
         if (e.getHitEntity() instanceof Player player && e.getEntity().getShooter() instanceof Entity entity && Utils.isHostile(entity)) {
             OwnedLand land = LandManager.getInstance().getLand(player.getChunk());
             if (land != null && !land.getMode(PlotMode.mobSpawning)) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPotionEffect(EntityPotionEffectEvent e) {
+        if (e.getEntity() instanceof Player player && e.getNewEffect().getType().equals(PotionEffectType.HARM)) {
+            OwnedLand land = LandManager.getInstance().getLand(player.getChunk());
+            if (land != null) {
                 e.setCancelled(true);
             }
         }
