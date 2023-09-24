@@ -1907,7 +1907,7 @@ gui:
       &f➤ Plots Owned {plots}
       
       Player Info
-      &f➤ Rank {primarygroup}
+      &f➤ Rank {vaultprefix}
       &f➤ Balance &6{balance}
       &f➤ Last Login &c{lastloginduration}
       
