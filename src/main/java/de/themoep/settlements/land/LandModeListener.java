@@ -226,16 +226,6 @@ public class LandModeListener implements LandAccessChecker {
     }
 
     @EventHandler
-    public void onPotionEffect(EntityPotionEffectEvent e) {
-        if (e.getEntity() instanceof Player player && e.getAction().equals(EntityPotionEffectEvent.Action.ADDED) && e.getModifiedType().equals(PotionEffectType.HARM)) {
-            OwnedLand land = LandManager.getInstance().getLand(player.getChunk());
-            if (land != null) {
-                e.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
     public void onEntityCombust(EntityCombustByEntityEvent e) {
         if (e.getEntity() instanceof Player) {
             Player combuster;
