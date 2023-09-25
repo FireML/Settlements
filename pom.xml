@@ -117,10 +117,6 @@
 
     <repositories>
         <repository>
-            <id>local-repo</id>
-            <url>file://${project.basedir}/repo/</url>
-        </repository>
-        <repository>
             <id>everything</id>
             <url>https://maven.citizensnpcs.co/repo</url>
         </repository>
@@ -246,8 +242,8 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.zrips.cmi</groupId>
-            <artifactId>cmi-api</artifactId>
+            <groupId>CMI-API</groupId>
+            <artifactId>CMI-API</artifactId>
             <version>9.5.0.8</version>
             <scope>provided</scope>
         </dependency>
