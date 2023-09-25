@@ -102,15 +102,6 @@
                             <shadedPattern>de.themoep.settlements.libs.jetbrains</shadedPattern>
                         </relocation>
                     </relocations>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludeDefaults>false</excludeDefaults>
-                            <includes>
-                                <include>de.themoep.settlements.libs.anvilgui</include>
-                            </includes>
-                        </filter>
-                    </filters>
                 </configuration>
                 <executions>
                     <execution>
@@ -125,10 +116,6 @@
     </build>
 
     <repositories>
-        <repository>
-            <id>local-repo</id>
-            <url>file://${project.basedir}/repo/</url>
-        </repository>
         <repository>
             <id>everything</id>
             <url>https://maven.citizensnpcs.co/repo</url>
@@ -255,12 +242,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.zrips.cmi</groupId>
-            <artifactId>cmi-api</artifactId>
-            <version>9.5.0.8</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.acrobot.chestshop</groupId>
             <artifactId>chestshop</artifactId>
             <version>3.12.2</version>
@@ -320,7 +301,7 @@
         <dependency>
             <groupId>uk.firedev</groupId>
             <artifactId>PoleisLib</artifactId>
-            <version>1.0.6</version>
+            <version>1.0.7</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

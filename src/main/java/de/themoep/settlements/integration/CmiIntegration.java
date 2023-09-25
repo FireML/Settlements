@@ -1,8 +1,8 @@
 package de.themoep.settlements.integration;
 
-import com.Zrips.CMI.CMI;
-import com.Zrips.CMI.Containers.CMIUser;
-import com.Zrips.CMI.Containers.PlayerMail;
+import uk.firedev.poleislib.libs.zrips.CMI.CMI;
+import uk.firedev.poleislib.libs.zrips.CMI.Containers.CMIUser;
+import uk.firedev.poleislib.libs.zrips.CMI.Containers.PlayerMail;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.LandAccessChecker;
 import de.themoep.settlements.resident.Resident;
