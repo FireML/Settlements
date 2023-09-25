@@ -690,21 +690,21 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
             if (player != null) {
                 return SettlementsPlugin.chat.getPrimaryGroup(player);
             }
-            return SettlementsPlugin.chat.getPrimaryGroup((String) null, r.getName());
+            return "Unknown";
         }),
         vaultprefix(r -> {
             Player player = r.getPlayer();
             if (player != null) {
-                return ChatManager.getInstance().getPlayerPrefix(player);
+                return ChatManager.getInstance().getPlayerGroupPrefix(player);
             }
-            return SettlementsPlugin.chat == null ? "" : SettlementsPlugin.chat.getPlayerPrefix((String) null, r.getName());
+            return "Unknown";
         }),
         vaultsuffix(r -> {
             Player player = r.getPlayer();
             if (player != null) {
                 return ChatManager.getInstance().getPlayerSuffix(player);
             }
-            return SettlementsPlugin.chat == null ? "" : SettlementsPlugin.chat.getPlayerSuffix((String) null, r.getName());
+            return "Unknown";
         }),
         ;
 

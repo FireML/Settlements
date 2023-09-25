@@ -536,8 +536,24 @@ public class ChatManager implements ConfigMessages, Listener {
         return SettlementsPlugin.chat != null ? MessageUtils.replaceColorCodes(SettlementsPlugin.chat.getPlayerPrefix(sender)) : "";
     }
 
+    public String getPlayerGroupPrefix(Player sender) {
+        if (SettlementsPlugin.chat == null) {
+            return "";
+        }
+        String group = SettlementsPlugin.chat.getPrimaryGroup(sender);
+        return SettlementsPlugin.chat.getGroupPrefix((String) null, group);
+    }
+
     public String getPlayerSuffix(Player sender) {
         return SettlementsPlugin.chat != null ? MessageUtils.replaceColorCodes(SettlementsPlugin.chat.getPlayerSuffix(sender)) : "";
+    }
+
+    public String getPlayerGroupSuffix(Player sender) {
+        if (SettlementsPlugin.chat == null) {
+            return "";
+        }
+        String group = SettlementsPlugin.chat.getPrimaryGroup(sender);
+        return SettlementsPlugin.chat.getGroupSuffix((String) null, group);
     }
 
     public static ChatManager getInstance() {
