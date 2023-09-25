@@ -102,15 +102,6 @@
                             <shadedPattern>de.themoep.settlements.libs.jetbrains</shadedPattern>
                         </relocation>
                     </relocations>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludeDefaults>false</excludeDefaults>
-                            <includes>
-                                <include>de.themoep.settlements.libs.anvilgui</include>
-                            </includes>
-                        </filter>
-                    </filters>
                 </configuration>
                 <executions>
                     <execution>
