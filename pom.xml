@@ -269,8 +269,7 @@
             <groupId>com.dre</groupId>
             <artifactId>Brewery</artifactId>
             <version>3.1.2</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/repo/Brewery.jar</systemPath>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>net.citizensnpcs</groupId>
