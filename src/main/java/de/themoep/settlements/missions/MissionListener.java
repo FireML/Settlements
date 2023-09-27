@@ -1,5 +1,6 @@
 package de.themoep.settlements.missions;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.perk.events.PerkUnlockedEvent;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -18,6 +20,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import uk.firedev.poleislib.Utils.BlockUtils;
 
 
@@ -26,26 +29,37 @@ public class MissionListener implements Listener {
     public MissionListener() {
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (BlockUtils.isPlayerBroken(event.getBlock().getLocation(), event.getPlayer().getUniqueId())) {
-            return;
-        }
-        handle(event.getPlayer(), event.getBlock().getType().name(), Mission.Type.PLACE);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (BlockUtils.isPlayerBroken(event.getBlock())) {
+                    return;
+                }
+                handle(event.getPlayer(), event.getBlock().getType().name(), Mission.Type.PLACE);
+            }
+        }.runTaskLater(SettlementsPlugin.getInstance(), 5L);
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event) {
-        Mission.Type[] types;
-        BlockData data = event.getBlock().getBlockData();
-        if (!(data instanceof Ageable ageable) || ageable.getAge() == ageable.getMaximumAge()) {
-            types = new Mission.Type[] {Mission.Type.HARVEST, Mission.Type.BREAK};
-        } else if (!BlockUtils.isPlayerPlaced(event.getBlock())) {
-            types = new Mission.Type[] {Mission.Type.BREAK};
-        } else {
-            return;
-        }
-        handle(event.getPlayer(), event.getBlock().getType().name(), types);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (BlockUtils.isPlayerPlaced(event.getBlock())) {
+                    return;
+                }
+                Mission.Type[] types;
+                BlockData data = event.getBlock().getBlockData();
+                if (!(data instanceof Ageable ageable) || ageable.getAge() == ageable.getMaximumAge()) {
+                    types = new Mission.Type[] {Mission.Type.HARVEST, Mission.Type.BREAK};
+                } else {
+                    types = new Mission.Type[] {Mission.Type.BREAK};
+                }
+                handle(event.getPlayer(), event.getBlock().getType().name(), types);
+            }
+        }.runTaskLater(SettlementsPlugin.getInstance(), 5L);
     }
 
     @EventHandler(ignoreCancelled = true)

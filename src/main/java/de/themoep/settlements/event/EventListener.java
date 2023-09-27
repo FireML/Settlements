@@ -1,5 +1,6 @@
 package de.themoep.settlements.event;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.PlayerMoveBlockEvent;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
@@ -14,6 +15,7 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 import uk.firedev.poleislib.Utils.BlockUtils;
 
 public class EventListener implements Listener {
@@ -27,20 +29,30 @@ public class EventListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (BlockUtils.isPlayerBroken(event.getBlockPlaced().getLocation(), event.getPlayer().getUniqueId())) {
-            return;
-        }
-        EventManager.getInstance().handle(event.getPlayer(), Event.Action.PLACE, event.getBlockPlaced().getType().toString(), event.getItemInHand().getType().toString());
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (BlockUtils.isPlayerBroken(event.getBlockPlaced())) {
+                    return;
+                }
+                EventManager.getInstance().handle(event.getPlayer(), Event.Action.PLACE, event.getBlockPlaced().getType().toString(), event.getItemInHand().getType().toString());
+            }
+        }.runTaskLater(SettlementsPlugin.getInstance(), 5L);
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (BlockUtils.isPlayerPlaced(event.getBlock())) {
-            return;
-        }
-        if (shouldBreakCount(event.getPlayer().getEquipment().getItemInMainHand(), event.getBlock())) {
-            EventManager.getInstance().handle(event.getPlayer(), Event.Action.BREAK, event.getBlock().getType().toString());
-        }
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (BlockUtils.isPlayerPlaced(event.getBlock())) {
+                    return;
+                }
+                if (shouldBreakCount(event.getPlayer().getEquipment().getItemInMainHand(), event.getBlock())) {
+                    EventManager.getInstance().handle(event.getPlayer(), Event.Action.BREAK, event.getBlock().getType().toString());
+                }
+            }
+        }.runTaskLater(SettlementsPlugin.getInstance(), 5L);
     }
 
     /**
