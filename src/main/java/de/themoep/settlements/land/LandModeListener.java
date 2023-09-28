@@ -217,7 +217,7 @@ public class LandModeListener implements LandAccessChecker {
 
     @EventHandler
     public void onProjectileDamagePlayer(ProjectileHitEvent e) {
-        if (e.getHitEntity() instanceof Player player && e.getEntity().getShooter() instanceof Entity entity && Utils.isHostile(entity)) {
+        if (e.getHitEntity() instanceof Player player && !(e.getEntity().getShooter() instanceof Player)) {
             OwnedLand land = LandManager.getInstance().getLand(player.getChunk());
             if (land != null && !land.getMode(PlotMode.mobSpawning)) {
                 e.setCancelled(true);

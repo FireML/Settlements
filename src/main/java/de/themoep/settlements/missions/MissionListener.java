@@ -1,10 +1,16 @@
 package de.themoep.settlements.missions;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.perk.events.PerkUnlockedEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.utils.WorldUtils;
+import de.themoep.settlements.utils.config.Config;
 import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Entity;
@@ -19,23 +25,22 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.concurrent.TimeUnit;
+
 
 public class MissionListener implements Listener {
     private final Cache<Long, Boolean> playerPlaced;
     private final boolean hasBreakMission;
-    private final boolean cacheInEmpireWorldOnly;
 
     public MissionListener() {
         playerPlaced = Caffeine.newBuilder().expireAfterAccess(Math.max(Config.Settlement.Missions.PLACE_CACHE_TIME, Config.Empire.Missions.PLACE_CACHE_TIME), TimeUnit.MINUTES).build();
         hasBreakMission = SettlementManager.getInstance().getMissions().stream().anyMatch(m -> m.getType() == Mission.Type.BREAK)
                 || EmpireManager.getInstance().getMissions().stream().anyMatch(m -> m.getType() == Mission.Type.BREAK);
-        cacheInEmpireWorldOnly = SettlementManager.getInstance().getMissions().isEmpty()
-                && EmpireManager.getInstance().getMissions().stream().noneMatch(EmpireMission::onlyInEmpireWorld);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (hasBreakMission && (!cacheInEmpireWorldOnly || EmpireManager.getInstance().getEmpireFromWorld(event.getPlayer().getWorld()) != null)) {
+        if (hasBreakMission && EmpireManager.getInstance().getEmpireFromWorld(event.getPlayer().getWorld()) != null) {
             playerPlaced.put(WorldUtils.getBlockLocationHash(event.getBlock()), true);
         }
         handle(event.getPlayer(), event.getBlock().getType().name(), Mission.Type.PLACE);
