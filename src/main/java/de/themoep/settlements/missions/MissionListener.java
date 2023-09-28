@@ -18,18 +18,25 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerHarvestBlockEvent;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Utils.BlockUtils;
 
 
 public class MissionListener implements Listener {
+    private final Cache<Long, Boolean> playerPlaced;
+    private final boolean hasBreakMission;
+    private final boolean cacheInEmpireWorldOnly;
 
     public MissionListener() {
+        playerPlaced = Caffeine.newBuilder().expireAfterAccess(Math.max(Config.Settlement.Missions.PLACE_CACHE_TIME, Config.Empire.Missions.PLACE_CACHE_TIME), TimeUnit.MINUTES).build();
+        hasBreakMission = SettlementManager.getInstance().getMissions().stream().anyMatch(m -> m.getType() == Mission.Type.BREAK)
+                || EmpireManager.getInstance().getMissions().stream().anyMatch(m -> m.getType() == Mission.Type.BREAK);
+        cacheInEmpireWorldOnly = SettlementManager.getInstance().getMissions().isEmpty()
+                && EmpireManager.getInstance().getMissions().stream().noneMatch(EmpireMission::onlyInEmpireWorld);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        if (BlockUtils.isPlayerBroken(event.getBlock().getLocation(), event.getPlayer().getUniqueId())) {
-            return;
+        if (hasBreakMission && (!cacheInEmpireWorldOnly || EmpireManager.getInstance().getEmpireFromWorld(event.getPlayer().getWorld()) != null)) {
+            playerPlaced.put(WorldUtils.getBlockLocationHash(event.getBlock()), true);
         }
         handle(event.getPlayer(), event.getBlock().getType().name(), Mission.Type.PLACE);
     }
@@ -38,9 +45,9 @@ public class MissionListener implements Listener {
     public void onBlockBreak(BlockBreakEvent event) {
         Mission.Type[] types;
         BlockData data = event.getBlock().getBlockData();
-        if (!(data instanceof Ageable ageable) || ageable.getAge() == ageable.getMaximumAge()) {
+        if (!(data instanceof Ageable) || ((Ageable) data).getAge() == ((Ageable) data).getMaximumAge()) {
             types = new Mission.Type[] {Mission.Type.HARVEST, Mission.Type.BREAK};
-        } else if (!BlockUtils.isPlayerPlaced(event.getBlock())) {
+        } else if (playerPlaced.getIfPresent(WorldUtils.getBlockLocationHash(event.getBlock())) == null) {
             types = new Mission.Type[] {Mission.Type.BREAK};
         } else {
             return;
