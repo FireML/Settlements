@@ -3232,7 +3232,7 @@ command:
       next: "&b Next >>"
       description: Shows the empire's bank history
     home:
-      own-no-home: "&cYour settlement doesn't have a home ask your {chief} to set one!"
+      own-no-home: "&cYour settlement doesn't have a home. Is there a claim? Ask your {chief} to claim and/or set a home!"
       no-home: "&cThat {state} doesn't have a home!"
       no-access: "&cYou don't have access to teleport to the home of that {state}!"
       success: "&a&lTeleported to home of {state} {name}"
