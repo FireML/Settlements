@@ -44,7 +44,9 @@ public class Utils {
             EntityType.PHANTOM,
             EntityType.HOGLIN,
             EntityType.MAGMA_CUBE,
-            EntityType.GHAST
+            EntityType.GHAST,
+            EntityType.VEX,
+            EntityType.EVOKER_FANGS
     );
     private static final Set<EntityType> SPECIAL_PASSIVE = EnumSet.of(
             EntityType.SNOWMAN,

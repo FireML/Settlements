@@ -226,6 +226,16 @@ public class LandModeListener implements LandAccessChecker {
     }
 
     @EventHandler
+    public void onPlayerDamagedByMagic(EntityDamageEvent e) {
+        if (e.getEntity() instanceof Player player && e.getCause() == EntityDamageEvent.DamageCause.MAGIC) {
+            OwnedLand land = LandManager.getInstance().getLand(player.getChunk());
+            if (land != null && !land.getMode(PlotMode.mobSpawning)) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler
     public void onEntityCombust(EntityCombustByEntityEvent e) {
         if (e.getEntity() instanceof Player) {
             Player combuster;
