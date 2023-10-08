@@ -7,6 +7,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.scheduler.BukkitRunnable;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public interface MissionCommand<M extends Mission> extends ConfigMessages {
             getMessage("redistribute.confirm").tell(resident,
                     "price", Utils.CURRENCY_FORMAT.format(missionProvider.getMissionRedistributePrice())
             );
-            new BukkitRunnable() {
+            new UniversalRunnable() {
                 @Override
                 public void run() {
                     confirmation.remove(resident);

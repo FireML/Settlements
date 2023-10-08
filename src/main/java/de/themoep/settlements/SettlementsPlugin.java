@@ -42,6 +42,8 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalScheduler;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -51,6 +53,7 @@ import java.util.stream.Collectors;
 
 public class SettlementsPlugin extends JavaPlugin implements Listener {
     private static SettlementsPlugin instance;
+    private static TaskScheduler scheduler;
     private LandPerks lPerks;
     private Economy econ = null;
     private CitizensIntegration citizensIntegration = null;
@@ -113,6 +116,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         instance = this;
+        scheduler = UniversalScheduler.getScheduler(this);
         registerListener(this);
         serverAdapter = new PaperAdapter();
         logDebug("Using improved API provided by Paper.");
@@ -433,6 +437,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     public static SettlementsPlugin getInstance() {
         return instance;
     }
+
+    public static TaskScheduler getScheduler() { return scheduler; }
 
     public boolean isRunning() {
         return running;

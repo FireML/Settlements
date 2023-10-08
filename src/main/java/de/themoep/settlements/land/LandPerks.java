@@ -23,7 +23,7 @@ public class LandPerks {
     private static final String PERK_EFFECT_KEY = "perk_effects";
 
     public void runTimer() {
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(SettlementsPlugin.getInstance(), () -> updateEffects(true), 0L, 160L);
+        SettlementsPlugin.getScheduler().runTaskTimerAsynchronously(() -> updateEffects(true), 0L, 160L);
     }
 
     /**

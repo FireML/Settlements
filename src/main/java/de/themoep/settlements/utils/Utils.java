@@ -18,7 +18,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
-import org.bukkit.scheduler.BukkitTask;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -129,9 +129,9 @@ public class Utils {
      * Make sure to run something not on the primary server thread.
      * A new task is started if this is the primary thread, if not the current one is used!
      * @param run What to run
-     * @return The BukkitTask that was started or null if we are already on an async thread
+     * @return The MyScheduledTask that was started or null if we are already on an async thread
      */
-    public static BukkitTask runAsync(Runnable run) {
+    public static MyScheduledTask runAsync(Runnable run) {
         return runAsync(run, false);
     }
 
@@ -139,11 +139,11 @@ public class Utils {
      * Make sure to run something not on the primary server thread.
      * @param run What to run
      * @param force Whether we should force run this async (only works if the plugin is still running)
-     * @return The BukkitTask that was started or null if we are already on an async thread
+     * @return The MyScheduledTask that was started or null if we are already on an async thread
      */
-    public static BukkitTask runAsync(Runnable run, boolean force) {
+    public static MyScheduledTask runAsync(Runnable run, boolean force) {
         if ((force || Bukkit.isPrimaryThread()) && SettlementsPlugin.getInstance().isRunning() && SettlementsPlugin.getInstance().isEnabled()) {
-            return Bukkit.getScheduler().runTaskAsynchronously(SettlementsPlugin.getInstance(), run);
+            return SettlementsPlugin.getScheduler().runTaskAsynchronously(run);
         } else {
             run.run();
         }
@@ -154,11 +154,11 @@ public class Utils {
      * Make sure to run something on the primary server thread.
      * A new task is started if this is not the primary thread, if not the main one is used!
      * @param run What to run
-     * @return The BukkitTask that was started or null if we are already on the main thread
+     * @return The MyScheduledTask that was started or null if we are already on the main thread
      */
-    public static BukkitTask runSync(Runnable run) {
+    public static MyScheduledTask runSync(Runnable run) {
         if (!Bukkit.isPrimaryThread()) {
-            return Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), run);
+            return SettlementsPlugin.getScheduler().runTask(run);
         } else {
             run.run();
         }
@@ -168,20 +168,20 @@ public class Utils {
     /**
      * Run something in the next tick on the primary server thread.
      * @param run What to run
-     * @return The BukkitTask that was started
+     * @return The MyScheduledTask that was started
      */
-    public static BukkitTask runNextTick(Runnable run) {
-        return Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), run);
+    public static MyScheduledTask runNextTick(Runnable run) {
+        return SettlementsPlugin.getScheduler().runTask(SettlementsPlugin.getInstance(), run);
     }
 
     /**
      * Run something later on the primary server thread.
      * @param run   What to run
      * @param ticks The ticks to wait
-     * @return The BukkitTask that was started
+     * @return The MyScheduledTask that was started
      */
-    public static BukkitTask runLater(Runnable run, long ticks) {
-        return Bukkit.getScheduler().runTaskLater(SettlementsPlugin.getInstance(), run, ticks);
+    public static MyScheduledTask runLater(Runnable run, long ticks) {
+        return SettlementsPlugin.getScheduler().runTaskLater(SettlementsPlugin.getInstance(), run, ticks);
     }
 
     /**

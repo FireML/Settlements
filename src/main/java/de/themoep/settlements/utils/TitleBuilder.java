@@ -76,7 +76,7 @@ public class TitleBuilder {
             lastActionBar.put(p.getUniqueId(), sendTime);
             BaseComponent[] replacedActionBar = actionBar.getReplacedComponents(replacements);
             p.spigot().sendMessage(ChatMessageType.ACTION_BAR, replacedActionBar);
-            Bukkit.getScheduler().runTaskLater(SettlementsPlugin.getInstance(), () -> {
+            SettlementsPlugin.getScheduler().runTaskLater(() -> {
                 Long storedSend = lastActionBar.getIfPresent(p.getUniqueId());
                 if (storedSend != null && storedSend == sendTime) {
                     p.spigot().sendMessage(ChatMessageType.ACTION_BAR, replacedActionBar);
@@ -100,7 +100,7 @@ public class TitleBuilder {
             lastActionBar.put(p.getUniqueId(), sendTime);
             BaseComponent[] replacedActionBar = actionBar.getReplacedComponents(replacements);
             p.spigot().sendMessage(ChatMessageType.ACTION_BAR, replacedActionBar);
-            Bukkit.getScheduler().runTaskLater(SettlementsPlugin.getInstance(), () -> {
+            SettlementsPlugin.getScheduler().runTaskLater(() -> {
                 Long storedSend = lastActionBar.getIfPresent(p.getUniqueId());
                 if (storedSend != null && storedSend == sendTime) {
                     p.spigot().sendMessage(ChatMessageType.ACTION_BAR, replacedActionBar);

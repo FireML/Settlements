@@ -29,6 +29,7 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -337,7 +338,7 @@ public class PortalManager {
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
                 portalCooldown.add(player);
-                Utils.runLater(new BukkitRunnable() {
+                Utils.runLater(new UniversalRunnable() {
                     @Override
                     public void run() {
                         portalCooldown.remove(player);

@@ -13,6 +13,7 @@ import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 
 import java.util.regex.Pattern;
 
@@ -54,7 +55,7 @@ public class SettlementCreateCommand extends ResidentSubCommand {
             Settlement settlement = new Settlement(name, resident.getUUID(), 1, SettlementState.VILLAGE);
             SettlementManager.getInstance().registerNew(resident, settlement);
             if (settlement.getMaxClaimableChunks() > 0) {
-                new BukkitRunnable() {
+                new UniversalRunnable() {
                     @Override
                     public void run() {
                         Bukkit.dispatchCommand(resident.getPlayer(), "s claim");

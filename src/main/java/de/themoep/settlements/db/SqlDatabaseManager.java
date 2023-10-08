@@ -23,9 +23,8 @@ import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import org.bukkit.scheduler.BukkitTask;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -1852,7 +1851,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         private final String type;
         private BiConsumer<Connection, T> handleSave;
 
-        private BukkitTask task = null;
+        private MyScheduledTask task = null;
         private final Map<IdObject, T> queue = new ConcurrentHashMap<>();
         private Runnable saving = () -> {
             Utils.catchSync();
@@ -1915,7 +1914,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 SettlementsPlugin.logDebug("Triggering " + type + " save queue due to add reaching max size (" + queue.size() + ")");
                 Utils.runAsync(saving);
             } else if (!forceSave && task == null && SettlementsPlugin.getInstance().isEnabled()) {
-                task = Bukkit.getScheduler().runTaskLaterAsynchronously(SettlementsPlugin.getInstance(), saving, saveWait * 20L);
+                task = SettlementsPlugin.getScheduler().runTaskLaterAsynchronously(saving, saveWait * 20L);
             }
         }
 

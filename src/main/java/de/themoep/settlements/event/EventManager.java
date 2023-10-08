@@ -18,7 +18,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitTask;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +47,7 @@ public class EventManager implements ConfigMessages {
 
     private Map<IdObject, EventData> eventData = new HashMap<>();
     private Settlement first = null;
-    private BukkitTask firstAnnounceTask = null;
+    private MyScheduledTask firstAnnounceTask = null;
     private Map<IdObject, Set<String>> settlementRewards = new HashMap<>();
 
 

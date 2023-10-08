@@ -18,6 +18,8 @@ authors:
   - Oheers
   - FireML
 api-version: '1.20'
+folia-supported: true
+
 commands:
   portal:
     description: Portal Commands.

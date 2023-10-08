@@ -33,15 +33,13 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitTask;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.util.logging.Level;
 
 public class LandModeListener implements LandAccessChecker {
     private final TitleBuilder tbPvp = new TitleBuilder();
-    private BukkitTask mobCheckTask = null;
+    private MyScheduledTask mobCheckTask = null;
     private long mobCheckPeriod = 0;
 
     public LandModeListener() {
@@ -55,7 +53,7 @@ public class LandModeListener implements LandAccessChecker {
                 mobCheckTask.cancel();
             }
             if (mobCheckPeriod > 0) {
-                mobCheckTask = Bukkit.getScheduler().runTaskTimer(SettlementsPlugin.getInstance(), () -> {
+                mobCheckTask = SettlementsPlugin.getScheduler().runTaskTimer(() -> {
                     int amount = 0;
                     for (World world : Bukkit.getWorlds()) {
                         if (Utils.isWorldClaimable(world) && LandManager.getInstance().hasLand(world)) {

@@ -20,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 
 import java.util.*;
 import java.util.function.Function;
@@ -363,13 +364,13 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         ArrayList<Material> edgeMaterials = new ArrayList<>();
         for (Location edgeBlock : edgeBlocks) {
             edgeMaterials.add(edgeBlock.getBlock().getType());
-            new BukkitRunnable() {
+            new UniversalRunnable() {
                 public void run() {
                     Bukkit.getWorld(edgeBlock.getWorld().getName()).getBlockAt(edgeBlock).setType(Material.REDSTONE_BLOCK);
                 }
             }.runTask(SettlementsPlugin.getInstance());
         }
-        new BukkitRunnable() {
+        new UniversalRunnable() {
             public void run() {
                 for (int i = 0; i < edgeMaterials.size(); ++i) {
                     Bukkit.getWorld(edgeBlocks.get(i).getWorld().getName()).getBlockAt(edgeBlocks.get(i)).setType(edgeMaterials.get(i));

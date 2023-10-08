@@ -26,7 +26,7 @@ public class BanishListener implements Listener {
                 sendInfo(p, landOwner, "move");
                 e.setCancelled(true);
                 Location to = e.getPlayer().getLocation().add(e.getPlayer().getLocation().getDirection().setY(0).multiply(-1));
-                Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), () -> e.getPlayer().teleport(to));
+                SettlementsPlugin.getScheduler().runTask(() -> e.getPlayer().teleport(to));
             }
         });
     }
@@ -38,7 +38,7 @@ public class BanishListener implements Listener {
             if (!e.getPlayer().hasPermission("settlements.bypass.banish")) {
                 e.setCancelled(true);
                 if (!e.getTo().getChunk().equals(e.getTo().getChunk())) {
-                    Bukkit.getScheduler().runTask(SettlementsPlugin.getInstance(), () -> Utils.teleportToSpawn(p));
+                    SettlementsPlugin.getScheduler().runTask(() -> Utils.teleportToSpawn(p));
                 }
             }
         });

@@ -21,8 +21,8 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 public class LockManager implements LockProvider {
     private static final String LOADING_KEY = "LOADING_MARKER";
     private static LockManager instance;
-    private BukkitTask loadQueueTask = null;
+    private MyScheduledTask loadQueueTask = null;
     private final BlockingQueue<SimpleChunkLocation> loadQueue = new LinkedBlockingQueue<>();
     // Ideally this would use a Guava table but synchronized ones were only added in Guava 28 and Minecraft/Spigot uses 21
     private final Map<String, Map<SimpleChunkLocation, Map<String, Lock>>> lockTable = new ConcurrentHashMap<>();
@@ -90,7 +90,7 @@ public class LockManager implements LockProvider {
     private void queueChunkLoad(Collection<SimpleChunkLocation> chunks) {
         loadQueue.addAll(chunks);
         if (loadQueueTask == null || loadQueueTask.isCancelled()) {
-            loadQueueTask = Bukkit.getScheduler().runTaskLaterAsynchronously(SettlementsPlugin.getInstance(), () -> {
+            loadQueueTask = SettlementsPlugin.getScheduler().runTaskLaterAsynchronously(() -> {
                 loadQueueTask = null;
                 if (!loadQueue.isEmpty()) {
                     // Load locks in chunks
