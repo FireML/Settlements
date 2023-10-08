@@ -1,7 +1,5 @@
 package de.themoep.settlements.resident.gui;
 
-import uk.firedev.poleislib.Utils.ItemUtils;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.settlement.SettlementHomeCommand;
@@ -16,12 +14,17 @@ import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
-import de.themoep.settlements.utils.*;
+import de.themoep.settlements.utils.ConfigurableGui;
+import de.themoep.settlements.utils.ListGui;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
+import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 
 import java.util.ArrayList;
 import java.util.Collection;

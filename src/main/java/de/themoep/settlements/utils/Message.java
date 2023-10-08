@@ -1,7 +1,5 @@
 package de.themoep.settlements.utils;
 
-import uk.firedev.poleislib.libs.themoep.minedown.MineDown;
-import uk.firedev.poleislib.libs.themoep.minedown.Replacer;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.ConfigManager;
@@ -9,6 +7,8 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.libs.themoep.minedown.MineDown;
+import uk.firedev.poleislib.libs.themoep.minedown.Replacer;
 
 import java.util.*;
 import java.util.logging.Level;

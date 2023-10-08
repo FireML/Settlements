@@ -1,13 +1,13 @@
 package de.themoep.settlements.utils;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 
 import java.util.function.Consumer;
 import java.util.logging.Level;

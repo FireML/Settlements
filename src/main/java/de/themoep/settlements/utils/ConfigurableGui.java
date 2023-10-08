@@ -1,12 +1,12 @@
 package de.themoep.settlements.utils;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiPageElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiPageElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
 
 public class ConfigurableGui extends SettlementsGUI {
     protected final Resident resident;

@@ -1,10 +1,5 @@
 package de.themoep.settlements.settlement.gui;
 
-import uk.firedev.poleislib.Utils.ItemUtils;
-import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiStateElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.invites.InviteManager;
@@ -15,8 +10,13 @@ import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.*;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiStateElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
+import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 
 public class ResidentGUI extends ConfigurableGui {
 

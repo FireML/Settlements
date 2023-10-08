@@ -1,6 +1,5 @@
 package de.themoep.settlements.land.gui;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.*;
@@ -9,6 +8,7 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,5 @@
 package de.themoep.settlements.land.gui;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
@@ -12,6 +9,9 @@ import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
 import org.bukkit.Location;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 
 public class NpcListGUI extends ConfigurableGui {
 

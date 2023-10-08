@@ -1,7 +1,5 @@
 package de.themoep.settlements.empire.gui;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.empire.EmpireSetWorldSpawnCommand;
 import de.themoep.settlements.command.empire.EmpireWorldCommand;
@@ -9,6 +7,8 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 
 public class WorldGUI extends ConfigurableGui {
 

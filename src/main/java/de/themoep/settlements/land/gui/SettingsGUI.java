@@ -1,8 +1,5 @@
 package de.themoep.settlements.land.gui;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiStateElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
@@ -17,12 +14,15 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.SignGui;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiStateElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
+import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 
 import java.util.stream.Collectors;
 

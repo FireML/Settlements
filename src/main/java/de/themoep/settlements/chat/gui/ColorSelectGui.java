@@ -1,18 +1,21 @@
 package de.themoep.settlements.chat.gui;
 
-import uk.firedev.poleislib.Utils.ItemUtils;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.utils.*;
+import de.themoep.settlements.utils.ColorUtils;
+import de.themoep.settlements.utils.ConfigurableGui;
+import de.themoep.settlements.utils.HumanReadable;
+import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 
 public class ColorSelectGui extends ConfigurableGui {
 

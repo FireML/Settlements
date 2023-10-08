@@ -1,7 +1,5 @@
 package de.themoep.settlements.land.gui;
 
-import uk.firedev.poleislib.Utils.ItemUtils;
-import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.settlement.SettlementTitlesCommand;
@@ -12,12 +10,14 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.libs.themoep.inventorygui.*;
+import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,7 +6,6 @@ import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Utils;
-import org.bukkit.scheduler.BukkitRunnable;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 
 import java.util.ArrayList;

@@ -2,8 +2,6 @@ package de.themoep.settlements.utils;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import uk.firedev.poleislib.libs.themoep.minedown.MineDownParser;
-import uk.firedev.poleislib.libs.themoep.minedown.Replacer;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;
@@ -15,6 +13,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.libs.themoep.minedown.MineDownParser;
+import uk.firedev.poleislib.libs.themoep.minedown.Replacer;
 
 import java.util.Collection;
 import java.util.List;

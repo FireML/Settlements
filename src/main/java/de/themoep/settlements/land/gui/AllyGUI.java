@@ -1,8 +1,5 @@
 package de.themoep.settlements.land.gui;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.command.common.AllyCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.Ally;
@@ -15,6 +12,9 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 
 public class AllyGUI extends ConfigurableGui implements AllyCommand {
 

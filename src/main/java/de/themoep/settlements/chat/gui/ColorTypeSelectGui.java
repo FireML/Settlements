@@ -1,9 +1,5 @@
 package de.themoep.settlements.chat.gui;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.db.DatabaseManager;
@@ -14,6 +10,10 @@ import de.themoep.settlements.utils.HumanReadable;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.ChatColor;
 import org.bukkit.event.inventory.ClickType;
+import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 
 public class ColorTypeSelectGui extends ConfigurableGui {
 

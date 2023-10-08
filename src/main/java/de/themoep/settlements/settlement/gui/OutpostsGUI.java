@@ -1,7 +1,5 @@
 package de.themoep.settlements.settlement.gui;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.settlement.SettlementHomeCommand;
 import de.themoep.settlements.land.LandAccess;
@@ -13,6 +11,8 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.world.NamedLocation;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 
 import java.util.stream.Collectors;
 

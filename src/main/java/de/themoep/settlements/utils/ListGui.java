@@ -1,9 +1,9 @@
 package de.themoep.settlements.utils;
 
-import uk.firedev.poleislib.Utils.ItemUtils;
-import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 import de.themoep.settlements.resident.Resident;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 
 import java.util.Collection;
 import java.util.function.BiConsumer;

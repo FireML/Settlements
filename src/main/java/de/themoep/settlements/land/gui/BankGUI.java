@@ -1,7 +1,5 @@
 package de.themoep.settlements.land.gui;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.db.DatabaseManager;
@@ -12,8 +10,10 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
 import net.milkbowl.vault.economy.EconomyResponse;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
+import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 
 public class BankGUI extends ConfigurableGui {
 

@@ -1,19 +1,22 @@
 package de.themoep.settlements;
 
-import uk.firedev.poleislib.Utils.ItemUtils;
-import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.npc.NpcConfig;
 import de.themoep.settlements.npc.NpcData;
-import de.themoep.settlements.utils.*;
+import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.NameTag;
+import de.themoep.settlements.utils.Next;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElement;
+import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 
 import java.util.ArrayList;
 import java.util.List;

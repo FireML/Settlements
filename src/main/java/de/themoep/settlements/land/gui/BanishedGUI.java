@@ -1,6 +1,5 @@
 package de.themoep.settlements.land.gui;
 
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.land.Banished;
 import de.themoep.settlements.land.LandOwner;
@@ -10,6 +9,7 @@ import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
+import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 
 public class BanishedGUI extends SettlementsGUI {
 
