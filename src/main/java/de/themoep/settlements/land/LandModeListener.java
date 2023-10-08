@@ -61,7 +61,7 @@ public class LandModeListener implements LandAccessChecker {
                                 if (Utils.isHostile(entity)) {
                                     OwnedLand land = LandManager.getInstance().getLand(entity.getLocation());
                                     if (land != null && !land.getMode(PlotMode.mobSpawning)) {
-                                        entity.remove();
+                                        SettlementsPlugin.getScheduler().runTask(entity, entity::remove);
                                         amount++;
                                     }
                                 }

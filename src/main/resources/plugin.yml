@@ -3,7 +3,6 @@ version: "${minecraft.plugin.version}"
 name: Settlements
 depend:
   - Vault
-  - Citizens
   - PoleisLib
 softdepend:
   - LWCX
@@ -13,6 +12,7 @@ softdepend:
   - PlaceholderAPI
   - Brewery
   - Denizen
+  - Citizens
 authors:
   - Phoenix616
   - Oheers

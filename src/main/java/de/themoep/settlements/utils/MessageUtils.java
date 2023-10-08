@@ -6,7 +6,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
-import net.Zrips.CMILib.Colors.CMIChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -15,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import uk.firedev.poleislib.libs.themoep.minedown.MineDownParser;
 import uk.firedev.poleislib.libs.themoep.minedown.Replacer;
+import uk.firedev.poleislib.libs.zrips.cmilib.Colors.CMIChatColor;
 
 import java.util.Collection;
 import java.util.List;

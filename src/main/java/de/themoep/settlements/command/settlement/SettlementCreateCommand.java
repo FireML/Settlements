@@ -54,12 +54,7 @@ public class SettlementCreateCommand extends ResidentSubCommand {
             Settlement settlement = new Settlement(name, resident.getUUID(), 1, SettlementState.VILLAGE);
             SettlementManager.getInstance().registerNew(resident, settlement);
             if (settlement.getMaxClaimableChunks() > 0) {
-                new UniversalRunnable() {
-                    @Override
-                    public void run() {
-                        Bukkit.dispatchCommand(resident.getPlayer(), "s claim");
-                    }
-                }.runTaskLater(SettlementsPlugin.getInstance(), 10L);
+                SettlementsPlugin.getScheduler().runTaskLater(resident.getPlayer(), () -> Bukkit.dispatchCommand(resident.getPlayer(), "s claim"), 10L);
             }
 
             getMessage("broadcast").broadcast(
