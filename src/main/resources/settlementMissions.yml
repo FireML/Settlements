@@ -612,6 +612,13 @@ deposit_amethyst_shard:
   type: turn_in
   requirements:
     amethyst_shard: 128
+deposit_charcoal:
+  icon: charcoal
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    charcoal: 128
 deposit_coal:
   icon: coal
   on-settlement-claim: false
@@ -625,7 +632,14 @@ deposit_copper:
   mission-points: 1
   type: turn_in
   requirements:
-    copper_ingot: 128
+    copper_ingot: 500
+deposit_copper_block:
+  icon: copper_block
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    copper_block: 128
 deposit_diamond:
   icon: diamond
   on-settlement-claim: false
@@ -683,7 +697,408 @@ deposit_redstone:
   requirements:
     redstone: 128
 
-  # Non-ores
+  # Mob drops
+deposit_arrow:
+  icon: arrow
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    arrow: 192
+deposit_blaze_rod:
+  icon: blaze_rod
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    blaze_rod: 192
+deposit_bone:
+  icon: bone
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    bone: 192
+deposit_egg:
+  icon: egg
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    egg: 192
+deposit_feather:
+  icon: feather
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    feather: 192
+deposit_gunpowder:
+  icon: gunpowder
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    gunpowder: 192
+deposit_ink_sac:
+  icon: ink_sac
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    ink_sac: 192
+deposit_leather:
+  icon: leather
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    leather: 192
+deposit_rotten_flesh:
+  icon: rotten_flesh
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    rotten_flesh: 192
+deposit_spider_eye:
+  icon: spider_eye
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    spider_eye: 192
+
+
+  # Flowers
+deposit_allium:
+  icon: allium
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    allium: 64
+deposit_azure_bluet:
+  icon: azure_bluet
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    azure_bluet: 64
+deposit_blue_orchid:
+  icon: blue_orchid
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    blue_orchid: 64
+deposit_cornflower:
+  icon: cornflower
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cornflower: 64
+deposit_dandelion:
+  icon: dandelion
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    dandelion: 64
+deposit_lilac:
+  icon: lilac
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    lilac: 64
+deposit_lily_of_the_valley:
+  icon: lily_of_the_valley
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    lily_of_the_valley: 64
+deposit_orange_tulip:
+  icon: orange_tulip
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    orange_tulip: 64
+deposit_oxeye_daisy:
+  icon: oxeye_daisy
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    oxeye_daisy: 64
+deposit_peony:
+  icon: peony
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    peony: 64
+deposit_pink_petals:
+  icon: pink_petals
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    pink_petals: 192
+deposit_pink_tulip:
+  icon: pink_tulip
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    pink_tulip: 64
+deposit_poppy:
+  icon: poppy
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    poppy: 128
+deposit_red_tulip:
+  icon: red_tulip
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    red_tulip: 64
+deposit_rose_bush:
+  icon: rose_bush
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    rose_bush: 64
+deposit_spore_blossom:
+  icon: spore_blossom
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    spore_blossom: 16
+deposit_sunflower:
+  icon: sunflower
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    sunflower: 64
+deposit_white_tulip:
+  icon: white_tulip
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    white_tulip: 64
+
+  # Consumables
+deposit_baked_potato:
+  icon: baked_potato
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    baked_potato: 256
+deposit_bread:
+  icon: bread
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    bread: 256
+deposit_cocoa_beans:
+  icon: cocoa_beans
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cocoa_beans: 256
+deposit_cooked_beef:
+  icon: cooked_beef
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cooked_beef: 256
+deposit_cooked_cod:
+  icon: cooked_cod
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cooked_cod: 256
+deposit_cooked_porkchop:
+  icon: cooked_porkchop
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cooked_porkchop: 256
+deposit_cookie:
+  icon: cookie
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cookie: 256
+deposit_honey_bottle:
+  icon: honey_bottle
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    honey_bottle: 128
+deposit_honeycomb:
+  icon: honeycomb
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    honeycomb: 256
+
+  # Farming
+deposit_bamboo:
+  icon: bamboo
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    bamboo: 500
+deposit_beetroot:
+  icon: beetroot
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    beetroot: 500
+deposit_beetroot_seeds:
+  icon: beetroot_seeds
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    beetroot_seeds: 500
+deposit_cactus:
+  icon: cactus
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    cactus: 750
+deposit_carrot:
+  icon: carrot
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    carrot: 500
+deposit_chorus_fruit:
+  icon: chorus_fruit
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    chorus_fruit: 500
+deposit_kelp:
+  icon: kelp
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    kelp: 750
+deposit_melon:
+  icon: melon
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    melon: 500
+deposit_nether_wart:
+  icon: nether_wart
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    nether_wart: 500
+deposit_potato:
+  icon: potato
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    potato: 500
+deposit_pumpkin:
+  icon: pumpkin
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    pumpkin: 500
+deposit_sugar_cane:
+  icon: sugar_cane
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    sugar_cane: 750
+deposit_sweet_berries:
+  icon: sweet_berries
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    sweet_berries: 500
+deposit_wheat_seeds:
+  icon: wheat_seeds
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    wheat_seeds: 500
+
+  # Other items
+deposit_amethyst_block:
+  icon: amethyst_block
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    amethyst_block: 256
+deposit_andesite:
+  icon: andesite
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    andesite: 750
+deposit_blackstone:
+  icon: blackstone
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    blackstone: 750
+deposit_calcite:
+  icon: calcite
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    calcite 256
+deposit_clay:
+  icon: clay
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    clay: 256
 deposit_cobblestone:
   icon: cobblestone
   on-settlement-claim: false
@@ -697,7 +1112,21 @@ deposit_cobbled_deepslate:
   mission-points: 1
   type: turn_in
   requirements:
-    cobbled_deepslate: 1000
+    cobbled_deepslate: 1500
+deposit_deepslate:
+  icon: deepslate
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    deepslate: 1500
+deposit_diorite:
+  icon: diorite
+  on-settlement-claim: true
+  mission-points: 1
+  type: turn_in
+  requirements:
+    diorite: 750
 deposit_dirt:
   icon: dirt
   on-settlement-claim: false
@@ -705,3 +1134,101 @@ deposit_dirt:
   type: turn_in
   requirements:
     dirt: 1500
+deposit_end_stone:
+  icon: end_stone
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    end_stone: 750
+deposit_flint:
+  icon: flint
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    flint: 256
+depost_glass:
+  icon: glass
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    glass: 750
+deposit_granite:
+  icon: granite
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    granite: 750
+deposit_ice:
+  icon: ice
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    ice: 750
+deposit_lightning_rod:
+  icon: lightning_rod
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    lightning_rod: 500
+deposit_mud:
+  icon: mud
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    mud: 256
+deposit_netherrack:
+  icon: netherrack
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    netherrack: 1500
+deposit_obsidian:
+  icon: obsidian
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    obsidian: 750
+deposit_prismarine:
+  icon: prismarine
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    prismarine: 750
+deposit_sand:
+  icon: sand
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    sand: 750
+deposit_snow_block:
+  icon: snow_block
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    snow_block: 750
+deposit_stone:
+  icon: stone
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    stone: 1500
+deposit_tuff:
+  icon: tuff
+  on-settlement-claim: false
+  mission-points: 1
+  type: turn_in
+  requirements:
+    tuff: 1500
