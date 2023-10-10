@@ -8,6 +8,8 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.empire.EmpireMission;
+import de.themoep.settlements.integration.CmiIntegration;
+import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.*;
 import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
@@ -91,16 +93,14 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
             return;
         }
         int inactiveDays = Config.Settlement.Upkeep.INACTIVE_TIME;
-        if (inactiveDays > 0 && getLevel() == 1 && getState() == SettlementState.VILLAGE && !hasEmpire() && getPerksMap().isEmpty()
-                && LandManager.getInstance().getClaimedLandSize(this) == 0
-                && getChief().getLastLogin() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
-            OfflinePlayer chiefPlayer = SettlementsPlugin.getInstance().getServer().getOfflinePlayer(getChiefId());
-            if (!chiefPlayer.hasPlayedBefore() || chiefPlayer.getLastLogin() + TimeUnit.DAYS.toMillis(inactiveDays) < System.currentTimeMillis()) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is inactive " +
-                        "(chief offline for more than " + inactiveDays + ", Village level 1, no claims, no perks unlocked), removing it!");
-                SettlementManager.getInstance().delete(this);
-                return;
+        if (getState() == SettlementState.VILLAGE && getLevel() == 1 && System.currentTimeMillis() - getCreated() >= TimeUnit.DAYS.toMillis(inactiveDays)) {
+            for (Resident resident : getResidents()) {
+                for (MailProvider mailProvider : SettlementsPlugin.getInstance().getMailProviders()) {
+                    mailProvider.sendMail("Server", resident, "Your settlement has been disbanded because it is more than a week old and is Village Level 1.");
+                }
             }
+            SettlementManager.getInstance().abandon(this);
+            return;
         }
         Map<Resident, Long> taxes = new LinkedHashMap<>();
         if (getTax() > 0) {
