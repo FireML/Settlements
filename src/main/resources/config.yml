@@ -3,7 +3,7 @@
 # For internal usage only. Do NOT touch!
 config-version: 3
 # Log some debug messages about the inner working of the plugin
-debug: true
+debug: false
   
 # Amount of entries that should be shown per page in chat e.g. for command help messages
 entries-per-page: 10
@@ -158,9 +158,9 @@ settlement:
     # The amount of minutes that a settlement will stay abandoned after not being able to pay their upkeep
     # Abandoned settlements can be raided and fully accessed but nobody can claim them
     abandon-time: 120
-    # The amount of days that a settlement's chief can be offline until it gets deleted
+    # The amount of days that a settlement can exist at level 1 before falling
     # Set to -1 if you don't want to delete them at all
-    inactive-time: 60
+    inactive-time: 2
 
 empire:
   # Whether or not a player can transfer their bought claims to an empire
