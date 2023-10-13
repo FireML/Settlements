@@ -17,7 +17,7 @@ public class SettlementsPlayerProperties implements Property {
 
     @Override
     public String getPropertyId() {
-        return "Resident";
+        return "Player";
     }
 
     public static boolean describes(ObjectTag object) {

@@ -1,6 +1,8 @@
 package de.themoep.settlements.integration.denizen;
 
 import com.denizenscript.denizen.Denizen;
+import com.denizenscript.denizen.objects.ChunkTag;
+import com.denizenscript.denizen.objects.LocationTag;
 import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
@@ -14,6 +16,8 @@ import de.themoep.settlements.integration.denizen.objects.EmpireTag;
 import de.themoep.settlements.integration.denizen.objects.LandTag;
 import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.integration.denizen.objects.SettlementTag;
+import de.themoep.settlements.integration.denizen.properties.SettlementsChunkProperties;
+import de.themoep.settlements.integration.denizen.properties.SettlementsLocationProperties;
 import de.themoep.settlements.integration.denizen.properties.SettlementsPlayerProperties;
 
 public class DenizenIntegration {
@@ -22,7 +26,7 @@ public class DenizenIntegration {
 
     public void init() {
 
-        ObjectFetcher.registerWithObjectFetcher(LandTag.class, LandTag.tagProcessor); // pl@
+        ObjectFetcher.registerWithObjectFetcher(LandTag.class, LandTag.tagProcessor); // land@
         LandTag.register();
         ObjectFetcher.registerWithObjectFetcher(SettlementTag.class, SettlementTag.tagProcessor); // settlement@
         SettlementTag.register();
@@ -37,6 +41,8 @@ public class DenizenIntegration {
         ScriptEvent.registerScriptEvent(new SettlementsLandScriptEvent());
 
         PropertyParser.registerProperty(SettlementsPlayerProperties.class, PlayerTag.class);
+        PropertyParser.registerProperty(SettlementsLocationProperties.class, LocationTag.class);
+        PropertyParser.registerProperty(SettlementsChunkProperties.class, ChunkTag.class);
 
         // <--[tag]
         // @attribute <land[x,z,world]>

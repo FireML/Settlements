@@ -11,6 +11,8 @@ import com.denizenscript.denizencore.tags.Attribute;
 import com.denizenscript.denizencore.tags.ObjectTagProcessor;
 import com.denizenscript.denizencore.tags.TagContext;
 import com.denizenscript.denizencore.utilities.CoreUtilities;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 
@@ -230,6 +232,24 @@ public class SettlementTag implements ObjectTag, Adjustable {
         // Gets the settlement's upkeep cost
         // -->
         tagProcessor.registerTag(ElementTag.class, "upkeep", (attribute, object) -> new ElementTag(object.settlement.getUpkeep()));
+
+        // <--[tag]
+        // @attribute <SettlementTag.is_resident[ResidentTag]>
+        // @returns ElementTag(Boolean)
+        // @description
+        // Returns whether the resident is a member of this settlement
+        // -->
+        tagProcessor.registerTag(ElementTag.class, "is_resident", (attribute, object) -> {
+            if (!attribute.hasParam()) {
+                attribute.echoError("The tag ResidentTag.is_resident[...] must have a value.");
+                return null;
+            }
+            if (!(attribute.getParamObject() instanceof ResidentTag residentTag)) {
+                attribute.echoError("The tag SettlementTag.is_resident[...]'s value must be a ResidentTag.");
+                return null;
+            }
+            return new ElementTag(object.getSettlement().getResidents().contains(residentTag.getResident()));
+        });
     }
 
     @Override
