@@ -1122,7 +1122,7 @@ deposit_deepslate:
     deepslate: 1500
 deposit_diorite:
   icon: diorite
-  on-settlement-claim: true
+  on-settlement-claim: false
   mission-points: 1
   type: turn_in
   requirements:
