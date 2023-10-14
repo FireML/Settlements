@@ -853,7 +853,7 @@ gui:
           &fDaily Tax: &e☧ {tax}
           &fAuction Tax: &e{auctiontax}%
           &fTax Evasion Action: &e{taxdebtaction}
-          &fMission Points: &e{missionpoints}
+          &fMissions: &e{missions}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
           &fOutposts: &e{outposts}&f/&e{maxoutposts}
           &f{chieftitle}: &e{chief}
@@ -874,7 +874,7 @@ gui:
           &fDaily Tax: &e☧ {tax}
           &fAuction Tax: &e{auctiontax}%
           &fTax Evasion Action: &e{taxdebtaction}
-          &fMission Points: &e{missionpoints}
+          &fMissions: &e{missions}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
           &fOutposts: &e{outposts}&f/&e{maxoutposts}
           &f{chieftitle}: &e{chief}
@@ -1085,7 +1085,7 @@ gui:
         &fResidents: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fBank: &e☧ {bank}
-        &fMission Points: &e{missionpoints}
+        &fMissions: &e{missions}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
         &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}
         &f{chieftitle}: &r&7{chief}
@@ -2455,7 +2455,7 @@ gui:
       &fDaily Tax: &e☧ {tax}
       &fAuction Tax: &e☧ {tax}
       &fTax Evasion Action: &e{taxdebtaction}
-      &fMission Points: &e{missionpoints}
+      &fMissions: &e{missions}
       &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
       &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}
       &f{chieftitle}: &r&7{chief}
@@ -2541,7 +2541,7 @@ gui:
           &fState: &e{state}
           &fLevel: &e{level}
           &fBank: &e{bank}
-          &fMission Points: &e{missionpoints}
+          &fMissions: &e{missions}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
           &fOutposts: &e{outposts}&f/&e{maxoutposts}
         empire: |-
@@ -2549,7 +2549,7 @@ gui:
           &fState: &e{state}
           &fLevel: &e{level}
           &fBank: &e{bank}
-          &fMission Points: &e{missionpoints}
+          &fMissions: &e{missions}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
           &fOutposts: &e{outposts}&f/&e{maxoutposts}
       locked: |-
@@ -2794,7 +2794,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMission Points: &e{missionpoints}
+          &fMissions: &e{missions}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2806,7 +2806,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMission Points: &e{missionpoints}
+          &fMissions: &e{missions}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -3189,6 +3189,7 @@ command:
         &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e☧ {joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6Outposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &fMissions: &e{missions}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
@@ -3204,6 +3205,7 @@ command:
         &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e☧ {joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &fMissions: &e{missions}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
@@ -3532,6 +3534,7 @@ command:
         &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e☧ {joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6Outposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &fMissions: &e{missions}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
@@ -3547,6 +3550,7 @@ command:
         &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e☧ {joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
+        &fMissions: &e{missions}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
