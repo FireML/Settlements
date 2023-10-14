@@ -298,12 +298,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>com.github.angeschossen</groupId>
-            <artifactId>UpgradeableHoppersAPI</artifactId>
-            <version>4.13.10</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.zrips</groupId>
             <artifactId>CMILib</artifactId>
             <version>2f4fe444d6</version>

@@ -2,12 +2,12 @@ package de.themoep.settlements.integration;
 
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.utils.config.Config;
-import me.angeschossen.upgradeablehoppers.api.events.hopper.HopperPlaceEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import uk.firedev.poleislib.libs.angeschossen.upgradeablehoppers.api.events.hopper.HopperPlaceEvent;
 
 public class UpgradeableHoppersIntegration implements Listener {
     @EventHandler
