@@ -1091,7 +1091,7 @@ deposit_calcite:
   mission-points: 1
   type: turn_in
   requirements:
-    calcite 256
+    calcite: 256
 deposit_clay:
   icon: clay
   on-settlement-claim: false
