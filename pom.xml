@@ -244,7 +244,7 @@
         <dependency>
             <groupId>CMI-API</groupId>
             <artifactId>CMI-API</artifactId>
-            <version>9.5.0.8</version>
+            <version>9.6.4.1</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
