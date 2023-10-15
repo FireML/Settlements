@@ -314,7 +314,7 @@ lock:
   # Enable or disable the inbuilt locking
   enabled: true
   # Whether or not locks are only allowed in settlement claims and empire worlds
-  only-in-claim: false
+  only-in-claim: true
   # This checks if a block is protected by checking on hopper place
   #  rather than using the InventoryMoveItemEvent stealing of items
   alternative-hopper-protection: true
