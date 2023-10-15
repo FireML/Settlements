@@ -242,10 +242,10 @@ guis:
     missions:
       setup:
         - "ooooioooo"
-        - "         "
-        - " mmmmmmm "
-        - " mmmmmmm "
-        - "         "
+        - "mmmmmmmmm"
+        - "mmmmmmmmm"
+        - "mmmmmmmmm"
+        - "mmmmmmmmm"
         - "pooobooon"
       alignments:
         m: center
