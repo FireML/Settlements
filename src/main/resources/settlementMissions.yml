@@ -1148,7 +1148,7 @@ deposit_flint:
   type: turn_in
   requirements:
     flint: 256
-depost_glass:
+deposit_glass:
   icon: glass
   on-settlement-claim: false
   mission-points: 1
