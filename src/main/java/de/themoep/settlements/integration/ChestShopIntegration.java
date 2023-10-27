@@ -22,6 +22,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
+import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
@@ -32,6 +33,7 @@ import de.themoep.settlements.lock.LockManager;
 import de.themoep.settlements.lock.LockProvider;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
@@ -207,9 +209,9 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
     public void onPreShopCreation(PreShopCreationEvent event) {
         if (!LandManager.getInstance().isLandClaimed(event.getSign().getLocation()) || !LandManager.getInstance().isLandClaimed(BlockUtil.getAttachedBlock(event.getSign()).getLocation())) {
             event.setCancelled(true);
-            Location signloc = event.getSign().getLocation();
-            event.getSign().getWorld().getBlockAt(signloc).breakNaturally();
+            event.getSign().getBlock().breakNaturally(true);
             getError("not-allowed").tell(event.getPlayer());
+            return;
         }
         if (event.getOwnerAccount() == null) {
             String name = event.getSignLine(NAME_LINE);
@@ -257,6 +259,18 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTransaction(TransactionEvent event) {
+        UUID uuid = event.getOwnerAccount().getUuid();
+        OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
+        Settlement settlement = SettlementManager.getInstance().getFromUuid(uuid);
+        Empire empire = EmpireManager.getInstance().getEmpireFromUuid(uuid);
+        Bukkit.broadcastMessage("Player Null? " + String.valueOf(!player.hasPlayedBefore()));
+        Bukkit.broadcastMessage("Settlement Null? " + String.valueOf(settlement == null));
+        Bukkit.broadcastMessage("Empire Null? " + String.valueOf(empire == null));
+        if (!player.hasPlayedBefore() && (settlement == null || settlement.isAbandoned()) && (empire == null || empire.isAbandoned())) {
+            event.setCancelled(true);
+            event.getSign().getBlock().breakNaturally(true);
+            return;
+        }
         if (event.getTransactionType() == TransactionEvent.TransactionType.BUY) {
             sendBuyMessage(event);
         } else {
