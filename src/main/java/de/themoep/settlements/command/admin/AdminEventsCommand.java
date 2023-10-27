@@ -4,7 +4,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.event.Event;
 import de.themoep.settlements.event.EventManager;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

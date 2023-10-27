@@ -19,7 +19,6 @@ import org.bukkit.command.CommandSender;
 
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 public class SettlementListCommand extends SubCommand {
     public SettlementListCommand(SubCommand parent) {

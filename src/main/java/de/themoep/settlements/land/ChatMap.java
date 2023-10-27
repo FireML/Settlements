@@ -11,7 +11,6 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.NamedLocation;
-import de.themoep.settlements.world.SimpleChunkLocation;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;

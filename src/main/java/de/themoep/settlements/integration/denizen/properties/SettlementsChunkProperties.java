@@ -1,19 +1,13 @@
 package de.themoep.settlements.integration.denizen.properties;
 
 import com.denizenscript.denizen.objects.ChunkTag;
-import com.denizenscript.denizen.objects.ChunkTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.properties.Property;
 import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import de.themoep.settlements.integration.denizen.objects.LandTag;
-import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.resident.ResidentManager;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 
 public class SettlementsChunkProperties implements Property {
 

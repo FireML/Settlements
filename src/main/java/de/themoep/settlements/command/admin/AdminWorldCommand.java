@@ -8,7 +8,6 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class AdminWorldCommand extends PlayerSubCommand {

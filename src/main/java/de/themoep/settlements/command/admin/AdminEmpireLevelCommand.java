@@ -4,7 +4,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class AdminEmpireLevelCommand extends SubCommand {
