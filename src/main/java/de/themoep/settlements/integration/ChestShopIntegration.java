@@ -263,9 +263,6 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
         OfflinePlayer player = Bukkit.getOfflinePlayer(uuid);
         Settlement settlement = SettlementManager.getInstance().getFromUuid(uuid);
         Empire empire = EmpireManager.getInstance().getEmpireFromUuid(uuid);
-        Bukkit.broadcastMessage("Player Null? " + String.valueOf(!player.hasPlayedBefore()));
-        Bukkit.broadcastMessage("Settlement Null? " + String.valueOf(settlement == null));
-        Bukkit.broadcastMessage("Empire Null? " + String.valueOf(empire == null));
         if (!player.hasPlayedBefore() && (settlement == null || settlement.isAbandoned()) && (empire == null || empire.isAbandoned())) {
             event.setCancelled(true);
             event.getSign().getBlock().breakNaturally(true);
