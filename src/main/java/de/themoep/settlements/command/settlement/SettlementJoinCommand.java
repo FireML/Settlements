@@ -70,7 +70,7 @@ public class SettlementJoinCommand extends ResidentSubCommand {
                 }
             }
             joinSettlement.addMember(resident);
-            resident.tell(getMessage("success"), "name", joinSettlement.getName(), "state", joinSettlement.getState().getTag());
+            resident.tell(getMessage("success").getText(), "name", joinSettlement.getName(), "state", joinSettlement.getState().getTag());
             getMessage("new-resident").tell(joinSettlement.getOnlineResidents(), "player", resident.getName());
         }
         return true;

@@ -141,7 +141,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                             "name", getName());
                 }
             } else if (!SettlementsPlugin.getInstance().getEconomy().has(player, tax)
-                    && (player.getName() != null || !SettlementsPlugin.getInstance().getEconomy().has(resident.getName(), tax))) {
+                    && (player.getName() != null || !SettlementsPlugin.getInstance().getEconomy().has(resident.getPlayer(), tax))) {
                 Message.get("tax.debt-action." + getTaxDebtAction().getKey() + ".couldnt-pay").tell(getOnlineResidents(),
                         "player", resident.getName(),
                         "amount", String.valueOf(tax),

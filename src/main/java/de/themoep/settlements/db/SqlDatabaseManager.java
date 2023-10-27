@@ -1674,7 +1674,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
                     " WHERE " + keyColumn + " = ?;";
         } else {
-            String andSql = "";
+            String andSql;
             Object o = entries.iterator().next();
             if (o instanceof DatabaseSerializable) {
                 andSql = " AND " + entryColumn + "_id NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ")";

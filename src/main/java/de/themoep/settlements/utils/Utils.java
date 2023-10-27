@@ -171,7 +171,7 @@ public class Utils {
      * @return The MyScheduledTask that was started
      */
     public static MyScheduledTask runNextTick(Runnable run) {
-        return SettlementsPlugin.getScheduler().runTask(SettlementsPlugin.getInstance(), run);
+        return SettlementsPlugin.getScheduler().runTask(run);
     }
 
     /**
@@ -181,7 +181,7 @@ public class Utils {
      * @return The MyScheduledTask that was started
      */
     public static MyScheduledTask runLater(Runnable run, long ticks) {
-        return SettlementsPlugin.getScheduler().runTaskLater(SettlementsPlugin.getInstance(), run, ticks);
+        return SettlementsPlugin.getScheduler().runTaskLater(run, ticks);
     }
 
     /**

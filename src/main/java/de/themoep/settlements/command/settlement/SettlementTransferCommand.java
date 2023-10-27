@@ -21,12 +21,12 @@ public class SettlementTransferCommand extends SettlementSubCommand {
         Utils.runAsync(() -> {
             Resident tres = ResidentManager.getInstance().getResident(args[0]);
             if (tres == null) {
-                res.tell(getError("player-not-found"), "name", args[0]);
+                res.tell(getError("player-not-found").getText(), "name", args[0]);
                 return;
             }
             Settlement settlement = res.getSettlement();
             if (!isResident(tres, settlement)) {
-                res.tell(getError("not-in-current"), "name", settlement.getName(), "state", settlement.getState().getTag());
+                res.tell(getError("not-in-current").getText(), "name", settlement.getName(), "state", settlement.getState().getTag());
                 return;
             }
             if (settlement.isChief(tres)) {

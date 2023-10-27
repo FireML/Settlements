@@ -75,7 +75,7 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
                             "targetstate", target.getStateTag());
                 }
             } else {
-                resident.tell(getError("not-enough-bonus"), "amount", String.valueOf(transfer));
+                resident.tell(getError("not-enough-bonus").getText(), "amount", String.valueOf(transfer));
             }
         } catch (NumberFormatException e) {
             return false;

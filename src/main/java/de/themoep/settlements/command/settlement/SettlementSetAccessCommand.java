@@ -21,22 +21,22 @@ public class SettlementSetAccessCommand extends SettlementSubCommand {
             LandAccess access = LandAccess.valueOf(String.join("_", args).toUpperCase());
             resident.getSettlement().setAccess(access);
             DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
-            resident.tell(getMessage("success"), "access", access.getTag());
+            resident.tell(getMessage("success").getText(), "access", access.getTag());
         } catch (IllegalArgumentException e) {
-            resident.tell(getMessage("usage.head"),
+            resident.tell(getMessage("usage.head").getText(),
                     "name", name(),
                     "command", "/" + base + " " + alias,
                     "usage", getUsage(base),
                     "type", resident.getSettlement().getStateTag() + " "
             );
             for (LandAccess access : LandAccess.values()) {
-                resident.tell(getMessage("usage.entry"),
+                resident.tell(getMessage("usage.entry").getText(),
                         "usage", "/" + base + " " + alias + " " + access.getTag(),
                         "description", getText("access." + access.getKey())
                 );
             }
             if (getMessage("usage.footer").exists()) {
-                resident.tell(getMessage("usage.footer"), "name", name(), "command", "/" + base + " " + alias);
+                resident.tell(getMessage("usage.footer").getText(), "name", name(), "command", "/" + base + " " + alias);
             }
         }
         return true;

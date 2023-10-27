@@ -17,7 +17,7 @@ public class OutpostSethomeCommand extends SettlementSubCommand {
     public boolean run(Resident resident, String base, String alias, String... args) {
         OwnedLand currentLand = LandManager.getInstance().getLand(resident.getPlayer().getLocation());
         if (currentLand == null || !currentLand.isOwnedBy(resident.getSettlement())) {
-            resident.tell(getError("not-an-outpost"));
+            resident.tell(getError("not-an-outpost").getText());
             return true;
         }
         OwnedLand outpostLand = null;
@@ -40,7 +40,7 @@ public class OutpostSethomeCommand extends SettlementSubCommand {
             }
         }
         if (outpostLand == null) {
-            resident.tell(getError("not-an-outpost"));
+            resident.tell(getError("not-an-outpost").getText());
             return true;
         }
         resident.getSettlement().setOutpostHome(outpostLand.getOutpostName(), resident.getPlayer().getLocation());
@@ -54,7 +54,7 @@ public class OutpostSethomeCommand extends SettlementSubCommand {
         if (finalOutpostLand != currentLand) {
             DatabaseManager.getInstance().saveLand(finalOutpostLand);
         }
-        resident.tell(getMessage("success"), "name", currentLand.getOutpostName());
+        resident.tell(getMessage("success").getText(), "name", currentLand.getOutpostName());
         return true;
     }
 }

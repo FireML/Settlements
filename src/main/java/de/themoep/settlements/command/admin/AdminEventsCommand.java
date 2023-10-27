@@ -1,5 +1,6 @@
 package de.themoep.settlements.command.admin;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.event.Event;
 import de.themoep.settlements.event.EventManager;
@@ -41,7 +42,7 @@ public class AdminEventsCommand extends SubCommand {
                         sender.sendMessage("    " + String.join(", ", entry.getValue()));
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "No event with the id " + args[0] + " found.");
+                    sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cNo event with the id " + args[0] + " found."));
                 }
                 return true;
             }
@@ -56,16 +57,16 @@ public class AdminEventsCommand extends SubCommand {
                 if (event != null) {
                     Event activeEvent = EventManager.getInstance().getActiveEvent();
                     if (activeEvent != null && (args.length == 1 || !"confirm".equalsIgnoreCase(args[1]))) {
-                        sender.sendMessage(ChatColor.RED + "The event " + ChatColor.YELLOW + activeEvent.getId() + ChatColor.RED + " is already running. " +
-                                "Use " + ChatColor.YELLOW + "/" + base + " " + alias + " " + args[0] + " confirm" + ChatColor.RED + " to replace the running event with the new one (without granting rewards for the current event)");
+                        sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cThe event &e" + activeEvent.getId() + " &cis already running. " +
+                                "Use " + "&e/" + base + " " + alias + " " + args[0] + " confirm" + " &cto replace the running event with the new one (without granting rewards for the current event)"));
                     } else {
                         EventManager.getInstance().startEvent(event);
                         if (!(sender instanceof Player)) {
-                            sender.sendMessage("Started event " + event.getId());
+                            sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cStarted event " + event.getId()));
                         }
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "No event with the id " + args[0] + " found.");
+                    sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cNo event with the id " + args[0] + " found."));
                 }
                 return true;
             }

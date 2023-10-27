@@ -21,7 +21,7 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
         new BanishedGUI(resident, landOwner).open();
         if (true) return true;
         Utils.runAsync(() -> {
-            resident.tell(getMessage("head"));
+            resident.tell(getMessage("head").getText());
             if (!landOwner.getBanished().isEmpty()) {
                 resident.tell(landOwner.getBanished().stream()
                         .map(Banished::getTargetable)
@@ -45,7 +45,7 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
             return false;
         }
         if (resident.getName().equalsIgnoreCase(args[0])) {
-            resident.tell(getError("cant-banish-yourself"));
+            resident.tell(getError("cant-banish-yourself").getText());
             return true;
         }
         Utils.runAsync(() -> {
@@ -67,7 +67,7 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
             if (target instanceof Resident
                     && source.isMember((Resident) target)
                     && ((Resident) target).getSettlementRank().atLeast(resident.getSettlementRank())) {
-                resident.tell(getError("cant-banish"), "name", target.getName(), "title", ((Resident) target).getSettlementTitle());
+                resident.tell(getError("cant-banish").getText(), "name", target.getName(), "title", ((Resident) target).getSettlementTitle());
                 return;
             }
             Utils.runSync(() -> {

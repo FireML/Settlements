@@ -1,5 +1,6 @@
 package de.themoep.settlements.command;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.chat.gui.ColorChannelSelectGui;
@@ -12,6 +13,8 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.awt.*;
 
 public class ChatCommand extends PlayerSubCommand {
 
@@ -82,10 +85,10 @@ public class ChatCommand extends PlayerSubCommand {
             public boolean run(Player p, String base, String alias, String... args) {
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")) {
                     ConfigManager.getInstance().getDataConfig().getConfig().set("chat-lock", false);
-                    Bukkit.broadcastMessage(getMessage("unmuted").getReplacedText("name", p.getDisplayName()));
+                    Bukkit.broadcast(SettlementsPlugin.getInstance().messageUtils.toComponent(getMessage("unmuted").getReplacedText("name", p.getDisplayName())));
                 } else {
                     ConfigManager.getInstance().getDataConfig().getConfig().set("chat-lock", true);
-                    Bukkit.broadcastMessage(getMessage("muted").getReplacedText("name", p.getDisplayName()));
+                    Bukkit.broadcast(SettlementsPlugin.getInstance().messageUtils.toComponent(getMessage("muted").getReplacedText("name", p.getDisplayName())));
                 }
                 return true;
             }

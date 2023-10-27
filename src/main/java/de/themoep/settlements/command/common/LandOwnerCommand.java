@@ -111,7 +111,7 @@ public interface LandOwnerCommand extends ConfigMessages {
         }
 
         if (amountClaimed + toClaim.size() > maxClaimAllowed) {
-            res.tell(getError("cant-claim-more"), "max", String.valueOf(maxClaimAllowed));
+            res.tell(getError("cant-claim-more").getText(), "max", String.valueOf(maxClaimAllowed));
             return true;
         }
 
@@ -128,7 +128,7 @@ public interface LandOwnerCommand extends ConfigMessages {
             }
 
             if (!landAround) {
-                res.tell(getError("no-land-around"));
+                res.tell(getError("no-land-around").getText());
                 return true;
             }
         }
@@ -165,7 +165,7 @@ public interface LandOwnerCommand extends ConfigMessages {
                                 !(checkLand.getLandOwner() instanceof Settlement)
                                         || !checkLand.getLandOwner().isAllowAllyClaim()))) {
                     if (toClaim.size() == 1) {
-                        res.tell(getError("claim-too-close"),
+                        res.tell(getError("claim-too-close").getText(),
                                 "owner", checkLand.getLandOwner().getName(),
                                 "state", checkLand.getLandOwner().getStateTag()
                         );

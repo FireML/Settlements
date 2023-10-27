@@ -83,7 +83,7 @@ public class PlotPermsCommand extends PlotSubCommand {
                     }
                 }
             } else {
-                res.tell(getMessage("states"), "states", BuildState.values(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner())).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
+                res.tell(getMessage("states").getText(), "states", BuildState.values(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner())).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
                 return false;
             }
         }

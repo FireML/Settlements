@@ -146,15 +146,14 @@ public class ChatMap {
                     for (NamedLocation o : settlement.getOutpostHomes().values()) {
                         OwnedLand outpostLand = LandManager.getInstance().getLand(o.toChunkLocation());
                         if (outpostLand != null && !outpostLand.containsHome()) {
-                            Set<SimpleChunkLocation> ownOutposts = new HashSet<>();
-                            ownOutposts.addAll(LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
+                            LandManager.getInstance().getAllConnectedLand(outpostLand, search -> {
                                 if (search.isOutpost()) {
                                     return LandManager.FilterResponse.SKIP_BRANCH;
                                 } else if (search.containsHome()) {
                                     return LandManager.FilterResponse.SKIP_BRANCH;
                                 }
                                 return LandManager.FilterResponse.ACCEPT;
-                            }));
+                            });
                         }
                     }
                 }

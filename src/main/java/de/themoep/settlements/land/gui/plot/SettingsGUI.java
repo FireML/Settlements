@@ -81,14 +81,18 @@ public class SettingsGUI extends PlotGUI {
                                 int maxLength = Math.min(Config.Plot.NAME_LENGTH, 255);
                                 if (ChatColor.stripColor(text).length() > maxLength) {
                                     getError("too-long").tell(player, "input", text, "amount", String.valueOf(maxLength));
-                                    return AnvilGUI.Response.text(text);
+                                    return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(text)
+                                    );
                                 }
                                 currentLand.setName(text);
                                 LandManager.getInstance().syncAndSave(currentLand);
                                 Message.get("command.plot.name.success").tell(resident, "description", currentLand.getName(), "name", currentLand.getName());
                             }
                             Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
-                            return AnvilGUI.Response.close();
+                            return List.of(
+                                    AnvilGUI.ResponseAction.close()
+                            );
                         })
                         .plugin(SettlementsPlugin.getInstance())
                         .open(resident.getPlayer());
@@ -115,14 +119,18 @@ public class SettingsGUI extends PlotGUI {
                                 text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(ChatColor.stripColor(text.trim())));
                                 if (ChatColor.stripColor(text).length() > Config.Plot.DESCRIPTION_LENGTH) {
                                     getError("too-long").tell(player, "input", text, "amount", String.valueOf(Config.Plot.DESCRIPTION_LENGTH));
-                                    return AnvilGUI.Response.text(text);
+                                    return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(text)
+                                    );
                                 }
                                 currentLand.setDescription(text);
                                 LandManager.getInstance().syncAndSave(currentLand);
                                 Message.get("command.plot.desc.success").tell(resident, "description", currentLand.getDescription());
                             }
                             Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
-                            return AnvilGUI.Response.close();
+                            return List.of(
+                                    AnvilGUI.ResponseAction.close()
+                            );
                         })
                         .plugin(SettlementsPlugin.getInstance())
                         .open(resident.getPlayer());
@@ -165,13 +173,17 @@ public class SettingsGUI extends PlotGUI {
                                     if (currentLand != null && currentLand.canAdmin(ResidentManager.getInstance().getResident(player))) {
                                         if (currentLand.isPlot()) {
                                             Message.get("command.plot.sale.already-owned").tell(player);
-                                            return AnvilGUI.Response.close();
+                                            return List.of(
+                                    AnvilGUI.ResponseAction.close()
+                            );
                                         }
                                         try {
                                             int price = Integer.parseInt(text.trim());
                                             if (price < 0) {
                                                 getError("not-a-number").tell(player, "input", text);
-                                                return AnvilGUI.Response.text(text);
+                                                return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(text)
+                                    );
                                             }
                                             currentLand.setPrice(price);
                                             currentLand.setForSale(true);
@@ -179,11 +191,15 @@ public class SettingsGUI extends PlotGUI {
                                             Message.get("command.plot.sale.success").tell(player, "price", String.valueOf(price));
                                         } catch (NumberFormatException e) {
                                             getError("not-a-number").tell(player, "input", text);
-                                            return AnvilGUI.Response.text(text);
+                                            return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(text)
+                                    );
                                         }
                                     }
                                     Utils.runLater(() -> new SettingsGUI(resident).open(), 1);
-                                    return AnvilGUI.Response.close();
+                                    return List.of(
+                                    AnvilGUI.ResponseAction.close()
+                            );
                                 })
                                 .plugin(SettlementsPlugin.getInstance())
                                 .open(resident.getPlayer());

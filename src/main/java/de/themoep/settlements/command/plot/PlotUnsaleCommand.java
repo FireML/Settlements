@@ -12,13 +12,13 @@ public class PlotUnsaleCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         if (!land.isForSale()) {
-            res.tell(getError("not-for-sale"));
+            res.tell(getError("not-for-sale").getText());
         } else {
             land.setForSale(false);
             land.setPrice(0);
             land.setEmbassy(false);
             LandManager.getInstance().saveLand(land);
-            res.tell(getMessage("success"));
+            res.tell(getMessage("success").getText());
         }
         return true;
     }

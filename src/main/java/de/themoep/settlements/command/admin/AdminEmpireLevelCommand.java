@@ -1,5 +1,6 @@
 package de.themoep.settlements.command.admin;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
@@ -32,11 +33,11 @@ public class AdminEmpireLevelCommand extends SubCommand {
             int oldRadius = empire.getWorldRadius();
             empire.setLevel(level);
 
-            sender.sendMessage(ChatColor.RED + "Set " + empire.getName() + " to " + level);
+            sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cSet " + empire.getName() + " to " + level));
 
             if (args.length < 3 || !"false".equalsIgnoreCase(args[2])) {
                 EmpireManager.getInstance().onLevelUp(empire, empire.getChief(), oldRadius);
-                sender.sendMessage(ChatColor.RED + "Triggered level up events!");
+                sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cTriggered level up events!"));
             }
             empire.save();
         } catch (NumberFormatException e) {

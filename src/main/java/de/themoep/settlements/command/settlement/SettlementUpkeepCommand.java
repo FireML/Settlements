@@ -34,7 +34,7 @@ public class SettlementUpkeepCommand extends SettlementSubCommand {
             afford = getText("afford-infinite");
         }
 
-        res.tell(getMessage("info"),
+        res.tell(getMessage("info").getText(),
                 "global_cost", Utils.CURRENCY_FORMAT.format(globalCost),
                 "time", UtilTime.format((double) TimeUnit.MILLISECONDS.toSeconds(Utils.timeTillNextUpkeep())),
                 "afford", afford,

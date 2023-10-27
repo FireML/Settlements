@@ -31,12 +31,12 @@ public class SettlementModeCommand extends SettlementSubCommand {
                 if (res.getSettlement().setMode(m, value)) {
                     DatabaseManager.getInstance().saveSettlement(res.getSettlement());
                 }
-                res.tell(getMessage("success"), "mode", m.name(), "value", String.valueOf(value));
+                res.tell(getMessage("success").getText(), "mode", m.name(), "value", String.valueOf(value));
             } catch (IllegalArgumentException e) {
                 return false;
             }
         } catch (IllegalArgumentException e) {
-            res.tell(getMessage("modes"), "modes", PlotMode.values(PlotMode.AppliesTo.LAND_OWNER).stream().map(Enum::name).collect(Collectors.joining(", ")));
+            res.tell(getMessage("modes").getText(), "modes", PlotMode.values(PlotMode.AppliesTo.LAND_OWNER).stream().map(Enum::name).collect(Collectors.joining(", ")));
             return false;
         }
         return true;

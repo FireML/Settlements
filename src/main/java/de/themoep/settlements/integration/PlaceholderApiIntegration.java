@@ -62,13 +62,11 @@ public class PlaceholderApiIntegration implements ConfigMessages {
 
         @Override
         public String onPlaceholderRequest(Player viewer, Player target, String params) {
-            switch (params.toLowerCase(Locale.ROOT)) {
-                case "relationcolor":
-                    return getRelationColor(viewer, target);
-                case "relation":
-                    return getRelation(viewer, target);
-            }
-            return null;
+            return switch (params.toLowerCase(Locale.ROOT)) {
+                case "relationcolor" -> getRelationColor(viewer, target);
+                case "relation" -> getRelation(viewer, target);
+                default -> null;
+            };
         }
 
         @Override

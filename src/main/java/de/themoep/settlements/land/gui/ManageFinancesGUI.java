@@ -15,6 +15,8 @@ import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
 import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 
+import java.util.List;
+
 public class ManageFinancesGUI extends ConfigurableGui {
 
     public ManageFinancesGUI(Resident resident, LandOwner<?, ?> landOwner) {
@@ -35,20 +37,25 @@ public class ManageFinancesGUI extends ConfigurableGui {
                             if (!landOwner.hasPermission(resident, "tax.set")) {
                                 getError("no-permission").actionbar(resident);
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
-                                return AnvilGUI.Response.close();
+                                return List.of(
+                                        AnvilGUI.ResponseAction.close()
+                                );
                             }
                             try {
                                 long amount = Long.parseLong(text);
                                 if (amount < 0) {
-                                    return AnvilGUI.Response.text(Message.get("command." + landOwner.getKey() + ".tax.set.below-zero").getReplacedText(
-                                            "amount", String.valueOf(amount)
-                                    ));
+                                    return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(Message.get("command." + landOwner.getKey() + ".tax.set.below-zero").getReplacedText(
+                                                    "amount", String.valueOf(amount)))
+                                    );
                                 }
                                 if (Config.Settlement.MAX_TAX > -1 && amount > landOwner.getMaxTax()) {
-                                    return AnvilGUI.Response.text(Message.get("command." + landOwner.getKey() + ".tax.set.above-max").getReplacedText(
-                                            "amount", String.valueOf(amount),
-                                            "max", String.valueOf(landOwner.getMaxTax())
-                                    ));
+                                    return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(Message.get("command." + landOwner.getKey() + ".tax.set.above-max").getReplacedText(
+                                                    "amount", String.valueOf(amount),
+                                                    "max", String.valueOf(landOwner.getMaxTax())
+                                            ))
+                                    );
                                 }
                                 landOwner.setTax(amount);
                                 landOwner.save();
@@ -57,9 +64,13 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                         "amount", String.valueOf(amount)
                                 );
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
-                                return AnvilGUI.Response.close();
+                                return List.of(
+                                        AnvilGUI.ResponseAction.close()
+                                );
                             } catch (NumberFormatException e) {
-                                return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
+                                return List.of(
+                                        AnvilGUI.ResponseAction.replaceInputText(getError("not-a-number").getReplacedText("input", text))
+                                );
                             }
                         })
                         .plugin(SettlementsPlugin.getInstance())
@@ -88,20 +99,26 @@ public class ManageFinancesGUI extends ConfigurableGui {
                             if (!landOwner.hasPermission(resident, "auctiontax.set")) {
                                 getError("no-permission").actionbar(resident);
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
-                                return AnvilGUI.Response.close();
+                                return List.of(
+                                        AnvilGUI.ResponseAction.close()
+                                );
                             }
                             try {
                                 long amount = Long.parseLong(text);
                                 if (amount < 0) {
-                                    return AnvilGUI.Response.text(Message.get("command." + landOwner.getKey() + ".auctiontax.set.below-zero").getReplacedText(
-                                            "amount", String.valueOf(amount)
-                                    ));
+                                    return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(Message.get("command." + landOwner.getKey() + ".auctiontax.set.below-zero").getReplacedText(
+                                                    "amount", String.valueOf(amount)
+                                            ))
+                                    );
                                 }
                                 if (Config.Settlement.MAX_TAX > -1 && amount > landOwner.getMaxTax()) {
-                                    return AnvilGUI.Response.text(Message.get("command." + landOwner.getKey() + ".auctiontax.set.above-max").getReplacedText(
-                                            "amount", String.valueOf(amount),
-                                            "max", String.valueOf(landOwner.getMaxTax())
-                                    ));
+                                    return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(Message.get("command." + landOwner.getKey() + ".auctiontax.set.above-max").getReplacedText(
+                                                    "amount", String.valueOf(amount),
+                                                    "max", String.valueOf(landOwner.getMaxTax())
+                                            ))
+                                    );
                                 }
                                 landOwner.setAuctionTax(amount);
                                 landOwner.save();
@@ -110,9 +127,13 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                         "amount", Utils.toPercentage(resident.getSettlement().getAuctionTax())
                                 );
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
-                                return AnvilGUI.Response.close();
+                                return List.of(
+                                        AnvilGUI.ResponseAction.close()
+                                );
                             } catch (NumberFormatException e) {
-                                return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
+                                return List.of(
+                                        AnvilGUI.ResponseAction.replaceInputText(getError("not-a-number").getReplacedText("input", text))
+                                );
                             }
                         })
                         .plugin(SettlementsPlugin.getInstance())
@@ -141,21 +162,29 @@ public class ManageFinancesGUI extends ConfigurableGui {
                             if (!landOwner.hasPermission(resident, "bank.deposit")) {
                                 getError("no-permission").actionbar(resident);
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
-                                return AnvilGUI.Response.close();
+                                return List.of(
+                                        AnvilGUI.ResponseAction.close()
+                                );
                             }
                             try {
                                 long amount = Long.parseLong(text);
                                 if (amount < 0) {
-                                    return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
+                                    return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(getError("not-a-number").getReplacedText("input", text))
+                                    );
                                 }
                                 if (!SettlementsPlugin.getInstance().getEconomy().has(player, amount)) {
-                                    return AnvilGUI.Response.text(getError("not-enough-money").getReplacedText(
-                                            "amount", String.valueOf(amount)
-                                    ));
+                                    return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(getError("not-enough-money").getReplacedText(
+                                                    "amount", String.valueOf(amount)
+                                            ))
+                                    );
                                 }
                                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) amount);
                                 if (!r2.transactionSuccess()) {
-                                    return AnvilGUI.Response.text("&cAn error occurred, please tell an admin!");
+                                    return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText("&cAn error occurred, please tell an admin!")
+                                    );
                                 }
                                 landOwner.addToBank(amount);
                                 landOwner.save();
@@ -169,9 +198,13 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                         "amount", Utils.CURRENCY_FORMAT.format(amount)
                                 );
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
-                                return AnvilGUI.Response.close();
+                                return List.of(
+                                        AnvilGUI.ResponseAction.close()
+                                );
                             } catch (NumberFormatException e) {
-                                return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
+                                return List.of(
+                                        AnvilGUI.ResponseAction.replaceInputText(getError("not-a-number").getReplacedText("input", text))
+                                );
                             }
                         })
                         .plugin(SettlementsPlugin.getInstance())
@@ -198,23 +231,31 @@ public class ManageFinancesGUI extends ConfigurableGui {
                             if (!landOwner.hasPermission(resident, "bank.withdraw")) {
                                 getError("no-permission").actionbar(resident);
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
-                                return AnvilGUI.Response.close();
+                                return List.of(
+                                        AnvilGUI.ResponseAction.close()
+                                );
                             }
                             try {
                                 long amount = Long.parseLong(text);
                                 if (amount < 0) {
-                                    return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
+                                    return List.of(
+                                        AnvilGUI.ResponseAction.replaceInputText(getError("not-a-number").getReplacedText("input", text))
+                                );
                                 }
                                 if (landOwner.removeFromBank(amount)) {
                                     EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().depositPlayer(player, (double) amount);
                                     if (!r2.transactionSuccess()) {
                                         landOwner.addToBank(amount);
-                                        return AnvilGUI.Response.text("&cAn error occurred, please tell an admin!");
+                                        return List.of(
+                                        AnvilGUI.ResponseAction.replaceInputText("&cAn error occurred, please tell an admin!")
+                                );
                                     }
                                 } else {
-                                    return AnvilGUI.Response.text(getError("not-enough-money").getReplacedText(
-                                            "amount", String.valueOf(amount)
-                                    ));
+                                    return List.of(
+                                            AnvilGUI.ResponseAction.replaceInputText(getError("not-enough-money").getReplacedText(
+                                                    "amount", String.valueOf(amount)
+                                            ))
+                                    );
                                 }
                                 Message.get("command." + landOwner.getKey() + ".bank.withdraw.withdrawn").tell(resident.getSettlement(),
                                         "state", landOwner.getStateTag(),
@@ -227,9 +268,13 @@ public class ManageFinancesGUI extends ConfigurableGui {
                                 DatabaseManager.getInstance().logWithdraw(landOwner, resident, amount);
                                 landOwner.save();
                                 Utils.runLater(() -> new ManageFinancesGUI(resident, landOwner).open(), 1);
-                                return AnvilGUI.Response.close();
+                                return List.of(
+                                        AnvilGUI.ResponseAction.close()
+                                );
                             } catch (NumberFormatException e) {
-                                return AnvilGUI.Response.text(getError("not-a-number").getReplacedText("input", text));
+                                return List.of(
+                                        AnvilGUI.ResponseAction.replaceInputText(getError("not-a-number").getReplacedText("input", text))
+                                );
                             }
                         })
                         .plugin(SettlementsPlugin.getInstance())

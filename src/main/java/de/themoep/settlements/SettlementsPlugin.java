@@ -15,9 +15,9 @@ import de.themoep.settlements.integration.citizens.CitizensIntegration;
 import de.themoep.settlements.integration.denizen.DenizenIntegration;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.*;
-import de.themoep.settlements.land.events.Listeners.LandChangeListener;
-import de.themoep.settlements.land.events.Listeners.LandEnterListener;
-import de.themoep.settlements.land.events.Listeners.LandLeaveListener;
+import de.themoep.settlements.land.events.listeners.LandChangeListener;
+import de.themoep.settlements.land.events.listeners.LandEnterListener;
+import de.themoep.settlements.land.events.listeners.LandLeaveListener;
 import de.themoep.settlements.lock.LockManager;
 import de.themoep.settlements.lock.LockProvider;
 import de.themoep.settlements.missions.MissionListener;
@@ -36,12 +36,14 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import uk.firedev.poleislib.Utils.MessageUtils;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalScheduler;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 
@@ -77,6 +79,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private final List<Empire> newlyAbandonedEmpires = new ArrayList<>();
     private final List<Empire> newlyDeletedEmpires = new ArrayList<>();
     private Map<String, Function<Plugin, Boolean>> dependencies = new HashMap<>();
+    public MessageUtils messageUtils;
 
     @Override
     public void onDisable() {
@@ -131,6 +134,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         if (!loadManagers()) {
             return;
         }
+
+        messageUtils = new MessageUtils((YamlConfiguration) ConfigManager.getInstance().getMessagesConfig());
 
         for (Map.Entry<String, Function<Plugin, Boolean>> entry : dependencies.entrySet()) {
             Plugin plugin = getServer().getPluginManager().getPlugin(entry.getKey());

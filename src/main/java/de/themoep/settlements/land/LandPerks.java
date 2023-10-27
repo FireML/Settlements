@@ -49,7 +49,7 @@ public class LandPerks {
             }
 
             for (PerkEffect effect : applicableEffects) {
-                player.addPotionEffect(effect.getPotionEffect(), true);
+                player.addPotionEffect(effect.getPotionEffect());
                 if (effect.isPermanent()) {
                     activeEffects.add(effect.getIdentifier());
                 }
@@ -288,7 +288,7 @@ public class LandPerks {
         }
         Set<String> activeEffects = getActiveEffects(player);
         for (PerkEffect effect : effects) {
-            player.addPotionEffect(effect.getPotionEffect(), true);
+            player.addPotionEffect(effect.getPotionEffect());
             if (effect.isPermanent()) {
                 activeEffects.add(effect.getIdentifier());
             }

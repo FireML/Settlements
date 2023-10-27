@@ -16,17 +16,17 @@ public class SettlementTitleCommand extends SettlementSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
             Collection<String> titles = res.getSettlement().getTitles(res.getSettlementRank());
-            res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base), "type", "");
-            res.tell(getMessage("usage.entry"), "usage", getUsage(base));
+            res.tell(getMessage("usage.head").getText(), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base), "type", "");
+            res.tell(getMessage("usage.entry").getText(), "usage", getUsage(base));
             String defaultTitle = res.getSettlement().getDefaultTitle(res.getSettlementRank());
-            res.tell(getMessage("usage.entry"), "usage", "/" + base + " " + alias + " " + defaultTitle);
+            res.tell(getMessage("usage.entry").getText(), "usage", "/" + base + " " + alias + " " + defaultTitle);
             for (String title : titles) {
                 if (!title.equals(defaultTitle)) {
-                    res.tell(getMessage("usage.entry"), "usage", "/" + base + " " + alias + " " + title);
+                    res.tell(getMessage("usage.entry").getText(), "usage", "/" + base + " " + alias + " " + title);
                 }
             }
             if (getMessage("usage.footer").exists()) {
-                res.tell(getMessage("usage.footer"), "name", name(), "command", "/" + base + " " + alias);
+                res.tell(getMessage("usage.footer").getText(), "name", name(), "command", "/" + base + " " + alias);
             }
             return true;
         }

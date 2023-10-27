@@ -63,7 +63,7 @@ public class EmpireListCommand extends SubCommand {
             List<Empire> empires = EmpireManager.getInstance().getEmpires().stream()
                     .filter(finalFilter)
                     .sorted(Empire::compareTo)
-                    .collect(Collectors.toList());
+                    .toList();
 
             int pages = (int) Math.ceil(empires.size() / (double) Config.ENTRIES_PER_PAGE);
             getMessage("head").tell(sender,

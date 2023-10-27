@@ -12,7 +12,7 @@ import org.bukkit.event.Listener;
 public class UpgradeableHoppersIntegration implements Listener {
     @EventHandler
     public void onHopperPlace(HopperPlaceEvent e) {
-        Location hopperLoc = e.getHopper().getLocation();
+        Location hopperLoc = e.getHopper().getPosition().toLocation();
         Player p = Bukkit.getPlayer(e.getHopperPlayer().getUUID());
         if (p != null && (!Utils.isWorldClaimable(hopperLoc.getWorld()) || !LandManager.getInstance().isLandClaimed(hopperLoc))) {
             e.setCancelled(true);

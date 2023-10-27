@@ -146,7 +146,7 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
             if (Config.Lock.ONLY_IN_CLAIM) {
                 OwnedLand land = LandManager.getInstance().getLand(event.getPlayer().getLocation());
                 if (land == null) {
-                    res.tell(getMessage("only-in-claim"));
+                    res.tell(getMessage("only-in-claim").getText());
                     event.setCancelled(true);
                     return;
                 }

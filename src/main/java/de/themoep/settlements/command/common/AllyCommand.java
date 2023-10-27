@@ -36,9 +36,9 @@ public interface AllyCommand extends LandOwnerCommand {
         }
 
         if (target.equals(source) || target.equals(resident.getSettlement())) {
-            resident.tell(getMessage("cant-ally-yourself"));
+            resident.tell(getMessage("cant-ally-yourself").getText());
         } else if (source.isAlly(target)) {
-            resident.tell(getMessage("already-allied"), "name", target.getName(), "state", target.getStateTag());
+            resident.tell(getMessage("already-allied").getText(), "name", target.getName(), "state", target.getStateTag());
         } else if (source.hasAllyRequest(target)) {
             AllyRequest request = source.removeAllyRequest(target);
             if (request != null) {
@@ -73,7 +73,7 @@ public interface AllyCommand extends LandOwnerCommand {
         }
 
         if (target.equals(source) || target.equals(resident.getSettlement())) {
-            resident.tell(getMessage("cant-unally-yourself"));
+            resident.tell(getMessage("cant-unally-yourself").getText());
         } else if (source.hasAllyRequest(target)) {
 
         } else if (!source.isAlly(target)) {

@@ -15,9 +15,9 @@ public class OutpostListCommand extends SettlementSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        resident.tell(getMessage("head"));
+        resident.tell(getMessage("head").getText());
         for (NamedLocation loc : resident.getSettlement().getOutpostHomes().values()) {
-            resident.tell(getMessage("entry"),
+            resident.tell(getMessage("entry").getText(),
                     "name", loc.getName(),
                     "world", loc.getWorld(),
                     "x", DOUBLE_FORMAT.format(loc.getX()),

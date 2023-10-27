@@ -18,6 +18,8 @@ import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
 import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
 
+import java.util.List;
+
 public class ResidentGUI extends ConfigurableGui {
 
     public ResidentGUI(Resident sender, Resident resident) {
@@ -197,7 +199,9 @@ public class ResidentGUI extends ConfigurableGui {
                         } else {
                             getError("no-permission").tell(player);
                         }
-                        return AnvilGUI.Response.close();
+                        return List.of(
+                                AnvilGUI.ResponseAction.close()
+                        );
                     })
                     .plugin(SettlementsPlugin.getInstance())
                     .open(sender.getPlayer());

@@ -66,7 +66,7 @@ public class PlotModeCommand extends PlotSubCommand {
                     value = Utils.parseBoolean(args[1]);
                 }
                 land.setMode(m, value);
-                res.tell(getMessage("success"), "mode", m.getTag(), "value", String.valueOf(value));
+                res.tell(getMessage("success").getText(), "mode", m.getTag(), "value", String.valueOf(value));
             } catch (IllegalArgumentException e) {
                 if (m.appliesTo(PlotMode.AppliesTo.LAND_OWNER) && ("reset".equalsIgnoreCase(args[1]) || "unset".equalsIgnoreCase(args[1]) || "parent".equalsIgnoreCase(args[1]))) {
                     land.unsetMode(m);
@@ -81,7 +81,7 @@ public class PlotModeCommand extends PlotSubCommand {
             }
             LandManager.getInstance().syncAndSave(land);
         } catch (IllegalArgumentException e) {
-            res.tell(getMessage("modes"), "modes", PlotMode.values(PlotMode.AppliesTo.LAND).stream().map(Enum::name).collect(Collectors.joining(", ")));
+            res.tell(getMessage("modes").getText(), "modes", PlotMode.values(PlotMode.AppliesTo.LAND).stream().map(Enum::name).collect(Collectors.joining(", ")));
             return false;
         }
         return true;

@@ -121,23 +121,37 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                     String text = stateSnapshot.getText();
                                     text = ChatColor.stripColor(text);
                                     if (rank.above(landOwner.getRank(resident))) {
-                                        return AnvilGUI.Response.text(getError("cant-edit-higher").getReplacedText("rank", rank.getTag(landOwner)));
+                                        return List.of(
+                                                AnvilGUI.ResponseAction.replaceInputText(getError("cant-edit-higher").getReplacedText("rank", rank.getTag(landOwner)))
+                                        );
                                     } else if (landOwner.getTitles(rank).size() >= landOwner.getTitlesPerRank()) {
-                                        return AnvilGUI.Response.text(getError("too-many").getReplacedText(
-                                                "rank", landOwner.getRank(resident).getTag(),
-                                                "max", String.valueOf(landOwner.getTitlesPerRank())
-                                        ));
+                                        return List.of(
+                                                AnvilGUI.ResponseAction.replaceInputText(getError("too-many").getReplacedText(
+                                                        "rank", landOwner.getRank(resident).getTag(),
+                                                        "max", String.valueOf(landOwner.getTitlesPerRank())
+                                                ))
+                                        );
                                     } else if (text.length() > 16) {
-                                        return AnvilGUI.Response.text(getError("too-long").getReplacedText("input", text, "amount", "16"));
+                                        return List.of(
+                                                AnvilGUI.ResponseAction.replaceInputText(getError("too-long").getReplacedText("input", text, "amount", "16"))
+                                        );
                                     } else if (!SettlementTitlesCommand.TITLE_PATTERN.matcher(text).matches()) {
-                                        return AnvilGUI.Response.text(getError("invalid-characters").getReplacedText("input", text));
+                                        return List.of(
+                                                AnvilGUI.ResponseAction.replaceInputText(getError("invalid-characters").getReplacedText("input", text))
+                                        );
                                     } else if (Config.Titles.BLOCK_CURSES && Utils.containsAnyCurses(text)) {
-                                        return AnvilGUI.Response.text(getError("prohibited-words").getReplacedText("input", text));
+                                        return List.of(
+                                                AnvilGUI.ResponseAction.replaceInputText(getError("prohibited-words").getReplacedText("input", text))
+                                        );
                                     } else if (landOwner.addTitle(rank, text)) {
                                         Message.get("command." + type + ".titles.add.success").tell(resident, "title", text, "rank", rank.getTag(landOwner));
-                                        return AnvilGUI.Response.close();
+                                        return List.of(
+                                            AnvilGUI.ResponseAction.close()
+                                        );
                                     } else {
-                                        return AnvilGUI.Response.text(getError("already-exists").getReplacedText("input", text, "rank", rank.getTag(landOwner)));
+                                        return List.of(
+                                                AnvilGUI.ResponseAction.replaceInputText(getError("already-exists").getReplacedText("input", text, "rank", rank.getTag(landOwner)))
+                                        );
                                     }
                                 })
                                 .plugin(SettlementsPlugin.getInstance())

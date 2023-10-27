@@ -19,7 +19,7 @@ public class SettlementResListCommand extends SettlementSubCommand {
     @Override
     public boolean run(Resident sender, String base, String alias, String... args) {
         Utils.runAsync(() -> {
-            sender.tell(getMessage("head"));
+            sender.tell(getMessage("head").getText());
             String entry = getMessage("entry").getText();
             String online = getMessage("online").getText();
             String offline = getMessage("offline").getText();
@@ -29,7 +29,7 @@ public class SettlementResListCommand extends SettlementSubCommand {
                 rankMap.put(resident.getSettlementRank(), resident);
             }
             for (SettlementRank rank : rankMap.keySet()) {
-                sender.tell(getMessage("rank"),
+                sender.tell(getMessage("rank").getText(),
                         "rank", rank.getTag(sender.getSettlement()),
                         "residents", rankMap.get(rank).stream()
                                 .sorted(Comparator.comparing(Resident::getSettlementJoin))

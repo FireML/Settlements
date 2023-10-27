@@ -1,5 +1,6 @@
 package de.themoep.settlements.command.admin;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -34,11 +35,11 @@ public class AdminLevelCommand extends SubCommand {
             settlement.setState(state);
             settlement.setLevel(level);
 
-            sender.sendMessage(ChatColor.RED + "Set " + settlement.getName() + " to " + state.getTag() + "/" + level);
+            sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cSet " + settlement.getName() + " to " + state.getTag() + "/" + level));
 
             if (args.length < 4 || !"false".equalsIgnoreCase(args[3])) {
                 SettlementManager.getInstance().onLevelUp(settlement, settlement.getChief());
-                sender.sendMessage(ChatColor.RED + "Triggered level up events!");
+                sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cTriggered level up events!"));
             }
             settlement.save();
         } catch (NumberFormatException e) {

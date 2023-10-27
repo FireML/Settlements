@@ -44,11 +44,11 @@ public class OutpostUnclaimCommand extends SettlementSubCommand {
         Chunk currentChunk = resident.getPlayer().getLocation().getChunk();
         OwnedLand land = LandManager.getInstance().getLand(currentChunk);
         if (land == null || !land.isOwnedBy(resident.getSettlement())) {
-            resident.tell(getError("not-your-settlement"), "state", resident.getSettlement().getState().getTag());
+            resident.tell(getError("not-your-settlement").getText(), "state", resident.getSettlement().getState().getTag());
             return true;
         }
         if (!land.isOutpost()) {
-            resident.tell(getError("not-an-outpost"));
+            resident.tell(getError("not-an-outpost").getText());
             return true;
         }
 

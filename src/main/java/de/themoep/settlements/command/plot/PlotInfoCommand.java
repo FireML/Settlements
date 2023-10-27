@@ -19,19 +19,19 @@ public class PlotInfoCommand extends ResidentSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         OwnedLand land = LandManager.getInstance().getLand(res.getPlayer().getLocation());
         if (land == null) {
-            res.tell(getError("not-a-claim"));
+            res.tell(getError("not-a-claim").getText());
             return true;
         }
-        res.tell(getMessage("general"), land.getReplacements());
+        res.tell(getMessage("general").toString(), land.getReplacements());
         if (!land.getLandOwner().isAbandoned()) {
             if (land.isPlot()) {
-                Utils.runAsync(() -> res.tell(getMessage("owner"), "name", ResidentManager.getInstance().getResident(land.getPlotOwner()).getName()));
+                Utils.runAsync(() -> res.tell(getMessage("owner").getText(), "name", ResidentManager.getInstance().getResident(land.getPlotOwner()).getName()));
             } else if (land.isForSale() &&
                     (land.isEmbassy() || land.isOwnedBy(res))) {
-                res.tell(getMessage("price"), "price", String.valueOf(land.getPrice()));
+                res.tell(getMessage("price").getText(), "price", String.valueOf(land.getPrice()));
             }
             if (land.isPlot() || land.isForSale()) {
-                res.tell(getMessage("tax"), "tax", String.valueOf(land.getTax()));
+                res.tell(getMessage("tax").getText(), "tax", String.valueOf(land.getTax()));
             }
         }
         if (land.hasLink()) {

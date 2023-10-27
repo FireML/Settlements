@@ -185,7 +185,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
 
     private String tryDriverClassName(String className) {
         try {
-            Class.forName(className).newInstance();
+            Class.forName(className).getDeclaredConstructor().newInstance();
             return className;
         } catch (Exception ignored) {}
         return null;
