@@ -14,7 +14,7 @@ public class UpgradeableHoppersIntegration implements Listener {
     public void onHopperPlace(HopperPlaceEvent e) {
         Location hopperLoc = e.getHopper().getPosition().toLocation();
         Player p = Bukkit.getPlayer(e.getHopperPlayer().getUUID());
-        if (p != null && (!Utils.isWorldClaimable(hopperLoc.getWorld()) || !LandManager.getInstance().isLandClaimed(hopperLoc))) {
+        if (p != null && (Utils.isWorldClaimable(hopperLoc.getWorld()) && !LandManager.getInstance().isLandClaimed(hopperLoc))) {
             e.setCancelled(true);
             p.sendMessage("§cYou cannot place Chunk Hoppers outside of claims.");
         }
