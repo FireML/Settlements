@@ -12,13 +12,13 @@ import de.themoep.settlements.integration.denizen.events.SettlementsChatScriptEv
 import de.themoep.settlements.integration.denizen.events.SettlementsEmpireScriptEvent;
 import de.themoep.settlements.integration.denizen.events.SettlementsLandScriptEvent;
 import de.themoep.settlements.integration.denizen.events.SettlementsSettlementScriptEvent;
+import de.themoep.settlements.integration.denizen.extensions.SettlementsChunkExtensions;
+import de.themoep.settlements.integration.denizen.extensions.SettlementsLocationExtensions;
+import de.themoep.settlements.integration.denizen.extensions.SettlementsPlayerExtensions;
 import de.themoep.settlements.integration.denizen.objects.EmpireTag;
 import de.themoep.settlements.integration.denizen.objects.LandTag;
 import de.themoep.settlements.integration.denizen.objects.ResidentTag;
 import de.themoep.settlements.integration.denizen.objects.SettlementTag;
-import de.themoep.settlements.integration.denizen.properties.SettlementsChunkProperties;
-import de.themoep.settlements.integration.denizen.properties.SettlementsLocationProperties;
-import de.themoep.settlements.integration.denizen.properties.SettlementsPlayerProperties;
 
 public class DenizenIntegration {
 
@@ -40,9 +40,9 @@ public class DenizenIntegration {
         ScriptEvent.registerScriptEvent(new SettlementsEmpireScriptEvent());
         ScriptEvent.registerScriptEvent(new SettlementsLandScriptEvent());
 
-        PropertyParser.registerProperty(SettlementsPlayerProperties.class, PlayerTag.class);
-        PropertyParser.registerProperty(SettlementsLocationProperties.class, LocationTag.class);
-        PropertyParser.registerProperty(SettlementsChunkProperties.class, ChunkTag.class);
+        SettlementsPlayerExtensions.register();
+        SettlementsLocationExtensions.register();
+        SettlementsChunkExtensions.register();
 
         // <--[tag]
         // @attribute <land[x,z,world]>

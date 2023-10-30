@@ -46,6 +46,7 @@ public class SettlementsChatScriptEvent extends BukkitScriptEvent implements Lis
         }
         return super.matches(path);
     }
+
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("message")) {
