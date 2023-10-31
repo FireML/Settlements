@@ -492,6 +492,9 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
 
     @Override
     public boolean isMember(Resident resident) {
+        if (resident == null) {
+            return false;
+        }
         return equals(resident.getSettlement());
     }
 
