@@ -16,7 +16,7 @@ public class SettlementsChatScriptEvent extends BukkitScriptEvent implements Lis
     // @Events
     // settlements player chats
     //
-    // @Cancellable false
+    // @Cancellable true
     //
     // @Triggers when a player chats
     //
