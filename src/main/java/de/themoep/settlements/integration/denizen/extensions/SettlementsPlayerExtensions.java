@@ -19,6 +19,6 @@ public class SettlementsPlayerExtensions {
         // @description
         // Returns the Player's ResidentTag
         // -->
-        PlayerTag.tagProcessor.registerTag(ResidentTag.class, "resident", (attribute, player) -> new ResidentTag(player.getPlayerEntity()));
+        PlayerTag.tagProcessor.registerTag(ResidentTag.class, "resident", (attribute, player) -> new ResidentTag(player.getOfflinePlayer()));
     }
 }

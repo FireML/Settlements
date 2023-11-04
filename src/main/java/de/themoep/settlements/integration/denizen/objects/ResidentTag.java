@@ -16,6 +16,7 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 public class ResidentTag implements ObjectTag, Adjustable {
@@ -67,6 +68,10 @@ public class ResidentTag implements ObjectTag, Adjustable {
     }
 
     public ResidentTag(Player player) {
+        this.resident = ResidentManager.getInstance().getResident(player);
+    }
+
+    public ResidentTag(OfflinePlayer player) {
         this.resident = ResidentManager.getInstance().getResident(player);
     }
 
