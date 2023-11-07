@@ -34,7 +34,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.sql.Date;
 import java.util.*;

@@ -4,7 +4,7 @@ import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.Map;
 import java.util.UUID;

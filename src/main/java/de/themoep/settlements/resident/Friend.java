@@ -5,7 +5,7 @@ import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Sortable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.Comparator;
 import java.util.Map;

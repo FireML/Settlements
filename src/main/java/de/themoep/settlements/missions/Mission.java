@@ -9,7 +9,7 @@ import de.themoep.settlements.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;

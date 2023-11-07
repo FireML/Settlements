@@ -7,7 +7,7 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.*;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.Comparator;
 import java.util.LinkedHashMap;

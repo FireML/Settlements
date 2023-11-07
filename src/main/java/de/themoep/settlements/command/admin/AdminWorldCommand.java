@@ -9,6 +9,7 @@ import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 public class AdminWorldCommand extends PlayerSubCommand {
     public AdminWorldCommand(SubCommand parent) {
@@ -16,11 +17,11 @@ public class AdminWorldCommand extends PlayerSubCommand {
         registerCommand(new PlayerSubCommand(this, "info") {
             @Override
             public boolean run(Player player, String base, String alias, String... args) {
-                player.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&aInfo for world &e" + player.getWorld().getName() + "&a:"));
+                player.sendMessage(ComponentUtils.parseComponent("&aInfo for world &e" + player.getWorld().getName() + "&a:"));
                 Empire empire = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
-                player.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&eClaimable: "
+                player.sendMessage(ComponentUtils.parseComponent("&eClaimable: "
                         + (Utils.isWorldClaimable(player.getWorld()) && empire == null ? "&ayes" : "&cno" + (empire != null ? " (empire world)" : ""))));
-                    player.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&eEmpire World: "
+                    player.sendMessage(ComponentUtils.parseComponent("&eEmpire World: "
                             + (empire != null ? "&ayes (" + empire.getName() + ")" : "&cno")));
                 for (PlotMode mode : PlotMode.values()) {
                     if (mode != PlotMode.embassy && mode != PlotMode.buff) {
@@ -37,10 +38,10 @@ public class AdminWorldCommand extends PlayerSubCommand {
                             } else {
                                 allowed = Utils.getPlotMode(mode, "unclaimed");
                             }
-                            player.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&e" + mode.getTag() + ": "
+                            player.sendMessage(ComponentUtils.parseComponent("&e" + mode.getTag() + ": "
                                     + (allowed ? "&ayes" : "&cno") + (Utils.hasPlotMode(mode, "worlds." + player.getWorld().getName()) ? " (world specific)" : "")));
                         } else {
-                            player.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&e" + mode.getTag() + ": " + (mode.get(empire) ? "&ayes" : "&cno") + " (empire settings)"));
+                            player.sendMessage(ComponentUtils.parseComponent("&e" + mode.getTag() + ": " + (mode.get(empire) ? "&ayes" : "&cno") + " (empire settings)"));
                         }
                     }
                 }

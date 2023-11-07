@@ -6,6 +6,7 @@ import de.themoep.settlements.event.Event;
 import de.themoep.settlements.event.EventManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.Collection;
 import java.util.Map;
@@ -41,7 +42,7 @@ public class AdminEventsCommand extends SubCommand {
                         sender.sendMessage("    " + String.join(", ", entry.getValue()));
                     }
                 } else {
-                    sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cNo event with the id " + args[0] + " found."));
+                    sender.sendMessage(ComponentUtils.parseComponent("&cNo event with the id " + args[0] + " found."));
                 }
                 return true;
             }
@@ -56,16 +57,16 @@ public class AdminEventsCommand extends SubCommand {
                 if (event != null) {
                     Event activeEvent = EventManager.getInstance().getActiveEvent();
                     if (activeEvent != null && (args.length == 1 || !"confirm".equalsIgnoreCase(args[1]))) {
-                        sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cThe event &e" + activeEvent.getId() + " &cis already running. " +
+                        sender.sendMessage(ComponentUtils.parseComponent("&cThe event &e" + activeEvent.getId() + " &cis already running. " +
                                 "Use " + "&e/" + base + " " + alias + " " + args[0] + " confirm" + " &cto replace the running event with the new one (without granting rewards for the current event)"));
                     } else {
                         EventManager.getInstance().startEvent(event);
                         if (!(sender instanceof Player)) {
-                            sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cStarted event " + event.getId()));
+                            sender.sendMessage(ComponentUtils.parseComponent("&cStarted event " + event.getId()));
                         }
                     }
                 } else {
-                    sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cNo event with the id " + args[0] + " found."));
+                    sender.sendMessage(ComponentUtils.parseComponent("&cNo event with the id " + args[0] + " found."));
                 }
                 return true;
             }

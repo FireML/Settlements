@@ -11,7 +11,7 @@ import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Targetable;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.Map;
 

@@ -2,7 +2,7 @@ package de.themoep.settlements.utils;
 
 import de.themoep.settlements.resident.Resident;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 
 import java.util.Collection;

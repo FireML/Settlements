@@ -6,7 +6,7 @@ import de.themoep.settlements.rank.Rank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import uk.firedev.poleislib.Utils.ItemUtils;
+import uk.firedev.poleislib.utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
 import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
 import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;

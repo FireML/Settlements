@@ -43,7 +43,7 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import uk.firedev.poleislib.Utils.MessageUtils;
+import uk.firedev.poleislib.utils.MessageUtils;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalScheduler;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 

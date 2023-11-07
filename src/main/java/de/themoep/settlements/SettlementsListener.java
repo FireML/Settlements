@@ -12,13 +12,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 public class SettlementsListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPreLoginCheck(AsyncPlayerPreLoginEvent event) {
         if (!SettlementsPlugin.getInstance().isRunning() && event.getLoginResult() == AsyncPlayerPreLoginEvent.Result.ALLOWED) {
-            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, SettlementsPlugin.getInstance().messageUtils.toComponent("&cServer not fully started yet!"));
+            event.disallow(AsyncPlayerPreLoginEvent.Result.KICK_OTHER, ComponentUtils.parseComponent("&cServer not fully started yet!"));
         }
     }
 

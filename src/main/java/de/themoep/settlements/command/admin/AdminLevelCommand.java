@@ -6,6 +6,7 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 public class AdminLevelCommand extends SubCommand {
     public AdminLevelCommand(SubCommand parent) {
@@ -34,11 +35,11 @@ public class AdminLevelCommand extends SubCommand {
             settlement.setState(state);
             settlement.setLevel(level);
 
-            sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cSet " + settlement.getName() + " to " + state.getTag() + "/" + level));
+            sender.sendMessage(ComponentUtils.parseComponent("&cSet " + settlement.getName() + " to " + state.getTag() + "/" + level));
 
             if (args.length < 4 || !"false".equalsIgnoreCase(args[3])) {
                 SettlementManager.getInstance().onLevelUp(settlement, settlement.getChief());
-                sender.sendMessage(SettlementsPlugin.getInstance().messageUtils.toComponent("&cTriggered level up events!"));
+                sender.sendMessage(ComponentUtils.parseComponent("&cTriggered level up events!"));
             }
             settlement.save();
         } catch (NumberFormatException e) {
