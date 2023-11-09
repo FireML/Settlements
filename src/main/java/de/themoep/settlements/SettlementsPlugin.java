@@ -42,6 +42,7 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalScheduler;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
 import uk.firedev.poleislib.utils.MessageUtils;
@@ -78,7 +79,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private final List<Empire> newlyAbandonedEmpires = new ArrayList<>();
     private final List<Empire> newlyDeletedEmpires = new ArrayList<>();
     private Map<String, Function<Plugin, Boolean>> dependencies = new HashMap<>();
-    public MessageUtils messageUtils;
 
     @Override
     public void onDisable() {
@@ -134,8 +134,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             return;
         }
 
-        messageUtils = new MessageUtils((YamlConfiguration) ConfigManager.getInstance().getMessagesConfig());
-
         for (Map.Entry<String, Function<Plugin, Boolean>> entry : dependencies.entrySet()) {
             Plugin plugin = getServer().getPluginManager().getPlugin(entry.getKey());
             if (plugin != null && plugin.isEnabled()) {
@@ -173,72 +171,75 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     }
 
     private void upkeep() {
-        Runnable runnable = () -> {
-            getLogger().log(Level.INFO, "UPKEEP");
-            ConfigManager.getInstance().updateLastUpkeep();
-            getLogger().log(Level.INFO, "Checking chunk unclaiming...");
-            LandManager.getInstance().checkUnclaim();
-            getLogger().log(Level.INFO, "Handling settlement taxes and upkeep...");
-            newlyAbandonedSettlements.clear();
-            newlyDeletedSettlements.clear();
+        UniversalRunnable runnable = new UniversalRunnable() {
+            @Override
+            public void run() {
+                getLogger().log(Level.INFO, "UPKEEP");
+                ConfigManager.getInstance().updateLastUpkeep();
+                getLogger().log(Level.INFO, "Checking chunk unclaiming...");
+                LandManager.getInstance().checkUnclaim();
+                getLogger().log(Level.INFO, "Handling settlement taxes and upkeep...");
+                newlyAbandonedSettlements.clear();
+                newlyDeletedSettlements.clear();
 
-            for (Settlement settlement : new ArrayList<>(SettlementManager.getInstance().getSettlements())) {
-                settlement.doUpkeep();
-            }
-
-            if (!newlyAbandonedSettlements.isEmpty()) {
-                if (newlyAbandonedSettlements.size() > 1) {
-                    Message.get("broadcast.settlements-abandoned").broadcast("settlements", newlyAbandonedSettlements.stream()
-                            .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
-                            .collect(Collectors.joining(", ")));
-                } else {
-                    Message.get("broadcast.settlement-abandoned").broadcast("state", newlyAbandonedSettlements.get(0).getStateTag(), "name", newlyAbandonedSettlements.get(0).getName());
+                for (Settlement settlement : new ArrayList<>(SettlementManager.getInstance().getSettlements())) {
+                    settlement.doUpkeep();
                 }
-            }
-            newlyAbandonedSettlements.clear();
 
-            if (!newlyDeletedSettlements.isEmpty()) {
-                if (newlyDeletedSettlements.size() > 1) {
-                    Message.get("broadcast.settlements-deletion").broadcast("settlements", newlyDeletedSettlements.stream()
-                            .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
-                            .collect(Collectors.joining(", ")));
-                } else {
-                    Message.get("broadcast.settlement-deletion").broadcast("state", newlyDeletedSettlements.get(0).getStateTag(), "name", newlyDeletedSettlements.get(0).getName());
+                if (!newlyAbandonedSettlements.isEmpty()) {
+                    if (newlyAbandonedSettlements.size() > 1) {
+                        Message.get("broadcast.settlements-abandoned").broadcast("settlements", newlyAbandonedSettlements.stream()
+                                .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
+                                .collect(Collectors.joining(", ")));
+                    } else {
+                        Message.get("broadcast.settlement-abandoned").broadcast("state", newlyAbandonedSettlements.get(0).getStateTag(), "name", newlyAbandonedSettlements.get(0).getName());
+                    }
                 }
-            }
-            newlyDeletedSettlements.clear();
+                newlyAbandonedSettlements.clear();
 
-            getLogger().log(Level.INFO, "Handling empire taxes and upkeep...");
-            newlyAbandonedEmpires.clear();
-            newlyDeletedEmpires.clear();
-
-            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
-                empire.doUpkeep();
-            }
-
-            if (!newlyAbandonedEmpires.isEmpty()) {
-                if (newlyAbandonedEmpires.size() > 1) {
-                    Message.get("broadcast.empires-abandoned").broadcast("empires", newlyAbandonedEmpires.stream()
-                            .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
-                            .collect(Collectors.joining(", ")));
-                } else {
-                    Message.get("broadcast.empire-abandoned").broadcast("state", newlyAbandonedEmpires.get(0).getStateTag(), "name", newlyAbandonedEmpires.get(0).getName());
+                if (!newlyDeletedSettlements.isEmpty()) {
+                    if (newlyDeletedSettlements.size() > 1) {
+                        Message.get("broadcast.settlements-deletion").broadcast("settlements", newlyDeletedSettlements.stream()
+                                .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
+                                .collect(Collectors.joining(", ")));
+                    } else {
+                        Message.get("broadcast.settlement-deletion").broadcast("state", newlyDeletedSettlements.get(0).getStateTag(), "name", newlyDeletedSettlements.get(0).getName());
+                    }
                 }
-            }
-            newlyAbandonedEmpires.clear();
+                newlyDeletedSettlements.clear();
 
-            if (!newlyDeletedEmpires.isEmpty()) {
-                if (newlyDeletedEmpires.size() > 1) {
-                    Message.get("broadcast.empires-deletion").broadcast("empires", newlyDeletedEmpires.stream()
-                            .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
-                            .collect(Collectors.joining(", ")));
-                } else {
-                    Message.get("broadcast.empire-deletion").broadcast("state", newlyDeletedEmpires.get(0).getStateTag(), "name", newlyDeletedEmpires.get(0).getName());
+                getLogger().log(Level.INFO, "Handling empire taxes and upkeep...");
+                newlyAbandonedEmpires.clear();
+                newlyDeletedEmpires.clear();
+
+                for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+                    empire.doUpkeep();
                 }
-            }
-            newlyDeletedEmpires.clear();
 
-            getLogger().log(Level.INFO, "UPKEEP FINISHED!");
+                if (!newlyAbandonedEmpires.isEmpty()) {
+                    if (newlyAbandonedEmpires.size() > 1) {
+                        Message.get("broadcast.empires-abandoned").broadcast("empires", newlyAbandonedEmpires.stream()
+                                .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
+                                .collect(Collectors.joining(", ")));
+                    } else {
+                        Message.get("broadcast.empire-abandoned").broadcast("state", newlyAbandonedEmpires.get(0).getStateTag(), "name", newlyAbandonedEmpires.get(0).getName());
+                    }
+                }
+                newlyAbandonedEmpires.clear();
+
+                if (!newlyDeletedEmpires.isEmpty()) {
+                    if (newlyDeletedEmpires.size() > 1) {
+                        Message.get("broadcast.empires-deletion").broadcast("empires", newlyDeletedEmpires.stream()
+                                .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
+                                .collect(Collectors.joining(", ")));
+                    } else {
+                        Message.get("broadcast.empire-deletion").broadcast("state", newlyDeletedEmpires.get(0).getStateTag(), "name", newlyDeletedEmpires.get(0).getName());
+                    }
+                }
+                newlyDeletedEmpires.clear();
+
+                getLogger().log(Level.INFO, "UPKEEP FINISHED!");
+            }
         };
 
         // check if the last upkeep should have happened while the server was offline
