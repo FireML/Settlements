@@ -2,7 +2,6 @@ package de.themoep.settlements.command;
 
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import uk.firedev.poleislib.utils.ComponentUtils;
 

@@ -45,7 +45,6 @@ import net.citizensnpcs.api.trait.trait.Spawned;
 import net.citizensnpcs.trait.*;
 import net.citizensnpcs.trait.versioned.VillagerTrait;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;

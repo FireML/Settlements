@@ -5,8 +5,6 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
-import net.kyori.adventure.text.ComponentLike;
-import org.bukkit.ChatColor;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 public class EmpireMailCommand extends EmpireSubCommand {

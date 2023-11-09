@@ -1,6 +1,5 @@
 package de.themoep.settlements.utils;
 
-import org.bukkit.ChatColor;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.Locale;

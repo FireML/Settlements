@@ -5,7 +5,6 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
-import org.bukkit.ChatColor;
 import uk.firedev.poleislib.utils.StringUtils;
 
 public class PlotNameCommand extends PlotSubCommand {

@@ -4,7 +4,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.resident.Resident;
-import org.bukkit.ChatColor;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 public class SettlementMailCommand extends SettlementSubCommand {
