@@ -390,7 +390,6 @@ public class LandManager {
             List<OwnedLand> branchFound = new ArrayList<>();
 
             boolean skipBranch = false;
-            BRANCH:
             while (!toSearch.isEmpty()) {
                 SimpleChunkLocation search = Utils.poll(toSearch);
                 OwnedLand foundLand = getLand(search);

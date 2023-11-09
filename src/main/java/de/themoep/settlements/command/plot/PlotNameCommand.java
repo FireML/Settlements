@@ -6,6 +6,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.ChatColor;
+import uk.firedev.poleislib.utils.StringUtils;
 
 public class PlotNameCommand extends PlotSubCommand {
     public PlotNameCommand(PlotCommand parent) {
@@ -15,7 +16,7 @@ public class PlotNameCommand extends PlotSubCommand {
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
         String name = MessageUtils.replaceColorCodes(Utils.filterAllCurses(String.join(" ", args)));
-        if (ChatColor.stripColor(name).length() > 16) {
+        if (StringUtils.stripColors(name).length() > 16) {
             getError("too-long").tell(res, "input", name, "amount", "16");
             return true;
         }

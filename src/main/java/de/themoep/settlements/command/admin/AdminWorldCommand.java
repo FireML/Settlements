@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.admin;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;

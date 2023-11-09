@@ -18,7 +18,9 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
@@ -69,7 +71,7 @@ public class Utils {
             Field f = Config.Teleport.Delay.class.getField(type.toUpperCase());
             return (int) f.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            SettlementsPlugin.logException(e);
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
         return 0;
     }
@@ -79,7 +81,7 @@ public class Utils {
             Field f = Config.Teleport.Cooldown.class.getField(type.toUpperCase());
             return (int) f.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            SettlementsPlugin.logException(e);
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
         return 0;
     }
@@ -290,7 +292,7 @@ public class Utils {
      * @return The string wrapped with all lines wrapped to the length. Tries to take colors/formatting into account.
      */
     public static String wrap(String string, int length) {
-        if (ChatColor.stripColor(string).length() < length) {
+        if (StringUtils.stripColors(string).length() < length) {
             return string;
         }
         StringBuilder sb = new StringBuilder();
@@ -298,13 +300,13 @@ public class Utils {
             if (!sb.isEmpty()) {
                 sb.append("\n");
             }
-            if (ChatColor.stripColor(line).length() < length) {
+            if (StringUtils.stripColors(line).length() < length) {
                 sb.append(line);
             } else {
                 String[] parts = line.split(" ");
                 StringBuilder part1 = new StringBuilder(parts[0]);
                 int i = 1;
-                for (; i < parts.length && ChatColor.stripColor(part1 + " " + parts[i]).length() < length; i++) {
+                for (; i < parts.length && StringUtils.stripColors(part1 + " " + parts[i]).length() < length; i++) {
                     part1.append(" ").append(parts[i]);
                 }
                 StringBuilder part2 = new StringBuilder(i < parts.length ? parts[i] : "");

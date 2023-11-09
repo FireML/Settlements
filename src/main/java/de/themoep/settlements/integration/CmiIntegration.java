@@ -16,6 +16,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import uk.firedev.poleislib.Loggers;
 
 import java.lang.reflect.Field;
 import java.util.UUID;
@@ -41,7 +42,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
             formatStringsField = FormattedCommandAlias.class.getDeclaredField("formatStrings");
             formatStringsField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            SettlementsPlugin.logException(e);
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
     }
 
@@ -76,7 +77,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
                         return;
                     }
                 } catch (IllegalAccessException e) {
-                    SettlementsPlugin.logException(e);
+                    Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
                 }
             } else {
                 return;

@@ -16,6 +16,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import uk.firedev.poleislib.Loggers;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -242,7 +243,7 @@ public class ConfigManager {
                         }
                     }
                 } catch (IllegalAccessException e) {
-                    SettlementsPlugin.logException(e);
+                    Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
                 } catch (IllegalArgumentException e) {
                     SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Unable to load value of " + path + "! (Was `" + rawValue + "`, expected " + field.getType().getSimpleName() + ".");
                     SettlementsPlugin.logDebug(e.getMessage());
@@ -334,7 +335,7 @@ public class ConfigManager {
                         config.set(path, value);
                     }
                 } catch (IllegalAccessException e) {
-                    SettlementsPlugin.logException(e);
+                    Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
                 }
             }
         }
@@ -405,7 +406,7 @@ public class ConfigManager {
                 }
             }
         } catch (IOException e) {
-            SettlementsPlugin.logException(e);
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(configFile))) {
@@ -414,7 +415,7 @@ public class ConfigManager {
                 writer.newLine();
             }
         } catch (IOException e) {
-            SettlementsPlugin.logException(e);
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
     }
 
@@ -465,7 +466,7 @@ public class ConfigManager {
         try {
             fileConfiguration.save(file);
         } catch (IOException e) {
-            SettlementsPlugin.logException(e);
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
     }
 

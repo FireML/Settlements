@@ -4,6 +4,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 public abstract class ResidentSubCommand extends PlayerSubCommand {
 
@@ -17,7 +18,7 @@ public abstract class ResidentSubCommand extends PlayerSubCommand {
         if (resident != null) {
             return run(resident, base, alias, args);
         }
-        player.sendMessage(ChatColor.RED + "ERROR: Plugin was not able to find your Resident info?");
+        player.sendMessage(ComponentUtils.parseComponent("&cERROR: Plugin was not able to find your Resident info?"));
         return true;
     }
 

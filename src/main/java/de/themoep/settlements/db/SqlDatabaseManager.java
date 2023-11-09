@@ -24,6 +24,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.lang.reflect.InvocationTargetException;
@@ -1038,7 +1039,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             }
             sta.executeBatch();
         } catch (SQLException e) {
-            SettlementsPlugin.logException(e);
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
     }
 
@@ -1093,7 +1094,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         try {
             closeConnection();
         } catch (SQLException e) {
-            SettlementsPlugin.logException(e);
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
     }
 

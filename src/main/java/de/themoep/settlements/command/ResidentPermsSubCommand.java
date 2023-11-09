@@ -8,10 +8,6 @@ public abstract class ResidentPermsSubCommand extends ResidentSubCommand {
         super(parent, usage, aliases);
     }
 
-    public int ordinal() {
-        return -1;
-    }
-
     @Override
     public boolean hasAccess(Resident resident) {
         return resident.hasPermission(getPermission());

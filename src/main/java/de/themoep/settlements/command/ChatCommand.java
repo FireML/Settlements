@@ -1,6 +1,5 @@
 package de.themoep.settlements.command;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.chat.gui.ColorChannelSelectGui;

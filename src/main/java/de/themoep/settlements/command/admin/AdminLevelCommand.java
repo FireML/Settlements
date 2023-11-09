@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.admin;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;

@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +36,7 @@ public class SignGui {
         if (!block.isEmpty()) {
             block = block.getRelative(BlockFace.UP);
             if (!block.isEmpty()) {
-                player.sendMessage("Unable to open sign editor.");
+                player.sendMessage(ComponentUtils.parseComponent("Unable to open sign editor."));
                 return;
             }
         }

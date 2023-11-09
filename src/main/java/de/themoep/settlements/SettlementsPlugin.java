@@ -31,7 +31,6 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.adapter.PaperAdapter;
-import de.themoep.settlements.utils.adapter.ServerAdapter;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.milkbowl.vault.chat.Chat;
@@ -43,9 +42,9 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import uk.firedev.poleislib.utils.MessageUtils;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalScheduler;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
+import uk.firedev.poleislib.utils.MessageUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -72,7 +71,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private boolean running = false;
     private static final Timer timer = new Timer();
     private LandModeListener landModeListener;
-    private ServerAdapter serverAdapter;
+    private PaperAdapter serverAdapter;
 
     private final List<Settlement> newlyAbandonedSettlements = new ArrayList<>();
     private final List<Settlement> newlyDeletedSettlements = new ArrayList<>();
@@ -485,7 +484,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         return landModeListener;
     }
 
-    public ServerAdapter getServerAdapter() {
+    public PaperAdapter getServerAdapter() {
         return serverAdapter;
     }
 
@@ -505,9 +504,5 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         if (Config.DEBUG) {
             SettlementsPlugin.getInstance().getLogger().info("[DEBUG] " + message);
         }
-    }
-
-    public static void logException(Throwable throwable) {
-        instance.getLogger().log(Level.SEVERE, throwable.getMessage(), throwable);
     }
 }

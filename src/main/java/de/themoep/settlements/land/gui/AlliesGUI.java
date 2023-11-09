@@ -10,8 +10,8 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.*;
+import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

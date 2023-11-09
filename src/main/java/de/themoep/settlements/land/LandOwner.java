@@ -998,8 +998,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         for (Map.Entry<String, Collection<String>> entry : ((Map<String, Collection<String>>) map.get("titles")).entrySet()) {
             landOwner.rankTitles.putAll(entry.getKey().toLowerCase(), entry.getValue());
         }
-        ((Map<String, Object>) map.get("defaulttitles")).entrySet()
-                .forEach(e -> landOwner.defaultRankTitles.put(e.getKey().toLowerCase(), e.getValue()));
+        ((Map<String, Object>) map.get("defaulttitles")).forEach((key, value) -> landOwner.defaultRankTitles.put(key.toLowerCase(), value));
         for (NpcData npcData : ((Collection<NpcData>) map.get("npcs"))) {
             landOwner.addNpc(npcData);
         }

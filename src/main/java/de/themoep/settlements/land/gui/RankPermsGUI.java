@@ -14,8 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import uk.firedev.poleislib.utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.*;
+import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.*;
 

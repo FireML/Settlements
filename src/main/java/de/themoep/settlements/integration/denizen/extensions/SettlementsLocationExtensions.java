@@ -1,13 +1,9 @@
 package de.themoep.settlements.integration.denizen.extensions;
 
 import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizencore.objects.ObjectTag;
-import com.denizenscript.denizencore.objects.properties.Property;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import de.themoep.settlements.integration.denizen.objects.LandTag;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
-import org.bukkit.Location;
 
 public class SettlementsLocationExtensions {
 

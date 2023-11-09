@@ -17,11 +17,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
+import uk.firedev.poleislib.utils.ItemUtils;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -77,9 +78,9 @@ public class SettingsGUI extends PlotGUI {
                             String text = stateSnapshot.getText();
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
-                                text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(ChatColor.stripColor(text.trim())));
+                                text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(StringUtils.stripColors(text.trim())));
                                 int maxLength = Math.min(Config.Plot.NAME_LENGTH, 255);
-                                if (ChatColor.stripColor(text).length() > maxLength) {
+                                if (StringUtils.stripColors(text).length() > maxLength) {
                                     getError("too-long").tell(player, "input", text, "amount", String.valueOf(maxLength));
                                     return List.of(
                                             AnvilGUI.ResponseAction.replaceInputText(text)
@@ -116,8 +117,8 @@ public class SettingsGUI extends PlotGUI {
                             String text = stateSnapshot.getText();
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
-                                text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(ChatColor.stripColor(text.trim())));
-                                if (ChatColor.stripColor(text).length() > Config.Plot.DESCRIPTION_LENGTH) {
+                                text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(StringUtils.stripColors(text.trim())));
+                                if (StringUtils.stripColors(text).length() > Config.Plot.DESCRIPTION_LENGTH) {
                                     getError("too-long").tell(player, "input", text, "amount", String.valueOf(Config.Plot.DESCRIPTION_LENGTH));
                                     return List.of(
                                             AnvilGUI.ResponseAction.replaceInputText(text)

@@ -1,6 +1,7 @@
 package de.themoep.settlements.utils;
 
 import org.bukkit.ChatColor;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.Locale;
 
@@ -14,7 +15,7 @@ public interface NameTag extends ConfigKey, HumanReadable {
             message = Message.get("names." + e.getClass().getSimpleName().toLowerCase(Locale.ROOT).replace("$$", ".") + "." + ConfigKey.getKey(e));
         }
         if (message.exists()) {
-            return ChatColor.stripColor(message.getText());
+            return StringUtils.stripColors(message.getText());
         }
         return HumanReadable.humanizedName(e);
     }
@@ -32,7 +33,7 @@ public interface NameTag extends ConfigKey, HumanReadable {
             }
         }
         if (message.exists()) {
-            return ChatColor.stripColor(message.getText());
+            return StringUtils.stripColors(message.getText());
         }
         return humanizedName();
     }

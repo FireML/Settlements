@@ -15,9 +15,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import uk.firedev.poleislib.utils.ItemUtils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.*;
 import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
+import uk.firedev.poleislib.utils.ItemUtils;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +120,7 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                         return null;
                                     }
                                     String text = stateSnapshot.getText();
-                                    text = ChatColor.stripColor(text);
+                                    text = StringUtils.stripColors(text);
                                     if (rank.above(landOwner.getRank(resident))) {
                                         return List.of(
                                                 AnvilGUI.ResponseAction.replaceInputText(getError("cant-edit-higher").getReplacedText("rank", rank.getTag(landOwner)))

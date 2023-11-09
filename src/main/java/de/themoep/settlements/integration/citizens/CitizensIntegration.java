@@ -53,6 +53,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -120,7 +121,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         }
         for (NpcData npcData : landOwner.getNpcData()) {
             NPC npc = getNpc(npcData);
-            if (npc != null && !npc.getName().equals(ChatColor.stripColor(npcData.getConfig().getName()))) {
+            if (npc != null && !npc.getName().equals(StringUtils.stripColors(npcData.getConfig().getName()))) {
                 npc.setName(npcData.getConfig().getName());
             }
         }

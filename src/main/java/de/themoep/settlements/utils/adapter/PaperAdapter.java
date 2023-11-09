@@ -6,10 +6,7 @@ import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.command.CommandMap;
@@ -18,6 +15,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -28,9 +26,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
-public class PaperAdapter implements ServerAdapter {
+public class PaperAdapter {
 
-    @Override
     public void setProfile(SkullMeta skull, UUID uuid, String name, String... properties) {
         PlayerProfile profile = Bukkit.createProfile(uuid, name);
         for (int i = 0; i + 1 < properties.length; i += 2) {
@@ -39,29 +36,37 @@ public class PaperAdapter implements ServerAdapter {
         skull.setPlayerProfile(profile);
     }
 
-    @Override
     public void sendTitle(Player player, BaseComponent[] title, BaseComponent[] subTitle, int in, int stay, int out) {
         player.sendTitle(new Title(title, subTitle, in, stay, out));
     }
 
-    @Override
     public InventoryHolder getHolder(Inventory inventory) {
         return inventory.getHolder(false);
     }
 
-    @Override
     public void markOwned(Item item, Player player) {
         item.setPickupDelay(0);
         item.setOwner(player.getUniqueId());
         item.setCanMobPickup(false);
     }
 
-    @Override
     public CommandMap getCommandMap() {
         return Bukkit.getServer().getCommandMap();
     }
 
-    @Override
+    /**
+     * Create a written book
+     * @param title         The book title
+     * @param author        The book author
+     * @param components    The book components
+     * @return The book
+     */
+    public ItemStack createBook(String title, String author, List<BaseComponent[]> components) {
+        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
+        book.setItemMeta(createBookMeta((BookMeta) book.getItemMeta(), title, author, components));
+        return book;
+    }
+
     public ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<BaseComponent[]> pages) {
         bookMeta.setTitle(title);
         bookMeta.setAuthor(author);
@@ -71,22 +76,18 @@ public class PaperAdapter implements ServerAdapter {
                 .collect(Collectors.toList()));
     }
 
-    @Override
     public CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
         return entity.teleportAsync(location);
     }
 
-    @Override
     public CompletionStage<Chunk> getChunkAtAsync(Location location) {
         return location.getWorld().getChunkAtAsync(location);
     }
 
-    @Override
     public CompletionStage<Chunk> getChunkAtAsync(World world, int x, int z) {
         return world.getChunkAtAsync(x, z);
     }
 
-    @Override
     public BlockState getBlockState(Block block, boolean snapshot) {
         return block.getState(snapshot);
     }

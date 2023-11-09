@@ -13,6 +13,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.SimpleBlockLocation;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -26,13 +27,13 @@ public class AdminLockCommand extends SubCommand {
             public boolean run(CommandSender sender, String base, String alias, String... args) {
                 Utils.runAsync(() -> {
                     if (args.length > 0) {
-                        sender.sendMessage("Locks:\n" + LockManager.getInstance().getLocks(args[0]).stream()
+                        sender.sendMessage(ComponentUtils.parseComponent("Locks:\n" + LockManager.getInstance().getLocks(args[0]).stream()
                                 .map(l -> info(l))
-                                .collect(Collectors.joining("\n")));
+                                .collect(Collectors.joining("\n"))));
                     } else {
-                        sender.sendMessage("Locks:\n" + LockManager.getInstance().getLocks().stream()
+                        sender.sendMessage(ComponentUtils.parseComponent("Locks:\n" + LockManager.getInstance().getLocks().stream()
                                 .map(l -> info(l))
-                                .collect(Collectors.joining("\n")));
+                                .collect(Collectors.joining("\n"))));
                     }
                 });
                 return true;
@@ -46,21 +47,21 @@ public class AdminLockCommand extends SubCommand {
                 }
                 try {
                     SimpleBlockLocation location = new SimpleBlockLocation(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]), Integer.parseInt(args[3]));
-                    sender.sendMessage("Chunk is cached: " + LockManager.getInstance().isLoaded(location.toChunkLocation()));
+                    sender.sendMessage(ComponentUtils.parseComponent("Chunk is cached: " + LockManager.getInstance().isLoaded(location.toChunkLocation())));
                     if (location.toBukkitLocation() == null) {
-                        sender.sendMessage("World not loaded!");
+                        sender.sendMessage(ComponentUtils.parseComponent("World not loaded!"));
                         return true;
                     }
                     Chunk chunk = location.toBukkitLocation().getChunk();
-                    sender.sendMessage("Chunk is loaded: " + chunk.isLoaded());
+                    sender.sendMessage(ComponentUtils.parseComponent("Chunk is loaded: " + chunk.isLoaded()));
                     if (!chunk.isLoaded()) {
                         chunk.load(false);
                     }
-                    sender.sendMessage("Block: " + location.toBukkitLocation().getBlock().getBlockData().getAsString());
+                    sender.sendMessage(ComponentUtils.parseComponent("Block: " + location.toBukkitLocation().getBlock().getBlockData().getAsString()));
                     Lock lock = LockManager.getInstance().getLock(location.toBukkitLocation().getBlock());
-                    sender.sendMessage("Lock: " + (lock != null ? info(lock) : "null"));
+                    sender.sendMessage(ComponentUtils.parseComponent("Lock: " + (lock != null ? info(lock) : "null")));
                 } catch (NumberFormatException e) {
-                    sender.sendMessage(e.getMessage());
+                    sender.sendMessage(ComponentUtils.parseComponent(e.getMessage()));
                 }
                 return true;
             }

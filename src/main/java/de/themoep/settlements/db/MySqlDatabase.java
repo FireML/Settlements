@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import uk.firedev.poleislib.Loggers;
 
 import java.sql.*;
 import java.util.*;
@@ -41,9 +42,6 @@ public class MySqlDatabase extends SqlDatabaseManager {
         alterColumnOrRecreate(MySqlTable.SETTLEMENT_UNBANISHED, "unbanished_unbanishdate", "BIGINT(11)");
         alterOrRecreate(MySqlTable.EMPIRE_UNBANISHED, "ADD CONSTRAINT list UNIQUE (empireId, unbanished_id, unbanished_date)");
         alterOrRecreate(MySqlTable.SETTLEMENT_UNBANISHED, "ADD CONSTRAINT list UNIQUE (settlementId, unbanished_id, unbanished_date)");
-        /*addTrigger(MySqlTable.SETTLEMENT_NPCS, "update_settlements_npcs", "AFTER UPDATE", "UPDATE settlements_settlement_npcs\n" +
-                "  SET enabled = NEW.enableNPCs\n" +
-                "  WHERE settlementId = NEW.id;");*/
     }
 
     @Override
@@ -273,7 +271,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
             Statement sta = conn.createStatement();
             sta.execute(sql);
         } catch (SQLException e) {
-            SettlementsPlugin.logException(e);
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
     }
 }

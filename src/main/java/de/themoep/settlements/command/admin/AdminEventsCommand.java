@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.admin;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.event.Event;
 import de.themoep.settlements.event.EventManager;
@@ -17,9 +16,9 @@ public class AdminEventsCommand extends SubCommand {
         registerCommand(new SubCommand(this, "list") {
             @Override
             public boolean run(CommandSender sender, String base, String alias, String... args) {
-                sender.sendMessage("Available Events:");
+                sender.sendMessage(ComponentUtils.parseComponent("Available Events:"));
                 for (Event event : EventManager.getInstance().getEvents()) {
-                    sender.sendMessage(event.getId() + " - " + event.getTitle() + " - " + event.getTime() + "s");
+                    sender.sendMessage(ComponentUtils.parseComponent(event.getId() + " - " + event.getTitle() + " - " + event.getTime() + "s"));
                 }
                 return true;
             }
@@ -32,14 +31,14 @@ public class AdminEventsCommand extends SubCommand {
                 }
                 Event event = EventManager.getInstance().getEvent(args[0]);
                 if (event != null) {
-                    sender.sendMessage("Event " + event.getId() + ":");
-                    sender.sendMessage("Title: " + event.getTitle());
-                    sender.sendMessage("Time: " + event.getTime() + "s");
-                    sender.sendMessage("Worlds: " + String.join(", ", event.getWorlds()));
-                    sender.sendMessage("Actions:");
+                    sender.sendMessage(ComponentUtils.parseComponent("Event " + event.getId() + ":"));
+                    sender.sendMessage(ComponentUtils.parseComponent("Title: " + event.getTitle()));
+                    sender.sendMessage(ComponentUtils.parseComponent("Time: " + event.getTime() + "s"));
+                    sender.sendMessage(ComponentUtils.parseComponent("Worlds: " + String.join(", ", event.getWorlds())));
+                    sender.sendMessage(ComponentUtils.parseComponent("Actions:"));
                     for (Map.Entry<Event.Action, Collection<String>> entry : event.getActions().asMap().entrySet()) {
-                        sender.sendMessage("  " + entry.getKey().getTag() + ":");
-                        sender.sendMessage("    " + String.join(", ", entry.getValue()));
+                        sender.sendMessage(ComponentUtils.parseComponent("  " + entry.getKey().getTag() + ":"));
+                        sender.sendMessage(ComponentUtils.parseComponent("    " + String.join(", ", entry.getValue())));
                     }
                 } else {
                     sender.sendMessage(ComponentUtils.parseComponent("&cNo event with the id " + args[0] + " found."));

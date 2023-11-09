@@ -20,6 +20,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -295,7 +296,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     public void setName(String name) {
         int maxLength = Math.min(Config.Plot.NAME_LENGTH, 255);
-        this.name = ChatColor.stripColor(name).length() > maxLength ? name.substring(0, maxLength) : name;
+        this.name = StringUtils.stripColors(name).length() > maxLength ? name.substring(0, maxLength) : name;
     }
 
     public String getDescription() {
@@ -303,7 +304,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public void setDescription(String description) {
-        this.description = ChatColor.stripColor(description).length() > Config.Plot.DESCRIPTION_LENGTH ? description.substring(0, Config.Plot.DESCRIPTION_LENGTH) : description;
+        this.description = StringUtils.stripColors(description).length() > Config.Plot.DESCRIPTION_LENGTH ? description.substring(0, Config.Plot.DESCRIPTION_LENGTH) : description;
     }
 
     public Collection<OwnedLand> getLinked() {

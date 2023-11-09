@@ -1,12 +1,8 @@
 package de.themoep.settlements.integration.denizen;
 
 import com.denizenscript.denizen.Denizen;
-import com.denizenscript.denizen.objects.ChunkTag;
-import com.denizenscript.denizen.objects.LocationTag;
-import com.denizenscript.denizen.objects.PlayerTag;
 import com.denizenscript.denizencore.events.ScriptEvent;
 import com.denizenscript.denizencore.objects.ObjectFetcher;
-import com.denizenscript.denizencore.objects.properties.PropertyParser;
 import com.denizenscript.denizencore.tags.TagManager;
 import de.themoep.settlements.integration.denizen.events.SettlementsChatScriptEvent;
 import de.themoep.settlements.integration.denizen.events.SettlementsEmpireScriptEvent;
