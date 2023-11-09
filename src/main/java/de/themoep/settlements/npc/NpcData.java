@@ -72,13 +72,20 @@ public class NpcData implements DatabaseSerializable, Levelable<NpcLevel> {
     }
 
     public static NpcData deserialize(Map<String, Object> map) {
+        boolean enabled;
+        try {
+            enabled = (boolean) map.get("enabled");
+        } catch (ClassCastException e) {
+            int value = (int) map.get("enabled");
+            enabled = value != 0;
+        }
         NpcData data = new NpcData(
                 IdObject.get(map.get("id")),
                 (int) map.get("npcId"),
                 NpcType.valueOf(((String) map.get("type")).toUpperCase(Locale.ROOT)),
                 (int) map.get("level"),
                 (String) map.get("npcSkinName"),
-                (boolean) map.get("enabled")
+                enabled
         );
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
                 .filter(e -> e.getValue() instanceof Number)
