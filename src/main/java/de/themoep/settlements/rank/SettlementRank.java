@@ -6,8 +6,8 @@ import de.themoep.settlements.perk.PerkEffect;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.utils.Message;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +21,7 @@ public class SettlementRank extends Rank<Settlement, SettlementRank> {
     public SettlementRank(String name, ConfigurationSection config) {
         super(name, config);
         for (SettlementState state : SettlementState.values()) {
-            List<String> titles = Message.get(state.getKey() + ".rank." + getKey()).getTextList().stream().map(ChatColor::stripColor).collect(Collectors.toList());
+            List<String> titles = Message.get(state.getKey() + ".rank." + getKey()).getTextList().stream().map(StringUtils::stripColors).collect(Collectors.toList());
             this.titles.putAll(state, titles);
         }
         PerkEffect.EffectInfluenced.register(new PerkEffect.EffectInfluenced(name));

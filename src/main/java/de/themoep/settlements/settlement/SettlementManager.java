@@ -24,9 +24,9 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.*;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -151,7 +151,7 @@ public class SettlementManager {
     public void registerNew(Resident chief, Settlement settlement) {
         if (!settlement.getId().isNull()) {
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + settlement.getName() + " to the database! It already had an ID defined?");
-            chief.tell(ChatColor.RED + "Error while saving " + settlement.getName() + " to the database! It already had an ID defined?");
+            chief.tell(StringUtils.parseColors("&cError while saving " + settlement.getName() + " to the database! It already had an ID defined?"));
             return;
         }
         settlement.setBank(Config.Settlement.START_BALANCE);
@@ -167,7 +167,7 @@ public class SettlementManager {
                 DatabaseManager.getInstance().saveResident(chief);
             } else {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + settlement.getName() + " to the database! No ID was returned.");
-                chief.tell(ChatColor.RED + "Error while saving " + settlement.getName() + " to the database! No ID was returned.");
+                chief.tell(StringUtils.parseColors("&cError while saving " + settlement.getName() + " to the database! No ID was returned."));
             }
             Utils.runSync(() -> Utils.callEvent(new LandownerCreatedEvent(settlement, chief)));
         });

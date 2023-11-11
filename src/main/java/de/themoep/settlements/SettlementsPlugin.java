@@ -35,7 +35,6 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -45,7 +44,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalScheduler;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
-import uk.firedev.poleislib.utils.MessageUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;

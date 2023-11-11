@@ -3,8 +3,8 @@ package de.themoep.settlements.rank;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Next;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +17,7 @@ public class EmpireRank extends Rank<Empire, EmpireRank> implements Next<EmpireR
 
     public EmpireRank(String name, ConfigurationSection config) {
         super(name, config);
-        titles = Message.get("empire.rank." + getKey()).getTextList().stream().map(ChatColor::stripColor).collect(Collectors.toList());
+        titles = Message.get("empire.rank." + getKey()).getTextList().stream().map(StringUtils::stripColors).collect(Collectors.toList());
     }
 
     @Override
