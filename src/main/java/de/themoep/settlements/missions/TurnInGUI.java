@@ -6,8 +6,7 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.HumanReadable;
 import de.themoep.settlements.utils.Utils;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -16,8 +15,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiStorageElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class TurnInGUI extends SettlementsGUI {
 
@@ -109,9 +111,7 @@ public class TurnInGUI extends SettlementsGUI {
                 }
             }
             if (!deposited.isEmpty()) {
-                for (BaseComponent[] components : buildSuccessDepositMessage(resident, player, deposited)) {
-                    player.sendMessage(components);
-                }
+                player.sendMessage(buildSuccessDepositMessage(resident, player, deposited));
                 missionData.addProgress(deposited);
                 if (missionData.isFinished()) {
                     missionData.getMission().finish(resident);
@@ -119,9 +119,7 @@ public class TurnInGUI extends SettlementsGUI {
                 DatabaseManager.getInstance().saveMissionData(resident.getSettlement());
             }
             if (!fail.isEmpty()) {
-                for (BaseComponent[] components : buildFailDepositMessage(resident, fail, TextComponent.fromLegacyText(""))) {
-                    player.sendMessage(components);
-                }
+                player.sendMessage(buildFailDepositMessage(resident, fail, ""));
             }
         } else if (contents.length > 0) {
             for (ItemStack item2 : contents) {
@@ -131,10 +129,8 @@ public class TurnInGUI extends SettlementsGUI {
                 }
             }
 
-            for (BaseComponent[] components : buildFailDepositMessage(resident, fail, getMessage("mission-finished")
-                    .getReplacedComponents("mission", missionData.getMission().getTag()))) {
-                player.sendMessage(components);
-            }
+            player.sendMessage(buildFailDepositMessage(resident, fail, ComponentUtils.toString(getMessage("mission-finished")
+                    .getReplacedComponent("mission", missionData.getMission().getTag()))));
         }
     }
 
@@ -145,27 +141,25 @@ public class TurnInGUI extends SettlementsGUI {
         }
     }
 
-    private List<BaseComponent[]> buildFailDepositMessage(Resident resident, Map<Material, Long> fail, BaseComponent[] reason) {
-        List<BaseComponent[]> messages = new ArrayList<>();
-        messages.add(getMessage("fail-turn-in").getReplacedComponents("reason", reason));
+    private Component buildFailDepositMessage(Resident resident, Map<Material, Long> fail, String reason) {
+        Component message = getMessage("fail-turn-in").getReplacedComponent("reason", reason);
         for (Map.Entry<Material, Long> entry : fail.entrySet()) {
-            messages.add(getMessage("list-entry").getReplacedComponents(
+            message = message.append(getMessage("list-entry").getReplacedComponent(
                     "amount", String.valueOf(entry.getValue()),
                     "icon", Utils.getIcon(resident, entry.getKey().name()),
                     "material", HumanReadable.humanizedName(entry.getKey().name())));
         }
-        return messages;
+        return message;
     }
 
-    private List<BaseComponent[]> buildSuccessDepositMessage(Resident resident, Player p, Map<String, Long> deposited) {
-        List<BaseComponent[]> messages = new ArrayList<>();
-        messages.add(getMessage("success-turn-in").getReplacedComponents("resident", p.getDisplayName()));
+    private Component buildSuccessDepositMessage(Resident resident, Player p, Map<String, Long> deposited) {
+        Component message = getMessage("success-turn-in").getReplacedComponent("resident", ComponentUtils.toString(p.displayName()));
         for (Map.Entry<String, Long> entry : deposited.entrySet()) {
-            messages.add(getMessage("list-entry").getReplacedComponents(
+            message = message.append(getMessage("list-entry").getReplacedComponent(
                     "amount", String.valueOf(entry.getValue()),
                     "icon", Utils.getIcon(resident, entry.getKey()),
                     "material", HumanReadable.humanizedName(entry.getKey())));
         }
-        return messages;
+        return message;
     }
 }

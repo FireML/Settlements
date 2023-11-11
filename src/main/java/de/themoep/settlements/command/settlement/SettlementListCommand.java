@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.settlement;
 
-import com.google.common.collect.ImmutableMap;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.settlement.JoinType;
@@ -9,15 +8,15 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class SettlementListCommand extends SubCommand {
@@ -78,30 +77,29 @@ public class SettlementListCommand extends SubCommand {
                 ));
             }
 
-            ComponentBuilder next = new ComponentBuilder("")
-                    .append(getMessage("next").getReplacedComponents("next", String.valueOf(finalPage + 1)));
+            Component next = getMessage("next").getReplacedComponent("next", String.valueOf(finalPage + 1));
             if (finalPage + 1 > pages) {
-                next.color(ChatColor.GRAY);
+                next = next.color(NamedTextColor.GRAY);
             } else {
-                next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage + 1)));
-                next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(ChatColor.YELLOW + ">>"))));
+                next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage + 1)));
+                next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
             }
-            ComponentBuilder previous = new ComponentBuilder("")
-                    .append(getMessage("previous").getReplacedComponents("previous", String.valueOf(finalPage - 1)));
+            Component previous = getMessage("previous").getReplacedComponent("previous", String.valueOf(finalPage - 1));
             if (finalPage - 1 <= 0) {
-                previous.color(ChatColor.GRAY);
+                previous = previous.color(NamedTextColor.GRAY);
             } else {
-                previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage - 1)));
-                previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(ChatColor.YELLOW + "<<"))));
+                previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage - 1)));
+                previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
             }
 
-            MessageUtils.tell(sender, MessageUtils.replacePlaceholders(getMessage("footer").getReplacedComponents(
+            Map<String, ?> replacements = Map.of(
+                    "next", next,
+                    "previous", previous,
                     "page", String.valueOf(finalPage),
                     "maxpage", String.valueOf(pages)
-            ), ImmutableMap.of(
-                    "next", next.create(),
-                    "previous", previous.create()
-            )));
+            );
+
+            MessageUtils.tell(sender, ComponentUtils.parsePlaceholders(getMessage("footer").getComponent(), replacements));
         });
 
         return true;

@@ -1,6 +1,5 @@
 package de.themoep.settlements.command;
 
-import com.google.common.collect.ImmutableMap;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.PermissionGroup;
 import de.themoep.settlements.rank.SettlementRank;
@@ -8,13 +7,13 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.text.WordUtils;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -116,7 +115,7 @@ public class HelpCommand extends SubCommand {
                 String base1 = base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : "";
                 getParent().getMessage("usage.head").tell(sender,
                         "type", direct ? "" : WordUtils.capitalizeFully(type) + " ",
-                        "usage", getParent().getUsage(base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : ""),
+                        "usage", getParent().getUsage(base1),
                         "name", WordUtils.capitalizeFully(getParent().name()),
                         "aliases", getParent().getAliases().isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getParent().getAliases())),
                         "path", WordUtils.capitalizeFully(base)
@@ -190,38 +189,42 @@ public class HelpCommand extends SubCommand {
                 });
                 getParent().getMessage("usage.footer").tell(sender,
                         "type", direct ? "" : WordUtils.capitalizeFully(type) + " ",
-                        "usage", getParent().getUsage(base.contains(" ") ? base.substring(0, base.lastIndexOf(' ')) : ""),
+                        "usage", getParent().getUsage(base1),
                         "name", WordUtils.capitalizeFully(getParent().name()),
                         "aliases", getParent().getAliases().isEmpty() ? "" : getParent().getMessage("usage.aliases").getReplacedText("aliases", String.join(", ", getParent().getAliases())),
                         "path", WordUtils.capitalizeFully(base)
                 );
                 if (maxPage > 1) {
-                    ComponentBuilder next = new ComponentBuilder("")
-                            .append(getParent().getMessage("usage.pagination.next").getReplacedComponents("next", String.valueOf(page + 1)));
+                    Component next = getParent().getMessage("usage.pagination.next").getReplacedComponent("next", String.valueOf(page + 1));
                     String s = base.isEmpty() ? "" : base + " ";
                     if (page + 1 > maxPage) {
-                        next.color(net.md_5.bungee.api.ChatColor.GRAY);
+                        next = next.color(NamedTextColor.GRAY);
                     } else {
-                        next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + s + alias + " " + type + " " + (page + 1)));
-                        next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.YELLOW + ">>"))));
+                        next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + s + alias + " " + type + " " + (page + 1)));
+                        next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
                     }
-                    ComponentBuilder previous = new ComponentBuilder("")
-                            .append(getParent().getMessage("usage.pagination.previous").getReplacedComponents("previous", String.valueOf(page - 1)));
+                    Component previous = getParent().getMessage("usage.pagination.previous").getReplacedComponent("previous", String.valueOf(page - 1));
                     if (page - 1 <= 0) {
-                        previous.color(net.md_5.bungee.api.ChatColor.GRAY);
+                        previous = previous.color(NamedTextColor.GRAY);
                     } else {
-                        previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + s + alias + " " + type + " " + (page - 1)));
-                        previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(net.md_5.bungee.api.ChatColor.YELLOW + "<<"))));
+                        previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + s + alias + " " + type + " " + (page - 1)));
+                        previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
                     }
 
-                    MessageUtils.tell(sender, MessageUtils.replacePlaceholders(getParent().getMessage("usage.pagination.footer").getReplacedComponents(
+                    Map<String, Component> footerMap = Map.of(
+                            "next", next,
+                            "previous", previous
+                    );
+
+                    Component tell = getParent().getMessage("usage.pagination.footer").getReplacedComponent(
                             "type", WordUtils.capitalizeFully(type),
                             "page", String.valueOf(page),
                             "maxpage", String.valueOf(maxPage)
-                    ), ImmutableMap.of(
-                            "next", next.create(),
-                            "previous", previous.create()
-                    )));
+                    );
+
+                    tell = ComponentUtils.parsePlaceholders(tell, footerMap);
+
+                    MessageUtils.tell(sender, tell);
                 }
                 return true;
             }

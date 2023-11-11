@@ -8,8 +8,9 @@ import de.themoep.settlements.rank.Rank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfirmationGui;
 import de.themoep.settlements.utils.Message;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.text.WordUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -60,7 +61,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                 List<String> description = new ArrayList<>();
 
                 R fromRank = rank;
-                ChatColor color;
+                TextColor color;
                 if (value.orElse(false)) {
                     for (Object r : rank.getInheritedRanks()) {
                         if (landOwner.getEffectivePermissionValue((R) r, perm).orElse(false)) {
@@ -69,7 +70,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                     }
                     if (fromRank == rank) {
                         item = getIcon("set");
-                        color = ChatColor.GREEN;
+                        color = NamedTextColor.GREEN;
                     } else {
                         item = getIcon("inherited");
                         description.add(getText("entry.inherited",
@@ -77,11 +78,11 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                                 "rank", rank.getTag(landOwner),
                                 "from", fromRank.getTag(landOwner)
                         ));
-                        color = ChatColor.DARK_GREEN;
+                        color = NamedTextColor.DARK_GREEN;
                     }
                 } else {
                     item = getIcon("not-set");
-                    color = ChatColor.GRAY;
+                    color = NamedTextColor.GRAY;
                 }
 
                 boolean defaultValue = rank.getPermissionValue(perm);

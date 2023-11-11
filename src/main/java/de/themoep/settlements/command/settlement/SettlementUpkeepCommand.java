@@ -5,7 +5,6 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
-import org.bukkit.ChatColor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,7 +28,7 @@ public class SettlementUpkeepCommand extends SettlementSubCommand {
         long upkeepAmount = globalCost - settlement.getTaxIncome();
         if (upkeepAmount > 0) {
             long upkeepDays = settlement.getBank() / upkeepAmount;
-            afford = upkeepDays > 0 ? String.valueOf(upkeepDays) : ChatColor.RED + String.valueOf(upkeepDays);
+            afford = upkeepDays > 0 ? String.valueOf(upkeepDays) : "§c" + upkeepDays;
         } else {
             afford = getText("afford-infinite");
         }

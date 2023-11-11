@@ -28,6 +28,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.io.*;
 import java.util.*;
@@ -70,7 +71,7 @@ public class EmpireManager {
                 Utils.runLater(() -> {
                     SettlementsPlugin.getInstance().getLogger().log(Level.INFO, empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Config.Empire.Upkeep.ABANDON_TIME + " minutes!");
                     deleteEmpire(empire);
-                    MessageUtils.broadcast(Message.get("broadcast.empire-deletion"), "name", empire.getName());
+                    ComponentUtils.broadcastMessage(Message.get("broadcast.empire-deletion").getReplacedComponent("name", empire.getName()));
                 }, delay, TimeUnit.MILLISECONDS);
             }
         }

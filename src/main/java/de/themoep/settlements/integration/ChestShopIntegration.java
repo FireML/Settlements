@@ -11,8 +11,6 @@ import com.Acrobot.ChestShop.Economy.Economy;
 import com.Acrobot.ChestShop.Events.*;
 import com.Acrobot.ChestShop.Events.Economy.*;
 import com.Acrobot.ChestShop.Events.Protection.ProtectionCheckEvent;
-import com.Acrobot.ChestShop.Libs.Kyori.adventure.text.Component;
-import com.Acrobot.ChestShop.Libs.Kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import com.Acrobot.ChestShop.Listeners.Economy.EconomyAdapter;
 import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
@@ -40,13 +38,11 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -358,17 +354,17 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             if (!Toggle.isIgnoring(resident.getUUID()) && landOwner.hasPermission(resident, "chestshop.admin")) {
                 Player player = resident.getPlayer();
                 if (Properties.SHOWITEM_MESSAGE) {
-                    if (MaterialUtil.Show.sendMessage(player, playerName, new ChestShopMessage(rawMessage, "item", "%item"), stock, replacementMap)) {
+                    if (MaterialUtil.Show.sendMessage(player, playerName, new Messages.Message(rawMessage.getReplacer().replace("item", "%item").getText()), stock, replacementMap)) {
                         return;
                     }
                 }
 
                 if (player != null) {
                     replacementMap.put("item", ItemUtil.getItemList(stock));
-                    new ChestShopMessage(rawMessage).sendWithPrefix(player, replacementMap);
+                    new Messages.Message(rawMessage.getText()).sendWithPrefix(player, replacementMap);
                 } else if (playerName != null) {
                     replacementMap.put("item", ItemUtil.getItemList(stock));
-                    ChestShop.sendBungeeMessage(playerName, new ChestShopMessage(rawMessage), replacementMap);
+                    ChestShop.sendBungeeMessage(playerName, new Messages.Message(rawMessage.getText()), replacementMap);
                 }
             }
         }
@@ -521,25 +517,5 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
     @EventHandler(priority = EventPriority.LOW)
     public void onUnclaim(LandUnclaimEvent event) {
         removeInChunk(event.getLand().getChunk());
-    }
-
-    private class ChestShopMessage extends Messages.Message {
-        private final Message message;
-        private final String[] replacements;
-
-        public ChestShopMessage(Message message, String... replacements) {
-            super(message.getRawText());
-            this.message = message;
-            this.replacements = replacements;
-        }
-
-        public BaseComponent[] getComponents(CommandSender sender, boolean prefixSuffix, Map<String, String> replacementMap, String... replacements) {
-            return message.getReplacer().replace(replacementMap).replace(replacements).replace(this.replacements).getComponents();
-        }
-
-        public Component getComponent(CommandSender sender, boolean prefixSuffix, Map<String, String> replacementMap, String... replacements) {
-            return BungeeComponentSerializer.get().deserialize(getComponents(sender, prefixSuffix, replacementMap, replacements));
-        }
-
     }
 }

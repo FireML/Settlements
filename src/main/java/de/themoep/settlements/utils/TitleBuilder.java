@@ -3,8 +3,7 @@ package de.themoep.settlements.utils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.themoep.settlements.SettlementsPlugin;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.BaseComponent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -66,44 +65,44 @@ public class TitleBuilder {
                 || (subtitle != null && subtitle.exists() && !subtitle.getText().isEmpty())) {
             SettlementsPlugin.getInstance().getServerAdapter().sendTitle(
                     p,
-                    title.getReplacedComponents(replacements),
-                    subtitle.getReplacedComponents(replacements),
+                    title.getReplacedComponent(replacements),
+                    subtitle.getReplacedComponent(replacements),
                     in, stay, out
             );
         }
         if (actionBar != null && actionBar.exists() && !actionBar.getText().isEmpty()) {
             long sendTime = System.currentTimeMillis();
             lastActionBar.put(p.getUniqueId(), sendTime);
-            BaseComponent[] replacedActionBar = actionBar.getReplacedComponents(replacements);
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, replacedActionBar);
+            Component replacedActionBar = actionBar.getReplacedComponent(replacements);
+            p.sendActionBar(replacedActionBar);
             SettlementsPlugin.getScheduler().runTaskLater(() -> {
                 Long storedSend = lastActionBar.getIfPresent(p.getUniqueId());
                 if (storedSend != null && storedSend == sendTime) {
-                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, replacedActionBar);
+                    p.sendActionBar(replacedActionBar);
                 }
             }, 2 * 20);
         }
     }
 
-    public void send(Player p, Map<String, BaseComponent[]> replacements) {
+    public void send(Player p, Map<String, Component> replacements) {
         if ((title != null && title.exists() && !title.getText().isEmpty())
                 || (subtitle != null && subtitle.exists() && !subtitle.getText().isEmpty())) {
             SettlementsPlugin.getInstance().getServerAdapter().sendTitle(
                     p,
-                    title.getReplacedComponents(replacements),
-                    subtitle.getReplacedComponents(replacements),
+                    title.getReplacedComponent(replacements),
+                    subtitle.getReplacedComponent(replacements),
                     in, stay, out
             );
         }
         if (actionBar != null && actionBar.exists() && !actionBar.getText().isEmpty()) {
             long sendTime = System.currentTimeMillis();
             lastActionBar.put(p.getUniqueId(), sendTime);
-            BaseComponent[] replacedActionBar = actionBar.getReplacedComponents(replacements);
-            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, replacedActionBar);
+            Component replacedActionBar = actionBar.getReplacedComponent(replacements);
+            p.sendActionBar(replacedActionBar);
             SettlementsPlugin.getScheduler().runTaskLater(() -> {
                 Long storedSend = lastActionBar.getIfPresent(p.getUniqueId());
                 if (storedSend != null && storedSend == sendTime) {
-                    p.spigot().sendMessage(ChatMessageType.ACTION_BAR, replacedActionBar);
+                    p.sendActionBar(replacedActionBar);
                 }
             }, 2 * 20);
         }

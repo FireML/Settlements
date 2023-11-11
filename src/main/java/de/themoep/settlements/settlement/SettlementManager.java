@@ -26,6 +26,7 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
@@ -312,9 +313,10 @@ public class SettlementManager {
         Utils.runLater(() -> {
             SettlementsPlugin.getInstance().getLogger().log(Level.INFO, settlement.getStateTag() + " " + settlement.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
             delete(settlement);
-            MessageUtils.broadcast(Message.get("broadcast.settlement-deletion"),
-                    "name", settlement.getName(),
-                    "state", settlement.getState().getTag());
+            ComponentUtils.broadcastMessage(Message.get("broadcast.settlement-deletion").getReplacedComponent(
+                            "name", settlement.getName(),
+                            "state", settlement.getState().getTag()
+            ));
         }, Config.Settlement.Upkeep.ABANDON_TIME, TimeUnit.MINUTES);
     }
 

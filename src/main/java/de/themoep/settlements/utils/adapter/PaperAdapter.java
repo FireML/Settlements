@@ -1,11 +1,10 @@
 package de.themoep.settlements.utils.adapter;
 
-import com.destroystokyo.paper.Title;
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
+import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -19,7 +18,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -36,8 +37,11 @@ public class PaperAdapter {
         skull.setPlayerProfile(profile);
     }
 
-    public void sendTitle(Player player, BaseComponent[] title, BaseComponent[] subTitle, int in, int stay, int out) {
-        player.sendTitle(new Title(title, subTitle, in, stay, out));
+    public void sendTitle(Player player, Component title, Component subTitle, int in, int stay, int out) {
+        Duration inDuration = Duration.ofSeconds(in / 20);
+        Duration stayDuration = Duration.ofSeconds(stay / 20);
+        Duration outDuration = Duration.ofSeconds(out / 20);
+        player.showTitle(Title.title(title, subTitle, Title.Times.times(inDuration, stayDuration, outDuration)));
     }
 
     public InventoryHolder getHolder(Inventory inventory) {
@@ -61,18 +65,18 @@ public class PaperAdapter {
      * @param components    The book components
      * @return The book
      */
-    public ItemStack createBook(String title, String author, List<BaseComponent[]> components) {
+    public ItemStack createBook(String title, String author, List<Component> components) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
         book.setItemMeta(createBookMeta((BookMeta) book.getItemMeta(), title, author, components));
         return book;
     }
 
-    public ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<BaseComponent[]> pages) {
+    public ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<Component> pages) {
         bookMeta.setTitle(title);
         bookMeta.setAuthor(author);
 
         return (ItemMeta) bookMeta.pages(pages.stream()
-                .map(c -> GsonComponentSerializer.builder().build().deserialize(ComponentSerializer.toString(c)))
+                .map(c -> GsonComponentSerializer.builder().build().deserialize(ComponentUtils.toString(c)))
                 .collect(Collectors.toList()));
     }
 

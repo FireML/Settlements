@@ -4,10 +4,9 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Message;
-import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
+import net.kyori.adventure.text.Component;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +33,7 @@ public class SettlementRulesCommand extends SettlementSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        List<BaseComponent[]> pages = new ArrayList<>();
+        List<Component> pages = new ArrayList<>();
 
         String rules = resident.getSettlement().getRules();
         if (rules.length() > Config.MAX_RULES_LENGTH) {
@@ -54,8 +53,8 @@ public class SettlementRulesCommand extends SettlementSubCommand {
             if (pageLines < 14) {
                 pageBuilder.append("\n").append(line);
             } else {
-                pages.add(MessageUtils.replacePlaceholders(TextComponent.fromLegacyText(pageBuilder.toString()),
-                        "accept", resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getComponents() : TextComponent.fromLegacyText("")));
+                pages.add(ComponentUtils.parseComponent(pageBuilder.toString(),
+                        "accept", resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getText() : ""));
                 pageLines = 0;
                 pageBuilder = new StringBuilder();
             }
@@ -63,8 +62,7 @@ public class SettlementRulesCommand extends SettlementSubCommand {
 
         String page = pageBuilder.toString();
         if (!page.isEmpty()) {
-            pages.add(MessageUtils.replacePlaceholders(TextComponent.fromLegacyText(page),
-                    "accept", resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getComponents() : TextComponent.fromLegacyText("")));
+            pages.add(ComponentUtils.parseComponent(page, "accept", resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getText() : ""));
         }
 
         if (!pages.isEmpty()) {

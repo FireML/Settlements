@@ -5,9 +5,9 @@ import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.regex.Pattern;
 
@@ -51,11 +51,11 @@ public class EmpireCreateCommand extends SettlementSubCommand {
             }
             Empire empire = new Empire(name, resident.getSettlement().getId(), 1);
 
-            MessageUtils.broadcast(getMessage("broadcast"),
+            ComponentUtils.broadcastMessage(getMessage("broadcast").getReplacedComponent(
                     "name", empire.getName(),
                     "capital", resident.getSettlement().getName(),
                     "capitalstate", resident.getSettlement().getState().getTag(),
-                    "player", resident.getName());
+                    "player", resident.getName()));
             EmpireManager.getInstance().registerNewEmpire(resident, empire);
             getMessage("success").tell(resident,
                     "name", empire.getName(),

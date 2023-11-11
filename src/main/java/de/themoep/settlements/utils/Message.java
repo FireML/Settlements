@@ -3,12 +3,11 @@ package de.themoep.settlements.utils;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.ConfigManager;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import uk.firedev.poleislib.libs.themoep.minedown.MineDown;
-import uk.firedev.poleislib.libs.themoep.minedown.Replacer;
+import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
+import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -19,7 +18,7 @@ public class Message {
     private final String text;
     private final String key;
     private final boolean exists;
-    private BaseComponent[] components;
+    private Component component;
 
     protected Message(String key) {
         this.key = key;
@@ -39,18 +38,18 @@ public class Message {
             text = "&cUnknown message &6" + key;
         }
         try {
-            components = new MineDown(text).autoAddUrlPrefix(false).toComponent();
-            if (!TextComponent.toPlainText(components).isEmpty()) {
-                String newText = TextComponent.toLegacyText(components);
-                if (newText.startsWith(ChatColor.WHITE.toString()) && !text.startsWith("&f") && !text.startsWith(ChatColor.WHITE.toString())) {
-                    newText = newText.substring(ChatColor.WHITE.toString().length());
+            component = new MineDown(text).autoAddUrlPrefix(false).toComponent();
+            if (!ComponentUtils.toString(ComponentUtils.stripColors(component)).isEmpty()) {
+                String newText = ComponentUtils.toString(component);
+                if (newText.startsWith("§f") && !text.startsWith("&f") && !text.startsWith("§f")) {
+                    newText = newText.substring("§f".length());
                 }
                 text = newText;
             } else {
                 text = MessageUtils.replaceColorCodes(text);
             }
         } catch (IllegalArgumentException e) {
-            components = TextComponent.fromLegacyText(text);
+            component = ComponentUtils.parseComponent(text);
             text = MessageUtils.replaceColorCodes(text);
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
         }
@@ -84,8 +83,16 @@ public class Message {
         return Arrays.asList(text.split("\n"));
     }
 
-    public BaseComponent[] getComponents() {
-        return components;
+    public Component getComponent() {
+        return component;
+    }
+
+    public Component getReplacedComponent(String... replacements) {
+        return ComponentUtils.parsePlaceholders(this.getComponent(), replacements);
+    }
+
+    public Component getReplacedComponent(Map<String, ?> replacements) {
+        return ComponentUtils.parsePlaceholders(this.getComponent(), replacements);
     }
 
     @Deprecated
@@ -110,18 +117,6 @@ public class Message {
 
     public List<String> getReplacedTextList(Map<String, String> replacements) {
         return Arrays.asList(getReplacedText(replacements).split("\n"));
-    }
-
-    public BaseComponent[] getReplacedComponents(String placeholder, BaseComponent[] value) {
-        return MessageUtils.replacePlaceholders(components, placeholder, value);
-    }
-
-    public BaseComponent[] getReplacedComponents(String... replacements) {
-        return MessageUtils.replacePlaceholders(components, replacements);
-    }
-
-    public BaseComponent[] getReplacedComponents(Map<String, BaseComponent[]> replacements) {
-        return MessageUtils.replacePlaceholders(components, replacements);
     }
 
     public MessageReplacer getReplacer() {
@@ -149,7 +144,7 @@ public class Message {
     }
 
     public void broadcast(String... replacements) {
-        MessageUtils.broadcast(this, replacements);
+        ComponentUtils.broadcastMessage(ComponentUtils.parsePlaceholders(this.getComponent(), replacements));
     }
 
     private static Map<String, Message> messages = new HashMap<>();
@@ -191,7 +186,7 @@ public class Message {
             placeholderSuffix("}");
         }
 
-        public MessageReplacer replace(String placeholder, BaseComponent[] value) {
+        public MessageReplacer replace(String placeholder, Component value) {
             super.replace(placeholder, value);
             return this;
         }
@@ -206,8 +201,8 @@ public class Message {
             return this;
         }
 
-        public BaseComponent[] getComponents() {
-            return replaceIn(message.getComponents());
+        public Component getComponents() {
+            return replaceIn(message.getComponent());
         }
 
         public String getText() {

@@ -1,20 +1,19 @@
 package de.themoep.settlements.command.empire;
 
-import com.google.common.collect.ImmutableMap;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.LogType;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.List;
+import java.util.Map;
 
 public class EmpireHistoryCommand extends EmpireSubCommand {
     private final LogType type;
@@ -48,32 +47,29 @@ public class EmpireHistoryCommand extends EmpireSubCommand {
                 getMessage("entry").tell(resident, entry);
             }
 
-            ComponentBuilder next = new ComponentBuilder("")
-                    .append(getMessage("next").getReplacedComponents("next", String.valueOf(page + 1)));
+            Component next = getMessage("next").getReplacedComponent("next", String.valueOf(page + 1));
             if (page + 1 > pages) {
-                next.color(ChatColor.GRAY);
+                next = next.color(NamedTextColor.GRAY);
             } else {
-                next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (page + 1)));
-                next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(ChatColor.YELLOW + ">>"))));
+                next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (page + 1)));
+                next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
             }
-            ComponentBuilder previous = new ComponentBuilder("")
-                    .append(getMessage("previous").getReplacedComponents("previous", String.valueOf(page - 1)));
+            Component previous = getMessage("previous").getReplacedComponent("previous", String.valueOf(page - 1));
             if (page - 1 <= 0) {
-                previous.color(ChatColor.GRAY);
+                previous = previous.color(NamedTextColor.GRAY);
             } else {
-                previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (page - 1)));
-                previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(ChatColor.YELLOW + "<<"))));
+                previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (page - 1)));
+                previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
             }
 
-            MessageUtils.tell(resident.getPlayer(), MessageUtils.replacePlaceholders(getMessage("footer").getReplacedComponents(
-                    "page", String.valueOf(page),
-                    "maxpage", String.valueOf(pages)
-            ), ImmutableMap.of(
-                    "page", TextComponent.fromLegacyText(String.valueOf(page)),
-                    "maxpage", TextComponent.fromLegacyText(String.valueOf(pages)),
-                    "next", next.create(),
-                    "previous", previous.create()
-            )));
+            Map<String, ?> replacements = Map.of(
+                    "page", ComponentUtils.parseComponent(String.valueOf(page)),
+                    "maxpage", ComponentUtils.parseComponent(String.valueOf(pages)),
+                    "next", next,
+                    "previous", previous
+            );
+
+            MessageUtils.tell(resident.getPlayer(), ComponentUtils.parsePlaceholders(getMessage("footer").getComponent(), replacements));
         });
         return true;
     }

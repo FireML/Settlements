@@ -28,9 +28,9 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementMission;
 import de.themoep.settlements.utils.*;
 import de.themoep.settlements.utils.config.Config;
-import net.md_5.bungee.api.chat.BaseComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -55,7 +55,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private Settlement settlement = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
     private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
-    private Table<ChatChannel, ChatColorType, ChatColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
+    private Table<ChatChannel, ChatColorType, TextColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
     private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private Map<UUID, Friend> friends = new ConcurrentHashMap<>();
     private Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
@@ -268,20 +268,20 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return false;
     }
 
-    public ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
+    public TextColor getChannelColor(ChatChannel channel, ChatColorType type) {
         return channelColors.get(channel, type);
     }
 
-    public ChatColor getChannelColor(ChatChannel channel, ChatColorType type, ChatColor def) {
-        ChatColor color = channelColors.get(channel, type);
+    public TextColor getChannelColor(ChatChannel channel, ChatColorType type, TextColor def) {
+        TextColor color = channelColors.get(channel, type);
         return color != null ? color : def;
     }
 
-    public ChatColor setChannelColor(ChatChannel channel, ChatColorType type, ChatColor chatColor) {
+    public TextColor setChannelColor(ChatChannel channel, ChatColorType type, TextColor chatColor) {
         return chatColor != null ? channelColors.put(channel, type, chatColor) : removeChannelColor(channel, type);
     }
 
-    public ChatColor removeChannelColor(ChatChannel channel, ChatColorType type) {
+    public TextColor removeChannelColor(ChatChannel channel, ChatColorType type) {
         return channelColors.remove(channel, type);
     }
 
@@ -745,11 +745,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         map.put("channelColors", channelColors.column(ChatColorType.MESSAGE).entrySet().stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey().name(),
-                        entry -> entry.getValue().name())));
+                        entry -> NamedTextColor.nearestTo(entry.getValue()).toString())));
         map.put("channelPrefixColors", channelColors.column(ChatColorType.PREFIX).entrySet().stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey().name(),
-                        entry -> entry.getValue().name())));
+                        entry -> NamedTextColor.nearestTo(entry.getValue()).toString())));
         map.put("swear", getSwear());
         map.put("socialSpy", getSocialSpy());
         map.put("bonusClaims", getBonusClaims());
@@ -826,7 +826,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         if (map.containsKey("channelColors")) {
             for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelColors")).entrySet()) {
                 ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
-                ChatColor color = Utils.parseEnum(ChatColor.class, entry.getValue().toUpperCase());
+                TextColor color = ColorUtils.getColor(entry.getValue().replace('-', '_').toUpperCase(Locale.ROOT), NamedTextColor.WHITE);
                 if (channel != null && color != null) {
                     resident.setChannelColor(channel, ChatColorType.MESSAGE, color);
                 }
@@ -835,7 +835,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         if (map.containsKey("channelPrefixColors")) {
             for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelPrefixColors")).entrySet()) {
                 ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
-                ChatColor color = Utils.parseEnum(ChatColor.class, entry.getValue().toUpperCase());
+                TextColor color = ColorUtils.getColor(entry.getValue().replace('-', '_').toUpperCase(Locale.ROOT), NamedTextColor.WHITE);
                 if (channel != null && color != null) {
                     resident.setChannelColor(channel, ChatColorType.PREFIX, color);
                 }
@@ -881,10 +881,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public void tell(String message, String... replacements) {
         MessageUtils.tell(this, message, replacements);
-    }
-
-    public void tell(BaseComponent[] message) {
-        MessageUtils.tell(this.getPlayer(), message);
     }
 
     public boolean hasAllies() {

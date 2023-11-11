@@ -12,7 +12,12 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import org.bukkit.*;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
@@ -86,12 +91,12 @@ public class Utils {
         return 0;
     }
 
-    public static ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
+    public static TextColor getChannelColor(ChatChannel channel, ChatColorType type) {
         return switch (type) {
             case PREFIX ->
-                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), ChatColor.WHITE);
+                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), NamedTextColor.WHITE);
             case MESSAGE ->
-                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
+                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), NamedTextColor.WHITE);
         };
     }
 
@@ -313,17 +318,16 @@ public class Utils {
                 for (i += 1; i < parts.length; i++) {
                     part2.append(" ").append(parts[i]);
                 }
-                while (!part1.isEmpty() && part1.charAt(part1.length() - 1) == ChatColor.COLOR_CHAR
-                        || part1.length() > 1 && part1.charAt(part1.length() - 2) == ChatColor.COLOR_CHAR) {
-                    if (part1.charAt(part1.length() - 1) == ChatColor.COLOR_CHAR) {
-                        part2.insert(0, ChatColor.COLOR_CHAR);
+                while (!part1.isEmpty() && part1.charAt(part1.length() - 1) == '§'
+                        || part1.length() > 1 && part1.charAt(part1.length() - 2) == '§') {
+                    if (part1.charAt(part1.length() - 1) == '§') {
+                        part2.insert(0, '§');
                         part1 = new StringBuilder(part1.substring(0, part1.length() - 1));
-                    } else if (part1.charAt(part1.length() - 2) == ChatColor.COLOR_CHAR) {
-                        part2.insert(0, ChatColor.COLOR_CHAR).insert(1, part1.charAt(part1.length() - 1));
+                    } else if (part1.charAt(part1.length() - 2) == '§') {
+                        part2.insert(0, '§').insert(1, part1.charAt(part1.length() - 1));
                         part1 = new StringBuilder(part1.substring(0, part1.length() - 2));
                     }
                 }
-                part2.insert(0, ChatColor.getLastColors(part1.toString()));
                 sb.append(part1).append("\n").append(wrap(part2.toString(), length));
             }
         }

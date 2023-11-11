@@ -20,7 +20,10 @@ package de.themoep.settlements.utils;
  */
 
 import de.themoep.settlements.utils.config.ConfigAccessor;
-import org.bukkit.*;
+import org.bukkit.Color;
+import org.bukkit.DyeColor;
+import org.bukkit.FireworkEffect;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.*;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -83,7 +86,7 @@ public class IconRpMapping {
         ItemMeta meta = item.getItemMeta();
         String iconstr = null;
         if (meta instanceof LeatherArmorMeta) {
-            iconstr = ColorUtils.getNearestChatColor(((LeatherArmorMeta) meta).getColor()) + getIcon("white_" + item.getType(), false) + ChatColor.RESET;
+            iconstr = ColorUtils.getNearestChatColor(((LeatherArmorMeta) meta).getColor()) + getIcon("white_" + item.getType(), false) + "§r";
         } else if (meta instanceof PotionMeta pm) {
             try {
                 iconstr = getIcon(item.getType() + "_" + pm.getBasePotionData().getType(), escape);
@@ -117,7 +120,7 @@ public class IconRpMapping {
             FireworkEffect fe = ((FireworkEffectMeta) meta).getEffect();
             if (fe != null && !fe.getColors().isEmpty()) {
                 Color median = fe.getColors().get(0).mixColors((Color[]) fe.getColors().stream().skip(1).toArray());
-                iconstr = getIcon(item.getType() + "_" + ColorUtils.getNearestChatColor(median).name(), escape);
+                iconstr = getIcon(item.getType() + "_" + ColorUtils.getNearestChatColor(median).toString(), escape);
             }
         } else if (item.getType() == Material.SHIELD && meta instanceof BannerMeta bm) {
             iconstr = getIcon(item.getType() + "_" + bm.getBaseColor(), escape);
@@ -154,7 +157,7 @@ public class IconRpMapping {
         if(encodingNames.containsKey(iconname.toLowerCase())) {
             String symbol = Character.toString((char) (offset + encodingNames.get(iconname.toLowerCase())));
             if(escape)
-                symbol = ChatColor.WHITE + symbol + ChatColor.RESET;
+                symbol = "§f" + symbol + "§r";
             return symbol;
         } else
             return null;

@@ -23,6 +23,7 @@ import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
@@ -723,10 +724,10 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId().value(), "ignoredId", resident.getIgnore());
                 updateDataMap(conn, "resident_channel_colors", "userId", (Integer) resident.getId().value(), "channel", "color", Arrays.stream(ChatChannel.values())
                         .filter(c -> resident.getChannelColor(c, ChatColorType.MESSAGE) != null)
-                        .collect(Collectors.toMap(Enum::name, c -> resident.getChannelColor(c, ChatColorType.MESSAGE).name())));
+                        .collect(Collectors.toMap(Enum::name, c -> NamedTextColor.nearestTo(resident.getChannelColor(c, ChatColorType.MESSAGE)).toString())));
                 updateDataMap(conn, "resident_channel_prefix_colors", "userId", (Integer) resident.getId().value(), "channel", "color", Arrays.stream(ChatChannel.values())
                         .filter(c -> resident.getChannelColor(c, ChatColorType.PREFIX) != null)
-                        .collect(Collectors.toMap(Enum::name, c -> resident.getChannelColor(c, ChatColorType.PREFIX).name())));
+                        .collect(Collectors.toMap(Enum::name, c -> NamedTextColor.nearestTo(resident.getChannelColor(c, ChatColorType.PREFIX)).toString())));
                 if (!hadId) {
                     ResidentManager.getInstance().addResident(resident);
                 }

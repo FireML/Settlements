@@ -6,7 +6,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -36,16 +36,16 @@ public class FriendListCommand extends PlayerSubCommand {
             }
             if (!resident.getFriendRequests().isEmpty()) {
                 getMessage("head-requests").tell(resident);
-                ComponentBuilder builder = new ComponentBuilder();
+                Component builder = Component.text("");
                 List<FriendRequest> requests = new ArrayList<>(resident.getFriendRequests());
                 for (int i = 0; i < requests.size(); i++) {
                     if (i > 0) {
-                        builder.append(getMessage("separator").getComponents());
+                        builder = builder.append(getMessage("separator").getComponent());
                     }
                     FriendRequest request = requests.get(i);
-                    builder.append(getMessage("request-entry").getReplacedComponents("name", request.getSenderName()));
+                    builder = builder.append(getMessage("request-entry").getReplacedComponent("name", request.getSenderName()));
                 }
-                MessageUtils.tell(player, builder.create());
+                MessageUtils.tell(player, builder);
             }
         });
         return true;

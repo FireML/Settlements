@@ -13,7 +13,6 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +67,7 @@ public class SettingsGUI extends PlotGUI {
                 new AnvilGUI.Builder()
                         .itemLeft(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                         .title(getText("name.anvil.title", "name", land.getName()))
-                        .text(getText("name.anvil.placeholder", "name", land.getName().isEmpty() ? " " : land.getName().replace(ChatColor.COLOR_CHAR, '&')))
+                        .text(getText("name.anvil.placeholder", "name", land.getName().isEmpty() ? " " : land.getName().replace('§', '&')))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                         .onClick((slot, stateSnapshot) -> {
                             if (slot != AnvilGUI.Slot.OUTPUT) {
@@ -107,7 +106,7 @@ public class SettingsGUI extends PlotGUI {
                 new AnvilGUI.Builder()
                         .itemLeft(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                         .title(getText("desc.anvil.title", "description", land.getDescription()))
-                        .text(getText("desc.anvil.placeholder", "description", land.getDescription().isEmpty() ? " " : land.getDescription().replace(ChatColor.COLOR_CHAR, '&')))
+                        .text(getText("desc.anvil.placeholder", "description", land.getDescription().isEmpty() ? " " : land.getDescription().replace('§', '&')))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                         .onClick((slot, stateSnapshot) -> {
                             if (slot != AnvilGUI.Slot.OUTPUT) {
