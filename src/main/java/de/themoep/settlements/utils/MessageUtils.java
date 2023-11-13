@@ -7,8 +7,8 @@ import de.themoep.settlements.resident.Resident;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
 import uk.firedev.poleislib.libs.zrips.cmilib.Colors.CMIChatColor;
-import uk.firedev.poleislib.replacers.StringReplacer;
 import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
@@ -91,7 +91,11 @@ public class MessageUtils {
         } else if (replacements.length == 0) {
             return message;
         }
-        return new StringReplacer(message).replace(replacements).build();
+        return new Replacer()
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
+                .replace(replacements)
+                .replaceIn(message);
     }
 
     public static String replacePlaceholders(String message, Map<String, String> replacements) {
@@ -100,7 +104,11 @@ public class MessageUtils {
         } else if (replacements.isEmpty()) {
             return message;
         }
-        return new StringReplacer(message).replace(replacements).build();
+        return new Replacer()
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
+                .replace(replacements)
+                .replaceIn(message);
     }
 
     public static String replaceColorCodes(String message) {

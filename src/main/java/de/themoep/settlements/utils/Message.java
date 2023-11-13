@@ -4,8 +4,9 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
+import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
 import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
@@ -38,7 +39,7 @@ public class Message {
             text = "&cUnknown message &6" + key;
         }
         try {
-            component = ComponentUtils.parseComponent(text);
+            component = new MineDown(text).autoAddUrlPrefix(false).toComponent();
             if (!ComponentUtils.toString(ComponentUtils.stripColors(component)).isEmpty()) {
                 String newText = ComponentUtils.toString(component);
                 if (newText.startsWith("§f") && !text.startsWith("&f") && !text.startsWith("§f")) {
@@ -111,6 +112,10 @@ public class Message {
         return Arrays.asList(getReplacedText(replacements).split("\n"));
     }
 
+    public MessageReplacer getReplacer() {
+        return new MessageReplacer(this);
+    }
+
     public void tell(CommandSender sender, String... replacements) {
         MessageUtils.tell(sender, this, replacements);
     }
@@ -163,5 +168,48 @@ public class Message {
 
     public static void clearCache() {
         messages.clear();
+    }
+
+    public class MessageReplacer extends Replacer {
+        private Message message;
+
+        public MessageReplacer(Message message) {
+            this.message = message;
+            placeholderPrefix("{");
+            placeholderSuffix("}");
+        }
+
+        public MessageReplacer replace(String placeholder, Component value) {
+            super.replace(placeholder, value);
+            return this;
+        }
+
+        public MessageReplacer replace(String... replacements) {
+            super.replace(replacements);
+            return this;
+        }
+
+        public MessageReplacer replace(Map<String, ?> replacements) {
+            super.replace(replacements);
+            return this;
+        }
+
+        public Component getComponents() {
+            return replaceIn(message.getComponent());
+        }
+
+        public String getText() {
+            return replaceIn(message.getText());
+        }
+
+        public MessageReplacer copy() {
+            return new MessageReplacer(message).copy(this);
+        }
+
+        public MessageReplacer copy(MessageReplacer replacer) {
+            super.copy(replacer);
+            message = replacer.message;
+            return this;
+        }
     }
 }
