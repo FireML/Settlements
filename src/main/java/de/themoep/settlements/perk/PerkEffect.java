@@ -6,13 +6,15 @@ import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Utils;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
+import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PerkEffect {
-    private PotionEffectType type;
+    private PotionType type;
     private int strength = 1;
     private int length = 0;
     private boolean ambient = true;
@@ -22,13 +24,13 @@ public class PerkEffect {
     private EffectLocation applyIn;
     private EffectInfluenced applyTo = EffectInfluenced.MEMBERS;
 
-    public PerkEffect(PotionEffectType type) {
+    public PerkEffect(PotionType type) {
         Validate.notNull(type, "Unknown type!");
         this.type = type;
     }
 
     public PerkEffect(Map<String, Object> map, EffectLocation applyIn) {
-        this(PotionEffectType.getByName((String) map.get("type")));
+        this(PotionType.valueOf(((String) map.get("type")).toUpperCase()));
         this.strength = (int) map.getOrDefault("strength", strength);
         if (this.strength <= 0) {
             this.strength = 1;
@@ -41,7 +43,7 @@ public class PerkEffect {
         this.applyTo = EffectInfluenced.valueOf(ConfigKey.toEnumString(Utils.getOrDefault(map, "apply.to", applyTo.name())));
     }
 
-    public PotionEffectType getType() {
+    public PotionType getType() {
         return type;
     }
 
@@ -77,12 +79,12 @@ public class PerkEffect {
         return applyTo;
     }
 
-    public PotionEffect getPotionEffect() {
-        return new PotionEffect(getType(), isPermanent() ? 1200 : getLength() * 20, getStrength() - 1, isAmbient(), hasParticles(), hasIcon());
+    public List<PotionEffect> getPotionEffects() {
+        return getType().getPotionEffects();
     }
 
     public String getIdentifier() {
-        return getType().getName() + "|" + (getStrength() - 1) + "|" + isAmbient() + "|" + hasParticles();
+        return getType() + "|" + (getStrength() - 1) + "|" + isAmbient() + "|" + hasParticles();
     }
 
     public enum EffectLocation implements NameTag {

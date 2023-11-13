@@ -7,7 +7,6 @@ import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.CursesFilter;
-import de.themoep.settlements.utils.IconRpMapping;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -76,7 +75,6 @@ public class ConfigManager {
     private ConfigAccessor empirePerksConf;
     private ConfigAccessor eventsConf;
     private ConfigAccessor useFlagsConf;
-    private IconRpMapping iconRpMapping;
     private CursesFilter toggleableCurses;
     private CursesFilter forcedCurses;
     private ConfigAccessor lastUpkeepConf;
@@ -178,7 +176,6 @@ public class ConfigManager {
         forcedCurses = new CursesFilter(new ConfigAccessor(SettlementsPlugin.getInstance(), "cursesForced.yml").getConfig());
         lastUpkeepConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "lastUpkeep.yml");
         guisConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "guis.yml");
-        iconRpMapping = new IconRpMapping(SettlementsPlugin.getInstance());
         if (Config.Chat.CHAT_ONLY) {
             Config.Lock.ENABLED = false;
             Config.Portal.ENABLED = false;
@@ -548,10 +545,6 @@ public class ConfigManager {
 
     public FileConfiguration getConfig() {
         return SettlementsPlugin.getInstance().getConfig();
-    }
-
-    public IconRpMapping getIconRpMapping() {
-        return iconRpMapping;
     }
 
     public static ConfigManager getInstance() {

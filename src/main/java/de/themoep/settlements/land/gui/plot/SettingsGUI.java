@@ -10,7 +10,6 @@ import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
-import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Material;

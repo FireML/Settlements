@@ -1161,7 +1161,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                         "title", title,
                         "action", rs.getString("action") != null ? rs.getString("action") : "",
                         "type", rs.getString("type") != null ? rs.getString("type") : "?",
-                        "icon", Utils.getIcon(resident, rs.getString("type")),
+                        "icon", "",
                         "amount", String.valueOf(amount),
                         "timestamp", Utils.TIME_FORMAT.format(new Date(rs.getTimestamp("timestamp").getTime()))
                 });

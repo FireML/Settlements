@@ -351,14 +351,6 @@ public class Utils {
         return getNextUpkeep().getTime() - System.currentTimeMillis();
     }
 
-    public static String getIcon(Resident resident, String type) {
-        String icon = null;
-        if (resident.hasResourcePack()) {
-            icon = ConfigManager.getInstance().getIconRpMapping().getIcon(type, true);
-        }
-        return icon != null ? icon : "";
-    }
-
     /**
      * Teleports a player. Checks cooldown and delay bypass permissions
      * @return false if teleport occurred instantly and no wait task was started

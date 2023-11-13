@@ -145,7 +145,7 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
             message.append(getMessage("list-entry").getReplacedText(
                     "state", levelable.getTag(),
                     "amount", String.valueOf(entry.getValue()),
-                    "icon", Utils.getIcon(resident, entry.getKey().name()),
+                    "icon", "",
                     "material", HumanReadable.humanizedName(entry.getKey().name())
             ));
         }
@@ -161,7 +161,7 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
         for (Map.Entry<String, Long> entry : deposited.entrySet()) {
             message.append(getMessage("list-entry").getReplacedText(
                     "amount", String.valueOf(entry.getValue()),
-                    "icon", Utils.getIcon(resident, entry.getKey()),
+                    "icon", "",
                     "material", HumanReadable.humanizedName(entry.getKey())
             ));
         }

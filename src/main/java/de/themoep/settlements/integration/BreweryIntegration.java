@@ -5,7 +5,6 @@ import com.dre.brewery.Brewery;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.events.ChannelChatEvent;
 import de.themoep.settlements.utils.ConfigMessages;
-import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

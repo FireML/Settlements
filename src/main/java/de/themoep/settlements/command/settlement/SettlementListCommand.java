@@ -9,14 +9,11 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import uk.firedev.poleislib.utils.ComponentUtils;
-import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.List;
 import java.util.Map;

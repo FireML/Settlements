@@ -35,7 +35,7 @@ public class Reward {
         for (Map<?, ?> rawMap : config.getMapList("items")) {
             Map<String, Object> map = (Map<String, Object>) rawMap;
             if (!map.containsKey("v")) {
-                map.put("v", Bukkit.getUnsafe().getDataVersion());
+                map.put("v", new ItemStack(Material.DIRT).serialize().get("v"));
             }
             if (map.get("type") instanceof String string) {
                 map.put("type", string.toUpperCase());

@@ -1,21 +1,13 @@
 package de.themoep.settlements.chat.events;
 
 import de.themoep.settlements.chat.ChatChannel;
-import io.papermc.paper.chat.ChatRenderer;
-import io.papermc.paper.event.player.AsyncChatEvent;
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.jetbrains.annotations.NotNull;
 import uk.firedev.poleislib.utils.ComponentUtils;
-
-import java.util.Collections;
-import java.util.Set;
 
 public class ChannelChatEvent extends Event implements Cancellable {
     private final ChatChannel channel;

@@ -50,7 +50,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

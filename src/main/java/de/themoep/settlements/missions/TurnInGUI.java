@@ -146,7 +146,7 @@ public class TurnInGUI extends SettlementsGUI {
         for (Map.Entry<Material, Long> entry : fail.entrySet()) {
             message = message.append(getMessage("list-entry").getReplacedComponent(
                     "amount", String.valueOf(entry.getValue()),
-                    "icon", Utils.getIcon(resident, entry.getKey().name()),
+                    "icon", "",
                     "material", HumanReadable.humanizedName(entry.getKey().name())));
         }
         return message;
@@ -157,7 +157,7 @@ public class TurnInGUI extends SettlementsGUI {
         for (Map.Entry<String, Long> entry : deposited.entrySet()) {
             message = message.append(getMessage("list-entry").getReplacedComponent(
                     "amount", String.valueOf(entry.getValue()),
-                    "icon", Utils.getIcon(resident, entry.getKey()),
+                    "icon", "",
                     "material", HumanReadable.humanizedName(entry.getKey())));
         }
         return message;

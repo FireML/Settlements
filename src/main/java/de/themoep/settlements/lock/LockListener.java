@@ -21,6 +21,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.HopperMinecart;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -162,8 +163,8 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
         if (event.getClickedBlock() == null) {
             return;
         }
-
-        boolean canAccess = !event.isCancelled();
+        boolean isCancelled = (event.useInteractedBlock() == Event.Result.DENY);
+        boolean canAccess = !isCancelled;
         Lock lock = LockManager.getInstance().getLock(event.getClickedBlock());
         if (lock != null) {
             if (!lock.canAccess(event.getPlayer())) {
@@ -176,7 +177,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                             "block", NameTag.getTag(lock.getBlock())
                     );
                 });
-            } else if (event.isCancelled()) {
+            } else if (isCancelled) {
                 canAccess = true;
                 event.setCancelled(false);
             }

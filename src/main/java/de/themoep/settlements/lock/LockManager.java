@@ -3,6 +3,7 @@ package de.themoep.settlements.lock;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Table;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.lock.LockCommand;
@@ -38,7 +39,6 @@ public class LockManager implements LockProvider {
     private static LockManager instance;
     private MyScheduledTask loadQueueTask = null;
     private final BlockingQueue<SimpleChunkLocation> loadQueue = new LinkedBlockingQueue<>();
-    // Ideally this would use a Guava table but synchronized ones were only added in Guava 28 and Minecraft/Spigot uses 21
     private final Map<String, Map<SimpleChunkLocation, Map<String, Lock>>> lockTable = new ConcurrentHashMap<>();
 
     private final Cache<UUID, String> interactActions = Caffeine.newBuilder().expireAfterWrite(10, TimeUnit.SECONDS).build();

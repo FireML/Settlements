@@ -56,12 +56,10 @@ public class PerksGUI extends ConfigurableGui {
                     ItemStack itemStack = ItemUtils.setGlowing(ItemUtils.toIcon(perk.getIcon()), true);
                     if (!perk.getEffects().isEmpty()) {
                         ItemMeta itemMeta = itemStack.getItemMeta();
-                        if (itemMeta instanceof PotionMeta) {
-                            PotionType type = PotionType.getByEffect(perk.getEffects().get(0).getType());
+                        if (itemMeta instanceof PotionMeta potionMeta) {
+                            PotionType type = perk.getEffects().get(0).getType();
                             if (type != null) {
-                                ((PotionMeta) itemMeta).setBasePotionData(new PotionData(type));
-                            } else {
-                                ((PotionMeta) itemMeta).setMainEffect(perk.getEffects().get(0).getType());
+                                potionMeta.setBasePotionType(type);
                             }
                             itemStack.setItemMeta(itemMeta);
                         }

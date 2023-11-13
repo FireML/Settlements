@@ -70,7 +70,7 @@ public class ShopGUI extends ConfigurableGui {
                                 for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
                                     description.add(getText("cost.entry",
                                             "type", cost.getKey(),
-                                            "icon", Utils.getIcon(resident, cost.getKey()),
+                                            "icon", "",
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
@@ -107,7 +107,7 @@ public class ShopGUI extends ConfigurableGui {
                                 for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
                                     description.add(getText("cost.entry",
                                             "type", cost.getKey(),
-                                            "icon", Utils.getIcon(resident, cost.getKey()),
+                                            "icon", "",
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
@@ -121,7 +121,7 @@ public class ShopGUI extends ConfigurableGui {
                             for (Map.Entry<String, Long> cost : perk.getUnlockCost().entrySet()) {
                                 description.add(getText("cost.entry",
                                         "type", cost.getKey(),
-                                        "icon", Utils.getIcon(resident, cost.getKey()),
+                                        "icon", "",
                                         "amount", String.valueOf(cost.getValue())
                                 ));
                             }
@@ -134,11 +134,9 @@ public class ShopGUI extends ConfigurableGui {
                     if (!perk.getEffects().isEmpty()) {
                         ItemMeta itemMeta = item.getItemMeta();
                         if (itemMeta instanceof PotionMeta potionMeta) {
-                            PotionType type = PotionType.getByEffect(perk.getEffects().get(0).getType());
+                            PotionType type = perk.getEffects().get(0).getType();
                             if (type != null) {
-                                potionMeta.setBasePotionData(new PotionData(type));
-                            } else {
-                                potionMeta.setMainEffect(perk.getEffects().get(0).getType());
+                                potionMeta.setBasePotionType(type);
                             }
                             item.setItemMeta(itemMeta);
                         }

@@ -1,6 +1,5 @@
 package de.themoep.settlements.npc;
 
-import de.themoep.settlements.utils.MessageUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;

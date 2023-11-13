@@ -10,7 +10,6 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
