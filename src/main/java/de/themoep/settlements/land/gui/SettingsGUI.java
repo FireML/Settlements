@@ -23,6 +23,7 @@ import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiStateElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -126,8 +127,8 @@ public class SettingsGUI extends ConfigurableGui {
                 ItemStack cursor = click.getCursor();
                 if (cursor != null) {
                     ItemMeta meta = cursor.getItemMeta();
-                    if (meta instanceof BookMeta) {
-                        String rules = String.join("\n", ((BookMeta) meta).getPages());
+                    if (meta instanceof BookMeta bmeta) {
+                        String rules = String.join("\n", ComponentUtils.toStringList(bmeta.pages()));
                         if (rules.length() > Config.MAX_RULES_LENGTH) {
                             getError("too-long").tell(resident, "input", "Text", "amount", String.valueOf(Config.MAX_RULES_LENGTH));
                             return true;

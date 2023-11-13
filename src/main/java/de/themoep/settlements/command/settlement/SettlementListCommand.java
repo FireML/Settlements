@@ -9,11 +9,14 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import uk.firedev.poleislib.utils.ComponentUtils;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -77,29 +80,33 @@ public class SettlementListCommand extends SubCommand {
                 ));
             }
 
-            Component next = getMessage("next").getReplacedComponent("next", String.valueOf(finalPage + 1));
+            Component next = getMessage("next").getComponent();
             if (finalPage + 1 > pages) {
                 next = next.color(NamedTextColor.GRAY);
             } else {
+                next = next.color(NamedTextColor.AQUA);
                 next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage + 1)));
                 next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
             }
-            Component previous = getMessage("previous").getReplacedComponent("previous", String.valueOf(finalPage - 1));
+
+            Component previous = getMessage("previous").getComponent();
             if (finalPage - 1 <= 0) {
                 previous = previous.color(NamedTextColor.GRAY);
             } else {
+                previous = previous.color(NamedTextColor.AQUA);
                 previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage - 1)));
                 previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
             }
 
-            Map<String, ?> replacements = Map.of(
+            Map<String, Component> replacements = Map.of(
                     "next", next,
-                    "previous", previous,
-                    "page", String.valueOf(finalPage),
-                    "maxpage", String.valueOf(pages)
+                    "previous", previous.append(Component.text("").color(null)),
+                    "page", ComponentUtils.parseComponent(String.valueOf(finalPage)),
+                    "maxpage", ComponentUtils.parseComponent(String.valueOf(pages))
             );
-
             MessageUtils.tell(sender, ComponentUtils.parsePlaceholders(getMessage("footer").getComponent(), replacements));
+            MessageUtils.tell(sender, next);
+            MessageUtils.tell(sender, previous);
         });
 
         return true;

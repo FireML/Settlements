@@ -1,6 +1,7 @@
 package de.themoep.settlements.customevents;
 
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.customevents.listeners.PaperListener;
 import de.themoep.settlements.customevents.listeners.SpigotListener;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -10,14 +11,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 public class CustomEventManager implements Listener {
     public CustomEventManager() {
-        try {
-            Class.forName("com.destroystokyo.paper.PaperConfig");
-            SettlementsPlugin.getInstance().registerListener(
-                    (Listener) Class.forName(getClass().getPackage().getName() + ".PaperListener").newInstance()
-            );
-        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            SettlementsPlugin.getInstance().registerListener(new SpigotListener());
-        }
+        SettlementsPlugin.getInstance().registerListener(new PaperListener());
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

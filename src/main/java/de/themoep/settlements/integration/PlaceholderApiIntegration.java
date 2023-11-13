@@ -49,7 +49,7 @@ public class PlaceholderApiIntegration implements ConfigMessages {
 
         @Override
         public String getAuthor() {
-            return String.join(", ", SettlementsPlugin.getInstance().getDescription().getAuthors());
+            return String.join(", ", SettlementsPlugin.getInstance().getPluginMeta().getAuthors());
         }
 
         @Override
@@ -57,7 +57,7 @@ public class PlaceholderApiIntegration implements ConfigMessages {
 
         @Override
         public String getVersion() {
-            return SettlementsPlugin.getInstance().getDescription().getVersion();
+            return SettlementsPlugin.getInstance().getPluginMeta().getVersion();
         }
 
         @Override

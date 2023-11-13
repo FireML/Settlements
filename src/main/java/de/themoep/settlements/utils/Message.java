@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
 import uk.firedev.poleislib.utils.ComponentUtils;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -46,11 +47,11 @@ public class Message {
                 }
                 text = newText;
             } else {
-                text = MessageUtils.replaceColorCodes(text);
+                text = StringUtils.parseColors(text);
             }
         } catch (IllegalArgumentException e) {
             component = ComponentUtils.parseComponent(text);
-            text = MessageUtils.replaceColorCodes(text);
+            text = StringUtils.parseColors(text);
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
         }
         this.text = text;
@@ -88,19 +89,11 @@ public class Message {
     }
 
     public Component getReplacedComponent(String... replacements) {
-        return ComponentUtils.parsePlaceholders(this.getComponent(), replacements);
+        return ComponentUtils.parseComponent(StringUtils.parsePlaceholders(this.getText(), replacements));
     }
 
-    public Component getReplacedComponent(Map<String, ?> replacements) {
-        return ComponentUtils.parsePlaceholders(this.getComponent(), replacements);
-    }
-
-    @Deprecated
-    public TitleBuilder getTitle() {
-        return new TitleBuilder()
-                .withTitle(Message.get(getKey() + ".title"))
-                .withSubtitle(Message.get(getKey() + ".subtitle"))
-                .withActionbar(Message.get(getKey() + ".actionbar"));
+    public Component getReplacedComponent(Map<String, Component> replacements) {
+        return ComponentUtils.parseComponent(this.getText(), replacements);
     }
 
     public String getReplacedText(String... replacements) {
@@ -140,7 +133,7 @@ public class Message {
     }
 
     public void tell(Resident resident, String... replacements) {
-        MessageUtils.tell(resident, this, replacements);
+        MessageUtils.tell(resident, this.getComponent(), replacements);
     }
 
     public void broadcast(String... replacements) {

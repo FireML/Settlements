@@ -111,7 +111,7 @@ public class TurnInGUI extends SettlementsGUI {
                 }
             }
             if (!deposited.isEmpty()) {
-                player.sendMessage(buildSuccessDepositMessage(resident, player, deposited));
+                player.sendMessage(ComponentUtils.parseColors(buildSuccessDepositMessage(resident, player, deposited)));
                 missionData.addProgress(deposited);
                 if (missionData.isFinished()) {
                     missionData.getMission().finish(resident);
@@ -119,7 +119,7 @@ public class TurnInGUI extends SettlementsGUI {
                 DatabaseManager.getInstance().saveMissionData(resident.getSettlement());
             }
             if (!fail.isEmpty()) {
-                player.sendMessage(buildFailDepositMessage(resident, fail, ""));
+                player.sendMessage(ComponentUtils.parseColors(buildFailDepositMessage(resident, fail, "")));
             }
         } else if (contents.length > 0) {
             for (ItemStack item2 : contents) {
@@ -129,8 +129,8 @@ public class TurnInGUI extends SettlementsGUI {
                 }
             }
 
-            player.sendMessage(buildFailDepositMessage(resident, fail, ComponentUtils.toString(getMessage("mission-finished")
-                    .getReplacedComponent("mission", missionData.getMission().getTag()))));
+            player.sendMessage(ComponentUtils.parseColors(buildFailDepositMessage(resident, fail, ComponentUtils.toString(getMessage("mission-finished")
+                    .getReplacedComponent("mission", missionData.getMission().getTag())))));
         }
     }
 

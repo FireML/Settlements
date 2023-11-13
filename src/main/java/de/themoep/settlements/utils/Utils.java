@@ -94,9 +94,9 @@ public class Utils {
     public static TextColor getChannelColor(ChatChannel channel, ChatColorType type) {
         return switch (type) {
             case PREFIX ->
-                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), NamedTextColor.WHITE);
+                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()).toLowerCase(), NamedTextColor.WHITE);
             case MESSAGE ->
-                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), NamedTextColor.WHITE);
+                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()).toLowerCase(), NamedTextColor.WHITE);
         };
     }
 

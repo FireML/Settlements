@@ -16,17 +16,17 @@ public class EmpireTitleCommand extends EmpireSubCommand {
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length < 1) {
             Collection<String> titles = res.getSettlement().getEmpire().getTitles(res.getEmpireRank());
-            res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base), "type", "");
-            res.tell(getMessage("usage.entry"), "usage", getUsage(base));
+            res.tell(getMessage("usage.head").getComponent(), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base), "type", "");
+            res.tell(getMessage("usage.entry").getComponent(), "usage", getUsage(base));
             String defaultTitle = res.getSettlement().getEmpire().getDefaultTitle(res.getEmpireRank());
-            res.tell(getMessage("usage.entry"), "usage", "/" + base + " " + alias + " " + defaultTitle);
+            res.tell(getMessage("usage.entry").getComponent(), "usage", "/" + base + " " + alias + " " + defaultTitle);
             for (String title : titles) {
                 if (!title.equals(defaultTitle)) {
-                    res.tell(getMessage("usage.entry"), "usage", "/" + base + " " + alias + " " + title);
+                    res.tell(getMessage("usage.entry").getComponent(), "usage", "/" + base + " " + alias + " " + title);
                 }
             }
             if (getMessage("usage.footer").exists()) {
-                res.tell(getMessage("usage.footer"), "name", name(), "command", "/" + base + " " + alias);
+                res.tell(getMessage("usage.footer").getComponent(), "name", name(), "command", "/" + base + " " + alias);
             }
             return true;
         }

@@ -349,9 +349,9 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         Function<Plugin, Boolean> hook = dependencies.get(plugin.getName().toLowerCase(Locale.ROOT));
         if (hook != null) {
             if (hook.apply(plugin)) {
-                getLogger().log(Level.INFO, "Hooked into " + plugin.getName() + " " + plugin.getDescription().getVersion());
+                getLogger().log(Level.INFO, "Hooked into " + plugin.getName() + " " + plugin.getPluginMeta().getVersion());
             } else {
-                getLogger().log(Level.WARNING, "Error while trying to hook into " + plugin.getName() + " " + plugin.getDescription().getVersion());
+                getLogger().log(Level.WARNING, "Error while trying to hook into " + plugin.getName() + " " + plugin.getPluginMeta().getVersion());
             }
         }
     }
@@ -412,7 +412,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             return false;
         }
         chat = rsp.getProvider();
-        this.getLogger().log(Level.INFO, "Hooked into chat service provider " + chat.getName() + " " + rsp.getPlugin().getDescription().getVersion());
+        this.getLogger().log(Level.INFO, "Hooked into chat service provider " + chat.getName() + " " + rsp.getPlugin().getPluginMeta().getVersion());
         return chat != null;
     }
 
@@ -427,7 +427,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             return false;
         }
         econ = rsp.getProvider();
-        this.getLogger().log(Level.INFO, "Hooked into economy service provider " + econ.getName() + " " + rsp.getPlugin().getDescription().getVersion());
+        this.getLogger().log(Level.INFO, "Hooked into economy service provider " + econ.getName() + " " + rsp.getPlugin().getPluginMeta().getVersion());
         return econ != null;
     }
 

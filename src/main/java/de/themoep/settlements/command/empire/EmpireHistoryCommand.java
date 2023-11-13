@@ -51,6 +51,7 @@ public class EmpireHistoryCommand extends EmpireSubCommand {
             if (page + 1 > pages) {
                 next = next.color(NamedTextColor.GRAY);
             } else {
+                next = next.color(NamedTextColor.AQUA);
                 next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (page + 1)));
                 next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
             }
@@ -58,15 +59,16 @@ public class EmpireHistoryCommand extends EmpireSubCommand {
             if (page - 1 <= 0) {
                 previous = previous.color(NamedTextColor.GRAY);
             } else {
+                previous = previous.color(NamedTextColor.AQUA);
                 previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (page - 1)));
                 previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
             }
 
-            Map<String, ?> replacements = Map.of(
+            Map<String, Component> replacements = Map.of(
                     "page", ComponentUtils.parseComponent(String.valueOf(page)),
                     "maxpage", ComponentUtils.parseComponent(String.valueOf(pages)),
                     "next", next,
-                    "previous", previous
+                    "previous", previous.append(Component.text("").color(null))
             );
 
             MessageUtils.tell(resident.getPlayer(), ComponentUtils.parsePlaceholders(getMessage("footer").getComponent(), replacements));

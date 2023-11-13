@@ -5,6 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
+import org.bukkit.block.sign.SignSide;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,7 +21,7 @@ import java.util.function.Consumer;
 
 public class SignGui {
     private static boolean registered = false;
-    private static Map<Long, SignGui> signs = new HashMap<>();
+    private static Map<Block, SignGui> signs = new HashMap<>();
 
     private final Consumer<String[]> inputConsumer;
 
@@ -40,23 +42,23 @@ public class SignGui {
                 return;
             }
         }
-        signs.put(block.getBlockKey(), this);
+        signs.put(block, this);
         block.setType(Material.OAK_SIGN, false);
         for (Player p : player.getLocation().getNearbyPlayers(16)) {
             if (p != player) {
                 p.sendBlockChange(block.getLocation(), Material.AIR.createBlockData());
             }
         }
-        player.openSign((Sign) block.getState());
+        player.openSign((Sign) block.getState(), Side.FRONT);
     }
 
     public static class EventListener implements Listener {
 
         @EventHandler
         public void onSignChange(SignChangeEvent e) {
-            SignGui gui = signs.get(e.getBlock().getBlockKey());
+            SignGui gui = signs.get(e.getBlock());
             if (gui != null) {
-                gui.inputConsumer.accept(e.getLines());
+                gui.inputConsumer.accept(ComponentUtils.toStringList(e.lines()).toArray(String[]::new));
                 e.setCancelled(true);
                 e.getBlock().setType(Material.AIR, false);
             }
@@ -64,14 +66,14 @@ public class SignGui {
 
         @EventHandler
         public void onSignUpdate(BlockPhysicsEvent e) {
-            if (signs.containsKey(e.getBlock().getBlockKey()) || signs.containsKey(e.getSourceBlock().getBlockKey())) {
+            if (signs.containsKey(e.getBlock()) || signs.containsKey(e.getSourceBlock())) {
                 e.setCancelled(true);
             }
         }
 
         @EventHandler
         public void onSignBreak(BlockBreakEvent e) {
-            if (signs.containsKey(e.getBlock().getBlockKey())) {
+            if (signs.containsKey(e.getBlock())) {
                 e.setCancelled(true);
             }
         }

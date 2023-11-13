@@ -127,7 +127,7 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
                 }
             }
 
-            player.sendMessage(buildFailDepositMessage(resident, fail, getMessage("max-level-reached").getText()));
+            player.sendMessage(ComponentUtils.parseComponent(buildFailDepositMessage(resident, fail, getMessage("max-level-reached").getText())));
         }
     }
 

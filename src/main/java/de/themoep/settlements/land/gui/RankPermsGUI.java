@@ -113,7 +113,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
 
                 List<String> text = new ArrayList<>();
                 text.add(getText("entry.title",
-                        "color", color.toString(),
+                        "color", NamedTextColor.nearestTo(color).asHexString(),
                         "perm", permName,
                         "rank", rank.getTag(landOwner),
                         "description", Message.orElse("command." + perm + ".permission.description", Message.get("command." + perm + ".description")).getText()

@@ -26,11 +26,11 @@ public class EmpireBuildCommand extends EmpireSubCommand {
             BuildState newState = BuildState.valueOf(args[0].toUpperCase(), BuildState.AppliesTo.EMPIRE);
             res.getSettlement().getEmpire().setBuildState(newState);
             DatabaseManager.getInstance().saveEmpire(res.getSettlement().getEmpire());
-            res.tell(getMessage("success"), "state", newState.getTag(), "type", res.getSettlement().getEmpire().getBuildTag());
+            res.tell(getMessage("success").getComponent(), "state", newState.getTag(), "type", res.getSettlement().getEmpire().getBuildTag());
         } catch (IllegalArgumentException e) {
-            res.tell(getMessage("usage.head"), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
+            res.tell(getMessage("usage.head").getComponent(), "name", name(), "command", "/" + base + " " + alias, "usage", getUsage(base));
             for (BuildState state : BuildState.values(BuildState.AppliesTo.EMPIRE)) {
-                res.tell(getMessage("usage.entry"),
+                res.tell(getMessage("usage.entry").getComponent(),
                         "usage", getUsage(base).replace("<state>", state.name().toLowerCase()),
                         "description", getMessage("states." + state.getKey()).getText()
                 );

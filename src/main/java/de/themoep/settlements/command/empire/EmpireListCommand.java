@@ -80,6 +80,7 @@ public class EmpireListCommand extends SubCommand {
             if (finalPage + 1 > pages) {
                 next = next.color(NamedTextColor.GRAY);
             } else {
+                next = next.color(NamedTextColor.AQUA);
                 next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage + 1)));
                 next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
             }
@@ -87,15 +88,16 @@ public class EmpireListCommand extends SubCommand {
             if (finalPage - 1 <= 0) {
                 previous = previous.color(NamedTextColor.GRAY);
             } else {
+                previous = previous.color(NamedTextColor.AQUA);
                 previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage - 1)));
                 previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
             }
 
-            Map<String, ?> replacements = Map.of(
-                    "page", String.valueOf(finalPage),
-                    "maxpage", String.valueOf(pages),
+            Map<String, Component> replacements = Map.of(
+                    "page", ComponentUtils.parseComponent(String.valueOf(finalPage)),
+                    "maxpage", ComponentUtils.parseComponent(String.valueOf(pages)),
                     "next", next,
-                    "previous", previous
+                    "previous", previous.append(Component.text("").color(null))
             );
 
             MessageUtils.tell(sender, ComponentUtils.parsePlaceholders(getMessage("footer").getComponent(), replacements));

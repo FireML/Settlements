@@ -89,7 +89,7 @@ public class IconRpMapping {
             iconstr = ColorUtils.getNearestChatColor(((LeatherArmorMeta) meta).getColor()) + getIcon("white_" + item.getType(), false) + "§r";
         } else if (meta instanceof PotionMeta pm) {
             try {
-                iconstr = getIcon(item.getType() + "_" + pm.getBasePotionData().getType(), escape);
+                iconstr = getIcon(item.getType() + "_" + pm.getBasePotionType(), escape);
             } catch (NoSuchMethodError e) {
                 if (pm.hasCustomEffects()) {
                     iconstr = getIcon(item.getType() + "_" + pm.getCustomEffects().get(0).getType(), escape);
@@ -98,15 +98,15 @@ public class IconRpMapping {
             if (iconstr == null) {
                 iconstr = getIcon(item.getType() + "_water", escape);
             }
-        } else if (item.getType() == Material.POTION) {
+        } else if (item.getType() == Material.POTION && item.getItemMeta() instanceof Damageable damageable) {
             String key = "water_potion";
-            if (item.getDurability() == 0) {
+            if (damageable.getDamage() == 0) {
                 iconstr = getIcon(key, escape);
             } else {
                 String splash = "";
 
-                boolean[] bits = BitUtils.getBits(item.getDurability());
-                int id = BitUtils.getRange(item.getDurability(), 0, 3);
+                boolean[] bits = BitUtils.getBits(damageable.getDamage());
+                int id = BitUtils.getRange(damageable.getDamage(), 0, 3);
                 if (id < potionids.length)
                     key = potionids[id].toLowerCase();
 
@@ -129,14 +129,14 @@ public class IconRpMapping {
             }
         }
         boolean isUnbreakable = false;
-        if (iconstr == null) {
-            isUnbreakable = item.getItemMeta().isUnbreakable();
+        if (iconstr == null && item.getItemMeta() instanceof Damageable damageable) {
+            isUnbreakable = damageable.isUnbreakable();
             if (isUnbreakable) {
-                iconstr = getIcon(item.getType() + ":unbreakable:" + item.getDurability(), escape);
+                iconstr = getIcon(item.getType() + ":unbreakable:" + damageable.getDamage(), escape);
             }
         }
-        if (iconstr == null) {
-            iconstr = getIcon(item.getType() + ":" + item.getDurability(), escape);
+        if (iconstr == null && item.getItemMeta() instanceof Damageable damageable) {
+            iconstr = getIcon(item.getType() + ":" + damageable.getDamage(), escape);
         }
         if (iconstr == null && isUnbreakable) {
             iconstr = getIcon(item.getType() + ":unbreakable", escape);

@@ -35,7 +35,7 @@ public class ColorTypeSelectGui extends ConfigurableGui {
                             getMessage("color-reset").tell(resident,
                                     "channel", channel.getTag(),
                                     "type", type.getTag(),
-                                    "color", defaultColor.toString(),
+                                    "color", "&" + NamedTextColor.nearestTo(defaultColor).asHexString(),
                                     "color-name", NamedTextColor.nearestTo(defaultColor).toString()
                             );
                             return true;
@@ -43,7 +43,7 @@ public class ColorTypeSelectGui extends ConfigurableGui {
                         new ColorSelectGui(channel, resident, type).open();
                         return true;
                     }, getText("entry",
-                            "color", textColor.toString(),
+                            "color", "&" + NamedTextColor.nearestTo(textColor).asHexString(),
                             "type", type.getTag(),
                             "name", NamedTextColor.nearestTo(textColor).toString()
                     )

@@ -126,10 +126,6 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         }
     }
 
-    public String getCitizensVersion() {
-        return CitizensAPI.getPlugin().getDescription().getVersion();
-    }
-
     @EventHandler
     public void onCreate(LandownerCreatedEvent event) {
         checkForNew(event.getResident(), event.getLandOwner());

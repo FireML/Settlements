@@ -33,6 +33,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -312,25 +313,25 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                                     "hoppers", MessageUtils.yesOrNo(lock.isAllowHoppers())
                             );
                             if (!lock.getAllowedPlayers().isEmpty()) {
-                                event.getPlayer().sendMessage(lock.getAllowedPlayers().stream()
+                                event.getPlayer().sendMessage(ComponentUtils.parseComponent(lock.getAllowedPlayers().stream()
                                         .map(id -> ResidentManager.getInstance().getResident(id))
                                         .filter(Objects::nonNull)
                                         .map(r -> getMessage("info.entry").getReplacedText("name", r.getName(), "title", r.getSettlementTitle()))
-                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                                        .collect(Collectors.joining(getMessage("info.separator").getText()))));
                             }
                             if (!lock.getAllowedSettlementIds().isEmpty()) {
-                                event.getPlayer().sendMessage(lock.getAllowedSettlementIds().stream()
+                                event.getPlayer().sendMessage(ComponentUtils.parseComponent(lock.getAllowedSettlementIds().stream()
                                         .map(i -> SettlementManager.getInstance().getFromId(i))
                                         .filter(Objects::nonNull)
                                         .map(v -> getMessage("info.entry").getReplacedText("name", v.getName(), "title", v.getStateTag()))
-                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                                        .collect(Collectors.joining(getMessage("info.separator").getText()))));
                             }
                             if (!lock.getAllowedEmpireIds().isEmpty()) {
-                                event.getPlayer().sendMessage(lock.getAllowedEmpireIds().stream()
+                                event.getPlayer().sendMessage(ComponentUtils.parseComponent(lock.getAllowedEmpireIds().stream()
                                         .map(i -> EmpireManager.getInstance().getEmpireFromId(i))
                                         .filter(Objects::nonNull)
                                         .map(e -> getMessage("info.entry").getReplacedText("name", e.getName(), "title", e.getStateTag()))
-                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                                        .collect(Collectors.joining(getMessage("info.separator").getText()))));
                             }
                         });
                     }

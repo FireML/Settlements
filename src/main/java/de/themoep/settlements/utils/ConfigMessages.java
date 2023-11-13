@@ -3,6 +3,8 @@ package de.themoep.settlements.utils;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.perk.Perk;
+import net.kyori.adventure.text.Component;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +15,7 @@ public interface ConfigMessages extends ConfigKey {
     String type();
 
     default String getText(String key, String... replacements) {
-        return getMessage(key).getReplacedText(replacements);
+        return StringUtils.parseColors(getMessage(key).getReplacedText(replacements));
     }
 
     default String getUnlockText(LandOwner<?, ?> landOwner, String unlockable) {

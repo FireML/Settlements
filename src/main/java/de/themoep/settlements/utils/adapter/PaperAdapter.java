@@ -21,6 +21,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -67,7 +68,9 @@ public class PaperAdapter {
      */
     public ItemStack createBook(String title, String author, List<Component> components) {
         ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        book.setItemMeta(createBookMeta((BookMeta) book.getItemMeta(), title, author, components));
+        List<Component> finalComponents = new ArrayList<>();
+        components.forEach(component -> finalComponents.add(ComponentUtils.parseColors(component)));
+        book.setItemMeta(createBookMeta((BookMeta) book.getItemMeta(), title, author, finalComponents));
         return book;
     }
 
@@ -76,7 +79,7 @@ public class PaperAdapter {
         bookMeta.setAuthor(author);
 
         return (ItemMeta) bookMeta.pages(pages.stream()
-                .map(c -> GsonComponentSerializer.builder().build().deserialize(ComponentUtils.toString(c)))
+                .map(c -> GsonComponentSerializer.builder().build().deserialize(ComponentUtils.toString(ComponentUtils.parseColors(c))))
                 .collect(Collectors.toList()));
     }
 

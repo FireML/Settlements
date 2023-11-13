@@ -187,7 +187,7 @@ public class ChatMap {
                             )));
                 }
                 legend.add(RowEnd.UNCLAIMED);
-                return new Component[]{cb.color(Relation.UNCLAIMED.getColor())};
+                return new Component[]{ ComponentUtils.parseComponent("&" + Relation.UNCLAIMED.getColor().asHexString()).append(cb)};
             }
             Symbol symbol = Symbol.NORMAL;
             Relation relation;
@@ -276,7 +276,7 @@ public class ChatMap {
                 symbol = Symbol.CURRENT;
             }
 
-            Component cb = ComponentUtils.parseComponent(symbol.getText()).color(relation.getColor());
+            Component cb = ComponentUtils.parseComponent("&" + relation.getColor().asHexString() + symbol.getText());
             if (canLinkPlot && land.isPlotOwner(playerLand.getPlotOwner())) {
                 if (land.hasLink()) {
                     hover = hover.append(Component.newline()).append(messages.getMessage("hover.linked")
@@ -348,7 +348,7 @@ public class ChatMap {
         Relation() {
             TextColor temp;
             try {
-                temp = ColorUtils.getColor(ConfigManager.getInstance().getMapConfig().getString("color." + getKey()).toUpperCase(), NamedTextColor.WHITE);
+                temp = ColorUtils.getColor(ConfigManager.getInstance().getMapConfig().getString("color." + getKey()).toLowerCase(), NamedTextColor.WHITE);
             } catch (IllegalArgumentException e) {
                 temp = NamedTextColor.GRAY;
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Wrong color string for " + name() + "! " + e.getMessage());

@@ -62,7 +62,7 @@ public class CommandManager implements TabExecutor {
         if (command != null) {
             command.setExecutor(this);
             command.setPermission(ex.getPermission());
-            command.setPermissionMessage(ex.getError("no-permission").getReplacedText("permission", ex.getPermission()));
+            command.permissionMessage(ex.getError("no-permission").getReplacedComponent("permission", ex.getPermission()));
         } else {
             SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Tried to register command by the name of " + ex.name() + " but it's not defined in the plugin.yml?");
         }

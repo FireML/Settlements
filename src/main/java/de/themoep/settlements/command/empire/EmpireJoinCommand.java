@@ -22,21 +22,21 @@ public class EmpireJoinCommand extends SettlementSubCommand {
         }
         Empire joinEmpire = EmpireManager.getInstance().getEmpireFromName(args[0]);
         if (joinEmpire == null || joinEmpire.isAbandoned()) {
-            resident.tell(getError("empire-doesnt-exist"), "name", args[0]);
+            resident.tell(getError("empire-doesnt-exist").getComponent(), "name", args[0]);
         } else if (joinEmpire.getId().isNull()) {
             getError("missing-empire-id").tell(resident, "name", joinEmpire.getName());
         } else if (joinEmpire.getJoinType() != JoinType.ANYONE && !Utils.settlementHasInvite(resident.getSettlement(), joinEmpire)) {
-            resident.tell(getMessage("no-invite"),
+            resident.tell(getMessage("no-invite").getComponent(),
                     "name", joinEmpire.getName(),
                     "state", resident.getSettlement().getState().getTag()
             );
         } else if (joinEmpire.isFull()) {
-            resident.tell(getMessage("is-full"),
+            resident.tell(getMessage("is-full").getComponent(),
                     "name", joinEmpire.getName(),
                     "state", resident.getSettlement().getState().getTag()
             );
         } else if (joinEmpire.getJoinFee() > 0 && !resident.getSettlement().has(joinEmpire.getJoinFee())) {
-            resident.tell(getError("not-enough-money"),
+            resident.tell(getError("not-enough-money").getComponent(),
                     "name", joinEmpire.getName(),
                     "amount", String.valueOf(joinEmpire.getJoinFee()),
                     "state", resident.getSettlement().getState().getTag()

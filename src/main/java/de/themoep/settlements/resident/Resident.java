@@ -28,6 +28,7 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementMission;
 import de.themoep.settlements.utils.*;
 import de.themoep.settlements.utils.config.Config;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -826,7 +827,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         if (map.containsKey("channelColors")) {
             for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelColors")).entrySet()) {
                 ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
-                TextColor color = ColorUtils.getColor(entry.getValue().replace('-', '_').toUpperCase(Locale.ROOT), NamedTextColor.WHITE);
+                TextColor color = ColorUtils.getColor(entry.getValue().replace('-', '_').toLowerCase(Locale.ROOT), NamedTextColor.WHITE);
                 if (channel != null && color != null) {
                     resident.setChannelColor(channel, ChatColorType.MESSAGE, color);
                 }
@@ -835,7 +836,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         if (map.containsKey("channelPrefixColors")) {
             for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelPrefixColors")).entrySet()) {
                 ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
-                TextColor color = ColorUtils.getColor(entry.getValue().replace('-', '_').toUpperCase(Locale.ROOT), NamedTextColor.WHITE);
+                TextColor color = ColorUtils.getColor(entry.getValue().replace('-', '_').toLowerCase(Locale.ROOT), NamedTextColor.WHITE);
                 if (channel != null && color != null) {
                     resident.setChannelColor(channel, ChatColorType.PREFIX, color);
                 }
@@ -871,11 +872,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         this.id = id;
     }
 
-    /**
-     * @deprecated Use {@link Message#tell(Resident, String...)}
-     */
-    @Deprecated
-    public void tell(Message message, String... replacements) {
+    public void tell(Component message, String... replacements) {
         MessageUtils.tell(this, message, replacements);
     }
 

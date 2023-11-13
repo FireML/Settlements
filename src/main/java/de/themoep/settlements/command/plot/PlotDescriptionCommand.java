@@ -14,7 +14,7 @@ public class PlotDescriptionCommand extends PlotSubCommand {
 
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
-        String description = MessageUtils.replaceColorCodes(Utils.filterAllCurses(String.join(" ", args)));
+        String description = StringUtils.parseColors(Utils.filterAllCurses(String.join(" ", args)));
         if (StringUtils.stripColors(description).length() > 255) {
             getError("too-long").tell(res, "input", description, "amount", "255");
             return true;

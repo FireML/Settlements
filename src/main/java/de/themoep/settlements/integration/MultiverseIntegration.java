@@ -8,6 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -31,7 +32,7 @@ public class MultiverseIntegration {
                     world.getName(),
                     world.getEnvironment(),
                     String.valueOf(world.getSeed()),
-                    world.getWorldType(),
+                    WorldType.NORMAL,
                     world.canGenerateStructures(),
                     SettlementsPlugin.getInstance().getConfig().getString("empires-world.generator", ""),
                     true
@@ -44,7 +45,7 @@ public class MultiverseIntegration {
     }
 
     public String getVersion() {
-        return mvCore.getDescription().getVersion();
+        return mvCore.getPluginMeta().getVersion();
     }
 
     public World renameWorld(World world, String newWorldName) {

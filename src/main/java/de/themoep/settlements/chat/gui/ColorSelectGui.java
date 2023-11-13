@@ -30,7 +30,7 @@ public class ColorSelectGui extends ConfigurableGui {
         for (String color : Config.Chat.SELECTABLE_COLORS) {
             TextColor chatColor;
             try {
-                chatColor = ColorUtils.getColor(color.toUpperCase(), NamedTextColor.WHITE);
+                chatColor = ColorUtils.getColor(color.toLowerCase(), NamedTextColor.WHITE);
             } catch (IllegalArgumentException e) {
                 continue;
             }
@@ -47,14 +47,14 @@ public class ColorSelectGui extends ConfigurableGui {
                             getMessage("color-changed").tell(r,
                                     "channel", channel.getTag(),
                                     "type", type.getTag(),
-                                    "color", chatColor.toString(),
+                                    "color", "&" + NamedTextColor.nearestTo(chatColor).asHexString(),
                                     "color-name", NamedTextColor.nearestTo(chatColor).toString()
                             );
                         }, 1);
                         return true;
                     },
                     getText((residentColor == chatColor ? "selected-" : "") + "color-entry",
-                            "color", chatColor.toString(),
+                            "color", "&" + NamedTextColor.nearestTo(chatColor).asHexString(),
                             "name", NamedTextColor.nearestTo(chatColor).toString())
             ));
         }

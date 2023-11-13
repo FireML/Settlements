@@ -50,7 +50,7 @@ public class SettlementsChatScriptEvent extends BukkitScriptEvent implements Lis
     @Override
     public ObjectTag getContext(String name) {
         if (name.equals("message")) {
-            return new ElementTag(event.getMessage());
+            return new ElementTag(event.getStringMessage());
         }
         if (name.equals("channel")) {
             return new ElementTag(event.getChannel());

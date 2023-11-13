@@ -21,20 +21,23 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
+import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDownParser;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
 import uk.firedev.poleislib.utils.ComponentUtils;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -82,8 +85,8 @@ public class ChatManager implements ConfigMessages, Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void on(AsyncPlayerChatEvent event) {
-        if (event.isCancelled() || event instanceof ChannelChatEvent) {
+    public void on(AsyncChatEvent event) {
+        if (event.isCancelled()) {
             return;
         }
         Player sender = event.getPlayer();
@@ -112,16 +115,19 @@ public class ChatManager implements ConfigMessages, Listener {
         }
         event.setCancelled(true);
 
-        sendChannelMessage(sender, channel, event.getMessage());
+        sendChannelMessage(sender, channel, event.message());
     }
 
-    public void sendChannelMessage(Player player, ChatChannel channel, String message) {
+    public void sendChannelMessage(Player player, ChatChannel channel, Component message) {
         Utils.runAsync(() -> {
-            ChannelChatEvent event = new ChannelChatEvent(true, player, message, channel);
-            Bukkit.getPluginManager().callEvent(event);
-            if (!event.isCancelled()) {
-                sendChannelMessage(player, ResidentManager.getInstance().getResident(player), channel, message);
-            }
+            Resident res = ResidentManager.getInstance().getResident(player);
+            Utils.runSync(() -> {
+                ChannelChatEvent event = new ChannelChatEvent(player, message, channel);
+                Bukkit.getPluginManager().callEvent(event);
+                if (!event.isCancelled()) {
+                    sendChannelMessage(player, res, channel, ComponentUtils.toString(message));
+                }
+            });
         });
     }
 
@@ -134,7 +140,7 @@ public class ChatManager implements ConfigMessages, Listener {
         String senderSuffix = getPlayerSuffix(sender);
 
         if (sender.hasPermission("settlements.chat.colour")) {
-            message = MessageUtils.replaceColorCodes(message);
+            message = StringUtils.parseColors(message);
         }
 
         message = ConfigManager.getInstance().getForcedCurses().filterCurses(message);
@@ -148,7 +154,7 @@ public class ChatManager implements ConfigMessages, Listener {
             prefix = prefix.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("/punish " + sender.getName())));
         }
 
-        Component componentSender = ComponentUtils.parseComponent(getMessage("format.name").getText());
+        Component componentSender = getMessage("format.name").getComponent();
         componentSender = ComponentUtils.parsePlaceholders(componentSender,
                 "name", sender.getName(),
                 "displayname", ComponentUtils.toString(sender.displayName()),
@@ -196,9 +202,14 @@ public class ChatManager implements ConfigMessages, Listener {
         TextColor channelDefault = Utils.getChannelColor(channel, ChatColorType.MESSAGE);
         TextColor channelPrefixDefault = Utils.getChannelColor(channel, ChatColorType.PREFIX);
 
+        unfilteredMessage = ComponentUtils.parseColors(unfilteredMessage);
+        filteredMessage = ComponentUtils.parseColors(filteredMessage);
+
+        Component finalUnfilteredMessage = unfilteredMessage;
+        Component finalFilteredMessage = filteredMessage;
         switch (channel) {
             case LOCAL -> {
-                tell(sender, res, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, unfilteredMessage);
+                tell(sender, res, replacer, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage);
                 List<Resident> nearbyPlayers = new ArrayList<>(sender.getWorld().getPlayers()).stream()
                         .filter(p -> !p.equals(sender)
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
@@ -207,7 +218,7 @@ public class ChatManager implements ConfigMessages, Listener {
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .toList();
                 if (!nearbyPlayers.isEmpty()) {
-                    nearbyPlayers.forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+                    nearbyPlayers.forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage));
                 } else {
                     getMessage("chat.nobody-nearby").tell(sender);
                 }
@@ -225,14 +236,14 @@ public class ChatManager implements ConfigMessages, Listener {
                 new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.getActiveChannel() == channel || r.isListening(channel))
-                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage));
             }
             case ADMIN, CCEM, STAFF -> new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                     .filter(channel::canChat)
                     .map(p -> ResidentManager.getInstance().getResident(p))
                     .filter(r -> r.isListening(channel)
                             && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                    .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+                    .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage));
             case ALLY -> {
                 Set<Resident> residentSet = settlement.getAllies().stream()
                         .map(Ally::getLandOwner)
@@ -243,7 +254,7 @@ public class ChatManager implements ConfigMessages, Listener {
                 residentSet.stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage));
             }
             case EMPIREALLY -> {
                 Set<Resident> eAllySet = settlement.getAllies().stream()
@@ -262,20 +273,20 @@ public class ChatManager implements ConfigMessages, Listener {
                 eAllySet.stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage));
             }
             case EMPIRE -> {
                 if (settlement.hasEmpire()) {
                     settlement.getEmpire().getOnlineResidents().stream()
                             .filter(r -> r.isListening(channel)
                                     && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                            .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+                            .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage));
                 }
             }
             case SETTLEMENT -> settlement.getOnlineResidents().stream()
                     .filter(r -> r.isListening(channel)
                             && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                    .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+                    .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage));
             case EVENT -> {
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")
                         && !sender.hasPermission("settlements.bypass.chatlock")) {
@@ -286,7 +297,7 @@ public class ChatManager implements ConfigMessages, Listener {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage));
             }
             default -> {
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")
@@ -298,10 +309,10 @@ public class ChatManager implements ConfigMessages, Listener {
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, unfilteredMessage, filteredMessage));
+                        .forEach(r -> tell(sender, r, replacer, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage));
             }
         }
-        Bukkit.getLogger().info(ComponentUtils.toString(replacer.replace("message", unfilteredMessage).replaceIn(getFormat(sender, channel, channelDefault, channelPrefixDefault))));
+        Bukkit.getLogger().info(ComponentUtils.toUncoloredString(replacer.replace("message", unfilteredMessage).replaceIn(getFormat(sender, channel, channelDefault, channelPrefixDefault))));
     }
 
     private void tell(Player sender, Resident receiver, Replacer replacer, ChatChannel channel, TextColor defaultColor, TextColor defaultPrefixColor, Component unfilteredMessage, Component filteredMessage) {
@@ -321,19 +332,25 @@ public class ChatManager implements ConfigMessages, Listener {
                     .replace(resident.getName(), ComponentUtils.parseComponent(getText("nick-hilight") + "@" + resident.getName()))
                     .replaceIn(components);
         }
-        player.sendMessage(components);
+        player.sendMessage(ComponentUtils.parseColors(components));
     }
 
     private Component getFormat(Player sender, ChatChannel channel, TextColor channelColor, TextColor channelPrefixColor) {
         Component format;
         if (SettlementsPlugin.getInstance().getPlaceholderApi() != null && Config.Chat.PlaceholderApi.Format.CHANNEL) {
+            if (channelColor == null) {
+                channelColor = NamedTextColor.WHITE;
+            }
+            if (channelPrefixColor == null) {
+                channelPrefixColor = NamedTextColor.AQUA;
+            }
             format = MineDown.parse(
                     PlaceholderApiIntegration.setPlaceholders(
                             sender, getMessage("format.channel." + channel.getKey())
-                                    .getReplacedText("color", channelColor.toString(), "prefixColor", channelPrefixColor.toString())));
+                                    .getReplacedText("color", "&" + channelColor.asHexString(), "prefixColor", "&" + channelPrefixColor.asHexString())));
         } else {
             format = MineDown.parse(getMessage("format.channel." + channel.getKey())
-                    .getReplacedText("color", channelColor.toString(), "prefixColor", channelPrefixColor.toString()));
+                    .getReplacedText("color", "&" + channelColor.asHexString(), "prefixColor", "&" + channelPrefixColor.asHexString()));
         }
         return format;
     }
@@ -369,7 +386,7 @@ public class ChatManager implements ConfigMessages, Listener {
                     PlaceholderApiIntegration.setPlaceholders(
                             player, getMessage("hover.info").getRawText()));
         } else {
-            hover = ComponentUtils.parseComponent(getMessage("hover.info").getText());
+            hover = getMessage("hover.info").getComponent();
         }
         return HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parsePlaceholders(hover,
                 "name", player.getName(),
@@ -405,7 +422,7 @@ public class ChatManager implements ConfigMessages, Listener {
     }
 
     public String getPlayerPrefix(Player sender) {
-        return SettlementsPlugin.chat != null ? MessageUtils.replaceColorCodes(SettlementsPlugin.chat.getPlayerPrefix(sender)) : "";
+        return SettlementsPlugin.chat != null ? StringUtils.parseColors(SettlementsPlugin.chat.getPlayerPrefix(sender)) : "";
     }
 
     public String getPlayerGroupPrefix(Player sender) {
@@ -417,7 +434,7 @@ public class ChatManager implements ConfigMessages, Listener {
     }
 
     public String getPlayerSuffix(Player sender) {
-        return SettlementsPlugin.chat != null ? MessageUtils.replaceColorCodes(SettlementsPlugin.chat.getPlayerSuffix(sender)) : "";
+        return SettlementsPlugin.chat != null ? StringUtils.parseColors(SettlementsPlugin.chat.getPlayerSuffix(sender)) : "";
     }
 
     public String getPlayerGroupSuffix(Player sender) {

@@ -19,6 +19,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -241,7 +242,7 @@ public class EventManager implements ConfigMessages {
                 "duration", UtilTime.format((double) activeEvent.getTime())
         );
 
-        activeBar = Bukkit.createBossBar(MessageUtils.replaceColorCodes(MessageUtils.replacePlaceholders(bossBarFormat,
+        activeBar = Bukkit.createBossBar(StringUtils.parseColors(MessageUtils.replacePlaceholders(bossBarFormat,
                 "title", activeEvent.getTitle(),
                 "id", activeEvent.getId(),
                 "timeleft", UtilTime.format((double) activeEvent.getTime())
@@ -262,7 +263,7 @@ public class EventManager implements ConfigMessages {
                 }
             } else {
                 long left = eventEnd - System.currentTimeMillis();
-                activeBar.setTitle(MessageUtils.replaceColorCodes(MessageUtils.replacePlaceholders(bossBarFormat,
+                activeBar.setTitle(StringUtils.parseColors(MessageUtils.replacePlaceholders(bossBarFormat,
                         "title", activeEvent.getTitle(),
                         "id", activeEvent.getId(),
                         "timeleft", UtilTime.format((double) Math.round(left / 1000.0))

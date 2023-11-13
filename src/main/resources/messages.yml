@@ -38,16 +38,16 @@ error:
   unknown-npc-type: "&c(!) &r&7{input} is not a valid NPC type!"
   unknown-npc: "&c(!) &r&7No {input} NPC in your {state}!"
   no-level: "&cNo level {level} exists!"
-  no-permission: "&cYou don't have permission to do this."
+  no-permission: "&cNo permission."
   no-world: "&c{state} {name} has not unlocked a world."
   rules-not-accepted: "&cYou must accept the [&e{state} rules](/s rules) first!"
-  function-not-unlocked: "&cUpgrade your NPC to unlock!"
+  function-not-unlocked: "&cUpgrade NPC to unlock!"
   not-unlocked: "&cThe {state} does not have the {function} function unlocked yet!"
   no-channel-permission: "&cNo permission to use {channel} channel!"
   not-a-channel: "&cChat Channel &6{name}&c is not valid channel!"
   not-enough-money: "&cNot enough money in your account to pay &r&6{amount}&r&c!"
   not-your-settlement: "&cThis is not your {state}!"
-  no-settlement: "&cNo settlement is at this location!"
+  no-settlement: "&cNo settlement at your location!"
   invalid-rank: "&c(!) &r&c{rank} &7is not a valid rank!"
   invalid-group: "&c(!) &r&c{group} &7is not a valid group!"
   settlement-exists: "&7A settlement with the name &6{name}&7 already exists!"
@@ -66,11 +66,11 @@ error:
   none-connected: "&cERROR: &cNo plots are connected to this one!"
   none-linked: "&cERROR: &cNo plots are linked to this one!"
   not-linked: "&cERROR: &cThat plot isn't linked to this one!"
-  not-for-sale: "&cThis land is not for sale!"
+  not-for-sale: "&cLand is not for sale!"
   not-your-plot: "&cThis is not your plot!"
   world-not-claimable: "&cClaiming is disabled in this world!"
   claim-too-close: "&c(!) &r&7You are too close to &e{owner}'s&7 land !"
-  already-own-land: "&e(!) &r&7Your settlement already owns this land!"
+  already-own-land: "&e&l(!) &r&7Your settlement already owns this land!"
   cant-claim-here: "&c(!) &r&7This land is owned by &e{owner}&7!"
   outpost-not-claimed: "&cOutpost &6{name} &c was removed as its land was no longer claimed by your {state}!"
   outpost-not-found: |-
@@ -92,7 +92,7 @@ error:
   cant-set-embassy: "&cYou can't set an embassy here!"
   teleport-cooldown: "&cYou have to wait &e{cooldown}&c before you can teleport again!"
   nothing-to-confirm: "&cThere is nothing to confirm. It might have timed out."
-  portals-not-linked: "&cThese two portals are no longer linked!"
+  portals-not-linked: "&cThese two portals are (no longer) linked!"
   no-portal-found: "&cNo portal was found. Please look at one!"
   cant-admin-portals: "&cYou can't manage portals!"
   no-portals-linked:
@@ -125,6 +125,7 @@ close-claims:
       &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for {time} minutes.
     block: |-
       &cYou can only place or break blocks near claims!
+      &7Only Shulker Boxes can be placed/broken.
 banished:
   move:
     message: "&cYou're banished from the {state} {name}!"
@@ -2717,9 +2718,9 @@ usage:
   aliases: "\n&fAliases: &7{aliases}"
   footer: ""
   pagination:
-    footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-    previous: "&b<< Prev "
-    next: "&b Next >>"
+    footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+    previous: "<< Prev "
+    next: " Next >>"
 command:
   chat:
     description: "Chat command"
@@ -2793,7 +2794,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMission Points: &e{missionpoints}
+          &fMissions: &e{missions}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2805,7 +2806,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMission Points: &e{missionpoints}
+          &fMissions: &e{missions}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2901,9 +2902,9 @@ command:
       list:
         head: "&a⊱&m━━━━&r&6Plot Members [{page}/{maxpage}]&a&m━━━━&a⊰"
         entry: "- [{name}](Name: {name}\nUUID: {uuid}) [&cx](hover=Click to remove {name} run_command=/plot members remove {uuid})"
-        footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-        previous: "&b<< Prev "
-        next: "&b Next >>"
+        footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+        previous: "<< Prev "
+        next: " Next >>"
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Plot mode &6{mode}&7: &6{value}"
@@ -3047,9 +3048,9 @@ command:
       entry: "&e• [&e&l{title} &r&e{name} - &r{activity}](&eLast login at {timestamp})"
       offline: "&cLogged in {ago} ago"
       online: "&aActive now"
-      footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-      previous: "&b<< Prev "
-      next: "&b Next >>"
+      footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+      previous: "<< Prev "
+      next: " Next >>"
       description: Shows the last online time of each resident.
     allies:
       head: "&a⊱&m━━━━&r&6Allies&a&m━━━━&a⊰"
@@ -3102,9 +3103,9 @@ command:
       history:
         head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
         entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6☧ {amount}](&eAt {timestamp})"
-        footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-        previous: "&b<< Prev "
-        next: "&b Next >>"
+        footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+        previous: "<< Prev "
+        next: " Next >>"
         description: Shows the settlement bank's history
     build:
       success: "&aSet {type} state of {flagable} to {state}"
@@ -3230,9 +3231,9 @@ command:
     history:
       head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
-      footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-      previous: "&b<< Prev "
-      next: "&b Next >>"
+      footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+      previous: "<< Prev "
+      next: " Next >>"
       description: Shows the empire's bank history
     home:
       own-no-home: "&cYour settlement doesn't have a home. Is there a claim? Ask your {chief} to claim and/or set a home!"
@@ -3289,9 +3290,9 @@ command:
       head: "&a⊱&m━━━━&r&6Settlements [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Residents: &f{size} players\n&8Recruitment: {jointype}\n&f{description})"
       entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
-      footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-      previous: "&b<< Prev "
-      next: "&b Next >>"
+      footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+      previous: "<< Prev "
+      next: " Next >>"
     lock:
       admin:
         description: "Allows administrating of locks inside the settlement's claims"
@@ -3832,9 +3833,9 @@ command:
       history:
         head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
         entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6☧ {amount}](&eAt {timestamp})"
-        footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-        previous: "&b<< Prev "
-        next: "&b Next >>"
+        footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+        previous: "<< Prev "
+        next: " Next >>"
         description: Show the bank's history
     banish:
       cant-banish-yourself: "&cYou can't banish yourself!"
@@ -3993,9 +3994,9 @@ command:
       head: "&a⊱&m━━━━&r&6Empires [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• {place}. [&r&e{name} &r&7{access}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Members: &f{size} members\n&8Recruitment: {jointype}\n&f{description})"
       entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
-      footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-      previous: "&b<< Prev "
-      next: "&b Next >>"
+      footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+      previous: "<< Prev "
+      next: " Next >>"
     lock:
       admin:
         description: "Allows administrating of locks inside the settlement's claims"

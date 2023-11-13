@@ -22,8 +22,8 @@ public class MessageUtils {
         tell(sender, message.getText(), replacements);
     }
 
-    public static void tell(Resident resident, Message message, String... replacements) {
-        tell(resident.getPlayer(), message.getText(), replacements);
+    public static void tell(Resident resident, Component message, String... replacements) {
+        tell(resident.getPlayer(), message, replacements);
     }
 
     public static void tell(Resident player, String message, String... replacements) {
@@ -42,7 +42,7 @@ public class MessageUtils {
             message = replacePlaceholders(message, replacements);
         }
         message = replaceColorCodes(message);
-        sender.sendMessage(message);
+        sender.sendMessage(ComponentUtils.parseComponent(message));
     }
 
     public static void tellResidents(Collection<Resident> residents, Message message, String... replacements) {
@@ -63,7 +63,7 @@ public class MessageUtils {
             return;
         }
         for (String message : messages) {
-            sender.sendMessage(replaceColorCodes(message));
+            sender.sendMessage(ComponentUtils.parseComponent(message));
         }
     }
 

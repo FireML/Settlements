@@ -77,7 +77,7 @@ public class SettingsGUI extends PlotGUI {
                             String text = stateSnapshot.getText();
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
-                                text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(StringUtils.stripColors(text.trim())));
+                                text = StringUtils.parseColors(Utils.filterAllCurses(StringUtils.stripColors(text.trim())));
                                 int maxLength = Math.min(Config.Plot.NAME_LENGTH, 255);
                                 if (StringUtils.stripColors(text).length() > maxLength) {
                                     getError("too-long").tell(player, "input", text, "amount", String.valueOf(maxLength));
@@ -116,7 +116,7 @@ public class SettingsGUI extends PlotGUI {
                             String text = stateSnapshot.getText();
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
-                                text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(StringUtils.stripColors(text.trim())));
+                                text = StringUtils.parseColors(Utils.filterAllCurses(StringUtils.stripColors(text.trim())));
                                 if (StringUtils.stripColors(text).length() > Config.Plot.DESCRIPTION_LENGTH) {
                                     getError("too-long").tell(player, "input", text, "amount", String.valueOf(Config.Plot.DESCRIPTION_LENGTH));
                                     return List.of(

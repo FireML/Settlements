@@ -44,7 +44,7 @@ public class ChatCommand extends PlayerSubCommand {
                             }
                         }
                     } else {
-                        ChatManager.getInstance().sendChannelMessage(p, channel, String.join(" ", args));
+                        ChatManager.getInstance().sendChannelMessage(p, channel, ComponentUtils.parseComponent(String.join(" ", args)));
                     }
                     return true;
                 }
@@ -83,10 +83,10 @@ public class ChatCommand extends PlayerSubCommand {
             public boolean run(Player p, String base, String alias, String... args) {
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")) {
                     ConfigManager.getInstance().getDataConfig().getConfig().set("chat-lock", false);
-                    Bukkit.broadcast(ComponentUtils.parseComponent(getMessage("unmuted").getReplacedText("name", p.getDisplayName())));
+                    ComponentUtils.broadcastMessage(getMessage("unmuted").getReplacedComponent("name", ComponentUtils.toString(p.displayName())));
                 } else {
                     ConfigManager.getInstance().getDataConfig().getConfig().set("chat-lock", true);
-                    Bukkit.broadcast(ComponentUtils.parseComponent(getMessage("muted").getReplacedText("name", p.getDisplayName())));
+                    ComponentUtils.broadcastMessage(getMessage("muted").getReplacedComponent("name", ComponentUtils.toString(p.displayName())));
                 }
                 return true;
             }

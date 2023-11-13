@@ -131,7 +131,7 @@ public class ColorUtils {
     public static TextColor getColor(String colorString, TextColor def) {
         if (colorString != null) {
             try {
-                return NamedTextColor.NAMES.value(colorString.toUpperCase());
+                return NamedTextColor.NAMES.value(colorString.toLowerCase());
             } catch (IllegalArgumentException e) {
                 return def;
             }

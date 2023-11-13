@@ -23,15 +23,15 @@ public class SettlementKickNoticeCommand extends SettlementSubCommand {
         Utils.runAsync(() -> {
             Resident res = ResidentManager.getInstance().getResident(args[0]);
             if (res == null) {
-                MessageUtils.tell(player, getError("player-not-found"));
+                MessageUtils.tell(player, getError("player-not-found").getComponent());
                 return;
             }
             if (!player.getSettlement().equals(res.getSettlement())) {
-                MessageUtils.tell(player, getError("not-in-current"));
+                MessageUtils.tell(player, getError("not-in-current").getComponent());
                 return;
             }
             if (res.getSettlementRank().atLeast(player.getSettlementRank())) {
-                MessageUtils.tell(player, getMessage("cant-kick-higher"), "rank", res.getSettlementRank().getTag(res.getSettlement()));
+                MessageUtils.tell(player, getMessage("cant-kick-higher").getComponent(), "rank", res.getSettlementRank().getTag(res.getSettlement()));
                 return;
             }
             if (res.getSettlement().hasPermission(player, "kicknotice")) {

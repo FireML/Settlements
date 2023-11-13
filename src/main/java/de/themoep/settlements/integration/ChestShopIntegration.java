@@ -50,6 +50,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -89,7 +90,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 || !Utils.isWorldClaimable(event.getBlock().getWorld())) {
             return;
         }
-        if (ChestShopSign.isValidPreparedSign(event.getLines())) {
+        if (ChestShopSign.isValid(event.getBlock())) {
             OwnedLand land = LandManager.getInstance().getLand(event.getBlock().getLocation());
             if (land == null) {
                 event.setCancelled(true);

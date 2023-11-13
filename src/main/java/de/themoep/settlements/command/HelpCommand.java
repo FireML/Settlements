@@ -200,6 +200,7 @@ public class HelpCommand extends SubCommand {
                     if (page + 1 > maxPage) {
                         next = next.color(NamedTextColor.GRAY);
                     } else {
+                        next = next.color(NamedTextColor.AQUA);
                         next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + s + alias + " " + type + " " + (page + 1)));
                         next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
                     }
@@ -207,13 +208,14 @@ public class HelpCommand extends SubCommand {
                     if (page - 1 <= 0) {
                         previous = previous.color(NamedTextColor.GRAY);
                     } else {
+                        previous = previous.color(NamedTextColor.AQUA);
                         previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + s + alias + " " + type + " " + (page - 1)));
                         previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
                     }
 
                     Map<String, Component> footerMap = Map.of(
                             "next", next,
-                            "previous", previous
+                            "previous", previous.append(Component.text("").color(null))
                     );
 
                     Component tell = getParent().getMessage("usage.pagination.footer").getReplacedComponent(
