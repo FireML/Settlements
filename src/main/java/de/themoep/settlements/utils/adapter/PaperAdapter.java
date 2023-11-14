@@ -77,10 +77,7 @@ public class PaperAdapter {
     public ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<Component> pages) {
         bookMeta.setTitle(title);
         bookMeta.setAuthor(author);
-
-        return (ItemMeta) bookMeta.pages(pages.stream()
-                .map(c -> GsonComponentSerializer.builder().build().deserialize(ComponentUtils.toString(ComponentUtils.parseColors(c))))
-                .collect(Collectors.toList()));
+        return (ItemMeta) bookMeta.pages(pages);
     }
 
     public CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {
