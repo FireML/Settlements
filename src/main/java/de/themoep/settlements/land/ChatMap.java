@@ -5,7 +5,6 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.utils.ColorUtils;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.UtilTime;
@@ -18,6 +17,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.ColorUtils;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.*;

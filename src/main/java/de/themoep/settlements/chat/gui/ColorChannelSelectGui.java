@@ -3,7 +3,6 @@ package de.themoep.settlements.chat.gui;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.utils.ColorUtils;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Utils;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,6 +10,7 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
 import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
+import uk.firedev.poleislib.utils.ColorUtils;
 
 public class ColorChannelSelectGui extends ConfigurableGui {
 
