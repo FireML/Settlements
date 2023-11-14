@@ -204,7 +204,7 @@ public class ChatManager implements ConfigMessages, Listener {
         Component finalFilteredMessage = filteredMessage;
         switch (channel) {
             case LOCAL -> {
-                tell(sender, res, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true);
+                tell(sender, res, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
                 List<Resident> nearbyPlayers = new ArrayList<>(sender.getWorld().getPlayers()).stream()
                         .filter(p -> !p.equals(sender)
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
@@ -213,7 +213,7 @@ public class ChatManager implements ConfigMessages, Listener {
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .toList();
                 if (!nearbyPlayers.isEmpty()) {
-                    nearbyPlayers.forEach(r -> tell(sender, r, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false));
+                    tell(sender, nearbyPlayers, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true);
                 } else {
                     getMessage("chat.nobody-nearby").tell(sender);
                 }
@@ -228,17 +228,21 @@ public class ChatManager implements ConfigMessages, Listener {
                         }
                     }
                 }
-                new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
+                List<Resident> targets = new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.getActiveChannel() == channel || r.isListening(channel))
-                        .forEach(r -> tell(sender, r, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true));
+                        .toList();
+                tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
-            case ADMIN, CCEM, STAFF -> new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
-                    .filter(channel::canChat)
-                    .map(p -> ResidentManager.getInstance().getResident(p))
-                    .filter(r -> r.isListening(channel)
-                            && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                    .forEach(r -> tell(sender, r, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true));
+            case ADMIN, CCEM, STAFF -> {
+                List<Resident> targets = new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
+                        .filter(channel::canChat)
+                        .map(p -> ResidentManager.getInstance().getResident(p))
+                        .filter(r -> r.isListening(channel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
+                        .toList();
+                tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
+            }
             case ALLY -> {
                 Set<Resident> residentSet = settlement.getAllies().stream()
                         .map(Ally::getLandOwner)
@@ -246,10 +250,11 @@ public class ChatManager implements ConfigMessages, Listener {
                         .flatMap(a -> a.getOnlineResidents().stream())
                         .collect(Collectors.toSet());
                 residentSet.addAll(settlement.getOnlineResidents());
-                residentSet.stream()
+                List<Resident> targets = residentSet.stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .forEach(r -> tell(sender, r, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true));
+                        .toList();
+                tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
             case EMPIREALLY -> {
                 Set<Resident> eAllySet = settlement.getAllies().stream()
@@ -265,34 +270,40 @@ public class ChatManager implements ConfigMessages, Listener {
                             .flatMap(a -> a.getOnlineResidents().stream())
                             .forEach(eAllySet::add);
                 }
-                eAllySet.stream()
+                List<Resident> targets = eAllySet.stream()
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .forEach(r -> tell(sender, r, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true));
+                        .toList();
+                tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
             case EMPIRE -> {
                 if (settlement.hasEmpire()) {
-                    settlement.getEmpire().getOnlineResidents().stream()
+                    List<Resident> targets = settlement.getEmpire().getOnlineResidents().stream()
                             .filter(r -> r.isListening(channel)
                                     && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                            .forEach(r -> tell(sender, r, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true));
+                            .toList();
+                    tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
                 }
             }
-            case SETTLEMENT -> settlement.getOnlineResidents().stream()
-                    .filter(r -> r.isListening(channel)
-                            && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                    .forEach(r -> tell(sender, r, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true));
+            case SETTLEMENT -> {
+                List<Resident> targets = settlement.getOnlineResidents().stream()
+                        .filter(r -> r.isListening(channel)
+                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
+                        .toList();
+                tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
+            }
             case EVENT -> {
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")
                         && !sender.hasPermission("settlements.bypass.chatlock")) {
                     getMessage("locked").tell(sender, "channel", channel.name());
                     return;
                 }
-                new ArrayList<>(sender.getWorld().getPlayers()).stream()
+                List<Resident> targets = new ArrayList<>(sender.getWorld().getPlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .forEach(r -> tell(sender, r, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true));
+                        .toList();
+                tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
             default -> {
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")
@@ -300,22 +311,37 @@ public class ChatManager implements ConfigMessages, Listener {
                     getMessage("locked").tell(sender, "channel", channel.name());
                     return;
                 }
-                new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
+                List<Resident> targets = new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
                         .filter(r -> r.isListening(channel)
                                 && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .forEach(r -> tell(sender, r, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true));
+                        .toList();
+                tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
         }
     }
 
-    private void tell(Player sender, Resident receiver, ChatChannel channel, TextColor defaultColor, TextColor defaultPrefixColor, Component unfilteredMessage, Component filteredMessage, Map<String, Component> replacements, boolean withLogger) {
+    private void tell(Player sender, List<Resident> receivers, ChatChannel channel, TextColor defaultColor, TextColor defaultPrefixColor, Component unfilteredMessage, Component filteredMessage, Map<String, Component> replacements, boolean logged) {
+        for (Resident receiver : receivers) {
+            Component component = new ComponentReplacer(getFormat(sender, channel, receiver.getChannelColor(channel, ChatColorType.MESSAGE, defaultColor), receiver.getChannelColor(channel, ChatColorType.PREFIX, defaultPrefixColor)))
+                    .replace(replacements)
+                    .replace("message", receiver.getSwear() ? unfilteredMessage : filteredMessage)
+                    .build();
+            tell(receiver, component);
+            if (!logged) {
+                logged = true;
+                Bukkit.getLogger().info(ComponentUtils.toUncoloredString(component));
+            }
+        }
+    }
+
+    private void tell(Player sender, Resident receiver, ChatChannel channel, TextColor defaultColor, TextColor defaultPrefixColor, Component unfilteredMessage, Component filteredMessage, Map<String, Component> replacements, boolean logged) {
         Component component = new ComponentReplacer(getFormat(sender, channel, receiver.getChannelColor(channel, ChatColorType.MESSAGE, defaultColor), receiver.getChannelColor(channel, ChatColorType.PREFIX, defaultPrefixColor)))
                 .replace(replacements)
                 .replace("message", receiver.getSwear() ? unfilteredMessage : filteredMessage)
                 .build();
         tell(receiver, component);
-        if (withLogger) {
+        if (logged) {
             Bukkit.getLogger().info(ComponentUtils.toUncoloredString(component));
         }
     }
