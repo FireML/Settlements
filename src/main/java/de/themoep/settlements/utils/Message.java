@@ -1,17 +1,14 @@
 package de.themoep.settlements.utils;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
 import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Message {
@@ -38,23 +35,9 @@ public class Message {
         if (!exists) {
             text = "&cUnknown message &6" + key;
         }
-        try {
-            component = new MineDown(text).autoAddUrlPrefix(false).toComponent();
-            if (!ComponentUtils.toString(ComponentUtils.stripColors(component)).isEmpty()) {
-                String newText = ComponentUtils.toString(component);
-                if (newText.startsWith("§f") && !text.startsWith("&f") && !text.startsWith("§f")) {
-                    newText = newText.substring("§f".length());
-                }
-                text = newText;
-            } else {
-                text = StringUtils.parseColors(text);
-            }
-        } catch (IllegalArgumentException e) {
-            component = ComponentUtils.parseComponent(text);
-            text = StringUtils.parseColors(text);
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
-        }
+        text = StringUtils.parseColors(text);
         this.text = text;
+        this.component = ComponentUtils.parseComponent(text);
     }
 
     public boolean exists() {
@@ -89,11 +72,11 @@ public class Message {
     }
 
     public Component getReplacedComponent(String... replacements) {
-        return ComponentUtils.parseComponent(StringUtils.parsePlaceholders(this.getText(), replacements));
+        return ComponentUtils.parsePlaceholders(component, replacements);
     }
 
     public Component getReplacedComponent(Map<String, Component> replacements) {
-        return ComponentUtils.parseComponent(this.getText(), replacements);
+        return ComponentUtils.parsePlaceholders(component, replacements);
     }
 
     public String getReplacedText(String... replacements) {

@@ -8,7 +8,6 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
-import uk.firedev.poleislib.libs.zrips.cmilib.Colors.CMIChatColor;
 import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
@@ -41,7 +40,7 @@ public class MessageUtils {
         if (replacements != null && replacements.length > 0) {
             message = replacePlaceholders(message, replacements);
         }
-        message = replaceColorCodes(message);
+        message = StringUtils.parseColors(message);
         sender.sendMessage(ComponentUtils.parseComponent(message));
     }
 
@@ -109,10 +108,6 @@ public class MessageUtils {
                 .placeholderSuffix("}")
                 .replace(replacements)
                 .replaceIn(message);
-    }
-
-    public static String replaceColorCodes(String message) {
-        return CMIChatColor.colorize(message);
     }
 
     public static String yesOrNo(boolean b) {
