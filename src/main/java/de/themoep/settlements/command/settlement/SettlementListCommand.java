@@ -71,10 +71,19 @@ public class SettlementListCommand extends SubCommand {
 
             for (int i = (finalPage - 1) * Config.ENTRIES_PER_PAGE; i < settlements.size() && i < finalPage * Config.ENTRIES_PER_PAGE; i++) {
                 Settlement v = settlements.get(i);
-                getMessage("entry" + (v.isAbandoned() ? "-abandoned" : "")).tell(sender, v.getReplacements(this,
+                Component component = getMessage("entry" + (v.isAbandoned() ? "-abandoned" : "")).getReplacedComponent(v.getReplacements(this,
                         "place", String.valueOf(i + 1),
                         "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : ""
                 ));
+                if (!v.isAbandoned()) {
+                    component = component.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parsePlaceholders(getMessage("entry-hover").getComponent(),
+                            "chief", v.getChief().getName(),
+                            "size", String.valueOf(v.getResidents().size()),
+                            "recruitment", v.getJoinType().getTag()
+                    )));
+                    component = component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/s info " + v.getName()));
+                }
+                MessageUtils.tell(sender, component);
             }
 
             Component next = getMessage("next").getComponent();
@@ -97,13 +106,11 @@ public class SettlementListCommand extends SubCommand {
 
             Map<String, Component> replacements = Map.of(
                     "next", next,
-                    "previous", previous.append(Component.text("").color(null)),
+                    "previous", previous,
                     "page", ComponentUtils.parseComponent(String.valueOf(finalPage)),
                     "maxpage", ComponentUtils.parseComponent(String.valueOf(pages))
             );
             MessageUtils.tell(sender, ComponentUtils.parsePlaceholders(getMessage("footer").getComponent(), replacements));
-            MessageUtils.tell(sender, next);
-            MessageUtils.tell(sender, previous);
         });
 
         return true;
