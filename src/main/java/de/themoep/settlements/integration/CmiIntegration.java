@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import uk.firedev.poleislib.Loggers;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.lang.reflect.Field;
 import java.util.UUID;
@@ -87,7 +88,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
             if (targeted != null && targeted.getType() == EntityType.ITEM_FRAME) {
                 Pair<Boolean, String> response = this.getCanBuildAll(event.getPlayer(), targeted.getLocation());
                 if (!response.getLeft()) {
-                    MessageUtils.tell(event.getPlayer(), response.getRight());
+                    MessageUtils.tell(event.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
                     event.setCancelled(true);
                 }
             }

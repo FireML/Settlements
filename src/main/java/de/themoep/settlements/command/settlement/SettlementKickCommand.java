@@ -33,10 +33,10 @@ public class SettlementKickCommand extends SettlementSubCommand {
                 return;
             }
             if (res.getSettlementRank().atLeast(player.getSettlementRank())) {
-                MessageUtils.tell(player, getMessage("cant-kick-higher").getComponent(), "rank", res.getSettlementRank().getTag(res.getSettlement()));
+                MessageUtils.tell(player, getMessage("cant-kick-higher").getReplacedComponent("rank", res.getSettlementRank().getTag(res.getSettlement())));
                 return;
             }
-            MessageUtils.tellResidents(res.getSettlement().getOnlineResidents(), getMessage("kicked-alert"), "player", res.getName());
+            MessageUtils.tellResidents(res.getSettlement().getOnlineResidents(), getMessage("kicked-alert").getReplacedComponent("player", res.getName()));
             Utils.runSync(() -> {
                 InviteManager.getInstance().removeInvite(res, res.getSettlement());
                 res.leaveSettlement();

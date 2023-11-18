@@ -178,9 +178,9 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         long total = getUpkeep();
         if (removeFromBank(total)) {
             SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " was charged an upkeep of " + total + "!");
-            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.charged"), "charged", String.valueOf(total));
+            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.charged").getReplacedComponent("charged", String.valueOf(total)));
             if (!has(total - lastTax)) {
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "amount", String.valueOf(total));
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay").getReplacedComponent("amount", String.valueOf(total)));
             }
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveEmpire(this);
@@ -190,10 +190,10 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " wasn't able to pay the upkeep of " + total + " and was abandoned!");
             setBank(0);
             if (Config.Empire.Upkeep.ABANDON_TIME > 0) {
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.abandoned"));
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.abandoned").getComponent());
                 EmpireManager.getInstance().abandonEmpire(this);
             } else {
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.deleted"));
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.deleted").getComponent());
                 EmpireManager.getInstance().deleteEmpire(this);
             }
         }
@@ -584,10 +584,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             ConfigManager.getInstance().getDataConfig().getConfig().set("empire.level" + level, getName());
             ConfigManager.getInstance().getDataConfig().saveConfig();
             for (Player player : Bukkit.getOnlinePlayers()) {
-                MessageUtils.tell(player, Message.get("first-to-reach-level"),
+                MessageUtils.tell(player, Message.get("first-to-reach-level").getReplacedComponent(
                         "name", this.getName(),
                         "state", "empire",
-                        "level", String.valueOf(level));
+                        "level", String.valueOf(level)
+                ));
             }
         }
     }

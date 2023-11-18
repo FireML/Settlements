@@ -94,7 +94,7 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.no-channel-permission").getComponent(), "channel", name());
+            MessageUtils.tell(player, Message.get("error.no-channel-permission").getReplacedComponent("channel", name()));
             return false;
         }
     },
@@ -109,7 +109,7 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.no-channel-permission").getComponent(), "channel", name());
+            MessageUtils.tell(player, Message.get("error.no-channel-permission").getReplacedComponent("channel", name()));
             return false;
         }
     },
@@ -125,7 +125,7 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.no-channel-permission").getComponent(), "channel", name());
+            MessageUtils.tell(player, Message.get("error.no-channel-permission").getReplacedComponent("channel", name()));
             return false;
         }
     },

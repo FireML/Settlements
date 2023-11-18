@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.permissions.Permission;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -72,12 +73,12 @@ public class CommandManager implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
         SubCommand cmd = getCommand(command.getName());
         if (cmd == null) {
-            MessageUtils.tell(sender, "&c&lUnknown command!");
+            MessageUtils.tell(sender, ComponentUtils.parseComponent("&c&lUnknown command!"));
         } else if (!cmd.execute(sender, null, alias, args)) {
             if (cmd.getMessage("usage").exists()) {
                 cmd.getMessage("usage").tell(sender, "alias", alias);
             } else if (!cmd.getHelpCommand().run(sender, cmd.getShortestAlias(), "help")) {
-                MessageUtils.tell(sender, "&c" + cmd.getUsage(null));
+                MessageUtils.tell(sender, ComponentUtils.parseComponent("&c" + cmd.getUsage(null)));
             } else {
                 return false;
             }

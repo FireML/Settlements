@@ -369,10 +369,10 @@ public class SettlementManager {
         if (settlement.getLevel() == Config.Settlement.Leveling.VILLAGE_MAX_LEVEL && settlement.getState() == SettlementState.VILLAGE) {
             settlement.setState(SettlementState.KINGDOM);
             settlement.setLevel(1);
-            MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.upgrade-settlement"), "state", settlement.getState().getTag());
+            MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.upgrade-settlement").getReplacedComponent("state", settlement.getState().getTag()));
         } else {
             settlement.setLevel(settlement.getLevel() + 1);
-            MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(settlement.getLevel()), "state", settlement.getState().getTag());
+            MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.upgrade").getReplacedComponent("level", Integer.toString(settlement.getLevel()), "state", settlement.getState().getTag()));
         }
         removeLevelRequirements(settlement, res);
         return onLevelUp(settlement, res);
@@ -386,7 +386,7 @@ public class SettlementManager {
                     Message.get("levels.perk-unlocked").tell(settlement, "perk", perk.getTag());
                     settlement.unlockPerk(res, perk);
                 } else {
-                    MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.perk-available"), "perk", perk.getTag());
+                    MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.perk-available").getReplacedComponent("perk", perk.getTag()));
                 }
                 perksDesc.add(perk.getTag());
             }

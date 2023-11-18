@@ -77,7 +77,7 @@ public class SettlementShopCommand extends SettlementSubCommand {
                         getError("already-repeated").tell(resident, "perk", perk.getTag(), "amount", String.valueOf(perk.getRepeat()));
                     } else if (resident.getSettlement().remove(perk.getRepeatCost())) {
                         resident.getSettlement().repeatPerk(resident.getPlayer(), perk);
-                        MessageUtils.tellResidents(resident.getSettlement().getOnlineResidents(), getMessage("success"), "perk", perk.getTag());
+                        MessageUtils.tellResidents(resident.getSettlement().getOnlineResidents(), getMessage("success").getReplacedComponent("perk", perk.getTag()));
                         DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
                         Utils.runAsync(() -> DatabaseManager.getInstance().log(resident.getSettlement(), resident, "perk-repeat", perk.getRepeatCost()));
                     } else {

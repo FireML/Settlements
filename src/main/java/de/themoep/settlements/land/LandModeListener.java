@@ -131,7 +131,7 @@ public class LandModeListener implements LandAccessChecker {
         if (to.getMode(PlotMode.pvp) && !bb.getPlayers().contains(p)) {
             bb.addPlayer(p);
             p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
-            MessageUtils.tell(p, Message.get("pvp-claim.enter").getText());
+            Message.get("pvp-claim.enter").tell(p);
         }
     }
 
@@ -141,7 +141,7 @@ public class LandModeListener implements LandAccessChecker {
         Player p = e.getPlayer();
         if (bb.getPlayers().contains(p)) {
             bb.removePlayer(p);
-            MessageUtils.tell(p, Message.get("pvp-claim.exit").getText());
+            Message.get("pvp-claim.exit").tell(p);
         }
     }
 
@@ -152,11 +152,11 @@ public class LandModeListener implements LandAccessChecker {
         OwnedLand to = e.getTo();
         if (!to.getMode(PlotMode.pvp) && bb.getPlayers().contains(p)) {
             bb.removePlayer(p);
-            MessageUtils.tell(p, Message.get("pvp-claim.exit").getText());
+            Message.get("pvp-claim.exit").tell(p);
         } else if (to.getMode(PlotMode.pvp) && !bb.getPlayers().contains(p)) {
             bb.addPlayer(p);
             p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
-            MessageUtils.tell(p, Message.get("pvp-claim.enter").getText());
+            Message.get("pvp-claim.enter").tell(p);
         }
     }
 

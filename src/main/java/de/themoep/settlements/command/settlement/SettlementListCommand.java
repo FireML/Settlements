@@ -76,10 +76,8 @@ public class SettlementListCommand extends SubCommand {
                         "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : ""
                 ));
                 if (!v.isAbandoned()) {
-                    component = component.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parsePlaceholders(getMessage("entry-hover").getComponent(),
-                            "chief", v.getChief().getName(),
-                            "size", String.valueOf(v.getResidents().size()),
-                            "recruitment", v.getJoinType().getTag()
+                    component = component.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("entry-hover").getReplacedComponent(
+                            v.getReplacements(this)
                     )));
                     component = component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/s info " + v.getName()));
                 }
@@ -110,7 +108,7 @@ public class SettlementListCommand extends SubCommand {
                     "page", ComponentUtils.parseComponent(String.valueOf(finalPage)),
                     "maxpage", ComponentUtils.parseComponent(String.valueOf(pages))
             );
-            MessageUtils.tell(sender, ComponentUtils.parsePlaceholders(getMessage("footer").getComponent(), replacements));
+            MessageUtils.tell(sender, getMessage("footer").getReplacedComponent(replacements));
         });
 
         return true;

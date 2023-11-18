@@ -1,13 +1,22 @@
-server-rules: "&6https://poleismc.com/rules"
+server-rules: "&6https://www.poleismc.com/rules"
 rules:
-  book-text: |-
+  default-book: |-
     &3&n&lRules&r&0
+    
     Follow all server rules
     poleismc.com/rules
     
-    All other rules should be posted somewhere. Ask where these are!
+    All Settlement rules should be posted somewhere. Ask where these are!
+    
+    {accept}
+  book-with-rules: |-
+    &3&n&lRules&r&0
+    
+    Follow all server rules
+    poleismc.com/rules
     
     {rules}
+    
     {accept}
   accept-action: |-
     [&1\[Accept\]](/s rules accept)
@@ -856,7 +865,7 @@ gui:
           &fMissions: &e{missions}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
           &fOutposts: &e{outposts}&f/&e{maxoutposts}
-          &f{chieftitle}: &e{chief}
+          &f{chieftitle}: &e{chiefonline}{chief}
           &fResidents:
           &7{residents}
         empire: |-
@@ -877,7 +886,7 @@ gui:
           &fMissions: &e{missions}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
           &fOutposts: &e{outposts}&f/&e{maxoutposts}
-          &f{chieftitle}: &e{chief}
+          &f{chieftitle}: &e{chiefonline}{chief}
           &fResidents:
           &7{residents}
       residents:
@@ -885,7 +894,7 @@ gui:
         separator: "&7, "
         online: "&a"
         offline: "&c"
-        entry: "{title} {online}{name}"
+        entry: "&f{online}{name}"
       rules: |-
         &eRule Book
 
@@ -1111,7 +1120,7 @@ gui:
         separator: "&7, "
         online: "&a"
         offline: "&c"
-        entry: "{title} {online}{name}"
+        entry: "&f{online}{name}"
       members:
         state: "&e{state}:&r {members}"
         entry: "&7{name}"
@@ -1736,7 +1745,7 @@ gui:
         separator: "&7, "
         online: "&a"
         offline: "&c"
-        entry: "{title} {online}{name}"
+        entry: "&f{online}{name}"
       members:
         state: "&e{state}s:&r {members}"
         entry: "&7{name}"
@@ -3288,8 +3297,16 @@ command:
     list:
       description: "List settlements"
       head: "&a⊱&m━━━━&r&6Settlements [{page}/{maxpage}]&a&m━━━━&a⊰"
-      entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Residents: &f{size} players\n&8Recruitment: {jointype}\n&f{description})"
+      entry: "&e• {place}. &e&l{state} &r&e{name} &r&7{access}"
       entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
+      entry-hover:
+        - "{#87ceeb}Chief: &f{chief}"
+        - "{#87ceeb}Size: &f{size} Players"
+        - "{#87ceeb}Recruitment: &f{recruitment}"
+        - ""
+        - "&f{description}"
+        - ""
+        - "&aClick to see more!"
       footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "<< Prev "
       next: " Next >>"
@@ -3538,7 +3555,7 @@ command:
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
-        {residents}
+        &e{residents}
       empire: |-
         &e&l{name}
         &fBoard: &e{description}
@@ -3554,7 +3571,7 @@ command:
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
-        {residents}
+        &e{residents}
       abandoned: |-
         &e&l{name}
         &cABANDONED!!!&r&c Falls in {abandonedcountdown}
@@ -3946,7 +3963,7 @@ command:
         separator: "&7, "
         online: "&a"
         offline: "&c"
-        entry: "{title} {online}{name}"
+        entry: "&f{online}{name}"
       members:
         state: "&e{state}:&r {members}"
         entry: "&7{name}"
@@ -3994,6 +4011,15 @@ command:
       head: "&a⊱&m━━━━&r&6Empires [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• {place}. [&r&e{name} &r&7{access}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Members: &f{size} members\n&8Recruitment: {jointype}\n&f{description})"
       entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
+      entry-hover:
+        - "{#87ceeb}Capital: &f{capitalstate}{capital}"
+        - "{#87ceeb}Leader: &f{chieftitle} {chief}"
+        - "{#87ceeb}Members: &f{size} Members"
+        - "{#87ceeb}Recruitment: &f{jointype}"
+        - ""
+        - "&f{description}"
+        - ""
+        - "&aClick to see more!"
       footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "<< Prev "
       next: " Next >>"
@@ -4228,7 +4254,7 @@ command:
         separator: "&7, "
         online: "&a"
         offline: "&c"
-        entry: "{title} {online}{name}"
+        entry: "&f{online}{name}"
       members:
         state: "&e{state}:&r {members}"
         entry: "&7{name}"

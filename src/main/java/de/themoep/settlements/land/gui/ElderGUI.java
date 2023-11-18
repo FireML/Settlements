@@ -98,7 +98,7 @@ public class ElderGUI extends ConfigurableGui {
                     Message.get("command.settlement.join.apply-cancelled").tell(resident, "name", landOwner.getName(), "state", landOwner.getStateTag());
                     click.getGui().close();
                     return true;
-                }, Utils.wrapLore(getText("recruit.cancel-apply", landOwner.getReplacements(this)))));
+                }, getTextListAsArray("recruit.cancel-apply", landOwner.getReplacements(this))));
             } else {
                 gui.addElement(new StaticGuiElement('e', getIcon("recruit"), click -> {
                     Message.get("command.settlement.join.applied").tell(resident, "name", landOwner.getName(), "state", landOwner.getStateTag());
@@ -114,7 +114,7 @@ public class ElderGUI extends ConfigurableGui {
                             "state", landOwner.getStateTag()
                     );
                     return true;
-                }, Utils.wrapLore(getText("recruit.apply", landOwner.getReplacements(this)))));
+                }, getTextListAsArray("recruit.apply", landOwner.getReplacements(this))));
             }
         } else if (landOwner.getJoinType() == JoinType.ANYONE || (landOwner.getJoinType() == JoinType.INVITE_ONLY && isInvited(resident, landOwner))) {
             gui.addElement(new StaticGuiElement('e', getIcon("recruit"), click -> {
@@ -143,9 +143,9 @@ public class ElderGUI extends ConfigurableGui {
                 }
                 click.getGui().close();
                 return true;
-            }, Utils.wrapLore(getText("recruit." + landOwner.getJoinType().getKey(), landOwner.getReplacements(this)))));
+            }, getTextListAsArray("recruit." + landOwner.getJoinType().getKey(), landOwner.getReplacements(this))));
         } else {
-            gui.addElement(new StaticGuiElement('e', getIcon("recruit"), Utils.wrapLore(getText("recruit." + landOwner.getJoinType().getKey(), landOwner.getReplacements(this)))));
+            gui.addElement(new StaticGuiElement('e', getIcon("recruit"), getTextListAsArray("recruit." + landOwner.getJoinType().getKey(), landOwner.getReplacements(this))));
         }
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("close")));

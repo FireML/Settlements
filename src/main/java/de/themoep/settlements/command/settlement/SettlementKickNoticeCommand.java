@@ -31,7 +31,7 @@ public class SettlementKickNoticeCommand extends SettlementSubCommand {
                 return;
             }
             if (res.getSettlementRank().atLeast(player.getSettlementRank())) {
-                MessageUtils.tell(player, getMessage("cant-kick-higher").getComponent(), "rank", res.getSettlementRank().getTag(res.getSettlement()));
+                MessageUtils.tell(player, getMessage("cant-kick-higher").getReplacedComponent("rank", res.getSettlementRank().getTag(res.getSettlement())));
                 return;
             }
             if (res.getSettlement().hasPermission(player, "kicknotice")) {

@@ -17,6 +17,14 @@ public interface ConfigMessages extends ConfigKey {
         return StringUtils.parseColors(getMessage(key).getReplacedText(replacements));
     }
 
+    default List<String> getTextList(String key, String... replacements) {
+        return getMessage(key).getReplacedTextList(replacements);
+    }
+
+    default String[] getTextListAsArray(String key, String... replacements) {
+        return getTextList(key, replacements).toArray(String[]::new);
+    }
+
     default String getUnlockText(LandOwner<?, ?> landOwner, String unlockable) {
         unlockable = unlockable.toLowerCase(Locale.ROOT);
         if (unlockable.startsWith("settlements.")) {

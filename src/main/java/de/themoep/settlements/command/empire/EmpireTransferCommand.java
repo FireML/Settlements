@@ -51,12 +51,12 @@ public class EmpireTransferCommand extends EmpireSubCommand {
         DatabaseManager.getInstance().saveEmpire(empire);
         oldLeader.save();
         newLeader.save();
-        MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
+        MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success").getReplacedComponent(
                 "rank", EmpireRank.getLeader().getTag(),
                 "setter", res.getName(),
                 "target", targetSettlement.getName(),
                 "empire", empire.getName()
-        );
+        ));
         return true;
     }
 }

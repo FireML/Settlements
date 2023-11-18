@@ -12,6 +12,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.regex.Pattern;
 
@@ -46,7 +47,7 @@ public class SettlementCreateCommand extends ResidentSubCommand {
                 }
                 EconomyResponse r = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) Config.Settlement.CREATION_COST);
                 if (!r.transactionSuccess()) {
-                    MessageUtils.tell(resident, "&cAn error occurred, please tell an admin!");
+                    MessageUtils.tell(resident, ComponentUtils.parseComponent("&cAn error occurred, please tell an admin!"));
                     return true;
                 }
             }

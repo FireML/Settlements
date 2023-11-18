@@ -162,7 +162,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
 
     public boolean testAccess(CommandSender sender) {
         if (!hasAccess(sender)) {
-            MessageUtils.tell(sender, getError("no-permission"), "permission", getPermission());
+            MessageUtils.tell(sender, getError("no-permission").getReplacedComponent("permission", getPermission()));
             return false;
         }
         return true;

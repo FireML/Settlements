@@ -36,10 +36,10 @@ public class EmpireKickCommand extends EmpireSubCommand {
             getMessage("cant-kick-capital").tell(resident);
             return true;
         }
-        MessageUtils.tellResidents(settlement.getEmpire().getOnlineResidents(), getMessage("kicked-alert"),
+        MessageUtils.tellResidents(settlement.getEmpire().getOnlineResidents(), getMessage("kicked-alert").getReplacedComponent(
                 "name", settlement.getName(),
                 "state", settlement.getState().getTag()
-        );
+        ));
         InviteCache.getPendingEmpireInvites().remove(settlement.getId(), settlement.getEmpire().getId());
         settlement.leaveEmpire();
         return true;

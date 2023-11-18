@@ -281,9 +281,9 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         long total = getUpkeep();
         if (removeFromBank(total)) {
             SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") was charged an upkeep of " + total + "!");
-            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.charged"), "charged", String.valueOf(total));
+            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.charged").getReplacedComponent("charged", String.valueOf(total)));
             if (!has(total - lastTax)) {
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "amount", String.valueOf(total));
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay").getReplacedComponent("amount", String.valueOf(total)));
             }
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveSettlement(this);
@@ -295,22 +295,22 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                     SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has been downgraded!");
                     setState(SettlementState.VILLAGE);
                     setLevel(Config.Settlement.Leveling.VILLAGE_MAX_LEVEL);
-                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.downgraded"), "state", getState().getTag(), "level", String.valueOf(getLevel()));
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.downgraded").getReplacedComponent("state", getState().getTag(), "level", String.valueOf(getLevel())));
                 } else {
                     SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has had a level removed!");
                     setLevel(getLevel() - 1);
-                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.level-removed"), "level", String.valueOf(getLevel()));
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.level-removed").getReplacedComponent("level", String.valueOf(getLevel())));
                 }
                 DatabaseManager.getInstance().saveSettlement(this);
             } else {
                 setBank(0);
                 if (Config.Settlement.Upkeep.ABANDON_TIME > 0) {
                     SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was abandoned!");
-                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.abandoned"));
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.abandoned").getComponent());
                     SettlementManager.getInstance().abandon(this);
                 } else {
                     SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was deleted!");
-                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted"));
+                    MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted").getComponent());
                     SettlementManager.getInstance().delete(this);
                 }
             }
@@ -392,10 +392,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
             ConfigManager.getInstance().getDataConfig().getConfig().set(settlementState.getKey() + ".level" + level, getName());
             ConfigManager.getInstance().getDataConfig().saveConfig();
             for (Player player : Bukkit.getOnlinePlayers()) {
-                MessageUtils.tell(player, Message.get("first-to-reach-level"),
+                MessageUtils.tell(player, Message.get("first-to-reach-level").getReplacedComponent(
                         "name", this.getName(),
                         "state", settlementState.name().toLowerCase(),
-                        "level", String.valueOf(level));
+                        "level", String.valueOf(level)
+                ));
             }
         }
     }
@@ -1049,6 +1050,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         size((c, v) -> String.valueOf(v.getResidentIds().size())),
         maxsize((c, v) -> String.valueOf(v.getMaxSize())),
         resonlinecount((c, v) -> String.valueOf(v.getOnlineCount())),
+        recruitment((c, v) -> v.getJoinType().getTag()),
         resotheronlinecount((c, v) -> String.valueOf(v.getOnlineCount() - 1)),
         officerranks((c, v) -> Arrays.stream(SettlementRank.values())
                 .filter(r -> !r.isChief())
@@ -1097,7 +1099,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                                     "online", res.getPlayer() != null ? online : offline,
                                     "name", res.getName(),
                                     "rank", rank.getTag(this),
-                                    "title", res.getSettlementTitle()
+                                    "title", ""
                             ))
                             .collect(Collectors.joining(separator))
             );

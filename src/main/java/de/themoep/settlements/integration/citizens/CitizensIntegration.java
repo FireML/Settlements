@@ -52,6 +52,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
@@ -335,7 +336,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
 
             Pair<Boolean, String> access = canUse(event.getClicker(), Use.NPC, event.getNPC().getEntity().getLocation());
             if (!access.getLeft()) {
-                MessageUtils.tell(event.getClicker(), access.getRight());
+                MessageUtils.tell(event.getClicker(), ComponentUtils.parseComponent(access.getRight()));
                 return;
             }
 

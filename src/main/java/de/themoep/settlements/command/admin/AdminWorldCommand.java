@@ -60,7 +60,7 @@ public class AdminWorldCommand extends PlayerSubCommand {
                             option = "disabled";
                             Utils.addDisabledWorld(player.getWorld());
                         }
-                        MessageUtils.tell(player, "&c&lClaiming has been &r&6&l" + option + "&r&c&l for world &r&6&l" + player.getWorld().getName());
+                        MessageUtils.tell(player, ComponentUtils.parseComponent("&c&lClaiming has been &r&6&l" + option + "&r&c&l for world &r&6&l" + player.getWorld().getName()));
                         return true;
                     } catch (IllegalArgumentException ignored) {}
                 }

@@ -72,7 +72,7 @@ public class ChatCommand extends PlayerSubCommand {
                     res.removeChannel(channel);
                     DatabaseManager.getInstance().saveResident(res);
                 } else {
-                    MessageUtils.tell(p, getError("not-a-channel"), "name", args[0]);
+                    MessageUtils.tell(p, getError("not-a-channel").getReplacedComponent("name", args[0]));
                 }
                 return true;
             }
@@ -96,7 +96,7 @@ public class ChatCommand extends PlayerSubCommand {
                 Resident res = ResidentManager.getInstance().getResident(p);
                 res.setSwear(!res.getSwear());
                 DatabaseManager.getInstance().saveResident(res);
-                MessageUtils.tell(p, getMessage(res.getSwear() ? "enabled" : "disabled"));
+                MessageUtils.tell(p, getMessage(res.getSwear() ? "enabled" : "disabled").getComponent());
                 return false;
             }
         });
@@ -119,11 +119,11 @@ public class ChatCommand extends PlayerSubCommand {
                 if (channel.canChat(p)) {
                     String channelName = channel.getTag();
                     if (channel.equals(res.getActiveChannel())) {
-                        MessageUtils.tell(p, getMessage("channel-entry.active"), "name", channelName);
+                        MessageUtils.tell(p, getMessage("channel-entry.active").getReplacedComponent("name", channelName));
                     } else if (res.getChannels().contains(channel)) {
-                        MessageUtils.tell(p, getMessage("channel-entry.enabled"), "name", channelName);
+                        MessageUtils.tell(p, getMessage("channel-entry.enabled").getReplacedComponent("name", channelName));
                     } else {
-                        MessageUtils.tell(p, getMessage("channel-entry.disabled"), "name", channelName);
+                        MessageUtils.tell(p, getMessage("channel-entry.disabled").getReplacedComponent("name", channelName));
                     }
                 }
             }

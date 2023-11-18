@@ -54,10 +54,10 @@ public class EmpireJoinCommand extends SettlementSubCommand {
                     "name", joinEmpire.getName(),
                     "state", resident.getSettlement().getState().getTag()
             );
-            MessageUtils.tellResidents(joinEmpire.getOnlineResidents(), getMessage("new-member"),
+            MessageUtils.tellResidents(joinEmpire.getOnlineResidents(), getMessage("new-member").getReplacedComponent(
                     "name", resident.getSettlement().getName(),
                     "state", resident.getSettlement().getState().getTag()
-            );
+            ));
         }
         return true;
     }

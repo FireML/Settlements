@@ -8,6 +8,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +27,14 @@ public class FriendListCommand extends PlayerSubCommand {
                 getError("no-friends").tell(resident);
             } else {
                 getMessage("head").tell(resident);
-                MessageUtils.tell(player, resident.getFriends().stream().map(friend -> {
+                String tell = resident.getFriends().stream().map(friend -> {
                     Player p = friend.getPlayer();
                     if (p != null && p.isOnline()) {
                         return getMessage("entry").getReplacedText("online", getText("online"), "name", p.getName());
                     }
                     return getMessage("entry").getReplacedText("online", getText("offline"), "name", friend.getPlayerName());
-                }).collect(Collectors.joining(getText("separator"))));
+                }).collect(Collectors.joining(getText("separator")));
+                MessageUtils.tell(player, ComponentUtils.parseComponent(tell));
             }
             if (!resident.getFriendRequests().isEmpty()) {
                 getMessage("head-requests").tell(resident);

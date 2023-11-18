@@ -9,7 +9,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
 import uk.firedev.poleislib.utils.ComponentUtils;
-import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,41 +16,20 @@ import java.util.Map;
 
 public class MessageUtils {
 
-    public static void tell(CommandSender sender, Message message, String... replacements) {
-        tell(sender, message.getText(), replacements);
+    public static void tell(Resident resident, Component message) {
+        tell(resident.getPlayer(), message);
     }
 
-    public static void tell(Resident resident, Component message, String... replacements) {
-        tell(resident.getPlayer(), message, replacements);
+    public static void tell(CommandSender sender, Component message) {
+        sender.sendMessage(message);
     }
 
-    public static void tell(Resident player, String message, String... replacements) {
-        tell(player.getPlayer(), message, replacements);
-    }
-
-    public static void tell(CommandSender sender, Component message, String... replacements) {
-        sender.sendMessage(ComponentUtils.parsePlaceholders(message, replacements));
-    }
-
-    public static void tell(CommandSender sender, String message, String... replacements) {
-        if (sender == null || message == null || message.isEmpty()) {
-            return;
-        }
-        if (replacements != null && replacements.length > 0) {
-            message = replacePlaceholders(message, replacements);
-        }
-        message = StringUtils.parseColors(message);
-        sender.sendMessage(ComponentUtils.parseComponent(message));
-    }
-
-    public static void tellResidents(Collection<Resident> residents, Message message, String... replacements) {
-        String send = StringUtils.parsePlaceholders(message.getText(), replacements);
-        for (Resident res : residents) {
-            tell(res.getPlayer(), send);
-        }
+    public static void tellResidents(Collection<Resident> residents, Component message) {
+        residents.forEach(resident -> resident.tell(message));
     }
 
     public static void tellListResidents(Collection<Resident> residents, List<String> message) {
+        residents.forEach(resident -> tellList(resident.getPlayer(), message));
         for (Resident res : residents) {
             tellList(res.getPlayer(), message);
         }
@@ -62,26 +40,26 @@ public class MessageUtils {
             return;
         }
         for (String message : messages) {
-            sender.sendMessage(ComponentUtils.parseComponent(message));
+            tell(sender, ComponentUtils.parseComponent(message));
         }
     }
 
-    public static void sendActionBar(List<Resident> residents, Message message, String... replacements) {
+    public static void sendActionBar(List<Resident> residents, Component message) {
         for (Resident resident : residents) {
-            sendActionBar(resident, message, replacements);
+            sendActionBar(resident, message);
         }
     }
 
-    public static void sendActionBar(Resident resident, Message message, String... replacements) {
-        sendActionBar(resident.getPlayer(), message, replacements);
+    public static void sendActionBar(Resident resident, Component message) {
+        sendActionBar(resident.getPlayer(), message);
     }
 
-    public static void sendActionBar(Player player, Message message, String... replacements) {
-        if (player == null || message == null || !message.exists()) {
+    public static void sendActionBar(Player player, Component message) {
+        if (player == null || message == null) {
             return;
         }
 
-        player.sendActionBar(message.getReplacedComponent(replacements));
+        player.sendActionBar(message);
     }
 
     public static String replacePlaceholders(String message, String... replacements) {
@@ -131,7 +109,7 @@ public class MessageUtils {
     }
 
     public static void tellAdvanced(Player player, String key, String... replacements) {
-        tell(player, Message.get(key + ".message"), replacements);
+        tell(player, Message.get(key + ".message").getReplacedComponent(replacements));
         new TitleBuilder()
                 .withTitle(Message.get(key + ".title"))
                 .withSubtitle(Message.get(key + ".subtitle"))

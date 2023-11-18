@@ -25,18 +25,18 @@ public class AdminEmpireRankCommand extends SubCommand {
         try {
             rank = EmpireRank.valueOf(args[1]);
         } catch (IllegalArgumentException e) {
-            MessageUtils.tell(sender, getError("invalid-rank"), "rank", args[1]);
+            MessageUtils.tell(sender, getError("invalid-rank").getReplacedComponent("rank", args[1]));
             return true;
         }
         EmpireRank r = rank;
         Utils.runAsync(() -> {
             Resident tRes = ResidentManager.getInstance().getResident(args[0]);
             if (tRes == null) {
-                MessageUtils.tell(sender, getError("player-not-found"), "player", args[0]);
+                MessageUtils.tell(sender, getError("player-not-found").getReplacedComponent("player", args[0]));
                 return;
             }
             if (tRes.hasEmpire()) {
-                MessageUtils.tell(sender, getError("not-in-empire"), "player", tRes.getName());
+                MessageUtils.tell(sender, getError("not-in-empire").getReplacedComponent("player", tRes.getName()));
                 return;
             }
             Empire empire = tRes.getSettlement().getEmpire();

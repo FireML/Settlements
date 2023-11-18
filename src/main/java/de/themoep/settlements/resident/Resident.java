@@ -36,6 +36,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import uk.firedev.poleislib.utils.ColorUtils;
+import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.sql.Date;
@@ -874,11 +875,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public void tell(Component message, String... replacements) {
-        MessageUtils.tell(this, message, replacements);
+        MessageUtils.tell(this.getPlayer(), ComponentUtils.parsePlaceholders(message, replacements));
     }
 
     public void tell(String message, String... replacements) {
-        MessageUtils.tell(this, message, replacements);
+        MessageUtils.tell(this.getPlayer(), ComponentUtils.parseComponent(message, replacements));
     }
 
     public boolean hasAllies() {

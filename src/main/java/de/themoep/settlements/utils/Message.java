@@ -1,22 +1,25 @@
 package de.themoep.settlements.utils;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
 import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Message {
+    private final List<String> textList = new ArrayList<>();
     private final String rawText;
     private final String text;
     private final String key;
     private final boolean exists;
-    private Component component;
 
     protected Message(String key) {
         this.key = key;
@@ -24,7 +27,8 @@ public class Message {
             rawText = ConfigManager.getInstance().getMessagesConfig().getString(key);
             exists = true;
         } else if (ConfigManager.getInstance().getMessagesConfig().isList(key)) {
-            List<?> list = ConfigManager.getInstance().getMessagesConfig().getList(key);
+            List<String> list = ConfigManager.getInstance().getMessagesConfig().getStringList(key);
+            list.forEach(string -> textList.add(StringUtils.parseColors(string)));
             rawText = list.stream().map(String::valueOf).collect(Collectors.joining("\n"));
             exists = true;
         } else {
@@ -35,9 +39,22 @@ public class Message {
         if (!exists) {
             text = "&cUnknown message &6" + key;
         }
-        text = StringUtils.parseColors(text);
+        try {
+            String checkText = ComponentUtils.toString(new MineDown(text).autoAddUrlPrefix(false).toComponent());
+            if (!checkText.isEmpty()) {
+                String newText = checkText;
+                if (newText.startsWith("§f") && !text.startsWith("&f") && !text.startsWith("§f")) {
+                    newText = newText.substring("§f".length());
+                }
+                text = StringUtils.parseColors(newText);
+            } else {
+                text = StringUtils.parseColors(text);
+            }
+        } catch (IllegalArgumentException e) {
+            text = StringUtils.parseColors(text);
+            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
+        }
         this.text = text;
-        this.component = ComponentUtils.parseComponent(text);
     }
 
     public boolean exists() {
@@ -64,19 +81,19 @@ public class Message {
     }
 
     public List<String> getTextList() {
-        return Arrays.asList(text.split("\n"));
+        return (textList.isEmpty() ? Arrays.asList(text.split("\n")) : textList);
     }
 
     public Component getComponent() {
-        return component;
+        return ComponentUtils.parseComponent(getText());
     }
 
     public Component getReplacedComponent(String... replacements) {
-        return ComponentUtils.parsePlaceholders(component, replacements);
+        return ComponentUtils.parsePlaceholders(getComponent(), replacements);
     }
 
     public Component getReplacedComponent(Map<String, Component> replacements) {
-        return ComponentUtils.parsePlaceholders(component, replacements);
+        return ComponentUtils.parsePlaceholders(getComponent(), replacements);
     }
 
     public String getReplacedText(String... replacements) {
@@ -88,11 +105,19 @@ public class Message {
     }
 
     public List<String> getReplacedTextList(String... replacements) {
-        return Arrays.asList(getReplacedText(replacements).split("\n"));
+        List<String> returnList = new ArrayList<>();
+        for (String s : getTextList()) {
+            returnList.add(StringUtils.parsePlaceholders(s, replacements));
+        }
+        return returnList;
     }
 
     public List<String> getReplacedTextList(Map<String, String> replacements) {
-        return Arrays.asList(getReplacedText(replacements).split("\n"));
+        List<String> returnList = new ArrayList<>();
+        for (String s : getTextList()) {
+            returnList.add(StringUtils.parsePlaceholders(s, replacements));
+        }
+        return returnList;
     }
 
     public MessageReplacer getReplacer() {
@@ -100,23 +125,23 @@ public class Message {
     }
 
     public void tell(CommandSender sender, String... replacements) {
-        MessageUtils.tell(sender, this, replacements);
+        MessageUtils.tell(sender, this.getReplacedComponent(replacements));
     }
 
     public void tell(Collection<Resident> residents, String... replacements) {
-        MessageUtils.tellResidents(residents, this, replacements);
+        MessageUtils.tellResidents(residents, this.getReplacedComponent(replacements));
     }
 
     public void tell(Targetable targetable, String... replacements) {
-        MessageUtils.tellResidents(targetable.getOnlineResidents(), this, replacements);
+        MessageUtils.tellResidents(targetable.getOnlineResidents(), this.getReplacedComponent(replacements));
     }
 
     public void actionbar(Targetable targetable, String... replacements) {
-        MessageUtils.sendActionBar(targetable.getOnlineResidents(), this, replacements);
+        MessageUtils.sendActionBar(targetable.getOnlineResidents(), this.getReplacedComponent(replacements));
     }
 
-    public void tell(Resident resident, String... replacements) {
-        MessageUtils.tell(resident, this.getComponent(), replacements);
+    public void tell(Resident resident) {
+        MessageUtils.tell(resident, this.getComponent());
     }
 
     public void broadcast(String... replacements) {

@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -154,7 +155,7 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
 
             Pair<Boolean, String> response = getCanBuildAll(event.getPlayer(), event.getBlock().getLocation());
             if (!response.getLeft()) {
-                MessageUtils.tell(event.getPlayer(), response.getRight());
+                MessageUtils.tell(event.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
                 event.setCancelled(true);
             }
         }

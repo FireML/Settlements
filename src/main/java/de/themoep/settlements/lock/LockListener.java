@@ -201,7 +201,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                                     getMessage("new-lock").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()));
                                     return;
                                 } else {
-                                    MessageUtils.tell(event.getPlayer(), response.getRight());
+                                    MessageUtils.tell(event.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
                                 }
                             }
                             getError("locked").tell(event.getPlayer(),

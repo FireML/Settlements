@@ -511,7 +511,7 @@ public class EmpireManager {
 
         int oldRadius = empire.getWorldRadius();
         empire.setLevel(empire.getLevel() + 1);
-        MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(empire.getLevel()), "state", empire.getStateTag());
+        MessageUtils.tellResidents(empire.getOnlineResidents(), Message.get("levels.upgrade").getReplacedComponent("level", Integer.toString(empire.getLevel()), "state", empire.getStateTag()));
         removeLevelRequirements(empire, res);
         return onLevelUp(empire, res, oldRadius);
     }

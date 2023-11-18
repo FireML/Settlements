@@ -11,6 +11,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 public class AdminJoinCommand extends SubCommand {
     public AdminJoinCommand(SubCommand parent) {
@@ -34,18 +35,18 @@ public class AdminJoinCommand extends SubCommand {
                 return;
             }
             if (target.getSettlementName().equals(settlement.getName())) {
-                MessageUtils.tell(sender, "&6&l" + target.getName() + "&r&c&l is already in the &r&6&l" + settlement.getName());
+                MessageUtils.tell(sender, ComponentUtils.parseComponent("&6&l" + target.getName() + "&r&c&l is already in the &r&6&l" + settlement.getName()));
                 return;
             }
             Utils.runSync(() -> {
                 settlement.addMember(target);
                 Message.get("command.chat.joined").tell(target, "name", ChatChannel.SETTLEMENT.getTag());
-                MessageUtils.tell(sender, "&6&l" + target.getName() + "&r&c&l is now in " + settlement.getName());
+                MessageUtils.tell(sender, ComponentUtils.parseComponent("&6&l" + target.getName() + "&r&c&l is now in " + settlement.getName()));
                 Player targetP = target.getPlayer();
                 if (targetP != null) {
-                    MessageUtils.tell(targetP, Message.get("command.settlement.join.success"), "name", settlement.getName(), "state", settlement.getState().getTag());
+                    MessageUtils.tell(targetP, Message.get("command.settlement.join.success").getReplacedComponent("name", settlement.getName(), "state", settlement.getState().getTag()));
                 }
-                MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("command.settlement.join.new-resident"), "player", target.getName());
+                MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("command.settlement.join.new-resident").getReplacedComponent("player", target.getName()));
             });
         });
         return true;
