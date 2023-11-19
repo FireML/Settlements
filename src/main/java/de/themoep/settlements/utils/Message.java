@@ -37,6 +37,7 @@ public class Message {
         }
         String text = rawText != null ? rawText : "";
         if (!exists) {
+            text = "&cUnknown Message &e" + key;
             Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "&cUnknown Message &e" + key);
         }
         try {
