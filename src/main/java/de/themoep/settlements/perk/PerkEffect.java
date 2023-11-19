@@ -6,14 +6,13 @@ import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Utils;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionType;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class PerkEffect {
-    private PotionType type;
+    private PotionEffectType type;
     private int strength = 1;
     private int length = 0;
     private boolean ambient = true;
@@ -23,13 +22,13 @@ public class PerkEffect {
     private EffectLocation applyIn;
     private EffectInfluenced applyTo = EffectInfluenced.MEMBERS;
 
-    public PerkEffect(PotionType type) {
+    public PerkEffect(PotionEffectType type) {
         Validate.notNull(type, "Unknown type!");
         this.type = type;
     }
 
     public PerkEffect(Map<String, Object> map, EffectLocation applyIn) {
-        this(PotionType.valueOf(((String) map.get("type")).toUpperCase()));
+        this(PotionEffectType.getByName((String) map.get("type")));
         this.strength = (int) map.getOrDefault("strength", strength);
         if (this.strength <= 0) {
             this.strength = 1;
@@ -42,7 +41,7 @@ public class PerkEffect {
         this.applyTo = EffectInfluenced.valueOf(ConfigKey.toEnumString(Utils.getOrDefault(map, "apply.to", applyTo.name())));
     }
 
-    public PotionType getType() {
+    public PotionEffectType getType() {
         return type;
     }
 
@@ -78,12 +77,12 @@ public class PerkEffect {
         return applyTo;
     }
 
-    public List<PotionEffect> getPotionEffects() {
-        return getType().getPotionEffects();
+    public PotionEffect getPotionEffect() {
+        return new PotionEffect(getType(), isPermanent() ? 1200 : getLength() * 20, getStrength() - 1, isAmbient(), hasParticles(), hasIcon());
     }
 
     public String getIdentifier() {
-        return getType() + "|" + (getStrength() - 1) + "|" + isAmbient() + "|" + hasParticles();
+        return getType().getName() + "|" + (getStrength() - 1) + "|" + isAmbient() + "|" + hasParticles();
     }
 
     public enum EffectLocation implements NameTag {
@@ -99,34 +98,34 @@ public class PerkEffect {
     }
 
     public record EffectInfluenced(String name) implements NameTag {
-            private static final Map<String, EffectInfluenced> byName = new HashMap<>();
+        private static final Map<String, EffectInfluenced> byName = new HashMap<>();
 
-            public static final EffectInfluenced TRUSTED = new EffectInfluenced("trusted");
-            public static final EffectInfluenced ALLIES = new EffectInfluenced("allies");
-            public static final EffectInfluenced ENEMIES = new EffectInfluenced("enemies");
-            public static final EffectInfluenced MEMBERS = new EffectInfluenced("members");
-            public static final EffectInfluenced FREE = new EffectInfluenced("free");
-            public static final EffectInfluenced ALL = new EffectInfluenced("all");
+        public static final EffectInfluenced TRUSTED = new EffectInfluenced("trusted");
+        public static final EffectInfluenced ALLIES = new EffectInfluenced("allies");
+        public static final EffectInfluenced ENEMIES = new EffectInfluenced("enemies");
+        public static final EffectInfluenced MEMBERS = new EffectInfluenced("members");
+        public static final EffectInfluenced FREE = new EffectInfluenced("free");
+        public static final EffectInfluenced ALL = new EffectInfluenced("all");
 
-            public EffectInfluenced(String name) {
-                this.name = name;
-                register(this);
-            }
-
-            public static void register(EffectInfluenced influenced) {
-                byName.put(influenced.name.toLowerCase(), influenced);
-            }
-
-            public SettlementRank getRank() {
-                return SettlementRank.get(name);
-            }
-
-            public static EffectInfluenced valueOf(String string) {
-                EffectInfluenced influenced = byName.get(string.toLowerCase());
-                if (influenced == null) {
-                    throw new IllegalArgumentException("No value for " + string + " exists!");
-                }
-                return influenced;
-            }
+        public EffectInfluenced(String name) {
+            this.name = name;
+            register(this);
         }
+
+        public static void register(EffectInfluenced influenced) {
+            byName.put(influenced.name.toLowerCase(), influenced);
+        }
+
+        public SettlementRank getRank() {
+            return SettlementRank.get(name);
+        }
+
+        public static EffectInfluenced valueOf(String string) {
+            EffectInfluenced influenced = byName.get(string.toLowerCase());
+            if (influenced == null) {
+                throw new IllegalArgumentException("No value for " + string + " exists!");
+            }
+            return influenced;
+        }
+    }
 }
