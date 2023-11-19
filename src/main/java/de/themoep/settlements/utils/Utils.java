@@ -24,6 +24,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import uk.firedev.poleislib.Loggers;
+import uk.firedev.poleislib.builders.TitleBuilder;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import uk.firedev.poleislib.utils.ColorUtils;
 import uk.firedev.poleislib.utils.StringUtils;
@@ -388,9 +389,9 @@ public class Utils {
                 String path = success ? "success" : "fail";
                 messages.getMessage(path).tell(player, replacements);
                 new TitleBuilder()
-                        .withTitle(messages.getMessage(path + "-title.title"))
-                        .withSubtitle(messages.getMessage(path + "-title.subtitle"))
-                        .withActionbar(messages.getMessage(path + "-title.actionbar"))
+                        .withTitle(messages.getMessage(path + "-title.title").getComponent())
+                        .withSubtitle(messages.getMessage(path + "-title.subtitle").getComponent())
+                        .withActionBar(messages.getMessage(path + "-title.actionbar").getComponent())
                         .send(player, replacements);
                 if (!success) {
                     SettlementsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);

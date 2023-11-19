@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
+import uk.firedev.poleislib.builders.TitleBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,9 +33,9 @@ public class ExecuteMoveUtil implements Listener {
                 public void run() {
                     if (waiting.get() > 0) {
                         new TitleBuilder()
-                                .withTitle(messages.getMessage("waiting.title"))
-                                .withSubtitle(messages.getMessage("waiting.subtitle"))
-                                .withActionbar(messages.getMessage("waiting.actionbar"))
+                                .withTitle(messages.getMessage("waiting.title").getComponent())
+                                .withSubtitle(messages.getMessage("waiting.subtitle").getComponent())
+                                .withActionBar(messages.getMessage("waiting.actionbar").getComponent())
                                 .withTimings(0, 21, 0)
                                 .send(p,
                                         "seconds", String.valueOf(waiting.get()),
@@ -69,9 +70,9 @@ public class ExecuteMoveUtil implements Listener {
                 Message.get("move-cancelled.message").tell(e.getPlayer(), "action", action.getAction());
             }
             new TitleBuilder()
-                    .withTitle(Message.get("move-cancelled.title"))
-                    .withSubtitle(Message.get("move-cancelled.subtitle"))
-                    .withActionbar(Message.get("move-cancelled.actionbar"))
+                    .withTitle(Message.get("move-cancelled.title").getComponent())
+                    .withSubtitle(Message.get("move-cancelled.subtitle").getComponent())
+                    .withActionBar(Message.get("move-cancelled.actionbar").getComponent())
                     .send(e.getPlayer(), "action", action.getAction());
         }
     }

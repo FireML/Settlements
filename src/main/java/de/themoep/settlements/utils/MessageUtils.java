@@ -7,6 +7,7 @@ import de.themoep.settlements.resident.Resident;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.builders.TitleBuilder;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
@@ -111,9 +112,9 @@ public class MessageUtils {
     public static void tellAdvanced(Player player, String key, String... replacements) {
         tell(player, Message.get(key + ".message").getReplacedComponent(replacements));
         new TitleBuilder()
-                .withTitle(Message.get(key + ".title"))
-                .withSubtitle(Message.get(key + ".subtitle"))
-                .withActionbar(Message.get(key + ".actionbar"))
+                .withTitle(Message.get(key + ".title").getComponent())
+                .withSubtitle(Message.get(key + ".subtitle").getComponent())
+                .withActionBar(Message.get(key + ".actionbar").getComponent())
                 .send(player, replacements);
     }
 
