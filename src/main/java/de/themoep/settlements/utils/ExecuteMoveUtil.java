@@ -2,15 +2,15 @@ package de.themoep.settlements.utils;
 
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.PlayerMoveBlockEvent;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 import uk.firedev.poleislib.builders.TitleBuilder;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecuteMoveUtil implements Listener {
@@ -32,15 +32,16 @@ public class ExecuteMoveUtil implements Listener {
                 @Override
                 public void run() {
                     if (waiting.get() > 0) {
+                        Map<String, Component> replacements = Map.of(
+                                "seconds", ComponentUtils.parseComponent(String.valueOf(waiting.get())),
+                                "action", ComponentUtils.parseComponent(action)
+                        );
                         new TitleBuilder()
                                 .withTitle(messages.getMessage("waiting.title").getComponent())
                                 .withSubtitle(messages.getMessage("waiting.subtitle").getComponent())
-                                .withActionBar(messages.getMessage("waiting.actionbar").getComponent())
                                 .withTimings(0, 21, 0)
-                                .send(p,
-                                        "seconds", String.valueOf(waiting.get()),
-                                        "action", action
-                                );
+                                .send(p, replacements);
+                        ComponentUtils.sendActionBar(messages.getMessage("waiting.actionbar").getReplacedComponent(replacements), p);
                     } else {
                         ActionRunnable waiting = scheduled.remove(p.getUniqueId());
                         if (waiting != null && waiting.getTaskId() == getTaskId() && p.isOnline()) {
@@ -69,11 +70,12 @@ public class ExecuteMoveUtil implements Listener {
             if (Message.get("move-cancelled.message").exists()) {
                 Message.get("move-cancelled.message").tell(e.getPlayer(), "action", action.getAction());
             }
+            Map<String, Component> replacements = Map.of("action", ComponentUtils.parseComponent(action.getAction()));
             new TitleBuilder()
                     .withTitle(Message.get("move-cancelled.title").getComponent())
                     .withSubtitle(Message.get("move-cancelled.subtitle").getComponent())
-                    .withActionBar(Message.get("move-cancelled.actionbar").getComponent())
-                    .send(e.getPlayer(), "action", action.getAction());
+                    .send(e.getPlayer(), replacements);
+            ComponentUtils.sendActionBar(Message.get("move-cancelled.actionbar").getReplacedComponent(replacements), e.getPlayer());
         }
     }
 

@@ -27,6 +27,7 @@ import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.builders.TitleBuilder;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import uk.firedev.poleislib.utils.ColorUtils;
+import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.lang.reflect.Field;
@@ -391,8 +392,8 @@ public class Utils {
                 new TitleBuilder()
                         .withTitle(messages.getMessage(path + "-title.title").getComponent())
                         .withSubtitle(messages.getMessage(path + "-title.subtitle").getComponent())
-                        .withActionBar(messages.getMessage(path + "-title.actionbar").getComponent())
                         .send(player, replacements);
+                ComponentUtils.sendActionBar(messages.getMessage(path + "-title.actionbar").getReplacedComponent(replacements), player);
                 if (!success) {
                     SettlementsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);
                 }

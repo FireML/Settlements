@@ -114,8 +114,8 @@ public class MessageUtils {
         new TitleBuilder()
                 .withTitle(Message.get(key + ".title").getComponent())
                 .withSubtitle(Message.get(key + ".subtitle").getComponent())
-                .withActionBar(Message.get(key + ".actionbar").getComponent())
                 .send(player, replacements);
+        ComponentUtils.sendActionBar(Message.get(key + ".actionbar").getReplacedComponent(replacements), player);
     }
 
     public static boolean isContainedIn(String string, String check) {
