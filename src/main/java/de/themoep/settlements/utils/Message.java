@@ -5,6 +5,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDownParser;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
@@ -36,9 +37,8 @@ public class Message {
         }
         String text = rawText != null ? rawText : "";
         if (!exists) {
-            text = "&cUnknown Message &e" + key;
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "&cUnknown Message &e" + key);
         }
-        System.out.println("Before Minedown: " + text);
         try {
             String checkText = ComponentUtils.toString(new MineDown(text).disable(MineDownParser.Option.LEGACY_COLORS).autoAddUrlPrefix(false).toComponent());
             if (!checkText.isEmpty()) {
@@ -47,7 +47,6 @@ public class Message {
         } catch (IllegalArgumentException e) {
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
         }
-        System.out.println("After Minedown: " + text);
         this.text = text;
     }
 
