@@ -53,7 +53,7 @@ public class SettlementRulesCommand extends SettlementSubCommand {
 
         String[] lines = rawRules.split("\n");
 
-        int pageLines = 0;
+        int pageLines = 1;
         StringBuilder pageBuilder = new StringBuilder();
         for (String line : lines) {
             pageLines++;
