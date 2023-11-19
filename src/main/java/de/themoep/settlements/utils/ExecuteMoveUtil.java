@@ -10,7 +10,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 import uk.firedev.poleislib.builders.TitleBuilder;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ExecuteMoveUtil implements Listener {

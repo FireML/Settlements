@@ -7,7 +7,6 @@ import de.themoep.settlements.utils.Utils;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
-import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
 import java.util.List;
