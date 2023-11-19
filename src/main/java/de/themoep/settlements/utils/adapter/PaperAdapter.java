@@ -2,6 +2,7 @@ package de.themoep.settlements.utils.adapter;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -55,18 +56,8 @@ public class PaperAdapter {
      * @param components    The book components
      * @return The book
      */
-    public ItemStack createBook(String title, String author, List<Component> components) {
-        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        List<Component> finalComponents = new ArrayList<>();
-        components.forEach(component -> finalComponents.add(ComponentUtils.parseColors(component)));
-        book.setItemMeta(createBookMeta((BookMeta) book.getItemMeta(), title, author, finalComponents));
-        return book;
-    }
-
-    public ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<Component> pages) {
-        bookMeta.setTitle(title);
-        bookMeta.setAuthor(author);
-        return (ItemMeta) bookMeta.pages(pages);
+    public Book createBook(Component title, Component author, List<Component> pages) {
+        return Book.book(title, author, pages);
     }
 
     public CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {

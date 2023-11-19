@@ -242,11 +242,11 @@ public class EventManager implements ConfigMessages {
                 "duration", UtilTime.format((double) activeEvent.getTime())
         );
 
-        activeBar = Bukkit.createBossBar(StringUtils.parseColors(MessageUtils.replacePlaceholders(bossBarFormat,
+        activeBar = Bukkit.createBossBar(StringUtils.parsePlaceholders(bossBarFormat,
                 "title", activeEvent.getTitle(),
                 "id", activeEvent.getId(),
                 "timeleft", UtilTime.format((double) activeEvent.getTime())
-        )), bossBarColor, bossBarStyle, bossBarFlags.toArray(new BarFlag[0]));
+        ), bossBarColor, bossBarStyle, bossBarFlags.toArray(new BarFlag[0]));
         activeBar.setProgress(1);
         Bukkit.getOnlinePlayers().forEach(activeBar::addPlayer);
         activeBar.setVisible(true);
@@ -263,11 +263,11 @@ public class EventManager implements ConfigMessages {
                 }
             } else {
                 long left = eventEnd - System.currentTimeMillis();
-                activeBar.setTitle(StringUtils.parseColors(MessageUtils.replacePlaceholders(bossBarFormat,
+                activeBar.setTitle(StringUtils.parsePlaceholders(bossBarFormat,
                         "title", activeEvent.getTitle(),
                         "id", activeEvent.getId(),
                         "timeleft", UtilTime.format((double) Math.round(left / 1000.0))
-                )));
+                ));
                 activeBar.setProgress(left / (double) length);
             }
         }, 1, 1, TimeUnit.SECONDS);
@@ -422,20 +422,20 @@ public class EventManager implements ConfigMessages {
             );
             if (command.contains("onlineresident") || command.contains("onlineresidentid")) {
                 for (Resident resident : settlement.getOnlineResidents()) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, Utils.addAll(replacements,
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), StringUtils.parsePlaceholders(command, Utils.addAll(replacements,
                             "onlineresident", resident.getName(),
                             "onlineresidentid", resident.getUUID().toString()
                     )));
                 }
             } else if (command.contains("resident") || command.contains("residentid")) {
                 for (Resident resident : settlement.getResidents()) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, Utils.addAll(replacements,
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), StringUtils.parsePlaceholders(command, Utils.addAll(replacements,
                             "resident", resident.getName(),
                             "residentid", resident.getUUID().toString()
                     )));
                 }
             } else {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, replacements));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), StringUtils.parsePlaceholders(command, replacements));
             }
         }
         if (reward.getMoney() > 0) {

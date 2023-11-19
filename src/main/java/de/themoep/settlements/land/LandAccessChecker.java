@@ -9,6 +9,7 @@ import de.themoep.settlements.utils.Pair;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import uk.firedev.poleislib.utils.StringUtils;
 
 public interface LandAccessChecker extends ConfigMessages, Listener {
 
@@ -30,7 +31,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
                 }
             }
             if (r != null) {
-                r.setRight(MessageUtils.replacePlaceholders(r.getRight(), "use", use.getTag()));
+                r.setRight(StringUtils.parsePlaceholders(r.getRight(), "use", use.getTag()));
                 return r;
             }
         }

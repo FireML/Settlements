@@ -3717,7 +3717,7 @@ command:
     rules:
       description: Links you to the rules
       accept:
-        success: "&eAccepted the rules! You are now a {rank} of {state}!"
+        success: "&eAccepted the rules! You are now a {rank} of {state} {name}!"
         description: Accept the settlement rules
     settings:
       description: Shows a settings gui

@@ -6,10 +6,13 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.config.Config;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class SettlementRulesCommand extends SettlementSubCommand {
     public SettlementRulesCommand(SubCommand parent) {
@@ -39,10 +42,14 @@ public class SettlementRulesCommand extends SettlementSubCommand {
         if (rules.length() > Config.MAX_RULES_LENGTH) {
             rules = rules.substring(0, Config.MAX_RULES_LENGTH);
         }
-
-        String rawRules = Message.get("rules.book-text").getReplacedText(
-                "rules", resident.getSettlement().getRules()
-        );
+        String rawRules;
+        if (rules.isEmpty()) {
+            rawRules = Message.get("rules.default-book").getText();
+        } else {
+            rawRules = Message.get("rules.book-with-rules").getReplacedText(
+                    "rules", resident.getSettlement().getRules()
+            );
+        }
 
         String[] lines = rawRules.split("\n");
 
@@ -53,8 +60,11 @@ public class SettlementRulesCommand extends SettlementSubCommand {
             if (pageLines < 14) {
                 pageBuilder.append("\n").append(line);
             } else {
+                Component acceptComponent = ComponentUtils.parseComponent(resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getText() : "");
+                acceptComponent = acceptComponent.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("/s rules accept")));
+                acceptComponent = acceptComponent.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/s rules accept"));
                 pages.add(ComponentUtils.parseComponent(pageBuilder.toString(),
-                        "accept", resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getText() : ""));
+                        Map.of("accept", acceptComponent)));
                 pageLines = 0;
                 pageBuilder = new StringBuilder();
             }
@@ -62,13 +72,16 @@ public class SettlementRulesCommand extends SettlementSubCommand {
 
         String page = pageBuilder.toString();
         if (!page.isEmpty()) {
-            pages.add(ComponentUtils.parseComponent(page, "accept", resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getText() : ""));
+            Component acceptComponent = ComponentUtils.parseComponent(resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getText() : "");
+            acceptComponent = acceptComponent.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("/s rules accept")));
+            acceptComponent = acceptComponent.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/s rules accept"));
+            pages.add(ComponentUtils.parseComponent(page, Map.of("accept", acceptComponent)));
         }
 
         if (!pages.isEmpty()) {
             resident.getPlayer().openBook(SettlementsPlugin.getInstance().getServerAdapter().createBook(
-                    "Rules",
-                    resident.getSettlement().getStateTag() + " " + resident.getSettlement().getName(),
+                    ComponentUtils.parseComponent("Rules"),
+                    ComponentUtils.parseComponent(resident.getSettlement().getStateTag() + " " + resident.getSettlement().getName()),
                     pages
             ));
         } else {

@@ -8,12 +8,10 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import uk.firedev.poleislib.builders.TitleBuilder;
-import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class MessageUtils {
 
@@ -61,32 +59,6 @@ public class MessageUtils {
         }
 
         player.sendActionBar(message);
-    }
-
-    public static String replacePlaceholders(String message, String... replacements) {
-        if (message == null) {
-            return null;
-        } else if (replacements.length == 0) {
-            return message;
-        }
-        return new Replacer()
-                .placeholderPrefix("{")
-                .placeholderSuffix("}")
-                .replace(replacements)
-                .replaceIn(message);
-    }
-
-    public static String replacePlaceholders(String message, Map<String, String> replacements) {
-        if (message == null) {
-            return null;
-        } else if (replacements.isEmpty()) {
-            return message;
-        }
-        return new Replacer()
-                .placeholderPrefix("{")
-                .placeholderSuffix("}")
-                .replace(replacements)
-                .replaceIn(message);
     }
 
     public static String yesOrNo(boolean b) {

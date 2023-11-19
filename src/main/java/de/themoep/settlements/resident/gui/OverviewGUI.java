@@ -33,7 +33,7 @@ public class OverviewGUI extends ConfigurableGui {
         Settlement settlement = resident.getSettlement();
 
         gui.addElement(new StaticGuiElement('s', getIcon("settlement"),
-                getTextListAsArray("settlement." + (settlement.hasEmpire() ? "empire" : "no-empire"), settlement.getReplacements(this))));
+                getText("settlement." + (settlement.hasEmpire() ? "empire" : "no-empire"), settlement.getReplacements(this))));
 
         gui.addElement(new StaticGuiElement('r', getIcon("rules"), click -> {
             ((SettlementRulesCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("rules"))
@@ -94,6 +94,6 @@ public class OverviewGUI extends ConfigurableGui {
         gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("friends"), !requests.isEmpty()), click -> {
             new FriendsList(resident, "general.friends").open();
             return true;
-        }, getText("friends", "amount", String.valueOf(requests.size()))));
+        }, getText("friends")));
     }
 }

@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -497,7 +498,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
             List<String> commands = new ArrayList<>();
             for (String command : perk.getCommands()) {
                 for (Resident resident : getResidents()) {
-                    commands.add(MessageUtils.replacePlaceholders(command,
+                    commands.add(StringUtils.parsePlaceholders(command,
                             "player", resident.getName(),
                             "playerid", resident.getUUID().toString(),
                             "settlement", getName(),
@@ -895,7 +896,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         map.put("id", getId().value());
         map.put("name", getName());
         map.put("description", getDescription());
-        map.put("rules", getDescription());
+        map.put("rules", getRules());
         map.put("discord", getDiscord());
         map.put("created", getCreated());
         for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
