@@ -329,6 +329,18 @@ public class LandModeListener implements LandAccessChecker {
     }
 
     @EventHandler(ignoreCancelled = true)
+    public void onTarget(EntityTargetEvent e) {
+        if (e.getTarget() instanceof Player player) {
+            if (Utils.isHostile(e.getEntityType()) && !isAllowed(player.getLocation(), PlotMode.mobSpawning)) {
+                e.setCancelled(true);
+            }
+            if (Utils.isPassive(e.getEntity()) && !isAllowed(player.getLocation(), PlotMode.passiveSpawning)) {
+                e.setCancelled(true);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerSpawnEggClick(PlayerInteractEvent event) {
         if (event.getClickedBlock() != null
                 && event.getItem() != null
