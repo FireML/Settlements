@@ -38,13 +38,6 @@ public class PaperAdapter {
         skull.setPlayerProfile(profile);
     }
 
-    public void sendTitle(Player player, Component title, Component subTitle, int in, int stay, int out) {
-        Duration inDuration = Duration.ofSeconds(in / 20);
-        Duration stayDuration = Duration.ofSeconds(stay / 20);
-        Duration outDuration = Duration.ofSeconds(out / 20);
-        player.showTitle(Title.title(title, subTitle, Title.Times.times(inDuration, stayDuration, outDuration)));
-    }
-
     public InventoryHolder getHolder(Inventory inventory) {
         return inventory.getHolder(false);
     }
