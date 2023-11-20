@@ -54,7 +54,7 @@ public class ColorSelectGui extends ConfigurableGui {
                         return true;
                     },
                     getText((residentColor == chatColor ? "selected-" : "") + "color-entry",
-                            "color", "&" + NamedTextColor.nearestTo(chatColor).asHexString(),
+                            "color", ColorUtils.hexToLegacy("&" + NamedTextColor.nearestTo(chatColor).asHexString()),
                             "name", NamedTextColor.nearestTo(chatColor).toString())
             ));
         }

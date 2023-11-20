@@ -128,9 +128,7 @@ public enum ChatChannel implements NameTag {
             MessageUtils.tell(player, Message.get("error.no-channel-permission").getReplacedComponent("channel", name()));
             return false;
         }
-    },
-    PRIVATE_SENT(true),
-    PRIVATE_RECEIVED(true);
+    };
 
     private static final Map<String, ChatChannel> BY_ALIAS = new HashMap<>();
 

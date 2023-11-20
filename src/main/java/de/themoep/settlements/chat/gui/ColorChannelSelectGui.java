@@ -31,7 +31,7 @@ public class ColorChannelSelectGui extends ConfigurableGui {
                 new ColorTypeSelectGui(resident, channel).open();
                 return true;
             }, getText("channel-entry",
-                    "color", "&" + NamedTextColor.nearestTo(resColor).asHexString(),
+                    "color", ColorUtils.hexToLegacy("&" + NamedTextColor.nearestTo(resColor).asHexString()),
                     "color-name", NamedTextColor.nearestTo(resColor).toString(),
                     "channel", channel.getTag()
             )));
