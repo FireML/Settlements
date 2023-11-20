@@ -242,7 +242,7 @@ public class EventManager implements ConfigMessages {
                 "duration", UtilTime.format((double) activeEvent.getTime())
         );
 
-        activeBar = Bukkit.createBossBar(StringUtils.parsePlaceholders(bossBarFormat,
+        activeBar = Bukkit.createBossBar(StringUtils.parseColors(bossBarFormat,
                 "title", activeEvent.getTitle(),
                 "id", activeEvent.getId(),
                 "timeleft", UtilTime.format((double) activeEvent.getTime())
@@ -263,7 +263,7 @@ public class EventManager implements ConfigMessages {
                 }
             } else {
                 long left = eventEnd - System.currentTimeMillis();
-                activeBar.setTitle(StringUtils.parsePlaceholders(bossBarFormat,
+                activeBar.setTitle(StringUtils.parseColors(bossBarFormat,
                         "title", activeEvent.getTitle(),
                         "id", activeEvent.getId(),
                         "timeleft", UtilTime.format((double) Math.round(left / 1000.0))
