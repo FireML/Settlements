@@ -2,9 +2,8 @@ package de.themoep.settlements.utils.adapter;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
-import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -20,13 +19,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
-import java.util.stream.Collectors;
 
 public class PaperAdapter {
 
@@ -36,13 +33,6 @@ public class PaperAdapter {
             profile.setProperty(new ProfileProperty(properties[i], properties[i+1]));
         }
         skull.setPlayerProfile(profile);
-    }
-
-    public void sendTitle(Player player, Component title, Component subTitle, int in, int stay, int out) {
-        Duration inDuration = Duration.ofSeconds(in / 20);
-        Duration stayDuration = Duration.ofSeconds(stay / 20);
-        Duration outDuration = Duration.ofSeconds(out / 20);
-        player.showTitle(Title.title(title, subTitle, Title.Times.times(inDuration, stayDuration, outDuration)));
     }
 
     public InventoryHolder getHolder(Inventory inventory) {
@@ -66,18 +56,8 @@ public class PaperAdapter {
      * @param components    The book components
      * @return The book
      */
-    public ItemStack createBook(String title, String author, List<Component> components) {
-        ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-        List<Component> finalComponents = new ArrayList<>();
-        components.forEach(component -> finalComponents.add(ComponentUtils.parseColors(component)));
-        book.setItemMeta(createBookMeta((BookMeta) book.getItemMeta(), title, author, finalComponents));
-        return book;
-    }
-
-    public ItemMeta createBookMeta(BookMeta bookMeta, String title, String author, List<Component> pages) {
-        bookMeta.setTitle(title);
-        bookMeta.setAuthor(author);
-        return (ItemMeta) bookMeta.pages(pages);
+    public Book createBook(Component title, Component author, List<Component> pages) {
+        return Book.book(title, author, pages);
     }
 
     public CompletableFuture<Boolean> teleportAsync(Entity entity, Location location) {

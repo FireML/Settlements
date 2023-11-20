@@ -7,6 +7,7 @@ import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.Comparator;
 import java.util.stream.Collectors;
@@ -33,7 +34,7 @@ public class SettlementResListCommand extends SettlementSubCommand {
                         "rank", rank.getTag(sender.getSettlement()),
                         "residents", rankMap.get(rank).stream()
                                 .sorted(Comparator.comparing(Resident::getSettlementJoin))
-                                .map(res -> MessageUtils.replacePlaceholders(entry,
+                                .map(res -> StringUtils.parsePlaceholders(entry,
                                         "online", res.getPlayer() != null ? online : offline,
                                         "name", res.getName(),
                                         "rank", res.getSettlementRank().getTag(res.getSettlement()),

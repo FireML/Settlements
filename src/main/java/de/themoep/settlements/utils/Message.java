@@ -5,7 +5,9 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
+import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDownParser;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
 import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
@@ -15,7 +17,6 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Message {
-    private final List<String> textList = new ArrayList<>();
     private final String rawText;
     private final String text;
     private final String key;
@@ -28,7 +29,6 @@ public class Message {
             exists = true;
         } else if (ConfigManager.getInstance().getMessagesConfig().isList(key)) {
             List<String> list = ConfigManager.getInstance().getMessagesConfig().getStringList(key);
-            list.forEach(string -> textList.add(StringUtils.parseColors(string)));
             rawText = list.stream().map(String::valueOf).collect(Collectors.joining("\n"));
             exists = true;
         } else {
@@ -37,21 +37,15 @@ public class Message {
         }
         String text = rawText != null ? rawText : "";
         if (!exists) {
-            text = "&cUnknown message &6" + key;
+            text = "&cUnknown Message &e" + key;
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "&cUnknown Message &e" + key);
         }
         try {
-            String checkText = ComponentUtils.toString(new MineDown(text).autoAddUrlPrefix(false).toComponent());
+            String checkText = ComponentUtils.toString(new MineDown(text).disable(MineDownParser.Option.LEGACY_COLORS).autoAddUrlPrefix(false).toComponent());
             if (!checkText.isEmpty()) {
-                String newText = checkText;
-                if (newText.startsWith("§f") && !text.startsWith("&f") && !text.startsWith("§f")) {
-                    newText = newText.substring("§f".length());
-                }
-                text = StringUtils.parseColors(newText);
-            } else {
-                text = StringUtils.parseColors(text);
+                text = checkText;
             }
         } catch (IllegalArgumentException e) {
-            text = StringUtils.parseColors(text);
             SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
         }
         this.text = text;
@@ -66,11 +60,11 @@ public class Message {
     }
 
     public String getRawText() {
-        return rawText;
+        return StringUtils.parseColors(rawText);
     }
 
     public String getText() {
-        return text;
+        return StringUtils.parseColors(text);
     }
 
     public String orElse(String fallback) {
@@ -81,7 +75,7 @@ public class Message {
     }
 
     public List<String> getTextList() {
-        return (textList.isEmpty() ? Arrays.asList(text.split("\n")) : textList);
+        return Arrays.asList(text.split("\n"));
     }
 
     public Component getComponent() {
@@ -97,11 +91,11 @@ public class Message {
     }
 
     public String getReplacedText(String... replacements) {
-        return MessageUtils.replacePlaceholders(text, replacements);
+        return StringUtils.parsePlaceholders(text, replacements);
     }
 
     public String getReplacedText(Map<String, String> replacements) {
-        return MessageUtils.replacePlaceholders(text, replacements);
+        return StringUtils.parsePlaceholders(text, replacements);
     }
 
     public List<String> getReplacedTextList(String... replacements) {

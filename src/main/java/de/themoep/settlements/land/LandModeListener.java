@@ -12,7 +12,6 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
-import de.themoep.settlements.utils.TitleBuilder;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
@@ -38,7 +37,6 @@ import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.My
 import java.util.logging.Level;
 
 public class LandModeListener implements LandAccessChecker {
-    private final TitleBuilder tbPvp = new TitleBuilder();
     private MyScheduledTask mobCheckTask = null;
     private long mobCheckPeriod = 0;
 
@@ -199,7 +197,6 @@ public class LandModeListener implements LandAccessChecker {
                 return;
             }
             e.setCancelled(true);
-            tbPvp.send(damager);
         }
     }
 
@@ -327,6 +324,18 @@ public class LandModeListener implements LandAccessChecker {
                 if (!isAllowed(e.getLocation(), PlotMode.passiveSpawning)) {
                     e.setCancelled(true);
                 }
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onTarget(EntityTargetEvent e) {
+        if (e.getTarget() instanceof Player player) {
+            if (Utils.isHostile(e.getEntityType()) && !isAllowed(player.getLocation(), PlotMode.mobSpawning)) {
+                e.setCancelled(true);
+            }
+            if (Utils.isPassive(e.getEntity()) && !isAllowed(player.getLocation(), PlotMode.passiveSpawning)) {
+                e.setCancelled(true);
             }
         }
     }

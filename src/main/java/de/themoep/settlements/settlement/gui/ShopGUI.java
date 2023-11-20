@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
@@ -137,9 +138,9 @@ public class ShopGUI extends ConfigurableGui {
                         ItemMeta itemMeta = item.getItemMeta();
                         if (itemMeta instanceof PotionMeta potionMeta) {
                             potionMeta.removeItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-                            PotionType type = perk.getEffects().get(0).getType();
-                            if (type != null) {
-                                potionMeta.setBasePotionType(type);
+                            PotionEffect effect = perk.getEffects().get(0).getPotionEffect();
+                            if (effect != null) {
+                                potionMeta.addCustomEffect(effect, true);
                             }
                             item.setItemMeta(potionMeta);
                         }

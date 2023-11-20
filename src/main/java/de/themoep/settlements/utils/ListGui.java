@@ -49,7 +49,7 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
                                 new StaticGuiElement('e', sortable.getIcon(), click -> {
                                     onSelect.accept(click, sortable);
                                     return true;
-                                }, message.getReplacedTextList(sortable.getReplacements(this, replacementsProvider.apply(sortable))).toArray(String[]::new))
+                                }, message.getReplacedText(sortable.getReplacements(this, replacementsProvider.apply(sortable))))
                         );
                     });
                 }

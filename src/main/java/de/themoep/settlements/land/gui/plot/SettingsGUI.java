@@ -264,7 +264,7 @@ public class SettingsGUI extends PlotGUI {
             if (land == null) {
                 return null;
             }
-            return new StaticGuiElement('i', getIcon("info"), getTextListAsArray("entry", land.getReplacements()));
+            return new StaticGuiElement('i', getIcon("info"), getText("entry", land.getReplacements()));
         }));
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));

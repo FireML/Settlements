@@ -1,7 +1,6 @@
 package de.themoep.settlements.event;
 
 import de.themoep.settlements.utils.MaterialUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;

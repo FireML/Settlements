@@ -24,8 +24,10 @@ import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import uk.firedev.poleislib.Loggers;
+import uk.firedev.poleislib.builders.TitleBuilder;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 import uk.firedev.poleislib.utils.ColorUtils;
+import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.lang.reflect.Field;
@@ -388,10 +390,10 @@ public class Utils {
                 String path = success ? "success" : "fail";
                 messages.getMessage(path).tell(player, replacements);
                 new TitleBuilder()
-                        .withTitle(messages.getMessage(path + "-title.title"))
-                        .withSubtitle(messages.getMessage(path + "-title.subtitle"))
-                        .withActionbar(messages.getMessage(path + "-title.actionbar"))
+                        .withTitle(messages.getMessage(path + "-title.title").getComponent())
+                        .withSubtitle(messages.getMessage(path + "-title.subtitle").getComponent())
                         .send(player, replacements);
+                ComponentUtils.sendActionBar(messages.getMessage(path + "-title.actionbar").getReplacedComponent(replacements), player);
                 if (!success) {
                     SettlementsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);
                 }
@@ -423,7 +425,7 @@ public class Utils {
     public static void teleportToSpawn(Player target) {
         String command = Config.Teleport.SPAWN_COMMAND;
         if (!command.isEmpty()) {
-            if (!Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, "player", target.getName()))) {
+            if (!Bukkit.dispatchCommand(Bukkit.getConsoleSender(), StringUtils.parsePlaceholders(command, "player", target.getName()))) {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not execute spawn teleport command? Is " + command + " a valid command?");
             }
         } else {

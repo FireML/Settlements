@@ -7,12 +7,11 @@ import de.themoep.settlements.resident.Resident;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
+import uk.firedev.poleislib.builders.TitleBuilder;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public class MessageUtils {
 
@@ -62,32 +61,6 @@ public class MessageUtils {
         player.sendActionBar(message);
     }
 
-    public static String replacePlaceholders(String message, String... replacements) {
-        if (message == null) {
-            return null;
-        } else if (replacements.length == 0) {
-            return message;
-        }
-        return new Replacer()
-                .placeholderPrefix("{")
-                .placeholderSuffix("}")
-                .replace(replacements)
-                .replaceIn(message);
-    }
-
-    public static String replacePlaceholders(String message, Map<String, String> replacements) {
-        if (message == null) {
-            return null;
-        } else if (replacements.isEmpty()) {
-            return message;
-        }
-        return new Replacer()
-                .placeholderPrefix("{")
-                .placeholderSuffix("}")
-                .replace(replacements)
-                .replaceIn(message);
-    }
-
     public static String yesOrNo(boolean b) {
         return b ? "Yes" : "No";
     }
@@ -111,10 +84,10 @@ public class MessageUtils {
     public static void tellAdvanced(Player player, String key, String... replacements) {
         tell(player, Message.get(key + ".message").getReplacedComponent(replacements));
         new TitleBuilder()
-                .withTitle(Message.get(key + ".title"))
-                .withSubtitle(Message.get(key + ".subtitle"))
-                .withActionbar(Message.get(key + ".actionbar"))
+                .withTitle(Message.get(key + ".title").getComponent())
+                .withSubtitle(Message.get(key + ".subtitle").getComponent())
                 .send(player, replacements);
+        ComponentUtils.sendActionBar(Message.get(key + ".actionbar").getReplacedComponent(replacements), player);
     }
 
     public static boolean isContainedIn(String string, String check) {
