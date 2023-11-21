@@ -313,7 +313,7 @@ public class PortalManager {
         }
         if (!portalEvent.isCancelled()) {
             Location finalLocation = portalEvent.getTo();
-            SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(location).thenAccept(c -> {
+            location.getWorld().getChunkAtAsync(location).thenAccept(c -> {
                 if (c == null) {
                     Message.get("error.destination-obstructed").tell(player);
                     SettlementsPlugin.logDebug("Could not load chunk at " + finalLocation);
@@ -343,7 +343,7 @@ public class PortalManager {
                         portalCooldown.remove(player);
                     }
                 }, 60);
-                SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(player, down.getRelative(BlockFace.UP).getLocation().add(0.5, 0, 0.5)).thenAccept(success -> {
+                player.teleportAsync(down.getRelative(BlockFace.UP).getLocation().add(0.5, 0, 0.5)).thenAccept(success -> {
                     if (!success) {
                         Message.get("error.destination-obstructed").tell(player);
                         SettlementsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + finalLocation);

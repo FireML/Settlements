@@ -6,6 +6,7 @@ import de.themoep.settlements.utils.ConfigurableGui;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ public abstract class PortalGUI extends ConfigurableGui {
     static {
         PORTAL = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta meta = (SkullMeta) PORTAL.getItemMeta();
-        SettlementsPlugin.getInstance().getServerAdapter().setProfile(
+        ItemUtils.setSkullProfile(
                 meta,
                 UUID.fromString("fd39933c-3068-4a5d-ac96-0d470ceff502"),
                 "Nether Portal",

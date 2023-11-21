@@ -363,7 +363,7 @@ public class Utils {
             messages.getError("destination-unknown").tell(player, "type", loc == null ? "location" : "world");
             return false;
         }
-        return teleport(messages, player, type, () -> SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(loc).thenAccept(c -> {
+        return teleport(messages, player, type, () -> loc.getWorld().getChunkAtAsync(loc).thenAccept(c -> {
             if (c == null) {
                 messages.getError("destination-obstructed").tell(player);
                 SettlementsPlugin.logDebug("Could not load chunk at " + loc);
@@ -386,7 +386,7 @@ public class Utils {
 
             player.sendBlockChange(down.getLocation(), down.getBlockData());
             loc.setY(block.getY());
-            SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(player, loc).thenAccept(success -> {
+            player.teleportAsync(loc).thenAccept(success -> {
                 String path = success ? "success" : "fail";
                 messages.getMessage(path).tell(player, replacements);
                 new TitleBuilder()
@@ -429,7 +429,7 @@ public class Utils {
                 SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not execute spawn teleport command? Is " + command + " a valid command?");
             }
         } else {
-            SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(target, Bukkit.getWorlds().get(0).getSpawnLocation());
+            target.teleportAsync(Bukkit.getWorlds().get(0).getSpawnLocation());
         }
     }
 

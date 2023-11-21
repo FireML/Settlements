@@ -8,6 +8,7 @@ import de.themoep.settlements.land.LandAccessChecker;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.FormattedCommandAlias;
 import org.bukkit.command.PluginCommand;
@@ -58,7 +59,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
     @EventHandler
     public void onCommandPreProcess(PlayerCommandPreprocessEvent event) {
         String[] split = event.getMessage().substring(1).split(" ");
-        Command command = SettlementsPlugin.getInstance().getServerAdapter().getCommandMap().getCommand(split[0]);
+        Command command = Bukkit.getCommandMap().getCommand(split[0]);
         if (command != null) {
             if (command instanceof PluginCommand) {
                 if (!isCmiItemframeCommand(event.getMessage().substring(1))) {

@@ -30,7 +30,6 @@ import de.themoep.settlements.settlement.SettlementListener;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.utils.adapter.PaperAdapter;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.milkbowl.vault.chat.Chat;
@@ -70,7 +69,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private boolean running = false;
     private static final Timer timer = new Timer();
     private LandModeListener landModeListener;
-    private PaperAdapter serverAdapter;
 
     private final List<Settlement> newlyAbandonedSettlements = new ArrayList<>();
     private final List<Settlement> newlyDeletedSettlements = new ArrayList<>();
@@ -118,7 +116,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         instance = this;
         scheduler = UniversalScheduler.getScheduler(this);
         registerListener(this);
-        serverAdapter = new PaperAdapter();
         logDebug("Using improved API provided by Paper.");
         this.checkDataFolder();
         if (!this.setupEconomy()) {
@@ -481,10 +478,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     public LandModeListener getLandModeListener() {
         return landModeListener;
-    }
-
-    public PaperAdapter getServerAdapter() {
-        return serverAdapter;
     }
 
     public Economy getEconomy() {

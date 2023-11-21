@@ -19,6 +19,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
+import uk.firedev.poleislib.utils.ItemUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
@@ -411,7 +412,7 @@ public class EventManager implements ConfigMessages {
         player.getInventory().addItem(reward.getItems().toArray(new ItemStack[0])).values()
                 .forEach(i -> {
                     Item item = player.getLocation().getWorld().dropItem(player.getLocation(), i);
-                    SettlementsPlugin.getInstance().getServerAdapter().markOwned(item, player);
+                    ItemUtils.markOwned(item, player);
                 });
         for (String command : reward.getCommands()) {
             Map<String, String> replacements = Utils.toMap(

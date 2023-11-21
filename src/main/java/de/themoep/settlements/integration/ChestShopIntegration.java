@@ -121,7 +121,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             for (SimpleChunkLocation chunkLocation : chunks) {
                 World world = Bukkit.getWorld(chunkLocation.getWorld());
                 if (world != null) {
-                    SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(world, chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
+                    world.getChunkAtAsync(chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
                 }
             }
         });

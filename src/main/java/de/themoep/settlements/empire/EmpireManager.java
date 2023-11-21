@@ -678,7 +678,7 @@ public class EmpireManager {
             for (Map.Entry<Player, Location> e : positions.entrySet()) {
                 if (e.getKey().isOnline()) {
                     e.getValue().setWorld(newWorld);
-                    SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(e.getKey(), e.getValue());
+                    e.getKey().teleportAsync(e.getValue());
                 }
             }
         }

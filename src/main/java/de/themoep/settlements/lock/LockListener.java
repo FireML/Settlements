@@ -368,8 +368,8 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onHopperMove(InventoryMoveItemEvent event) {
         if (Config.Lock.ALTERNATIVE_HOPPER_PROTECTION
-                && !(SettlementsPlugin.getInstance().getServerAdapter().getHolder(event.getSource()) instanceof HopperMinecart
-                        || SettlementsPlugin.getInstance().getServerAdapter().getHolder(event.getDestination()) instanceof HopperMinecart)) {
+                && !(event.getSource().getHolder(false) instanceof HopperMinecart)
+                        || (event.getDestination().getHolder(false) instanceof HopperMinecart)) {
             return;
         }
         Lock sourceLock = LockManager.getInstance().getLock(event.getSource().getHolder());
@@ -406,7 +406,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
     }
 
     private boolean checkForHopperLock(Player player, Block block) {
-        if (!block.isEmpty() && SettlementsPlugin.getInstance().getServerAdapter().getBlockState(block, false) instanceof InventoryHolder) {
+        if (!block.isEmpty() && block.getState(false) instanceof InventoryHolder) {
             // we use the alternative hopper protection, check if the hopper is placed below a container!
             Lock lock = LockManager.getInstance().getLock(block);
             if (lock != null && !lock.isAllowHoppers() && !lock.canAccess(player)) {

@@ -8,6 +8,8 @@ import de.themoep.settlements.utils.config.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.eclipse.sisu.space.SpaceScanner;
+import uk.firedev.poleislib.builders.BookBuilder;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.ArrayList;
@@ -79,11 +81,11 @@ public class SettlementRulesCommand extends SettlementSubCommand {
         }
 
         if (!pages.isEmpty()) {
-            resident.getPlayer().openBook(SettlementsPlugin.getInstance().getServerAdapter().createBook(
-                    ComponentUtils.parseComponent("Rules"),
-                    ComponentUtils.parseComponent(resident.getSettlement().getStateTag() + " " + resident.getSettlement().getName()),
-                    pages
-            ));
+            new BookBuilder()
+                    .withTitle(ComponentUtils.parseComponent("Rules"))
+                    .withAuthor(ComponentUtils.parseComponent(resident.getSettlement().getStateTag() + " " + resident.getSettlement().getName()))
+                    .withPages(pages)
+                    .show(resident.getPlayer());
         } else {
             resident.tell("Error while getting the rules!");
         }

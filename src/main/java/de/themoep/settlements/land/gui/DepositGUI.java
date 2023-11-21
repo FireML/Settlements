@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiStorageElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
 import uk.firedev.poleislib.utils.ComponentUtils;
+import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -134,7 +135,7 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
     private void addToInventory(Player player, ItemStack itemStack) {
         for (ItemStack rest : player.getInventory().addItem(itemStack).values()) {
             Item item = player.getWorld().dropItem(player.getLocation(), rest);
-            SettlementsPlugin.getInstance().getServerAdapter().markOwned(item, player);
+            ItemUtils.markOwned(item, player);
         }
     }
 
