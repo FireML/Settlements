@@ -433,7 +433,7 @@ embassy:
     actionbar: "&f{description}{pvp}"
     title: ""
     subtitle: "{name}"
-pvp-is-enabled: " - &cPvp is enabled!&7"
+pvp-is-enabled: " - &cPvP is enabled!&7"
 chat:
   locked: "&cChat is currently locked!"
   nobody-nearby: "&cThere is nobody around you who could hear you!"
