@@ -32,7 +32,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
     public CmiIntegration() {
         cmi = CMI.getInstance();
         if (cmi.getConfigManager().getOptimizationsSimilarCommandChecker() > 0) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "You have OptimizationsSimilarCommandChecker enabled in your CMI config." +
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "You have OptimizationsSimilarCommandChecker enabled in your CMI config." +
                     " If you want 100% from certain CMI commands then you will have to disable that!" +
                     " Unfortunately CMI does not provide a proper API to handle that securely otherwise.");
         }

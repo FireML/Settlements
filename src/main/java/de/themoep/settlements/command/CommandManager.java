@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.permissions.Permission;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.LinkedHashMap;
@@ -65,7 +66,7 @@ public class CommandManager implements TabExecutor {
             command.setPermission(ex.getPermission());
             command.permissionMessage(ex.getError("no-permission").getReplacedComponent("permission", ex.getPermission()));
         } else {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Tried to register command by the name of " + ex.name() + " but it's not defined in the plugin.yml?");
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Tried to register command by the name of " + ex.name() + " but it's not defined in the plugin.yml?");
         }
     }
 

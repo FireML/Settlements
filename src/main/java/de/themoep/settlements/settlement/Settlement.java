@@ -44,6 +44,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.*;
@@ -88,7 +89,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     @Override
     public void doUpkeep() {
         if (isAbandoned()) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
+            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), getStateTag() + " " + getName() + " is abandoned. No upkeep.");
             return;
         }
         int inactiveDays = Config.Settlement.Upkeep.INACTIVE_TIME;
@@ -159,7 +160,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                     }
                 }
             } else {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while trying to withdraw " + tax + " tax from " + resident.getName() + ": " + response.errorMessage);
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Error while trying to withdraw " + tax + " tax from " + resident.getName() + ": " + response.errorMessage);
             }
         }
 
@@ -280,7 +281,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
         long total = getUpkeep();
         if (removeFromBank(total)) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") was charged an upkeep of " + total + "!");
+            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), getState().getTag() + " " + getName() + " (level " + getLevel() + ") was charged an upkeep of " + total + "!");
             MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.charged").getReplacedComponent("charged", String.valueOf(total)));
             if (!has(total - lastTax)) {
                 MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay").getReplacedComponent("amount", String.valueOf(total)));
@@ -292,12 +293,12 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         } else {
             if (getLevel() > 1 || getState() == SettlementState.KINGDOM) {
                 if (getLevel() == 1 && getState() == SettlementState.KINGDOM) {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has been downgraded!");
+                    Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has been downgraded!");
                     setState(SettlementState.VILLAGE);
                     setLevel(Config.Settlement.Leveling.VILLAGE_MAX_LEVEL);
                     MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.downgraded").getReplacedComponent("state", getState().getTag(), "level", String.valueOf(getLevel())));
                 } else {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has had a level removed!");
+                    Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and has had a level removed!");
                     setLevel(getLevel() - 1);
                     MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.level-removed").getReplacedComponent("level", String.valueOf(getLevel())));
                 }
@@ -305,11 +306,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
             } else {
                 setBank(0);
                 if (Config.Settlement.Upkeep.ABANDON_TIME > 0) {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was abandoned!");
+                    Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was abandoned!");
                     MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.abandoned").getComponent());
                     SettlementManager.getInstance().abandon(this);
                 } else {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was deleted!");
+                    Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), getState().getTag() + " " + getName() + " (level " + getLevel() + ") wasn't able to pay the upkeep of " + total + " and was deleted!");
                     MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.deleted").getComponent());
                     SettlementManager.getInstance().delete(this);
                 }
@@ -902,7 +903,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
             return null;
         }
         if (map == null || map.get("chief") == null || map.get("level") == null || map.get("settlementState") == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Settlement! (" + map + ")");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize Settlement! (" + map + ")");
             return null;
         }
         settlement.setChief(UUID.fromString((String) map.get("chief")));

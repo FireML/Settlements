@@ -19,8 +19,10 @@ import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;
+import uk.firedev.poleislib.Loggers;
 
 import java.util.*;
+import java.util.logging.Level;
 
 public abstract class DatabaseManager {
     private static DatabaseManager instance;
@@ -39,7 +41,7 @@ public abstract class DatabaseManager {
                 instance = new SQLiteDatabase();
                 SettlementsPlugin.logDebug("Using SQLite as storage.");
             } else {
-                SettlementsPlugin.getInstance().getLogger().severe("Invalid database type config value: " + Config.Storage.TYPE);
+                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Invalid database type config value: " + Config.Storage.TYPE);
                 SettlementsPlugin.getInstance().getServer().getPluginManager().disablePlugin(SettlementsPlugin.getInstance());
             }
         }

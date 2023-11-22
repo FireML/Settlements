@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.sql.PreparedStatement;
@@ -205,7 +206,7 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
         Utils.runAsync(() -> {
             PreparedStatement sta = lwc.getPhysicalDatabase().prepare("UPDATE " + lwc.getPhysicalDatabase().getPrefix() + "protections SET world = ? WHERE world = ?;");
             if (sta == null) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to rename world of LWC protections");
+                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while trying to rename world of LWC protections");
                 return;
             }
             try {
@@ -214,7 +215,8 @@ public class LWCIntegration extends JavaModule implements LockProvider, ConfigMe
                 sta.executeUpdate();
                 lwc.getProtectionCache().clear();
             } catch (SQLException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to rename world of LWC protections", e);
+                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while trying to rename world of LWC protections");
+                Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
             }
         });
     }

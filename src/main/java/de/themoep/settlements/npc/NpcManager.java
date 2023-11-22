@@ -13,6 +13,7 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.configuration.ConfigurationSection;
+import uk.firedev.poleislib.Loggers;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -51,7 +52,7 @@ public class NpcManager {
                 try {
                     npcConfigs.put(type.getKey(), npcType, new NpcConfig(config));
                 } catch (IllegalArgumentException e) {
-                    SettlementsPlugin.getInstance().getLogger().info("Error while loading " + type.getKey() + " NPC " + npcType.getKey() + ": " + e.getMessage());
+                    Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Error while loading " + type.getKey() + " NPC " + npcType.getKey() + ": " + e.getMessage());
                     npcConfigs.put(type.getKey(), npcType, new NpcConfig(npcType));
                 }
             }
@@ -84,7 +85,7 @@ public class NpcManager {
                                 perkConfig.set("level", i);
                                 NpcPerk perk = new NpcPerk(npcType, perkConfig);
                                 if (perks.putIfAbsent(perk.name().toLowerCase(Locale.ROOT), perk) != null) {
-                                    SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Duplicate " + type + " NPC perk " + perkName + "!");
+                                    Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Duplicate " + type + " NPC perk " + perkName + "!");
                                 }
                                 switch (type) {
                                     case SETTLEMENT -> {
@@ -102,12 +103,12 @@ public class NpcManager {
                                 }
                             }
                         } catch (IllegalArgumentException e) {
-                            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for " + type + " " + npcType + " NPC Perk " + perkName + " was invalid! " + e.getMessage());
+                            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Config for " + type + " " + npcType + " NPC Perk " + perkName + " was invalid! " + e.getMessage());
                         }
                     }
                 }
             } else {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "No levels configured for " + type + " NPC " + npcType);
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "No levels configured for " + type + " NPC " + npcType);
             }
         }
     }

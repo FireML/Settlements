@@ -45,7 +45,7 @@ public class Message {
                 text = checkText;
             }
         } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
         }
         this.text = text;
     }

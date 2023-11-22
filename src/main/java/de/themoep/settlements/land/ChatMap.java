@@ -17,6 +17,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.utils.ColorUtils;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
@@ -351,7 +352,7 @@ public class ChatMap {
                 temp = ColorUtils.getColor(ConfigManager.getInstance().getMapConfig().getString("color." + getKey()).toLowerCase(), NamedTextColor.WHITE);
             } catch (IllegalArgumentException e) {
                 temp = NamedTextColor.GRAY;
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Wrong color string for " + name() + "! " + e.getMessage());
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Wrong color string for " + name() + "! " + e.getMessage());
             }
             color = temp;
         }

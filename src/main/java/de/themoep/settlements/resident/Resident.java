@@ -35,6 +35,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.utils.ColorUtils;
 import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.ItemUtils;
@@ -764,7 +765,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public static Resident deserialize(Map<String, Object> map) {
         if (map == null || map.get("uuid") == null || map.get("name") == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Resident! (" + map + ")");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize Resident! (" + map + ")");
             return null;
         }
         Resident resident = new Resident(UUID.fromString((String) map.get("uuid")), (String) map.get("name"));
@@ -775,12 +776,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         try {
             resident.setSettlementRank(SettlementRank.valueOf((String) map.get("rank")));
         } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid settlement rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid settlement rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
         }
         try {
             resident.setEmpireRank(EmpireRank.valueOf((String) map.get("empirerank")));
         } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid empire rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("empirerank"));
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid empire rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("empirerank"));
         }
         if (map.get("settlementName") != null) {
             resident.setSettlement(SettlementManager.getInstance().getFromName((String) map.get("settlementName")));
@@ -797,7 +798,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         try {
             resident.setTaxDebtAction(TaxDebtAction.valueOf((String) map.get("taxDebtAction")));
         } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid tax debt action for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("taxDebtAction"));
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid tax debt action for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("taxDebtAction"));
         }
         resident.taxPaid = Utils.getLong(map.get("taxPaid"));
         resident.donated = Utils.getLong(map.get("donated"));
@@ -824,7 +825,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         try {
             resident.setActiveChannel(ChatChannel.valueOf(((String) map.get("activeChannel")).toUpperCase()));
         } catch (Exception e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid active channel for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("activeChannel"));
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid active channel for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("activeChannel"));
         }
         if (map.containsKey("channelColors")) {
             for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelColors")).entrySet()) {

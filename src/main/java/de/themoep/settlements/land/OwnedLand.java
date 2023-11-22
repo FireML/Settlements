@@ -19,6 +19,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 import uk.firedev.poleislib.utils.StringUtils;
 
@@ -421,7 +422,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     public static OwnedLand deserialize(Map<String, Object> map) {
         if (map == null || map.get("world") == null || map.get("x") == null || map.get("z") == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize OwnedLand! (" + map + ")");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize OwnedLand! (" + map + ")");
             return null;
         }
         SimpleChunkLocation location = new SimpleChunkLocation((String) map.get("world"), (Integer) map.get("x"), (Integer) map.get("z"));
@@ -437,7 +438,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
             }
         }
         if (landOwner == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not find owner for OwnedLand! Removing it from database... (" + map + ")");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not find owner for OwnedLand! Removing it from database... (" + map + ")");
             DatabaseManager.getInstance().deleteLand(IdObject.get(map));
             return null;
         }

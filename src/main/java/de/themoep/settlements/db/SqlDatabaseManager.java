@@ -1,5 +1,6 @@
 package de.themoep.settlements.db;
 
+import com.Acrobot.ChestShop.Libs.ORMlite.logger.Log;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
@@ -619,7 +620,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public Resident getResident(int id) {
-        Utils.catchSync();
         String sql = "SELECT * FROM " + tablePrefix + "residents WHERE id=?";
         Connection conn = getConnection();
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
@@ -638,7 +638,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public Resident getResident(UUID uuid) {
-        Utils.catchSync();
         String sql = "SELECT * FROM " + tablePrefix + "residents WHERE uuid=?";
         Connection conn = getConnection();
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
@@ -660,7 +659,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         if (!name.matches("^\\w{3,16}$")) {
             return null;
         }
-        Utils.catchSync();
         String sql = "SELECT * FROM " + tablePrefix + "residents WHERE name LIKE ?";
         Connection conn = getConnection();
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
@@ -1449,7 +1447,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private IdObject save(Connection conn, DatabaseSerializable serializable, String... ignored) throws SQLException {
         if (serializable == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Tried to save something to the database but it was null?", new NullPointerException().fillInStackTrace());
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Tried to save something to the database but it was null?");
+            Loggers.logException(new NullPointerException().fillInStackTrace(), SettlementsPlugin.getInstance().getLogger());
             return IdObject.get(null);
         }
         Map<String, Object> serialized = serializable.serialize();
@@ -1616,12 +1615,14 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 try {
                     list.add((D) deserialize.invoke(null, map));
                 } catch (InvocationTargetException | IllegalAccessException e) {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Unable to deserialize " + deserializable.getSimpleName() + " object from " + tableName + " with values " + map, e);
+                    Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Unable to deserialize " + deserializable.getSimpleName() + " object from " + tableName + " with values " + map);
+                    Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
                 }
             }
             return list;
         } catch (NoSuchMethodException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, deserializable.getSimpleName() + " class does not have static deserialize method?", e);
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), deserializable.getSimpleName() + " class does not have static deserialize method?");
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
         return Collections.emptyList();
     }
@@ -1883,7 +1884,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                             queue.remove(e.getKey());
                         }
                     } catch (SQLException e) {
-                        SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while saving " + queue.size() + " " + (name != null ? name : "object") + "s to database!", e);
+                        Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while saving " + queue.size() + " " + (name != null ? name : "object") + "s to database!");
+                        Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
                     } finally {
                         db.close(conn);
                     }

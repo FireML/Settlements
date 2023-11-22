@@ -1,5 +1,6 @@
 package de.themoep.settlements;
 
+import com.Acrobot.ChestShop.Libs.ORMlite.logger.Log;
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.command.CommandManager;
@@ -40,6 +41,7 @@ import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalScheduler;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
@@ -86,25 +88,25 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             running = false;
         }
         if (Config.Storage.SAVE_ON_SHUTDOWN) {
-            getLogger().log(Level.INFO, "Saving all resident data...");
+            Loggers.log(Level.INFO, getLogger(), "Saving all resident data...");
             DatabaseManager.getInstance().saveResidents(ResidentManager.getInstance().getCachedResidents());
             DatabaseManager.getInstance().saveResidentMissionData(ResidentManager.getInstance().getCachedResidents());
-            getLogger().log(Level.INFO, "Saving all settlement data...");
+            Loggers.log(Level.INFO, getLogger(), "Saving all settlement data...");
             DatabaseManager.getInstance().saveSettlements(SettlementManager.getInstance().getSettlements());
             DatabaseManager.getInstance().saveSettlementMissionData(SettlementManager.getInstance().getSettlements());
             for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
                 DatabaseManager.getInstance().saveNpcs(settlement.getNpcData());
             }
-            getLogger().log(Level.INFO, "Saving all empire data...");
+            Loggers.log(Level.INFO, getLogger(), "Saving all empire data...");
             DatabaseManager.getInstance().saveEmpires(EmpireManager.getInstance().getEmpires());
             for (Empire empire : EmpireManager.getInstance().getEmpires()) {
                 DatabaseManager.getInstance().saveNpcs(empire.getNpcData());
             }
-            getLogger().log(Level.INFO, "Saving all lock data...");
+            Loggers.log(Level.INFO, getLogger(), "Saving all lock data...");
             DatabaseManager.getInstance().saveLocks(LockManager.getInstance().getLocks());
-            getLogger().log(Level.INFO, "Saving all land data...");
+            Loggers.log(Level.INFO, getLogger(), "Saving all land data...");
             DatabaseManager.getInstance().saveLand(LandManager.getInstance().getAllLand());
-            getLogger().log(Level.INFO, "Saving all portal data...");
+            Loggers.log(Level.INFO, getLogger(), "Saving all portal data...");
             DatabaseManager.getInstance().savePortals(PortalManager.getInstance().getPortals());
         }
         ConfigManager.getInstance().getDataConfig().saveConfig();
@@ -119,7 +121,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         logDebug("Using improved API provided by Paper.");
         this.checkDataFolder();
         if (!this.setupEconomy()) {
-            this.getLogger().log(Level.SEVERE, "Disabled due to missing economy!");
+            Loggers.log(Level.SEVERE, getLogger(), "Disabled due to missing economy!");
             this.getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -169,11 +171,11 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         UniversalRunnable runnable = new UniversalRunnable() {
             @Override
             public void run() {
-                getLogger().log(Level.INFO, "UPKEEP");
+                Loggers.log(Level.INFO, getLogger(), "UPKEEP");
                 ConfigManager.getInstance().updateLastUpkeep();
-                getLogger().log(Level.INFO, "Checking chunk unclaiming...");
+                Loggers.log(Level.INFO, getLogger(), "Checking chunk unclaiming...");
                 LandManager.getInstance().checkUnclaim();
-                getLogger().log(Level.INFO, "Handling settlement taxes and upkeep...");
+                Loggers.log(Level.INFO, getLogger(), "Handling settlement taxes and upkeep...");
                 newlyAbandonedSettlements.clear();
                 newlyDeletedSettlements.clear();
 
@@ -203,7 +205,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                 }
                 newlyDeletedSettlements.clear();
 
-                getLogger().log(Level.INFO, "Handling empire taxes and upkeep...");
+                Loggers.log(Level.INFO, getLogger(), "Handling empire taxes and upkeep...");
                 newlyAbandonedEmpires.clear();
                 newlyDeletedEmpires.clear();
 
@@ -233,17 +235,17 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                 }
                 newlyDeletedEmpires.clear();
 
-                getLogger().log(Level.INFO, "UPKEEP FINISHED!");
+                Loggers.log(Level.INFO, getLogger(), "UPKEEP FINISHED!");
             }
         };
 
         // check if the last upkeep should have happened while the server was offline
         long lastUpkeep = ConfigManager.getInstance().getLastUpkeep();
         if (lastUpkeep > 0 && lastUpkeep + TimeUnit.DAYS.toMillis(1) < System.currentTimeMillis()) {
-            getLogger().log(Level.INFO, "Last upkeep was at " + Utils.ISO_TIME_FORMAT.format(new Date(lastUpkeep)) + " (" + lastUpkeep + ") which is longer ago than a day, running upkeep once to catch up!");
+            Loggers.log(Level.INFO, getLogger(), "Last upkeep was at " + Utils.ISO_TIME_FORMAT.format(new Date(lastUpkeep)) + " (" + lastUpkeep + ") which is longer ago than a day, running upkeep once to catch up!");
             runnable.run();
         } else {
-            getLogger().log(Level.INFO, "Last upkeep was at " + Utils.ISO_TIME_FORMAT.format(new Date(lastUpkeep)) + " (" + lastUpkeep + ")");
+            Loggers.log(Level.INFO, getLogger(), "Last upkeep was at " + Utils.ISO_TIME_FORMAT.format(new Date(lastUpkeep)) + " (" + lastUpkeep + ")");
         }
 
         scheduleUpkeep(runnable);
@@ -267,7 +269,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     private void scheduleUpkeep(Runnable runnable) {
         Date nextUpkeepDate = Utils.getNextUpkeep();
-        getLogger().log(Level.INFO, "Next upkeep: " + Utils.ISO_TIME_FORMAT.format(nextUpkeepDate) + " (" + nextUpkeepDate.getTime() + ")!");
+        Loggers.log(Level.INFO, getLogger(), "Next upkeep: " + Utils.ISO_TIME_FORMAT.format(nextUpkeepDate) + " (" + nextUpkeepDate.getTime() + ")!");
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -346,9 +348,9 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         Function<Plugin, Boolean> hook = dependencies.get(plugin.getName().toLowerCase(Locale.ROOT));
         if (hook != null) {
             if (hook.apply(plugin)) {
-                getLogger().log(Level.INFO, "Hooked into " + plugin.getName() + " " + plugin.getPluginMeta().getVersion());
+                Loggers.log(Level.INFO, getLogger(), "Hooked into " + plugin.getName());
             } else {
-                getLogger().log(Level.WARNING, "Error while trying to hook into " + plugin.getName() + " " + plugin.getPluginMeta().getVersion());
+                Loggers.log(Level.WARNING, getLogger(), "Error while trying to hook into " + plugin.getName());
             }
         }
     }
@@ -365,7 +367,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         try {
             DatabaseManager.getInstance().connect();
         } catch (Exception e) {
-            this.getLogger().log(Level.SEVERE, "Disabled due to database error!", e);
+            Loggers.log(Level.SEVERE, getLogger(), "Disabled due to database error!");
+            Loggers.logException(e, getLogger());
             this.getServer().getPluginManager().disablePlugin(this);
             return false;
         }
@@ -399,32 +402,32 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     }
 
     private boolean setupChat() {
-        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
-            this.getLogger().log(Level.SEVERE, "Vault is not available?");
+        if (!this.getServer().getPluginManager().isPluginEnabled("Vault")) {
+            Loggers.log(Level.SEVERE, getLogger(), "Vault is not available?");
             return false;
         }
         RegisteredServiceProvider<Chat> rsp = this.getServer().getServicesManager().getRegistration(Chat.class);
         if (rsp == null) {
-            this.getLogger().log(Level.WARNING, "No chat service provider registered!");
+            Loggers.log(Level.WARNING, getLogger(), "No chat service provider registered!");
             return false;
         }
         chat = rsp.getProvider();
-        this.getLogger().log(Level.INFO, "Hooked into chat service provider " + chat.getName() + " " + rsp.getPlugin().getPluginMeta().getVersion());
+        Loggers.log(Level.INFO, getLogger(), "Hooked into chat service provider " + chat.getName());
         return chat != null;
     }
 
     private boolean setupEconomy() {
-        if (this.getServer().getPluginManager().getPlugin("Vault") == null) {
-            this.getLogger().log(Level.SEVERE, "Vault is not available?");
+        if (!this.getServer().getPluginManager().isPluginEnabled("Vault")) {
+            Loggers.log(Level.SEVERE, getLogger(), "Vault is not available?");
             return false;
         }
         RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
-            this.getLogger().log(Level.SEVERE, "No economy service provider registered!");
+            Loggers.log(Level.SEVERE, getLogger(), "No economy service provider registered!");
             return false;
         }
         econ = rsp.getProvider();
-        this.getLogger().log(Level.INFO, "Hooked into economy service provider " + econ.getName() + " " + rsp.getPlugin().getPluginMeta().getVersion());
+        Loggers.log(Level.INFO, getLogger(), "Hooked into economy service provider " + econ.getName());
         return econ != null;
     }
 
@@ -494,7 +497,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     public static void logDebug(String message) {
         if (Config.DEBUG) {
-            SettlementsPlugin.getInstance().getLogger().info("[DEBUG] " + message);
+            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "[DEBUG] " + message);
         }
     }
 }

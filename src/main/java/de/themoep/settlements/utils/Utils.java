@@ -256,7 +256,8 @@ public class Utils {
 
     public static void catchSync() {
         if (SettlementsPlugin.getInstance().isRunning() && Bukkit.isPrimaryThread()) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Doing an operation on the main thread that should be done async!", new Throwable());
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Doing an operation on the main thread that should be done async!");
+            Loggers.logException(new Throwable(), SettlementsPlugin.getInstance().getLogger());
         }
     }
 
@@ -426,7 +427,7 @@ public class Utils {
         String command = Config.Teleport.SPAWN_COMMAND;
         if (!command.isEmpty()) {
             if (!Bukkit.dispatchCommand(Bukkit.getConsoleSender(), StringUtils.parsePlaceholders(command, "player", target.getName()))) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not execute spawn teleport command? Is " + command + " a valid command?");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not execute spawn teleport command? Is " + command + " a valid command?");
             }
         } else {
             target.teleportAsync(Bukkit.getWorlds().get(0).getSpawnLocation());

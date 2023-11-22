@@ -25,6 +25,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
@@ -933,7 +934,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
 
     public static <T extends LandOwner> T deserialize(T landOwner, Map<String, Object> map) {
         if (map == null || map.get("name") == null || map.get("buildState") == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize LandOwner! (" + map + ")");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize LandOwner! (" + map + ")");
             return null;
         }
         landOwner.setName((String) map.get("name"));

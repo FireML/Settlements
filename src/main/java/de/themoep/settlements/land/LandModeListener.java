@@ -32,6 +32,7 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.util.logging.Level;
@@ -67,7 +68,7 @@ public class LandModeListener implements LandAccessChecker {
                         }
                     }
                     if (amount > 0) {
-                        SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Removed " + amount + " hostile mob" + (amount > 1 ? "s" : "") + " that wandered into no-mobs-claims");
+                        Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Removed " + amount + " hostile mob" + (amount > 1 ? "s" : "") + " that wandered into no-mobs-claims");
                     }
                 }, mobCheckPeriod * 20, mobCheckPeriod * 20);
             }
