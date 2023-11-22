@@ -24,6 +24,7 @@ public class PlotCommand extends ResidentSubCommand {
         registerCommand(new PlotLinkCommand(this));
         registerCommand(new PlotUnlinkCommand(this));
         registerCommand(new PlotTaxCommand(this));
+        registerCommand(new PlotResetCommand(this));
     }
 
     @Override

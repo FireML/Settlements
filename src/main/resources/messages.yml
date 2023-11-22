@@ -2907,6 +2907,8 @@ command:
       success-coords: "&a&lSUCCESS: &r&7Linked {x} {z} to your current one!"
       success-existing: "[&7Linked to other {amount} plots now!](&a{x}/{z} is linked to:\n&f{linked})"
       description: Link surrounding land flags with the current one
+    reset:
+      success: "&a&lSUCCESS: &7Reset all perms and modes in this plot."
     members:
       add:
         success: "&a&lSUCCESS: &r&7Added [{name}](Name: {name}\nUUID: {uuid}) to the plot!"
