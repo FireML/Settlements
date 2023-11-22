@@ -7,6 +7,7 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.land.events.LandChangeEvent;
 import de.themoep.settlements.land.events.LandEnterEvent;
 import de.themoep.settlements.land.events.LandLeaveEvent;
+import de.themoep.settlements.land.events.LandModeChangeEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -33,6 +34,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import uk.firedev.poleislib.Loggers;
+import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.util.logging.Level;
@@ -161,20 +163,41 @@ public class LandModeListener implements LandAccessChecker {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
+        SettlementsPlugin.getScheduler().runTaskLater(() -> {
+            BossBar bb = ConfigManager.getInstance().getBossBar();
+            Player p = e.getPlayer();
+            OwnedLand land = LandManager.getInstance().getLand(p.getLocation().getChunk());
+            if (land == null || !land.getMode(PlotMode.pvp)) {
+                if (bb.getPlayers().contains(p)) {
+                    bb.removePlayer(p);
+                }
+            } else {
+                if (!bb.getPlayers().contains(p)) {
+                    bb.addPlayer(p);
+                    p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
+                    Message.get("pvp-claim.enter").tell(p);
+                }
+            }
+        }, 5L);
+    }
+
+    @EventHandler
+    public void onModeChange(LandModeChangeEvent event) {
         BossBar bb = ConfigManager.getInstance().getBossBar();
-        Player p = e.getPlayer();
-        OwnedLand land = LandManager.getInstance().getLand(p.getLocation().getChunk());
+        OwnedLand land = event.getLand();
         if (land == null || !land.getMode(PlotMode.pvp)) {
-            if (bb.getPlayers().contains(p)) {
-                bb.removePlayer(p);
+            for (Player player : land.getPlayers()) {
+                if (bb.getPlayers().contains(player)) {
+                    bb.removePlayer(player);
+                }
             }
         } else {
-            if (!bb.getPlayers().contains(p)) {
-                bb.addPlayer(p);
-                p.playSound(p.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
-                MessageUtils.tellAdvanced(p, land.getLandOwner().getStateKey() + ".enterPvP",
-                        "state", land.getLandOwner().getStateTag()
-                );
+            for (Player player : land.getPlayers()) {
+                if (!bb.getPlayers().contains(player)) {
+                    bb.addPlayer(player);
+                    player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 0.02F, 1);
+                    Message.get("pvp-claim.enter").tell(player);
+                }
             }
         }
     }
@@ -183,10 +206,10 @@ public class LandModeListener implements LandAccessChecker {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
         if (e.getEntity() instanceof Player) {
             Player damager;
-            if (e.getDamager() instanceof Player) {
-                damager = (Player) e.getDamager();
-            } else if (e.getDamager() instanceof Projectile && ((Projectile) e.getDamager()).getShooter() instanceof Player) {
-                damager = (Player) ((Projectile) e.getDamager()).getShooter();
+            if (e.getDamager() instanceof Player player) {
+                damager = player;
+            } else if (e.getDamager() instanceof Projectile proj && proj.getShooter() instanceof Player player) {
+                damager = player;
             } else {
                 return;
             }

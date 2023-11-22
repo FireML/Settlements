@@ -4,6 +4,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.empire.EmpireManager;
+import de.themoep.settlements.land.events.LandModeChangeEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -261,7 +262,11 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public boolean unsetMode(PlotMode mode) {
-        return getModes().remove(mode) != null;
+        if (getModes().remove(mode) != null) {
+            Utils.callEvent(new LandModeChangeEvent(this));
+            return true;
+        }
+        return false;
     }
 
     public boolean hasMode(PlotMode mode) {
@@ -276,6 +281,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     @Override
     public boolean setMode(PlotMode mode, boolean value) {
         if (ModeAble.super.setMode(mode, value)) {
+            Utils.callEvent(new LandModeChangeEvent(this));
             if (SettlementsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
                 World world = Bukkit.getWorld(getWorldName());
                 if (world != null && world.isChunkLoaded(getX(), getZ())) {
