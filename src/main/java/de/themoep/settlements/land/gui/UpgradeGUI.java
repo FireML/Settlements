@@ -13,6 +13,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.SettlementLevel;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.HumanReadable;
+import de.themoep.settlements.utils.Message;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -53,6 +54,7 @@ public class UpgradeGUI extends ConfigurableGui {
 
         if (selected == null) {
             this.gui = null;
+            Message.get("command.settlement.upgrade.not-possible").tell(resident, "reason", Message.get("command.settlement.upgrade.max-level-reached").getText());
             return;
         }
 
