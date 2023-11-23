@@ -112,7 +112,7 @@ error:
   not-an-outpost: "&cThe land must be an outpost claim to set the home!"
   not-near-npc: "&cYou are not close to any {name}"
 move-cancelled:
-  title: "&cFailed"
+  title: "&c&lFailed"
   subtitle: "&fDon't move while {action}ing!"
   actionbar: ""
   message: ""
@@ -680,9 +680,11 @@ integration:
       success-title:
         title: "&2&lSuccess"
         subtitle: "&fYou have been teleported!"
+        actionbar: ""
       fail-title:
-        title: "&cFailed"
+        title: "&c&lFailed"
         subtitle: "&fUnable to teleport!"
+        actionbar: ""
     failed-to-claim: "&cFailed to automatically claim a new plot!"
   brewery:
     too-drunk-for-channel: "&cYou are too drunk to speak in &f{channel}&c! Please use the [Local](/localchat) or [Settlement](/settlementchat) chat!"
@@ -3257,12 +3259,14 @@ command:
       no-home: "&cThat {state} doesn't have a home!"
       no-access: "&cYou don't have access to teleport to the home of that {state}!"
       success: "&a&lTeleported to home of {state} {name}"
-      success-title: |-
-        &2&lSuccess
-        &fYou have been teleported!
-      fail-title: |-
-        &cFailed
-        &fUnable to teleport!
+      success-title:
+        title: "&2&lSuccess"
+        subtitle: "&fYou have been teleported!"
+        actionbar: ""
+      fail-title:
+        title: "&c&lFailed"
+        subtitle: "&fUnable to teleport!"
+        actionbar: ""
       description: Teleport to a settlement's home
     invite:
       already-in-settlement: "&c{name} is already in a {state}"
@@ -3412,12 +3416,14 @@ command:
         description: Sets a outpost home on that specific chunk
       teleport:
         success: "&a&lTeleported to outpost {name}"
-        success-title: |-
-          &2&lSuccess
-          &fYou have been teleported!
-        fail-title: |-
-          &cFailed
-          &fUnable to teleport!
+        success-title:
+          title: "&2&lSuccess"
+          subtitle: "&fYou have been teleported!"
+          actionbar: ""
+        fail-title:
+          title: "&c&lFailed"
+          subtitle: "&fUnable to teleport!"
+          actionbar: ""
         description: Teleports to a outpost shown in the list
       unclaim:
         not-an-outpost: "&cThis land is not an outpost, please use &7/s unclaim&c to unclaim this land."
@@ -3980,12 +3986,14 @@ command:
       own-no-home: "&cYour empire doesn't have a home ask your {chief} to set one!"
       no-home: "&cThe empire doesn't have a home !"
       success: "&a&lTeleported to home of {state} {name}"
-      success-title: |-
-        &2&lSuccess
-        &fYou have been teleported!
-      fail-title: |-
-        &cFailed
-        &fUnable to teleport!
+      success-title:
+        title: "&2&lSuccess"
+        subtitle: "&fYou have been teleported!"
+        actionbar: ""
+      fail-title:
+        title: "&c&lFailed"
+        subtitle: "&fUnable to teleport!"
+        actionbar: ""
       no-access: "&cYou don't have access to teleport to the home of that empire!"
       description: "Teleport to an empire's home"
     invite:
@@ -4375,12 +4383,14 @@ command:
       description: Show empire upkeep information
     world:
       success: "&a&lTeleported to world of {state} {name}"
-      success-title: |-
-        &2&lSuccess
-        &fYou have been teleported!
-      fail-title: |-
-        &cFailed
-        &fUnable to teleport!
+      success-title:
+        title: "&2&lSuccess"
+        subtitle: "&fYou have been teleported!"
+        actionbar: ""
+      fail-title:
+        title: "&c&lFailed"
+        subtitle: "&fUnable to teleport!"
+        actionbar: ""
       no-access: "&cYou don't have access to teleport to the world of that empire!"
       description: Teleport to an empire's world
     perms:
