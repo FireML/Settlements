@@ -7,7 +7,6 @@ import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.CursesFilter;
-import de.themoep.settlements.utils.IconRpMapping;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -76,7 +75,6 @@ public class ConfigManager {
     private ConfigAccessor empirePerksConf;
     private ConfigAccessor eventsConf;
     private ConfigAccessor useFlagsConf;
-    private IconRpMapping iconRpMapping;
     private CursesFilter toggleableCurses;
     private CursesFilter forcedCurses;
     private ConfigAccessor lastUpkeepConf;
@@ -131,7 +129,7 @@ public class ConfigManager {
                                 try {
                                     set.add(Material.valueOf(string.toUpperCase(Locale.ROOT)));
                                 } catch (IllegalArgumentException e) {
-                                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, o + " is not a valid Material name in the config!");
+                                    Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), o + " is not a valid Material name in the config!");
                                 }
                             }
                         }
@@ -178,7 +176,6 @@ public class ConfigManager {
         forcedCurses = new CursesFilter(new ConfigAccessor(SettlementsPlugin.getInstance(), "cursesForced.yml").getConfig());
         lastUpkeepConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "lastUpkeep.yml");
         guisConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "guis.yml");
-        iconRpMapping = new IconRpMapping(SettlementsPlugin.getInstance());
         if (Config.Chat.CHAT_ONLY) {
             Config.Lock.ENABLED = false;
             Config.Portal.ENABLED = false;
@@ -201,10 +198,10 @@ public class ConfigManager {
         long worldRadius = getConfig().getLong("empire.world.radius", getConfig().getLong("empires-world.border-radius", -1));
         if (upkeepCost > -1 || worldRadius > -1) {
             if (upkeepCost > -1) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Found that empire upkeep cost was set to " + upkeepCost + " in the config.yml. Setting that into empireLevelConf.yml. Remove the value to allow modification of the per-level value!");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Found that empire upkeep cost was set to " + upkeepCost + " in the config.yml. Setting that into empireLevelConf.yml. Remove the value to allow modification of the per-level value!");
             }
             if (worldRadius > -1) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Found that empire world radius was set to " + worldRadius + " in the config.yml. Setting that into empireLevelConf.yml. Remove the value to allow modification of the per-level value!");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Found that empire world radius was set to " + worldRadius + " in the config.yml. Setting that into empireLevelConf.yml. Remove the value to allow modification of the per-level value!");
             }
             for (int i = 1; i <= 10; i++) {
                 if (upkeepCost > -1 && upkeepCost != getEmpireLevelConfig().getLong("levels.level-" + i + ".upkeep")) {
@@ -238,14 +235,14 @@ public class ConfigManager {
                         } else {
                             Object oldValue = field.get(null);
                             if (!Objects.deepEquals(oldValue, value)) {
-                                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Tried to change a config setting which can't be reloaded: '" + path + "' Please restart.");
+                                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Tried to change a config setting which can't be reloaded: '" + path + "' Please restart.");
                             }
                         }
                     }
                 } catch (IllegalAccessException e) {
                     Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
                 } catch (IllegalArgumentException e) {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Unable to load value of " + path + "! (Was `" + rawValue + "`, expected " + field.getType().getSimpleName() + ".");
+                    Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Unable to load value of " + path + "! (Was `" + rawValue + "`, expected " + field.getType().getSimpleName() + ".");
                     SettlementsPlugin.logDebug(e.getMessage());
                 }
             }
@@ -548,10 +545,6 @@ public class ConfigManager {
 
     public FileConfiguration getConfig() {
         return SettlementsPlugin.getInstance().getConfig();
-    }
-
-    public IconRpMapping getIconRpMapping() {
-        return iconRpMapping;
     }
 
     public static ConfigManager getInstance() {

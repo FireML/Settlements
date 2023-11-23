@@ -13,6 +13,7 @@ public class FriendCommand extends PlayerSubCommand {
         registerCommand(new FriendAcceptCommand(this));
         registerCommand(new FriendRemoveCommand(this));
         registerCommand(new FriendListCommand(this));
+        registerCommand(new FriendDenyCommand(this));
     }
 
     @Override

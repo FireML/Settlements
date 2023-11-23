@@ -18,7 +18,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
+import uk.firedev.poleislib.utils.ItemUtils;
+import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -73,18 +76,18 @@ public class EventManager implements ConfigMessages {
         try {
             bossBarColor = BarColor.valueOf(config.getString("bossbar.color").toUpperCase());
         } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, config.getString("bossbar.color") + " is not a valid boss bar color!");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), config.getString("bossbar.color") + " is not a valid boss bar color!");
         }try {
             bossBarStyle = BarStyle.valueOf(config.getString("bossbar.style").toUpperCase());
         } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, config.getString("bossbar.style") + " is not a valid boss bar style!");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), config.getString("bossbar.style") + " is not a valid boss bar style!");
         }
         bossBarFlags = config.getStringList("bossbar.flags").stream()
                 .map(s -> {
                     try {
                         return BarFlag.valueOf(s.toUpperCase());
                     } catch (IllegalArgumentException e) {
-                        SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, s + " is not a valid boss bar flag!");
+                        Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), s + " is not a valid boss bar flag!");
                     }
                     return null;
                 }).filter(Objects::nonNull)
@@ -96,7 +99,7 @@ public class EventManager implements ConfigMessages {
             try {
                 rewards.put(rewardId.toLowerCase(), new Reward(rewardId, rewardsSection.getConfigurationSection(rewardId)));
             } catch (IllegalArgumentException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not load reward " + rewardId + ": " + e.getMessage());
+                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not load reward " + rewardId + ": " + e.getMessage());
             }
         }
 
@@ -108,7 +111,7 @@ public class EventManager implements ConfigMessages {
             for (List<String> rewardList : event.getRewards().values()) {
                 for (String reward : rewardList) {
                     if (getReward(reward) == null) {
-                        SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Event " + eventName + " defines a reward " + reward + " that doesn't exist.");
+                        Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Event " + eventName + " defines a reward " + reward + " that doesn't exist.");
                     }
                 }
             }
@@ -118,7 +121,7 @@ public class EventManager implements ConfigMessages {
         for (Iterator<String> it = automaticEvents.iterator(); it.hasNext();) {
             String eventName = it.next();
             if (getEvent(eventName) == null) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Event " + eventName + " defined in the automatic events list does not exist?");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Event " + eventName + " defined in the automatic events list does not exist?");
                 it.remove();
             }
         }
@@ -130,7 +133,7 @@ public class EventManager implements ConfigMessages {
 
     private void scheduleAutomaticEvents() {
         if (automaticEvents.isEmpty()) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "No automatic events configured.");
+            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "No automatic events configured.");
             return;
         }
 
@@ -140,7 +143,7 @@ public class EventManager implements ConfigMessages {
         for (String timeString : config.getStringList("automatic-events.times")) {
             String[] parts = timeString.split(":", 2);
             if (parts.length != 2) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Automatic event time " + timeString + " is not in a valid format!");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Automatic event time " + timeString + " is not in a valid format!");
                 continue;
             }
             try {
@@ -158,7 +161,7 @@ public class EventManager implements ConfigMessages {
 
                 Event event = getRandomEventAt(dateTime.get(Calendar.YEAR), dateTime.get(Calendar.DAY_OF_YEAR), hours, minutes);
                 if (event == null) {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not schedule event as " + timeString + " at " + dateTime.getTime() + " as the one selected doesn't exist?");
+                    Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not schedule event as " + timeString + " at " + dateTime.getTime() + " as the one selected doesn't exist?");
                     continue;
                 }
                 TimerTask task = new TimerTask() {
@@ -168,7 +171,7 @@ public class EventManager implements ConfigMessages {
                             if (activeEvent == null) {
                                 startEvent(event);
                             } else {
-                                SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Automatic event " + event.getId() + " was not run at " + dateTime.getTime() + " as the event " + activeEvent.getId() + " was already running.");
+                                Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Automatic event " + event.getId() + " was not run at " + dateTime.getTime() + " as the event " + activeEvent.getId() + " was already running.");
                             }
                             nextEventTasks.remove(timeString);
                             if (nextEventTasks.isEmpty()) {
@@ -181,7 +184,7 @@ public class EventManager implements ConfigMessages {
                 SettlementsPlugin.getTimer().schedule(task, dateTime.getTime());
                 SettlementsPlugin.logDebug("Scheduled event " + event.getId() + "/" + event.getTitle() + " as " + timeString + " event at " + dateTime.getTime());
             } catch (NumberFormatException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Automatic event time " + timeString + " is not in a valid format! " + e.getMessage());
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Automatic event time " + timeString + " is not in a valid format! " + e.getMessage());
             }
         }
     }
@@ -241,11 +244,11 @@ public class EventManager implements ConfigMessages {
                 "duration", UtilTime.format((double) activeEvent.getTime())
         );
 
-        activeBar = Bukkit.createBossBar(MessageUtils.replaceColorCodes(MessageUtils.replacePlaceholders(bossBarFormat,
+        activeBar = Bukkit.createBossBar(StringUtils.parseColors(bossBarFormat,
                 "title", activeEvent.getTitle(),
                 "id", activeEvent.getId(),
                 "timeleft", UtilTime.format((double) activeEvent.getTime())
-        )), bossBarColor, bossBarStyle, bossBarFlags.toArray(new BarFlag[0]));
+        ), bossBarColor, bossBarStyle, bossBarFlags.toArray(new BarFlag[0]));
         activeBar.setProgress(1);
         Bukkit.getOnlinePlayers().forEach(activeBar::addPlayer);
         activeBar.setVisible(true);
@@ -262,11 +265,11 @@ public class EventManager implements ConfigMessages {
                 }
             } else {
                 long left = eventEnd - System.currentTimeMillis();
-                activeBar.setTitle(MessageUtils.replaceColorCodes(MessageUtils.replacePlaceholders(bossBarFormat,
+                activeBar.setTitle(StringUtils.parseColors(bossBarFormat,
                         "title", activeEvent.getTitle(),
                         "id", activeEvent.getId(),
                         "timeleft", UtilTime.format((double) Math.round(left / 1000.0))
-                )));
+                ));
                 activeBar.setProgress(left / (double) length);
             }
         }, 1, 1, TimeUnit.SECONDS);
@@ -410,7 +413,7 @@ public class EventManager implements ConfigMessages {
         player.getInventory().addItem(reward.getItems().toArray(new ItemStack[0])).values()
                 .forEach(i -> {
                     Item item = player.getLocation().getWorld().dropItem(player.getLocation(), i);
-                    SettlementsPlugin.getInstance().getServerAdapter().markOwned(item, player);
+                    ItemUtils.markOwned(item, player);
                 });
         for (String command : reward.getCommands()) {
             Map<String, String> replacements = Utils.toMap(
@@ -421,20 +424,20 @@ public class EventManager implements ConfigMessages {
             );
             if (command.contains("onlineresident") || command.contains("onlineresidentid")) {
                 for (Resident resident : settlement.getOnlineResidents()) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, Utils.addAll(replacements,
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), StringUtils.parsePlaceholders(command, Utils.addAll(replacements,
                             "onlineresident", resident.getName(),
                             "onlineresidentid", resident.getUUID().toString()
                     )));
                 }
             } else if (command.contains("resident") || command.contains("residentid")) {
                 for (Resident resident : settlement.getResidents()) {
-                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, Utils.addAll(replacements,
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), StringUtils.parsePlaceholders(command, Utils.addAll(replacements,
                             "resident", resident.getName(),
                             "residentid", resident.getUUID().toString()
                     )));
                 }
             } else {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, replacements));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), StringUtils.parsePlaceholders(command, replacements));
             }
         }
         if (reward.getMoney() > 0) {

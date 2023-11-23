@@ -10,7 +10,6 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
@@ -44,7 +43,7 @@ public class ChatCommand extends PlayerSubCommand {
                             }
                         }
                     } else {
-                        ChatManager.getInstance().sendChannelMessage(p, channel, String.join(" ", args));
+                        ChatManager.getInstance().sendChannelMessage(p, channel, ComponentUtils.parseComponent(String.join(" ", args)));
                     }
                     return true;
                 }
@@ -73,7 +72,7 @@ public class ChatCommand extends PlayerSubCommand {
                     res.removeChannel(channel);
                     DatabaseManager.getInstance().saveResident(res);
                 } else {
-                    MessageUtils.tell(p, getError("not-a-channel"), "name", args[0]);
+                    MessageUtils.tell(p, getError("not-a-channel").getReplacedComponent("name", args[0]));
                 }
                 return true;
             }
@@ -83,10 +82,10 @@ public class ChatCommand extends PlayerSubCommand {
             public boolean run(Player p, String base, String alias, String... args) {
                 if (ConfigManager.getInstance().getDataConfig().getConfig().getBoolean("chat-lock")) {
                     ConfigManager.getInstance().getDataConfig().getConfig().set("chat-lock", false);
-                    Bukkit.broadcast(ComponentUtils.parseComponent(getMessage("unmuted").getReplacedText("name", p.getDisplayName())));
+                    ComponentUtils.broadcastMessage(getMessage("unmuted").getReplacedComponent("name", ComponentUtils.toString(p.displayName())));
                 } else {
                     ConfigManager.getInstance().getDataConfig().getConfig().set("chat-lock", true);
-                    Bukkit.broadcast(ComponentUtils.parseComponent(getMessage("muted").getReplacedText("name", p.getDisplayName())));
+                    ComponentUtils.broadcastMessage(getMessage("muted").getReplacedComponent("name", ComponentUtils.toString(p.displayName())));
                 }
                 return true;
             }
@@ -97,11 +96,11 @@ public class ChatCommand extends PlayerSubCommand {
                 Resident res = ResidentManager.getInstance().getResident(p);
                 res.setSwear(!res.getSwear());
                 DatabaseManager.getInstance().saveResident(res);
-                MessageUtils.tell(p, getMessage(res.getSwear() ? "enabled" : "disabled"));
+                MessageUtils.tell(p, getMessage(res.getSwear() ? "enabled" : "disabled").getComponent());
                 return false;
             }
         });
-        registerCommand(new ResidentSubCommand(this, "colour", "color", "colours", "colors") {
+        registerCommand(new ResidentSubCommand(this, "color", "colour", "colours", "colors") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
                 new ColorChannelSelectGui(resident).open();
@@ -120,11 +119,11 @@ public class ChatCommand extends PlayerSubCommand {
                 if (channel.canChat(p)) {
                     String channelName = channel.getTag();
                     if (channel.equals(res.getActiveChannel())) {
-                        MessageUtils.tell(p, getMessage("channel-entry.active"), "name", channelName);
+                        MessageUtils.tell(p, getMessage("channel-entry.active").getReplacedComponent("name", channelName));
                     } else if (res.getChannels().contains(channel)) {
-                        MessageUtils.tell(p, getMessage("channel-entry.enabled"), "name", channelName);
+                        MessageUtils.tell(p, getMessage("channel-entry.enabled").getReplacedComponent("name", channelName));
                     } else {
-                        MessageUtils.tell(p, getMessage("channel-entry.disabled"), "name", channelName);
+                        MessageUtils.tell(p, getMessage("channel-entry.disabled").getReplacedComponent("name", channelName));
                     }
                 }
             }

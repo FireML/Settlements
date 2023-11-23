@@ -21,22 +21,22 @@ public class EmpireSetRecruitmentCommand extends EmpireSubCommand {
             JoinType joinType = JoinType.valueOf(String.join("_", args).toUpperCase());
             resident.getSettlement().setJoinType(joinType);
             DatabaseManager.getInstance().saveSettlement(resident.getSettlement());
-            resident.tell(getMessage("success"), "joinType", joinType.getTag());
+            resident.tell(getMessage("success").getComponent(), "joinType", joinType.getTag());
         } catch (IllegalArgumentException e) {
-            resident.tell(getMessage("usage.head"),
+            resident.tell(getMessage("usage.head").getComponent(),
                     "name", name(),
                     "command", "/" + base + " " + alias,
                     "usage", getUsage(base),
                     "type", resident.getSettlement().getStateTag() + " "
             );
             for (JoinType joinType : JoinType.values()) {
-                resident.tell(getMessage("usage.entry"),
+                resident.tell(getMessage("usage.entry").getComponent(),
                         "usage", "/" + base + " " + alias + " " + joinType.getTag(),
                         "description", getText("access." + joinType.getKey())
                 );
             }
             if (getMessage("usage.footer").exists()) {
-                resident.tell(getMessage("usage.footer"), "name", name(), "command", "/" + base + " " + alias);
+                resident.tell(getMessage("usage.footer").getComponent(), "name", name(), "command", "/" + base + " " + alias);
             }
         }
         return true;

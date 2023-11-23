@@ -12,14 +12,22 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import org.bukkit.*;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import uk.firedev.poleislib.Loggers;
+import uk.firedev.poleislib.builders.TitleBuilder;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
+import uk.firedev.poleislib.utils.ColorUtils;
+import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.lang.reflect.Field;
@@ -86,12 +94,12 @@ public class Utils {
         return 0;
     }
 
-    public static ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
+    public static TextColor getChannelColor(ChatChannel channel, ChatColorType type) {
         return switch (type) {
             case PREFIX ->
-                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()), ChatColor.WHITE);
+                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()).toLowerCase(), NamedTextColor.WHITE);
             case MESSAGE ->
-                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()), ChatColor.WHITE);
+                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()).toLowerCase(), NamedTextColor.WHITE);
         };
     }
 
@@ -248,7 +256,8 @@ public class Utils {
 
     public static void catchSync() {
         if (SettlementsPlugin.getInstance().isRunning() && Bukkit.isPrimaryThread()) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Doing an operation on the main thread that should be done async!", new Throwable());
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Doing an operation on the main thread that should be done async!");
+            Loggers.logException(new Throwable(), SettlementsPlugin.getInstance().getLogger());
         }
     }
 
@@ -313,17 +322,16 @@ public class Utils {
                 for (i += 1; i < parts.length; i++) {
                     part2.append(" ").append(parts[i]);
                 }
-                while (!part1.isEmpty() && part1.charAt(part1.length() - 1) == ChatColor.COLOR_CHAR
-                        || part1.length() > 1 && part1.charAt(part1.length() - 2) == ChatColor.COLOR_CHAR) {
-                    if (part1.charAt(part1.length() - 1) == ChatColor.COLOR_CHAR) {
-                        part2.insert(0, ChatColor.COLOR_CHAR);
+                while (!part1.isEmpty() && part1.charAt(part1.length() - 1) == '§'
+                        || part1.length() > 1 && part1.charAt(part1.length() - 2) == '§') {
+                    if (part1.charAt(part1.length() - 1) == '§') {
+                        part2.insert(0, '§');
                         part1 = new StringBuilder(part1.substring(0, part1.length() - 1));
-                    } else if (part1.charAt(part1.length() - 2) == ChatColor.COLOR_CHAR) {
-                        part2.insert(0, ChatColor.COLOR_CHAR).insert(1, part1.charAt(part1.length() - 1));
+                    } else if (part1.charAt(part1.length() - 2) == '§') {
+                        part2.insert(0, '§').insert(1, part1.charAt(part1.length() - 1));
                         part1 = new StringBuilder(part1.substring(0, part1.length() - 2));
                     }
                 }
-                part2.insert(0, ChatColor.getLastColors(part1.toString()));
                 sb.append(part1).append("\n").append(wrap(part2.toString(), length));
             }
         }
@@ -347,14 +355,6 @@ public class Utils {
         return getNextUpkeep().getTime() - System.currentTimeMillis();
     }
 
-    public static String getIcon(Resident resident, String type) {
-        String icon = null;
-        if (resident.hasResourcePack()) {
-            icon = ConfigManager.getInstance().getIconRpMapping().getIcon(type, true);
-        }
-        return icon != null ? icon : "";
-    }
-
     /**
      * Teleports a player. Checks cooldown and delay bypass permissions
      * @return false if teleport occurred instantly and no wait task was started
@@ -364,7 +364,7 @@ public class Utils {
             messages.getError("destination-unknown").tell(player, "type", loc == null ? "location" : "world");
             return false;
         }
-        return teleport(messages, player, type, () -> SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(loc).thenAccept(c -> {
+        return teleport(messages, player, type, () -> loc.getWorld().getChunkAtAsync(loc).thenAccept(c -> {
             if (c == null) {
                 messages.getError("destination-obstructed").tell(player);
                 SettlementsPlugin.logDebug("Could not load chunk at " + loc);
@@ -387,14 +387,14 @@ public class Utils {
 
             player.sendBlockChange(down.getLocation(), down.getBlockData());
             loc.setY(block.getY());
-            SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(player, loc).thenAccept(success -> {
+            player.teleportAsync(loc).thenAccept(success -> {
                 String path = success ? "success" : "fail";
                 messages.getMessage(path).tell(player, replacements);
                 new TitleBuilder()
-                        .withTitle(messages.getMessage(path + "-title.title"))
-                        .withSubtitle(messages.getMessage(path + "-title.subtitle"))
-                        .withActionbar(messages.getMessage(path + "-title.actionbar"))
+                        .withTitle(messages.getMessage(path + "-title.title").getComponent())
+                        .withSubtitle(messages.getMessage(path + "-title.subtitle").getComponent())
                         .send(player, replacements);
+                ComponentUtils.sendActionBar(messages.getMessage(path + "-title.actionbar").getReplacedComponent(replacements), player);
                 if (!success) {
                     SettlementsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);
                 }
@@ -426,11 +426,11 @@ public class Utils {
     public static void teleportToSpawn(Player target) {
         String command = Config.Teleport.SPAWN_COMMAND;
         if (!command.isEmpty()) {
-            if (!Bukkit.dispatchCommand(Bukkit.getConsoleSender(), MessageUtils.replacePlaceholders(command, "player", target.getName()))) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not execute spawn teleport command? Is " + command + " a valid command?");
+            if (!Bukkit.dispatchCommand(Bukkit.getConsoleSender(), StringUtils.parsePlaceholders(command, "player", target.getName()))) {
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not execute spawn teleport command? Is " + command + " a valid command?");
             }
         } else {
-            SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(target, Bukkit.getWorlds().get(0).getSpawnLocation());
+            target.teleportAsync(Bukkit.getWorlds().get(0).getSpawnLocation());
         }
     }
 

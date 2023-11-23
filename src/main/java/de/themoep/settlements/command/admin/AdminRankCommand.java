@@ -27,18 +27,18 @@ public class AdminRankCommand extends SubCommand {
         try {
             rank = SettlementRank.valueOf(args[1]);
         } catch (IllegalArgumentException e) {
-            MessageUtils.tell(sender, getError("invalid-rank"), "rank", args[1]);
+            MessageUtils.tell(sender, getError("invalid-rank").getReplacedComponent("rank", args[1]));
             return true;
         }
         SettlementRank r = rank;
         Utils.runAsync(() -> {
             Resident tRes = ResidentManager.getInstance().getResident(args[0]);
             if (tRes == null) {
-                MessageUtils.tell(sender, getError("player-not-found"), "player", args[0]);
+                MessageUtils.tell(sender, getError("player-not-found").getReplacedComponent("player", args[0]));
                 return;
             }
             if (!tRes.hasSettlement()) {
-                MessageUtils.tell(sender, getError("not-in-settlement"), "player", tRes.getName());
+                MessageUtils.tell(sender, getError("not-in-settlement").getReplacedComponent("player", tRes.getName()));
                 return;
             }
             Utils.runSync(() -> {

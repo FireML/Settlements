@@ -13,7 +13,7 @@ public class EmpireMemberListCommand extends EmpireSubCommand {
     @Override
     public boolean run(Resident sender, String base, String alias, String... args) {
         Utils.runAsync(() -> {
-            sender.tell(getMessage("head"));
+            sender.tell(getMessage("head").getComponent());
             for (Settlement settlement : sender.getSettlement().getEmpire().getMembers()) {
                 getMessage("entry").tell(sender, settlement.getReplacements(this));
             }

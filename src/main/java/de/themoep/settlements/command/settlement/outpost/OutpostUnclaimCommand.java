@@ -77,10 +77,11 @@ public class OutpostUnclaimCommand extends SettlementSubCommand {
         toUnclaim.add(land);
         Runnable unclaim = () -> {
             LandManager.getInstance().unclaimLand(toUnclaim);
-            MessageUtils.tellResidents(resident.getSettlement().getOnlineResidents(), getMessage("success"),
+            MessageUtils.tellResidents(resident.getSettlement().getOnlineResidents(), getMessage("success").getReplacedComponent(
                     "amount", String.valueOf(toUnclaim.size() - 1),
                     "x", String.valueOf(resident.getPlayer().getLocation().getBlockX()),
-                    "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ()));
+                    "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ())
+            ));
         };
         Set<Portal> portals = new HashSet<>();
         if (Config.Portal.ENABLED) {

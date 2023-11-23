@@ -146,12 +146,12 @@ public interface LandOwnerCommand extends ConfigMessages {
                     continue;
                 }
                 if (land.getLandOwner().equals(landOwner)) {
-                    MessageUtils.tell(player, getError("already-own-land"));
+                    MessageUtils.tell(player, getError("already-own-land").getComponent());
                 } else {
-                    MessageUtils.tell(player, getError("cant-claim-here"),
+                    MessageUtils.tell(player, getError("cant-claim-here").getReplacedComponent(
                             "owner", land.getLandOwner().getName(),
                             "state", land.getLandOwner().getStateTag()
-                    );
+                    ));
                 }
                 return true;
             }
@@ -176,11 +176,12 @@ public interface LandOwnerCommand extends ConfigMessages {
                 }
             }
             OwnedLand newLand = LandManager.getInstance().claimLand(c, player.getLocation(), landOwner);
-            MessageUtils.tellResidents(landOwner.getOnlineResidents(), getMessage("success"),
+            MessageUtils.tellResidents(landOwner.getOnlineResidents(), getMessage("success").getReplacedComponent(
                     "player", player.getName(),
                     "world", newLand.getWorldName(),
                     "x", String.valueOf(newLand.getX()),
-                    "z", String.valueOf(newLand.getZ()));
+                    "z", String.valueOf(newLand.getZ())
+            ));
             if (newLand.containsHome()) {
                 SimpleBlockLocation home = new SimpleBlockLocation(newLand.getLandOwner().getHome());
                 getMessage("home-set").tell(landOwner,

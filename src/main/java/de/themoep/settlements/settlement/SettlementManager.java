@@ -26,6 +26,8 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Loggers;
+import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
@@ -60,7 +62,7 @@ public class SettlementManager {
                 long delay = timeAbandoned > abandonTime ? 0 : abandonTime - timeAbandoned;
                 SettlementsPlugin.logDebug(settlement.getStateTag() + " " + settlement.getName() + " will be removed after " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes in " + delay + "!");
                 Utils.runLater(() -> {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.INFO, settlement.getStateTag() + " " + settlement.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
+                    Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), settlement.getStateTag() + " " + settlement.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
                     delete(settlement);
                 }, delay, TimeUnit.MILLISECONDS);
             }
@@ -117,7 +119,7 @@ public class SettlementManager {
                 perkTags.put(perk.getTag().toLowerCase(), perk);
                 unlockables.addAll(perk.getUnlockables());
             } catch (IllegalArgumentException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Perk " + perkName + " was invalid! " + e.getMessage());
+                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Config for Perk " + perkName + " was invalid! " + e.getMessage());
             }
         }
     }
@@ -128,7 +130,7 @@ public class SettlementManager {
             try {
                 missions.put(missionId.toLowerCase(Locale.ROOT), new SettlementMission(ConfigManager.getInstance().getSettlementMissionsConfig().getConfigurationSection(missionId)));
             } catch (IllegalArgumentException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Config for Settlement Mission " + missionId + " was invalid! " + e.getMessage());
+                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Config for Settlement Mission " + missionId + " was invalid! " + e.getMessage());
             }
         }
     }
@@ -150,7 +152,7 @@ public class SettlementManager {
 
     public void registerNew(Resident chief, Settlement settlement) {
         if (!settlement.getId().isNull()) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + settlement.getName() + " to the database! It already had an ID defined?");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Error while saving " + settlement.getName() + " to the database! It already had an ID defined?");
             chief.tell(StringUtils.parseColors("&cError while saving " + settlement.getName() + " to the database! It already had an ID defined?"));
             return;
         }
@@ -166,7 +168,7 @@ public class SettlementManager {
                 settlementUuids.put(settlement.getUUID(), settlement);
                 DatabaseManager.getInstance().saveResident(chief);
             } else {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving " + settlement.getName() + " to the database! No ID was returned.");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Error while saving " + settlement.getName() + " to the database! No ID was returned.");
                 chief.tell(StringUtils.parseColors("&cError while saving " + settlement.getName() + " to the database! No ID was returned."));
             }
             Utils.runSync(() -> Utils.callEvent(new LandownerCreatedEvent(settlement, chief)));
@@ -310,11 +312,12 @@ public class SettlementManager {
         DatabaseManager.getInstance().saveResidents(residents);
         DatabaseManager.getInstance().saveLand(changedLand);
         Utils.runLater(() -> {
-            SettlementsPlugin.getInstance().getLogger().log(Level.INFO, settlement.getStateTag() + " " + settlement.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
+            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), settlement.getStateTag() + " " + settlement.getName() + " was removed because it has been abandoned for " + Config.Settlement.Upkeep.ABANDON_TIME + " minutes!");
             delete(settlement);
-            MessageUtils.broadcast(Message.get("broadcast.settlement-deletion"),
-                    "name", settlement.getName(),
-                    "state", settlement.getState().getTag());
+            ComponentUtils.broadcastMessage(Message.get("broadcast.settlement-deletion").getReplacedComponent(
+                            "name", settlement.getName(),
+                            "state", settlement.getState().getTag()
+            ));
         }, Config.Settlement.Upkeep.ABANDON_TIME, TimeUnit.MINUTES);
     }
 
@@ -367,10 +370,10 @@ public class SettlementManager {
         if (settlement.getLevel() == Config.Settlement.Leveling.VILLAGE_MAX_LEVEL && settlement.getState() == SettlementState.VILLAGE) {
             settlement.setState(SettlementState.KINGDOM);
             settlement.setLevel(1);
-            MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.upgrade-settlement"), "state", settlement.getState().getTag());
+            MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.upgrade-settlement").getReplacedComponent("state", settlement.getState().getTag()));
         } else {
             settlement.setLevel(settlement.getLevel() + 1);
-            MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.upgrade"), "level", Integer.toString(settlement.getLevel()), "state", settlement.getState().getTag());
+            MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.upgrade").getReplacedComponent("level", Integer.toString(settlement.getLevel()), "state", settlement.getState().getTag()));
         }
         removeLevelRequirements(settlement, res);
         return onLevelUp(settlement, res);
@@ -384,7 +387,7 @@ public class SettlementManager {
                     Message.get("levels.perk-unlocked").tell(settlement, "perk", perk.getTag());
                     settlement.unlockPerk(res, perk);
                 } else {
-                    MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.perk-available"), "perk", perk.getTag());
+                    MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.perk-available").getReplacedComponent("perk", perk.getTag()));
                 }
                 perksDesc.add(perk.getTag());
             }

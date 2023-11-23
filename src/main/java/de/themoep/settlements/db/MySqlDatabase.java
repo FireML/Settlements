@@ -49,7 +49,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
         try {
             return ds.getConnection();
         } catch (SQLException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to get database connection", e);
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while trying to get database connection");
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
         return null;
     }
@@ -64,7 +65,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
         try {
             if (conn != null) conn.close();
         } catch (SQLException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Error while trying to close a MySQL connection", e);
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while trying to close a MySQL connection");
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
     }
 
@@ -159,7 +161,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
             dataSourceClassName = tryDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
         }
         if (dataSourceClassName != null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Using " + dataSourceClassName + " database source");
+            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Using " + dataSourceClassName + " database source");
             ds.setDataSourceClassName(dataSourceClassName);
         }
 
@@ -173,7 +175,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
             }
 
             if (driverClassName != null) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Using " + driverClassName + " database driver");
+                Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Using " + driverClassName + " database driver");
                 ds.setDriverClassName(driverClassName);
             } else {
                 throw new RuntimeException("Could not find database driver or data source class! Plugin wont work without a database!");

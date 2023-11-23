@@ -31,7 +31,7 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.settlement-required"));
+            MessageUtils.tell(player, Message.get("error.settlement-required").getComponent());
             return false;
         }
     },
@@ -47,7 +47,7 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.no-allies"));
+            MessageUtils.tell(player, Message.get("error.no-allies").getComponent());
             return false;
         }
     },
@@ -64,7 +64,7 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.no-allies"));
+            MessageUtils.tell(player, Message.get("error.no-allies").getComponent());
             return false;
         }
     },
@@ -79,7 +79,7 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.empire-required"));
+            MessageUtils.tell(player, Message.get("error.empire-required").getComponent());
             return false;
         }
     },
@@ -94,7 +94,7 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.no-channel-permission"), "channel", name());
+            MessageUtils.tell(player, Message.get("error.no-channel-permission").getReplacedComponent("channel", name()));
             return false;
         }
     },
@@ -109,7 +109,7 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.no-channel-permission"), "channel", name());
+            MessageUtils.tell(player, Message.get("error.no-channel-permission").getReplacedComponent("channel", name()));
             return false;
         }
     },
@@ -125,12 +125,10 @@ public enum ChatChannel implements NameTag {
             if (this.canChat(player)) {
                 return true;
             }
-            MessageUtils.tell(player, Message.get("error.no-channel-permission"), "channel", name());
+            MessageUtils.tell(player, Message.get("error.no-channel-permission").getReplacedComponent("channel", name()));
             return false;
         }
-    },
-    PRIVATE_SENT(true),
-    PRIVATE_RECEIVED(true);
+    };
 
     private static final Map<String, ChatChannel> BY_ALIAS = new HashMap<>();
 

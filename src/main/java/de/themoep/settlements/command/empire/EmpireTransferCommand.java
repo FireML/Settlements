@@ -23,16 +23,16 @@ public class EmpireTransferCommand extends EmpireSubCommand {
         }
         Settlement targetSettlement = SettlementManager.getInstance().getFromName(args[0]);
         if (targetSettlement == null) {
-            res.tell(getError("settlement-doesnt-exist"), "name", args[0]);
+            res.tell(getError("settlement-doesnt-exist").getComponent(), "name", args[0]);
             return true;
         }
         Empire empire = res.getSettlement().getEmpire();
         if (!empire.isMember(targetSettlement)) {
-            res.tell(getError("not-in-empire"), "name", empire.getName());
+            res.tell(getError("not-in-empire").getComponent(), "name", empire.getName());
             return true;
         }
         if (empire.isCapital(targetSettlement)) {
-            res.tell(getError("already-capital"), "name", targetSettlement.getName(), "state", targetSettlement.getStateTag());
+            res.tell(getError("already-capital").getComponent(), "name", targetSettlement.getName(), "state", targetSettlement.getStateTag());
             return true;
         }
         if (!targetSettlement.isMaxLevel()) {
@@ -51,12 +51,12 @@ public class EmpireTransferCommand extends EmpireSubCommand {
         DatabaseManager.getInstance().saveEmpire(empire);
         oldLeader.save();
         newLeader.save();
-        MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
+        MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success").getReplacedComponent(
                 "rank", EmpireRank.getLeader().getTag(),
                 "setter", res.getName(),
                 "target", targetSettlement.getName(),
                 "empire", empire.getName()
-        );
+        ));
         return true;
     }
 }

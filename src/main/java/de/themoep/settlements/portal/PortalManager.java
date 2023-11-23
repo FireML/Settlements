@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 
 import java.util.*;
@@ -214,7 +215,7 @@ public class PortalManager {
             if (!portal.getId().isNull()) {
                 portals.put(portal.getId(), portal);
             } else {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Error while saving portal at " + portal.getLocation() + " to the database! No ID was returned.");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Error while saving portal at " + portal.getLocation() + " to the database! No ID was returned.");
             }
         });
     }
@@ -222,7 +223,7 @@ public class PortalManager {
     public boolean removePortal(Portal portal) {
         portalLocations.remove(portal.getLocation().getChunkKey(), portal.getLocation());
         if (!portal.getId().isNull()) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Tried removing portal " + portal.getLocation() + " with null id?");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Tried removing portal " + portal.getLocation() + " with null id?");
             for (IdObject id : portalLinks.removeAll(portal.getId())) {
                 Portal linked = getPortal(id);
                 if (linked != null) {
@@ -240,7 +241,7 @@ public class PortalManager {
         for (Portal portal : toRemove) {
             portalLocations.remove(portal.getLocation().getChunkKey(), portal.getLocation());
             if (portal.getId().isNull()) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Tried removing portal " + portal.getLocation() + " with null id?");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Tried removing portal " + portal.getLocation() + " with null id?");
                 continue;
             }
             for (IdObject id : portalLinks.removeAll(portal.getId())) {
@@ -258,7 +259,7 @@ public class PortalManager {
 
     public boolean linkPortals(Portal source, Portal target) {
         if (source.getId().isNull() || target.getId().isNull()) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Tried linking portals with null id?");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Tried linking portals with null id?");
             return false;
         }
         boolean save = false;
@@ -277,7 +278,7 @@ public class PortalManager {
 
     public boolean unlinkPortals(Portal source, Portal target) {
         if (source.getId().isNull() || target.getId().isNull()) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Tried unlinking portals with null id?");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Tried unlinking portals with null id?");
             return false;
         }
         boolean save = false;
@@ -313,7 +314,7 @@ public class PortalManager {
         }
         if (!portalEvent.isCancelled()) {
             Location finalLocation = portalEvent.getTo();
-            SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(location).thenAccept(c -> {
+            location.getWorld().getChunkAtAsync(location).thenAccept(c -> {
                 if (c == null) {
                     Message.get("error.destination-obstructed").tell(player);
                     SettlementsPlugin.logDebug("Could not load chunk at " + finalLocation);
@@ -343,7 +344,7 @@ public class PortalManager {
                         portalCooldown.remove(player);
                     }
                 }, 60);
-                SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(player, down.getRelative(BlockFace.UP).getLocation().add(0.5, 0, 0.5)).thenAccept(success -> {
+                player.teleportAsync(down.getRelative(BlockFace.UP).getLocation().add(0.5, 0, 0.5)).thenAccept(success -> {
                     if (!success) {
                         Message.get("error.destination-obstructed").tell(player);
                         SettlementsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + finalLocation);

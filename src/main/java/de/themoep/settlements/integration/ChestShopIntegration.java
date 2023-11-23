@@ -11,8 +11,6 @@ import com.Acrobot.ChestShop.Economy.Economy;
 import com.Acrobot.ChestShop.Events.*;
 import com.Acrobot.ChestShop.Events.Economy.*;
 import com.Acrobot.ChestShop.Events.Protection.ProtectionCheckEvent;
-import com.Acrobot.ChestShop.Libs.Kyori.adventure.text.Component;
-import com.Acrobot.ChestShop.Libs.Kyori.adventure.text.serializer.bungeecord.BungeeComponentSerializer;
 import com.Acrobot.ChestShop.Listeners.Economy.EconomyAdapter;
 import com.Acrobot.ChestShop.Security;
 import com.Acrobot.ChestShop.Signs.ChestShopSign;
@@ -40,13 +38,11 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;
-import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
 import org.bukkit.block.Sign;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -54,6 +50,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Loggers;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -82,7 +79,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             if (Properties.VALID_PLAYERNAME_REGEXP.equals("^\\w+$")) {
                 Properties.VALID_PLAYERNAME_REGEXP = "^([ksve]:(\\w+)?|\\w+)$";
             } else if (!Properties.VALID_PLAYERNAME_REGEXP.equals("^([ksve]:(\\w+)?|\\w+)$")) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.INFO, "Please make sure that `VALID_PLAYERNAME_REGEXP` in your ChestShop config.yml matches settlement IDs! E.g. \"^([ksve]:(\\w+)?|\\w+)$\"");
+                Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Please make sure that `VALID_PLAYERNAME_REGEXP` in your ChestShop config.yml matches settlement IDs! E.g. \"^([ksve]:(\\w+)?|\\w+)$\"");
             }
         } catch (NoSuchFieldError ignored) {}
     }
@@ -93,7 +90,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 || !Utils.isWorldClaimable(event.getBlock().getWorld())) {
             return;
         }
-        if (ChestShopSign.isValidPreparedSign(event.getLines())) {
+        if (ChestShopSign.isValid(event.getBlock())) {
             OwnedLand land = LandManager.getInstance().getLand(event.getBlock().getLocation());
             if (land == null) {
                 event.setCancelled(true);
@@ -125,7 +122,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             for (SimpleChunkLocation chunkLocation : chunks) {
                 World world = Bukkit.getWorld(chunkLocation.getWorld());
                 if (world != null) {
-                    SettlementsPlugin.getInstance().getServerAdapter().getChunkAtAsync(world, chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
+                    world.getChunkAtAsync(chunkLocation.getX(), chunkLocation.getZ()).thenAccept(this::removeInChunk);
                 }
             }
         });
@@ -185,7 +182,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                     return EmpireManager.getInstance().getEmpireFromId(IdObject.get(id));
                 }
             } catch (IllegalArgumentException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid shop owner ID " + name);
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid shop owner ID " + name);
             }
         } else if (parts.length == 2) {
             if ("s".equalsIgnoreCase(parts[0]) || "v".equalsIgnoreCase(parts[0]) || "k".equalsIgnoreCase(parts[0])) {
@@ -358,17 +355,17 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             if (!Toggle.isIgnoring(resident.getUUID()) && landOwner.hasPermission(resident, "chestshop.admin")) {
                 Player player = resident.getPlayer();
                 if (Properties.SHOWITEM_MESSAGE) {
-                    if (MaterialUtil.Show.sendMessage(player, playerName, new ChestShopMessage(rawMessage, "item", "%item"), stock, replacementMap)) {
+                    if (MaterialUtil.Show.sendMessage(player, playerName, new Messages.Message(rawMessage.getReplacer().replace("item", "%item").getText()), stock, replacementMap)) {
                         return;
                     }
                 }
 
                 if (player != null) {
                     replacementMap.put("item", ItemUtil.getItemList(stock));
-                    new ChestShopMessage(rawMessage).sendWithPrefix(player, replacementMap);
+                    new Messages.Message(rawMessage.getText()).sendWithPrefix(player, replacementMap);
                 } else if (playerName != null) {
                     replacementMap.put("item", ItemUtil.getItemList(stock));
-                    ChestShop.sendBungeeMessage(playerName, new ChestShopMessage(rawMessage), replacementMap);
+                    ChestShop.sendBungeeMessage(playerName, new Messages.Message(rawMessage.getText()), replacementMap);
                 }
             }
         }
@@ -439,7 +436,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                     event.hasEnough(landOwner.has(amount));
                     event.setHandled(true);
                 } catch (ArithmeticException e) {
-                    SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not check balance of " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
+                    Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not check balance of " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
                     event.hasEnough(false);
                 }
             }
@@ -477,7 +474,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 event.setHandled(true);
                 DatabaseManager.getInstance().save(landOwner);
             } catch (ArithmeticException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not add money to " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
+                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not add money to " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
             }
         }
     }
@@ -495,7 +492,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 event.setHandled(true);
                 DatabaseManager.getInstance().save(landOwner);
             } catch (ArithmeticException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not remove money from " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
+                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not remove money from " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
             }
         }
     }
@@ -521,25 +518,5 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
     @EventHandler(priority = EventPriority.LOW)
     public void onUnclaim(LandUnclaimEvent event) {
         removeInChunk(event.getLand().getChunk());
-    }
-
-    private class ChestShopMessage extends Messages.Message {
-        private final Message message;
-        private final String[] replacements;
-
-        public ChestShopMessage(Message message, String... replacements) {
-            super(message.getRawText());
-            this.message = message;
-            this.replacements = replacements;
-        }
-
-        public BaseComponent[] getComponents(CommandSender sender, boolean prefixSuffix, Map<String, String> replacementMap, String... replacements) {
-            return message.getReplacer().replace(replacementMap).replace(replacements).replace(this.replacements).getComponents();
-        }
-
-        public Component getComponent(CommandSender sender, boolean prefixSuffix, Map<String, String> replacementMap, String... replacements) {
-            return BungeeComponentSerializer.get().deserialize(getComponents(sender, prefixSuffix, replacementMap, replacements));
-        }
-
     }
 }

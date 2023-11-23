@@ -10,10 +10,8 @@ import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
-import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -68,7 +66,7 @@ public class SettingsGUI extends PlotGUI {
                 new AnvilGUI.Builder()
                         .itemLeft(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                         .title(getText("name.anvil.title", "name", land.getName()))
-                        .text(getText("name.anvil.placeholder", "name", land.getName().isEmpty() ? " " : land.getName().replace(ChatColor.COLOR_CHAR, '&')))
+                        .text(getText("name.anvil.placeholder", "name", land.getName().isEmpty() ? " " : land.getName().replace('§', '&')))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                         .onClick((slot, stateSnapshot) -> {
                             if (slot != AnvilGUI.Slot.OUTPUT) {
@@ -78,7 +76,7 @@ public class SettingsGUI extends PlotGUI {
                             String text = stateSnapshot.getText();
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
-                                text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(StringUtils.stripColors(text.trim())));
+                                text = StringUtils.parseColors(Utils.filterAllCurses(StringUtils.stripColors(text.trim())));
                                 int maxLength = Math.min(Config.Plot.NAME_LENGTH, 255);
                                 if (StringUtils.stripColors(text).length() > maxLength) {
                                     getError("too-long").tell(player, "input", text, "amount", String.valueOf(maxLength));
@@ -107,7 +105,7 @@ public class SettingsGUI extends PlotGUI {
                 new AnvilGUI.Builder()
                         .itemLeft(ItemUtils.toIcon(Material.WRITABLE_BOOK))
                         .title(getText("desc.anvil.title", "description", land.getDescription()))
-                        .text(getText("desc.anvil.placeholder", "description", land.getDescription().isEmpty() ? " " : land.getDescription().replace(ChatColor.COLOR_CHAR, '&')))
+                        .text(getText("desc.anvil.placeholder", "description", land.getDescription().isEmpty() ? " " : land.getDescription().replace('§', '&')))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
                         .onClick((slot, stateSnapshot) -> {
                             if (slot != AnvilGUI.Slot.OUTPUT) {
@@ -117,7 +115,7 @@ public class SettingsGUI extends PlotGUI {
                             String text = stateSnapshot.getText();
                             OwnedLand currentLand = LandManager.getInstance().getLand(player.getLocation());
                             if (currentLand != null && (currentLand.isPlotOwner(player) || currentLand.canAdmin(ResidentManager.getInstance().getResident(player)))) {
-                                text = MessageUtils.replaceColorCodes(Utils.filterAllCurses(StringUtils.stripColors(text.trim())));
+                                text = StringUtils.parseColors(Utils.filterAllCurses(StringUtils.stripColors(text.trim())));
                                 if (StringUtils.stripColors(text).length() > Config.Plot.DESCRIPTION_LENGTH) {
                                     getError("too-long").tell(player, "input", text, "amount", String.valueOf(Config.Plot.DESCRIPTION_LENGTH));
                                     return List.of(
@@ -266,7 +264,7 @@ public class SettingsGUI extends PlotGUI {
             if (land == null) {
                 return null;
             }
-            return new StaticGuiElement('i', getIcon("info"), Utils.wrap(getText("entry", land.getReplacements()), 48));
+            return new StaticGuiElement('i', getIcon("info"), getText("entry", land.getReplacements()));
         }));
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));

@@ -9,7 +9,7 @@ import de.themoep.settlements.utils.ConfigurableGui;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
 import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
@@ -57,12 +57,10 @@ public class PerksGUI extends ConfigurableGui {
                     ItemStack itemStack = ItemUtils.setGlowing(ItemUtils.toIcon(perk.getIcon()), true);
                     if (!perk.getEffects().isEmpty()) {
                         ItemMeta itemMeta = itemStack.getItemMeta();
-                        if (itemMeta instanceof PotionMeta) {
-                            PotionType type = PotionType.getByEffect(perk.getEffects().get(0).getType());
-                            if (type != null) {
-                                ((PotionMeta) itemMeta).setBasePotionData(new PotionData(type));
-                            } else {
-                                ((PotionMeta) itemMeta).setMainEffect(perk.getEffects().get(0).getType());
+                        if (itemMeta instanceof PotionMeta potionMeta) {
+                            PotionEffect effect = perk.getEffects().get(0).getPotionEffect();
+                            if (effect != null) {
+                                potionMeta.addCustomEffect(effect, true);
                             }
                             itemStack.setItemMeta(itemMeta);
                         }

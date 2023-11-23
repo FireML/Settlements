@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.LinkedHashSet;
@@ -23,7 +24,7 @@ public class PermissionGroup {
         if (config.isString("icon")) {
             Material icon = MaterialUtils.getMaterial(config.getString("icon"));
             if (icon != null && !icon.isItem()) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, icon + " is not a valid icon type for permission group " + name + "! That type has no item for the GUI!");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), icon + " is not a valid icon type for permission group " + name + "! That type has no item for the GUI!");
                 icon = Material.DIRT;
             }
             this.icon = icon;

@@ -8,6 +8,7 @@ import de.themoep.settlements.utils.WorldUtils;
 import de.themoep.settlements.world.SimpleBlockLocation;
 import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.NotNull;
+import uk.firedev.poleislib.Loggers;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -78,7 +79,7 @@ public class Portal implements DatabaseSerializable {
 
     public static Portal deserialize(Map<String, Object> map) {
         if (map == null || map.get("world") == null || map.get("x") == null || map.get("y") == null || map.get("z") == null || map.get("direction") == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Portal! (" + map + ")");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize Portal! (" + map + ")");
             return null;
         }
         Portal portal = new Portal(SimpleBlockLocation.deserialize(map), WorldUtils.getBlockFace((String) map.get("direction")));

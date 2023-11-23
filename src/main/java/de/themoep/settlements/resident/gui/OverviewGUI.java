@@ -13,7 +13,6 @@ import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
-import de.themoep.settlements.utils.Utils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
 import uk.firedev.poleislib.utils.ItemUtils;
@@ -34,7 +33,7 @@ public class OverviewGUI extends ConfigurableGui {
         Settlement settlement = resident.getSettlement();
 
         gui.addElement(new StaticGuiElement('s', getIcon("settlement"),
-                Utils.wrapLore(getText("settlement." + (settlement.hasEmpire() ? "empire" : "no-empire"), settlement.getReplacements(this)))));
+                getText("settlement." + (settlement.hasEmpire() ? "empire" : "no-empire"), settlement.getReplacements(this))));
 
         gui.addElement(new StaticGuiElement('r', getIcon("rules"), click -> {
             ((SettlementRulesCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("rules"))
@@ -95,6 +94,6 @@ public class OverviewGUI extends ConfigurableGui {
         gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("friends"), !requests.isEmpty()), click -> {
             new FriendsList(resident, "general.friends").open();
             return true;
-        }, getText("friends", "amount", String.valueOf(requests.size()))));
+        }, getText("friends")));
     }
 }

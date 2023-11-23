@@ -42,7 +42,7 @@ public class AlliesGUI extends SettlementsGUI {
                                     new AllyGUI(landOwner, resident, a).open();
                                 }
                                 return true;
-                            }, Utils.wrapLore(getText("entry." + a.getType(), a.getLandOwner().getReplacements(this, "allydate", Utils.DATE_FORMAT.format(a.getCreationDate())))))
+                            }, getText("entry." + a.getType(), a.getLandOwner().getReplacements(this, "allydate", Utils.DATE_FORMAT.format(a.getCreationDate()))))
                     ));
             return group;
         });

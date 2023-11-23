@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import uk.firedev.poleislib.Loggers;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -186,7 +187,7 @@ public class SimpleLocation implements ConfigurationSerializable {
         if (map == null
                 || map.get("x") == null || map.get("y") == null || map.get("z") == null
                 || map.get("yaw") == null || map.get("pitch") == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize SimpleLocation! (" + map + ")");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize SimpleLocation! (" + map + ")");
             return null;
         }
         if (map.get("world") == null) {

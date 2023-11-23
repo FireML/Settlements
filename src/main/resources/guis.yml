@@ -10,23 +10,24 @@ guis:
         - " ooobooo "
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         start: book
         friends: player_head
         requests: crimson_door
         create: white_bed
         join: oak_boat
         public: beacon
-        back: structure_void
     overview:
       setup:
         - "oooosoooo"
         - "    r    "
         - "    n    "
         - " lu h pf "
-        - "         "
+        - "    i    "
         - " ooobooo "
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         settlement: white_bed
         rules: writable_book
         lock: chest
@@ -36,73 +37,76 @@ guis:
         plot: grass_block
         friends: player_head
         requests: crimson_door
-        back: structure_void
     requests:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "ppoobooo "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "pooobooon"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
         back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
     friends:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "ppooboors"
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "pooobooon"
       elements:
         o: lime_stained_glass_pane
-        page: paper
+        back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
         sort: hopper
         requests: crimson_door
-        back: structure_void
     friend-requests:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "ppoobooos"
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "pooobooon"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
         back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
+        sort: hopper
     settlements:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "ppoobooos"
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "poooboson"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
         back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
+        sort: hopper
     public:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "ppoobooos"
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "poooboson"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
         back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
+        sort: hopper
   chat:
     channel-select:
       setup:
@@ -110,7 +114,7 @@ guis:
         - "         "
         - " ccccccc "
         - " ccccccc "
-        - " ccccccc "
+        - "         "
         - " ooobooo "
       alignments:
         c: center
@@ -123,7 +127,7 @@ guis:
         - "         "
         - " ccccccc "
         - " ccccccc "
-        - " ccccccc "
+        - "         "
         - " ooobooo "
       alignments:
         c: center
@@ -136,7 +140,7 @@ guis:
         - "         "
         - " ccccccc "
         - " ccccccc "
-        - " ccccccc "
+        - "         "
         - " ooobooo "
       alignments:
         c: center
@@ -147,18 +151,21 @@ guis:
     title:
       setup:
         - "ooooooooo"
-        - "         "
         - " ttttttt "
         - " ttttttt "
-        - "    a    "
-        - " ooobooo "
+        - " ttttttt "
+        - " ttttttt "
+        - "poaoboson"
       alignments:
         t: center
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
+        sort: hopper
         title: paper
         add: writable_book
-        back: structure_void
   settlement:
     management:
       setup:
@@ -170,6 +177,7 @@ guis:
         - " ooobooo "
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         npc: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTY5ODQ3N2Q3ZDUzMjc0OGFmNGUwOTExNWVmMTZiYjk1OTk0ZjBlNThiMDkwZTZkMzA2NDQ1OGJiOWFlMTY4NyJ9fX0=
         banished: red_dye
         allies: orange_dye
@@ -177,7 +185,6 @@ guis:
         ranks: chainmail_chestplate
         settings: cobblestone_wall
         land: grass_block
-        back: structure_void
     mode:
       setup:
         - "ooooooooo"
@@ -194,22 +201,23 @@ guis:
     requests:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "pppppps b"
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "pooobooon"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
         back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
+        sort: hopper
     npclist:
       setup:
         - "ooooooooo"
         - "         "
-        - "  nnnnn  "
-        - "  nnnnn  "
+        - " nnnnnnn "
+        - " nnnnnnn "
         - "         "
         - " ooobooo "
       alignments:
@@ -227,34 +235,34 @@ guis:
         black-market: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMmZlYmI0YzUyZGIxZmI5ZTFlNWM4NTJhNGU3MmQ4ZGZlNmM0YzA1NWE0NjQ5YWJmM2QzNTdkMjMzZmMxYiJ9fX0=
     elder:
       setup:
-        - "oooomoooo"
+        - "ooooooooo"
         - "         "
         - "    e    "
         - "    r    "
         - "         "
-        - "pooobooon"
+        - " ooobooo "
       elements:
         o: lime_stained_glass_pane
-        recruit: crimson_door
+        back: structure_void
         missions: orange_banner
         redistribute: bell
-        back: structure_void
     missions:
       setup:
         - "ooooioooo"
-        - "mmmmmmmmm"
-        - "mmmmmmmmm"
-        - "mmmmmmmmm"
-        - "mmmmmmmmm"
-        - "pooobooon"
+        - " mmmmmmm "
+        - " mmmmmmm "
+        - " mmmmmmm "
+        - " mmmmmmm "
+        - "poooboson"
       alignments:
         m: center
       elements:
         o: lime_stained_glass_pane
-        info: orange_banner
         back: structure_void
-        previous: spectral_arrow
-        next: arrow
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
+        sort: hopper
+        info: orange_banner
 
     settings:
       setup:
@@ -266,6 +274,7 @@ guis:
         - " ooobooo "
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         rename: anvil
         perks: potion
         rules: writable_book
@@ -275,26 +284,25 @@ guis:
         description: oak_sign
         access: oak_fence_gate
         recruitment: acacia_door
-        back: structure_void
     allies:
       setup:
         - "ooooooooo"
-        - "aaaaaaaaa"
-        - "aaaaaaaaa"
-        - "aaaaaaaaa"
-        - "aaaaaaaaa"
-        - "ppppppsrb"
+        - " aaaaaaa "
+        - " aaaaaaa "
+        - " aaaaaaa "
+        - " aaaaaaa "
+        - "poooboson"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
-        requests: nether_star
         back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
+        sort: hopper
         a: player_head
     ally:
       setup-advanced:
         - "ooooioooo"
-        - "      cr "
+        - "   c r   "
         - "    a    "
         - " uuuuuuu "
         - " uuuuuuu "
@@ -302,7 +310,7 @@ guis:
       setup:
         - "ooooioooo"
         - "         "
-        - "  c   r  "
+        - "   c r   "
         - "         "
         - "         "
         - " ooobooo "
@@ -328,25 +336,25 @@ guis:
       setup:
         - "ooooooooo"
         - "    d    "
-        - "    a    "
-        - " sh u tm "
         - "         "
+        - "  hu tm  "
+        - "    s    "
         - " ooobooo "
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         donations: hopper
-        storage: chest
+        storage: ender_chest
         history: book
         upkeep: gold_ingot
         taxes: map
         manage-finances: cartography_table
-        back: structure_void
     manage-finances:
       setup:
         - "ooooooooo"
+        - "   d w   "
         - "         "
-        - "         "
-        - " ta   dw "
+        - "   t a   "
         - "         "
         - " ooobooo "
       elements:
@@ -358,14 +366,15 @@ guis:
         back: structure_void
     upgrade:
       setup:
-        - "lllllllll"
+        - "oolopoioo"
         - "rrrrrrrrr"
         - "rrrrrrrrr"
         - "rrrrrrrrr"
         - "rrrrrrrrr"
-        - " oipdobo "
+        - " odobooo "
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         settlement: cobblestone_wall
         progress: anvil
         deposit: composter
@@ -377,7 +386,6 @@ guis:
         blacksmith: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWRhZDZjYThlYWU1MDViYWVhOGE0ZjJlY2ZmZTcxOWYzMTU1YTIyZDI4ZjgyZDgyZDUyODQ0MGYxYTc3YWExNCJ9fX0=
         auctioneer: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNGM0ZDdlYTAzODE4Nzc3MGNjMmU0ODE3YzkyMDllMTliNzRmNWQyODhlZDYzMzI4MWVjY2NhZjVjOGViYzc2NyJ9fX0=
         black-market: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMmZlYmI0YzUyZGIxZmI5ZTFlNWM4NTJhNGU3MmQ4ZGZlNmM0YzA1NWE0NjQ5YWJmM2QzNTdkMjMzZmMxYiJ9fX0=
-        back: structure_void
         requirement:
           missionpoints: green_banner
           cash: gold_ingot
@@ -399,11 +407,11 @@ guis:
     perks:
       setup:
         - "ooooooooo"
-        - "opppppppo"
-        - "opppppppo"
-        - "opppppppo"
-        - "opppppppo"
-        - "ooooboooo"
+        - " ppppppp "
+        - " ppppppp "
+        - " ppppppp "
+        - " ppppppp "
+        - " ooobooo "
       alignments:
         p: center
       elements:
@@ -411,8 +419,8 @@ guis:
         back: structure_void
     access:
       setup:
-        - "ooooooooo"
-        - "    i    "
+        - "ooooioooo"
+        - "         "
         - " aaaaaaa "
         - " aaaaaaa "
         - "         "
@@ -421,10 +429,10 @@ guis:
         a: center
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         i: book
         selected: lime_wool
         available: light_gray_wool
-        back: structure_void
     recruitment:
       setup:
         - "ooooooooo"
@@ -437,32 +445,34 @@ guis:
         j: center
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         selected: lime_wool
         available: light_gray_wool
-        back: structure_void
     reslist:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "pooobooos"
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "poooboson"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
         back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
+        sort: hopper
     resident:
       setup:
-        - "ooooooooo"
-        - "    pa   "
-        - "         "
-        - " extr lks"
-        - "         "
+        - "oooopoooo"
+        - "    a    "
+        - "   t r   "
+        - "   x e   "
+        - "  l k s  "
         - " ooobooo "
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         accepted: book
         evasion: paper
         taxes: gold_ingot
@@ -471,7 +481,6 @@ guis:
         eviction: paper
         kick: red_dye
         banish: red_wool
-        back: structure_void
       kick:
         setup:
           - "ooooooooo"
@@ -482,85 +491,85 @@ guis:
           - " ooobooo "
         elements:
           o: lime_stained_glass_pane
-          confirm: red_dye
           cancel: structure_void
+          confirm: red_dye
     banished:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "ppppppsub"
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "pouobooon"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
-        unbanished: book
         back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
+        unbanished: book
     unbanished:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "ppppbooos"
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "pooobooon"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
         back: structure_void
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
     perms:
       setup:
-        - "ooooooooo"
-        - "    s    "
+        - "oooosoooo"
         - "   a m   "
         - " uuuuuuu "
         - " uuuuuuu "
+        - "         "
         - " ooobooo "
       alignments:
         u: center
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         build: diamond_pickaxe # 'a'
         modes: golden_shovel # 'm'
         states: book
-        back: structure_void
     build:
       setup:
-        - "ooooooooo"
-        - "    s    "
+        - "oooosoooo"
         - "         "
-        - "ggggggggg"
+        - " ggggggg "
+        - " ggggggg "
         - "         "
         - " ooobooo "
       alignments:
         g: center
       elements:
         o: lime_stained_glass_pane
-        states: book
         back: structure_void
+        states: book
         selected: lime_wool
         individual: white_wool
         inherited: light_blue_wool
         unset: light_gray_wool
     use:
       setup:
-        - "ooooooooo"
-        - "    s    "
+        - "oooosoooo"
         - "         "
         - " uuuuuuu "
         - " uuuuuuu "
+        - "         "
         - " ooobooo "
       alignments:
         u: center
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         states: book
         previous: arrow
         next: arrow
-        back: structure_void
     rank-perms:
       setup:
         - "ppppppppp"
@@ -568,14 +577,14 @@ guis:
         - "ppppppppp"
         - "ppppppppp"
         - "ppppppppp"
-        - "rrrrrrtob"
+        - "trrrbrrro"
       elements:
+        back: structure_void
         set: lime_wool
         inherited: green_wool
         not-set: light_gray_wool
         titles: writable_book
         reset: orange_wool
-        back: structure_void
     reset-rank-perms:
       setup:
         - "ooooooooo"
@@ -586,8 +595,8 @@ guis:
         - " ooobooo "
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         confirm: green_wool
-        cancel: structure_void
     setrank:
       rank-select:
         setup:
@@ -601,9 +610,9 @@ guis:
           r: center
         elements:
           o: lime_stained_glass_pane
+          back: structure_void
           title: paper
           add: writable_book
-          back: structure_void
       transfer:
         setup:
           - "ooooooooo"
@@ -618,49 +627,49 @@ guis:
           cancel: structure_void
     titles:
       setup:
-        - "ooooooooo"
-        - "    a    "
+        - "ooooaoooo"
         - "         "
         - " ttttttt "
         - " ttttttt "
+        - "         "
         - " ooobooo "
       alignments:
         t: center
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         title: paper
         add: writable_book
-        back: structure_void
       rank-select:
         setup:
           - "ooooooooo"
+          - "    c    "
           - "         "
-          - "         "
-          - " rrrrrrc "
+          - " rrrrrrr "
           - "         "
           - " ooobooo "
         alignments:
           r: center
         elements:
           o: lime_stained_glass_pane
+          back: structure_void
           title: paper
           add: writable_book
-          back: structure_void
     title:
       setup:
-        - "ooooooooo"
+        - "ooooaoooo"
         - "         "
         - " ttttttt "
         - " ttttttt "
-        - "    a    "
+        - "         "
         - " ooobooo "
       alignments:
         t: center
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         title: paper
         add: writable_book
-        back: structure_void
     outposts:
       setup:
         - "ooooooooo"
@@ -668,12 +677,12 @@ guis:
         - " eeeeeee "
         - " eeeeeee "
         - "         "
-        - " opobooo "
+        - " poobooo "
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         outpost: acacia_sapling
         public: beacon
-        back: structure_void
     outpost:
       setup:
         - "ooooioooo"
@@ -684,11 +693,11 @@ guis:
         - " ooobooo "
       elements:
         o: lime_stained_glass_pane
+        back: structure_void
         info: acacia_sapling
         rename: anvil
         sethome: purple_banner
         unclaim: red_dye
-        back: structure_void
   empire:
     access:
       setup:
@@ -722,8 +731,8 @@ guis:
         back: structure_void
     perms:
       setup:
-        - "ooooooooo"
-        - "    s    "
+        - "oooosoooo"
+        - "         "
         - "   a m   "
         - " uuuuuuu "
         - " uuuuuuu "
@@ -738,8 +747,8 @@ guis:
         back: structure_void
     build:
       setup:
-        - "ooooooooo"
-        - "    s    "
+        - "oooosoooo"
+        - "         "
         - "         "
         - "ggggggggg"
         - "         "
@@ -756,8 +765,8 @@ guis:
         unset: light_gray_wool
     use:
       setup:
-        - "ooooooooo"
-        - "    s    "
+        - "oooosoooo"
+        - "         "
         - "         "
         - " uuuuuuu "
         - " uuuuuuu "
@@ -773,16 +782,17 @@ guis:
     memberlist:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "ppoobooos"
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "poooboson"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
         back: structure_void
+        sort: hopper
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
     mode:
       setup:
         - "ooooooooo"
@@ -799,16 +809,17 @@ guis:
     requests:
       setup:
         - "ooooooooo"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "eeeeeeeee"
-        - "pppobooos"
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - " eeeeeee "
+        - "pooobooon"
       elements:
         o: lime_stained_glass_pane
-        page: paper
-        sort: hopper
         back: structure_void
+        sort: hopper
+        previous: player_head,eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2EyYzEyY2IyMjkxODM4NGUwYTgxYzgyYTFlZDk5YWViZGNlOTRiMmVjMjc1NDgwMDk3MjMxOWI1NzkwMGFmYiJ9fX0=
+        next: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMjkxYWM0MzJhYTQwZDdlN2E2ODdhYTg1MDQxZGU2MzY3MTJkNGYwMjI2MzJkZDUzNTZjODgwNTIxYWYyNzIzYSJ9fX0=
     bank:
       setup:
         - "ooooooooo"

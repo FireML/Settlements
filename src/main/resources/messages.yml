@@ -1,13 +1,22 @@
-server-rules: "&6https://poleismc.com/rules"
+server-rules: "&6https://www.poleismc.com/rules"
 rules:
-  book-text: |-
+  default-book: |-
     &3&n&lRules&r&0
-    Follow all server rules
+    
+    Follow all of the server rules
     poleismc.com/rules
     
-    All other rules should be posted somewhere. Ask where these are!
+    All Settlement rules should be posted somewhere. Ask where these are!
+    
+    {accept}
+  book-with-rules: |-
+    &3&n&lRules&r&0
+    
+    Follow all of the server rules
+    poleismc.com/rules
     
     {rules}
+    
     {accept}
   accept-action: |-
     [&1\[Accept\]](/s rules accept)
@@ -23,7 +32,7 @@ start-guide:
 
       /menu
     page3: |-
-      We do have a tutorial as well!
+      We also have a tutorial as well!
 
       /tutorial
     page4: |-
@@ -32,28 +41,28 @@ error:
   missing-settlement-id: "&cInternal error. Settlement ID is null?"
   missing-empire-id: "&cInternal error. Empire ID is null?"
   not-a-number: "&c(!) &r&c{input} is not a valid number!"
-  not-in-current: "&c(!) &r&7Not currently in settlement."
+  not-in-current: "&c(!) &r&7Not currently in a settlement."
   not-in-settlement: "&cTarget player {player} isn't in a settlement!"
   not-in-empire: "&c(!) &r&7Not currently in your empire."
   unknown-npc-type: "&c(!) &r&7{input} is not a valid NPC type!"
   unknown-npc: "&c(!) &r&7No {input} NPC in your {state}!"
   no-level: "&cNo level {level} exists!"
-  no-permission: "&cYou don't have permission to do this."
+  no-permission: "&cNo permission."
   no-world: "&c{state} {name} has not unlocked a world."
   rules-not-accepted: "&cYou must accept the [&e{state} rules](/s rules) first!"
-  function-not-unlocked: "&cUpgrade your NPC to unlock!"
+  function-not-unlocked: "&cUpgrade NPC to unlock!"
   not-unlocked: "&cThe {state} does not have the {function} function unlocked yet!"
   no-channel-permission: "&cNo permission to use {channel} channel!"
   not-a-channel: "&cChat Channel &6{name}&c is not valid channel!"
-  not-enough-money: "&cNot enough money in your account to pay &r&6{amount}&r&c!"
+  not-enough-money: "&cThere is not enough money in your account to pay &r&6{amount}&r&c!"
   not-your-settlement: "&cThis is not your {state}!"
-  no-settlement: "&cNo settlement is at this location!"
+  no-settlement: "&cNo settlement at your location!"
   invalid-rank: "&c(!) &r&c{rank} &7is not a valid rank!"
   invalid-group: "&c(!) &r&c{group} &7is not a valid group!"
   settlement-exists: "&7A settlement with the name &6{name}&7 already exists!"
   empire-exists: "&7An empire with the name &6{name}&7 already exists!"
-  settlement-doesnt-exist: "&cNo settlement with the name &6{name}&c found!"
-  empire-doesnt-exist: "&cNo empire with the name &6{name}&c found!"
+  settlement-doesnt-exist: "&cThere is no settlement with the name &6{name}&c found!"
+  empire-doesnt-exist: "&cThere is no empire with the name &6{name}&c found!"
   ambiguous-target: |-
     &6{name}&c can both refer to a Settlement or Empire!
     Use the prefixes &6e:&c or &6s:&c in front of the name to specify whether you mean the Settlement or Empire!
@@ -61,46 +70,46 @@ error:
   prohibited-words: "&e{input}&c contains prohibited words!"
   too-long: "&c{input} is too long, only {amount} characters are allowed!"
   player-not-found: "&cNo &r&6player&r&c with the name &r&6{name}&r&c found!"
-  not-a-claim: "&cYou are not currently standing in a claimed land"
+  not-a-claim: "&cYou are not currently standing in claimed land"
   not-a-plot: "&cYou are not currently standing in an owned plot"
-  none-connected: "&cERROR: &cNo plots are connected to this one!"
-  none-linked: "&cERROR: &cNo plots are linked to this one!"
+  none-connected: "&cERROR: &cThere are no plots are connected to this one!"
+  none-linked: "&cERROR: &cThere are no plots are linked to this one!"
   not-linked: "&cERROR: &cThat plot isn't linked to this one!"
   not-for-sale: "&cThis land is not for sale!"
   not-your-plot: "&cThis is not your plot!"
   world-not-claimable: "&cClaiming is disabled in this world!"
   claim-too-close: "&c(!) &r&7You are too close to &e{owner}'s&7 land !"
-  already-own-land: "&e(!) &r&7Your settlement already owns this land!"
+  already-own-land: "&e&l(!) &r&7Your settlement already owns this land!"
   cant-claim-here: "&c(!) &r&7This land is owned by &e{owner}&7!"
   outpost-not-claimed: "&cOutpost &6{name} &c was removed as its land was no longer claimed by your {state}!"
   outpost-not-found: |-
     &cUnable to find outpost: &6{name}
     &cUse [&f/s outpost list](/s outpost list) to view all outposts!
-  rank-required: "&cYou require the rank &r&6{rank} or higher&r&c!"
-  settlement-required: "&cYou can only do this after you joined a settlement!"
-  empire-required: "&cYou can only do this after you joined an empire!"
-  free-required: "&cYou can only do this if you are not part of a settlement yet!"
+  rank-required: "&cYou need the rank &r&6{rank} or higher&r&c!"
+  settlement-required: "&cYou can only do this after you've joined a settlement!"
+  empire-required: "&cYou can only do this after you've joined an empire!"
+  free-required: "&cYou can only do this if you're not part of a settlement!"
   cant-admin-plots: "&cYou can't manage this plot!"
-  no-empire-required: "&cYou can only do this if you are not part of an empire yet!"
+  no-empire-required: "&cYou can only do this if you're not part of an empire!"
   only-player: "&cMust be ran by player."
   unknown-perk: "&cNo unlock with the name &f{perk}&c available!"
   not-in-empire-world: "&cYou are not in your Empire's world!"
-  cant-in-empire-world: "&cYou cant do that in your Empire's world!"
+  cant-in-empire-world: "&cYou can't do that in your Empire's world!"
   not-unlocked-yet: "&cThis feature only unlocked with {state} level {level}!"
   level-required: "&cYou must be in a {state} level {level}!"
   no-allies: "&cYou have no allies!"
   cant-set-embassy: "&cYou can't set an embassy here!"
   teleport-cooldown: "&cYou have to wait &e{cooldown}&c before you can teleport again!"
   nothing-to-confirm: "&cThere is nothing to confirm. It might have timed out."
-  portals-not-linked: "&cThese two portals are no longer linked!"
+  portals-not-linked: "&cThese two portals are (no longer) linked!"
   no-portal-found: "&cNo portal was found. Please look at one!"
   cant-admin-portals: "&cYou can't manage portals!"
   no-portals-linked:
     create: "&cNo portals are linked! Use [&e/portal link](/portal link) to link it to another one!"
     common: "&cNo portals are linked! Ask your {state} leadership to link it!"
-  destination-obstructed: "&cCan't teleport. Target location is not safe!"
-  destination-unknown: "&cCan't teleport. Target {type} is not known!"
-  not-an-outpost: "&cThe land must be an outpost to set the home!"
+  destination-obstructed: "&cUnable to teleport. Target location is not safe!"
+  destination-unknown: "&cUnable to teleport. Target {type} is not known!"
+  not-an-outpost: "&cThe land must be an outpost claim to set the home!"
   not-near-npc: "&cYou are not close to any {name}"
 move-cancelled:
   title: "&cFailed"
@@ -125,6 +134,7 @@ close-claims:
       &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for {time} minutes.
     block: |-
       &cYou can only place or break blocks near claims!
+      &7Only Shulker Boxes can be placed/broken.
 banished:
   move:
     message: "&cYou're banished from the {state} {name}!"
@@ -155,7 +165,7 @@ broadcast:
 pvp-claim:
   enter: "&f[&eSettlements&f] &cPvP is enabled in this claim!"
   exit: "&f[&eSettlements&f] &cPvP is no longer enabled."
-  bossbar: "&cPvP is Enabled inside this Claim!"
+  bossbar: "&cPvP is Enabled inside of this Claim!"
 scoreboard:
   sidebar:
     title: "&x&0&d&e&2&e&8&lPoleis&f&lMC"
@@ -209,7 +219,7 @@ levels:
   perk-available: "&7Perk &6{perk} &7can be unlocked!"
   perk-unlocked: "&6{perk} &7has been unlocked!"
 missions:
-  completed: "&e&l(!) &r&b{player} &r&7completed mission: &r&e{mission} &r&7for &r&e{state} {name}&r&7! &b({finishedmissions})"
+  completed: "&e&l(!) &r&b{player} &r&7has completed mission: &r&e{mission} &r&7for &r&e{state} {name}&r&7! &b({finishedmissions})"
 upkeep:
   alert:
     level-removed: "&a&l(!) &7Your settlement has had a level removed because you couldn't pay the upkeep!"
@@ -227,16 +237,16 @@ eviction:
   letter:
     sender: "{state} {name} {chieftitle} {chiefname}"
     text: |-
-      You will be kicked from the {state} in 7 days!
+      You will be removed from the {state} in 7 days!
 tax:
   removed: "&eRemoved &c{amount}&e of tax from your account!"
   debt-action:
     none:
-      cant-pay: "&cYou can't pay the tax of &e{amount}&c please make sure to earn some money!"
+      cant-pay: "&cYou can't pay the tax of &e{amount}&c. Please make sure to earn some money!"
       couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c"
     kick:
-      cant-pay: "&cYou can't pay the tax of &e{amount}&c and will be banished tomorrow if you still can't pay itc!"
-      couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c and has been banished from the {state} {name}!"
+      cant-pay: "&cYou can't pay the tax of &e{amount}&c and will be removed tomorrow if you still can't pay it!"
+      couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c and has been removed from the {state} {name}!"
 empire-tax:
   removed: "&eRemoved &c{amount}&e of tax from your {state}'s bank!"
   debt-action:
@@ -423,7 +433,7 @@ embassy:
     actionbar: "&f{description}{pvp}"
     title: ""
     subtitle: "{name}"
-pvp-is-enabled: " - &cPvp is enabled!&7"
+pvp-is-enabled: " - &cPvP is enabled!&7"
 chat:
   locked: "&cChat is currently locked!"
   nobody-nearby: "&cThere is nobody around you who could hear you!"
@@ -602,7 +612,7 @@ integration:
     out-of-stock: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is out of stock! ({buyer} tried to buy)"
     sold-to-shop: "&a[Shop] {seller} sold {item} for {price} to your {state} shop at {world}/{x}/{y}/{z}."
     not-enough-space: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is full! ({seller} tried to sell)"
-    not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't loose money as you need it to pay your upkeep! ({seller} tried to sell)"
+    not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't lose money as you need it to pay your upkeep! ({seller} tried to sell)"
   citizens:
     new-npc-available: "&7NPC &6{npc} &7is now available. Use [&e/{state} npc {type} teleport](/{state} npc {type} teleport) to set its location."
     new-npc-unlocked: "&7NPC &6{npc} &7unlocked. Use [&e/{state} npc {type} teleport](/{state} npc {type} teleport) to set its location."
@@ -617,12 +627,12 @@ integration:
         members: "&e&l(!) &r&eNPCs&7 are is limited to &ePlot members&7."
         friends: "&e&l(!) &r&eNPCs&7 are is limited to &ePlot members and the owner's friends&7."
         empire:
-          trusted: "&e&l(!) &r&eNPCs&7 are is limited to &emembers&7 of &e{state} {name}&7."
+          trusted: "&e&l(!) &r&eNPCs&7 are limited to &emembers&7 of &e{state} {name}&7."
           landowner:
-            private: "&e&l(!) &r&eNPCs&7 are is limited to the &eCapital of {state} {name}&7."
+            private: "&e&l(!) &r&eNPCs&7 are limited to the &eCapital of {state} {name}&7."
         settlement:
           landowner:
-            private: "&e&l(!) &r&eNPCs&7 are is limited to &eResidents of {state} {name}&7."
+            private: "&e&l(!) &r&eNPCs&7 are limited to &eResidents of {state} {name}&7."
   lwc:
     only-in-settlement: "&cYou can only lock things in a settlement claim!"
     state:
@@ -675,7 +685,7 @@ integration:
         subtitle: "&fUnable to teleport!"
     failed-to-claim: "&cFailed to automatically claim a new plot!"
   brewery:
-    too-drunk-for-channel: "&cYou are too drunk to speak in &f{channel}&c! Use the [Local](/localchat) or [Settlement](/settlementchat) chat!"
+    too-drunk-for-channel: "&cYou are too drunk to speak in &f{channel}&c! Please use the [Local](/localchat) or [Settlement](/settlementchat) chat!"
 protection:
   state:
     use:
@@ -750,7 +760,7 @@ unlockables:
     level: "&cUpgrade {state} to unlock!"
     perk: "&cNot purchased yet!"
     money: "&cNot enough money"
-    rank: "&cRank too low"
+    rank: "&cRank is too low"
     permission: "&cNo Permission"
     invite-only: "&cInvite only"
     application-required: "&cApply at Elder"
@@ -855,7 +865,7 @@ gui:
           &fMissions: &e{missions}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
           &fOutposts: &e{outposts}&f/&e{maxoutposts}
-          &f{chieftitle}: &e{chief}
+          &f{chieftitle}: &e{chiefonline}{chief}
           &fResidents:
           &7{residents}
         empire: |-
@@ -876,7 +886,7 @@ gui:
           &fMissions: &e{missions}
           &fLand: &e{land}&f/&e{maxland}{bonusclaims}
           &fOutposts: &e{outposts}&f/&e{maxoutposts}
-          &f{chieftitle}: &e{chief}
+          &f{chieftitle}: &e{chiefonline}{chief}
           &fResidents:
           &7{residents}
       residents:
@@ -884,11 +894,11 @@ gui:
         separator: "&7, "
         online: "&a"
         offline: "&c"
-        entry: "{title} {online}{name}"
+        entry: "&f{online}{name}"
       rules: |-
         &eRule Book
 
-        &fRead the rules first!
+        &fPlease read the rules first!
       lock: |-
         &eToggle Lock
 
@@ -1110,14 +1120,14 @@ gui:
         separator: "&7, "
         online: "&a"
         offline: "&c"
-        entry: "{title} {online}{name}"
+        entry: "&f{online}{name}"
       members:
         state: "&e{state}:&r {members}"
         entry: "&7{name}"
         separator: "&8, "
 
     nearbyclaim: |-
-      &fAllow Ally near us
+      &fAllow Ally to claim near us
       
       &fAllowing them to claim closer
       &fto your {state} borders
@@ -1735,7 +1745,7 @@ gui:
         separator: "&7, "
         online: "&a"
         offline: "&c"
-        entry: "{title} {online}{name}"
+        entry: "&f{online}{name}"
       members:
         state: "&e{state}s:&r {members}"
         entry: "&7{name}"
@@ -1905,7 +1915,7 @@ gui:
       &f➤ Rank {rank}
       &f➤ Plots Owned {plots}
       
-      Player Info
+      &fPlayer Info:
       &f➤ Rank {vaultprefix}
       &f➤ Balance &6{balance}
       &f➤ Last Login &c{lastloginduration}
@@ -1920,7 +1930,7 @@ gui:
       &f➤ Rank: &6{rank}
       &f➤ Plots Owned: &6{plots}
       
-      Player Info
+      &fPlayer Info:
       &f➤ Rank: &6{vaultprefix}
       &f➤ Balance: &6☧ {balance}
       &f➤ Mission Points: &6{missionpoints}
@@ -2717,9 +2727,9 @@ usage:
   aliases: "\n&fAliases: &7{aliases}"
   footer: ""
   pagination:
-    footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-    previous: "&b<< Prev "
-    next: "&b Next >>"
+    footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+    previous: "<< Prev "
+    next: " Next >>"
 command:
   chat:
     description: "Chat command"
@@ -2793,7 +2803,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMission Points: &e{missionpoints}
+          &fMissions: &e{missions}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2805,7 +2815,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMission Points: &e{missionpoints}
+          &fMissions: &e{missions}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2838,6 +2848,12 @@ command:
         target: "&aYou are now friends with &6{name}&a!"
         sender: "&6{name}&a accepted your friend request!"
         mail: "{name} accepted your friend request!"
+    deny:
+      no-request: "&6{name}&c has not sent you a friend request"
+      success:
+        target: "&aFriend request denied!"
+        sender: "&6{name}&a denied your friend request!"
+        mail: "{name} denied your friend request!"
     remove:
       not-friends: "&cYou are not friends with &6{name}&c nor have they sent you a request?"
       success: "&aYou are no longer friends with &6{name}"
@@ -2891,6 +2907,8 @@ command:
       success-coords: "&a&lSUCCESS: &r&7Linked {x} {z} to your current one!"
       success-existing: "[&7Linked to other {amount} plots now!](&a{x}/{z} is linked to:\n&f{linked})"
       description: Link surrounding land flags with the current one
+    reset:
+      success: "&a&lSUCCESS: &7Reset all perms and modes in this plot."
     members:
       add:
         success: "&a&lSUCCESS: &r&7Added [{name}](Name: {name}\nUUID: {uuid}) to the plot!"
@@ -2901,9 +2919,9 @@ command:
       list:
         head: "&a⊱&m━━━━&r&6Plot Members [{page}/{maxpage}]&a&m━━━━&a⊰"
         entry: "- [{name}](Name: {name}\nUUID: {uuid}) [&cx](hover=Click to remove {name} run_command=/plot members remove {uuid})"
-        footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-        previous: "&b<< Prev "
-        next: "&b Next >>"
+        footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+        previous: "<< Prev "
+        next: " Next >>"
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Plot mode &6{mode}&7: &6{value}"
@@ -3047,9 +3065,9 @@ command:
       entry: "&e• [&e&l{title} &r&e{name} - &r{activity}](&eLast login at {timestamp})"
       offline: "&cLogged in {ago} ago"
       online: "&aActive now"
-      footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-      previous: "&b<< Prev "
-      next: "&b Next >>"
+      footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+      previous: "<< Prev "
+      next: " Next >>"
       description: Shows the last online time of each resident.
     allies:
       head: "&a⊱&m━━━━&r&6Allies&a&m━━━━&a⊰"
@@ -3102,9 +3120,9 @@ command:
       history:
         head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
         entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6☧ {amount}](&eAt {timestamp})"
-        footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-        previous: "&b<< Prev "
-        next: "&b Next >>"
+        footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+        previous: "<< Prev "
+        next: " Next >>"
         description: Shows the settlement bank's history
     build:
       success: "&aSet {type} state of {flagable} to {state}"
@@ -3230,9 +3248,9 @@ command:
     history:
       head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6{amount} {icon}&6{type}](&eAt {timestamp})"
-      footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-      previous: "&b<< Prev "
-      next: "&b Next >>"
+      footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+      previous: "<< Prev "
+      next: " Next >>"
       description: Shows the empire's bank history
     home:
       own-no-home: "&cYour settlement doesn't have a home. Is there a claim? Ask your {chief} to claim and/or set a home!"
@@ -3287,11 +3305,19 @@ command:
     list:
       description: "List settlements"
       head: "&a⊱&m━━━━&r&6Settlements [{page}/{maxpage}]&a&m━━━━&a⊰"
-      entry: "&e• {place}. [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Residents: &f{size} players\n&8Recruitment: {jointype}\n&f{description})"
+      entry: "&e• {place}. &e&l{state} &r&e{name} &r&7{access}"
       entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
-      footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-      previous: "&b<< Prev "
-      next: "&b Next >>"
+      entry-hover:
+        - "{#87ceeb}Chief: &f{chief}"
+        - "{#87ceeb}Size: &f{size} Players"
+        - "{#87ceeb}Recruitment: &f{recruitment}"
+        - ""
+        - "&f{description}"
+        - ""
+        - "&aClick to see more!"
+      footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+      previous: "<< Prev "
+      next: " Next >>"
     lock:
       admin:
         description: "Allows administrating of locks inside the settlement's claims"
@@ -3537,7 +3563,7 @@ command:
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
-        {residents}
+        &e{residents}
       empire: |-
         &e&l{name}
         &fBoard: &e{description}
@@ -3553,7 +3579,7 @@ command:
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
-        {residents}
+        &e{residents}
       abandoned: |-
         &e&l{name}
         &cABANDONED!!!&r&c Falls in {abandonedcountdown}
@@ -3699,7 +3725,7 @@ command:
     rules:
       description: Links you to the rules
       accept:
-        success: "&eAccepted the rules! You are now a {rank} of {state}!"
+        success: "&eAccepted the rules! You are now a {rank} of {state} {name}!"
         description: Accept the settlement rules
     settings:
       description: Shows a settings gui
@@ -3832,9 +3858,9 @@ command:
       history:
         head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
         entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6☧ {amount}](&eAt {timestamp})"
-        footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-        previous: "&b<< Prev "
-        next: "&b Next >>"
+        footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+        previous: "<< Prev "
+        next: " Next >>"
         description: Show the bank's history
     banish:
       cant-banish-yourself: "&cYou can't banish yourself!"
@@ -3945,7 +3971,7 @@ command:
         separator: "&7, "
         online: "&a"
         offline: "&c"
-        entry: "{title} {online}{name}"
+        entry: "&f{online}{name}"
       members:
         state: "&e{state}:&r {members}"
         entry: "&7{name}"
@@ -3993,9 +4019,18 @@ command:
       head: "&a⊱&m━━━━&r&6Empires [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• {place}. [&r&e{name} &r&7{access}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Members: &f{size} members\n&8Recruitment: {jointype}\n&f{description})"
       entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
-      footer: "&a⊱&m━━━━&r&6{previous}{page}/{maxpage}{next}&a&m━━━━&a⊰"
-      previous: "&b<< Prev "
-      next: "&b Next >>"
+      entry-hover:
+        - "{#87ceeb}Capital: &f{capitalstate}{capital}"
+        - "{#87ceeb}Leader: &f{chieftitle} {chief}"
+        - "{#87ceeb}Members: &f{size} Members"
+        - "{#87ceeb}Recruitment: &f{jointype}"
+        - ""
+        - "&f{description}"
+        - ""
+        - "&aClick to see more!"
+      footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
+      previous: "<< Prev "
+      next: " Next >>"
     lock:
       admin:
         description: "Allows administrating of locks inside the settlement's claims"
@@ -4227,7 +4262,7 @@ command:
         separator: "&7, "
         online: "&a"
         offline: "&c"
-        entry: "{title} {online}{name}"
+        entry: "&f{online}{name}"
       members:
         state: "&e{state}:&r {members}"
         entry: "&7{name}"

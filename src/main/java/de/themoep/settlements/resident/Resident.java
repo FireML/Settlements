@@ -28,12 +28,16 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementMission;
 import de.themoep.settlements.utils.*;
 import de.themoep.settlements.utils.config.Config;
-import net.md_5.bungee.api.chat.BaseComponent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.poleislib.Loggers;
+import uk.firedev.poleislib.utils.ColorUtils;
+import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.sql.Date;
@@ -55,7 +59,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private Settlement settlement = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
     private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
-    private Table<ChatChannel, ChatColorType, ChatColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
+    private Table<ChatChannel, ChatColorType, TextColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
     private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private Map<UUID, Friend> friends = new ConcurrentHashMap<>();
     private Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
@@ -268,20 +272,20 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return false;
     }
 
-    public ChatColor getChannelColor(ChatChannel channel, ChatColorType type) {
+    public TextColor getChannelColor(ChatChannel channel, ChatColorType type) {
         return channelColors.get(channel, type);
     }
 
-    public ChatColor getChannelColor(ChatChannel channel, ChatColorType type, ChatColor def) {
-        ChatColor color = channelColors.get(channel, type);
+    public TextColor getChannelColor(ChatChannel channel, ChatColorType type, TextColor def) {
+        TextColor color = channelColors.get(channel, type);
         return color != null ? color : def;
     }
 
-    public ChatColor setChannelColor(ChatChannel channel, ChatColorType type, ChatColor chatColor) {
+    public TextColor setChannelColor(ChatChannel channel, ChatColorType type, TextColor chatColor) {
         return chatColor != null ? channelColors.put(channel, type, chatColor) : removeChannelColor(channel, type);
     }
 
-    public ChatColor removeChannelColor(ChatChannel channel, ChatColorType type) {
+    public TextColor removeChannelColor(ChatChannel channel, ChatColorType type) {
         return channelColors.remove(channel, type);
     }
 
@@ -745,11 +749,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         map.put("channelColors", channelColors.column(ChatColorType.MESSAGE).entrySet().stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey().name(),
-                        entry -> entry.getValue().name())));
+                        entry -> NamedTextColor.nearestTo(entry.getValue()).toString())));
         map.put("channelPrefixColors", channelColors.column(ChatColorType.PREFIX).entrySet().stream()
                 .collect(Collectors.toMap(
                         entry -> entry.getKey().name(),
-                        entry -> entry.getValue().name())));
+                        entry -> NamedTextColor.nearestTo(entry.getValue()).toString())));
         map.put("swear", getSwear());
         map.put("socialSpy", getSocialSpy());
         map.put("bonusClaims", getBonusClaims());
@@ -761,7 +765,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public static Resident deserialize(Map<String, Object> map) {
         if (map == null || map.get("uuid") == null || map.get("name") == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Resident! (" + map + ")");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize Resident! (" + map + ")");
             return null;
         }
         Resident resident = new Resident(UUID.fromString((String) map.get("uuid")), (String) map.get("name"));
@@ -772,12 +776,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         try {
             resident.setSettlementRank(SettlementRank.valueOf((String) map.get("rank")));
         } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid settlement rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid settlement rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
         }
         try {
             resident.setEmpireRank(EmpireRank.valueOf((String) map.get("empirerank")));
         } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid empire rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("empirerank"));
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid empire rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("empirerank"));
         }
         if (map.get("settlementName") != null) {
             resident.setSettlement(SettlementManager.getInstance().getFromName((String) map.get("settlementName")));
@@ -794,7 +798,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         try {
             resident.setTaxDebtAction(TaxDebtAction.valueOf((String) map.get("taxDebtAction")));
         } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid tax debt action for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("taxDebtAction"));
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid tax debt action for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("taxDebtAction"));
         }
         resident.taxPaid = Utils.getLong(map.get("taxPaid"));
         resident.donated = Utils.getLong(map.get("donated"));
@@ -821,12 +825,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         try {
             resident.setActiveChannel(ChatChannel.valueOf(((String) map.get("activeChannel")).toUpperCase()));
         } catch (Exception e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Invalid active channel for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("activeChannel"));
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid active channel for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("activeChannel"));
         }
         if (map.containsKey("channelColors")) {
             for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelColors")).entrySet()) {
                 ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
-                ChatColor color = Utils.parseEnum(ChatColor.class, entry.getValue().toUpperCase());
+                TextColor color = ColorUtils.getColor(entry.getValue().replace('-', '_').toLowerCase(Locale.ROOT), NamedTextColor.WHITE);
                 if (channel != null && color != null) {
                     resident.setChannelColor(channel, ChatColorType.MESSAGE, color);
                 }
@@ -835,7 +839,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         if (map.containsKey("channelPrefixColors")) {
             for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelPrefixColors")).entrySet()) {
                 ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
-                ChatColor color = Utils.parseEnum(ChatColor.class, entry.getValue().toUpperCase());
+                TextColor color = ColorUtils.getColor(entry.getValue().replace('-', '_').toLowerCase(Locale.ROOT), NamedTextColor.WHITE);
                 if (channel != null && color != null) {
                     resident.setChannelColor(channel, ChatColorType.PREFIX, color);
                 }
@@ -871,20 +875,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         this.id = id;
     }
 
-    /**
-     * @deprecated Use {@link Message#tell(Resident, String...)}
-     */
-    @Deprecated
-    public void tell(Message message, String... replacements) {
-        MessageUtils.tell(this, message, replacements);
+    public void tell(Component message, String... replacements) {
+        MessageUtils.tell(this.getPlayer(), ComponentUtils.parsePlaceholders(message, replacements));
     }
 
     public void tell(String message, String... replacements) {
-        MessageUtils.tell(this, message, replacements);
-    }
-
-    public void tell(BaseComponent[] message) {
-        MessageUtils.tell(this.getPlayer(), message);
+        MessageUtils.tell(this.getPlayer(), ComponentUtils.parseComponent(message, replacements));
     }
 
     public boolean hasAllies() {

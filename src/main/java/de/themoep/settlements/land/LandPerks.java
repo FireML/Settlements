@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -170,13 +169,13 @@ public class LandPerks {
             }
         }
 
-        Map<PotionEffectType, PerkEffect> potionEffects = new LinkedHashMap<>();
+        Map<PotionEffect, PerkEffect> potionEffects = new LinkedHashMap<>();
 
         for (PerkEffect effect : effects) {
-            PerkEffect perkEffect = potionEffects.get(effect.getType());
+            PerkEffect perkEffect = potionEffects.get(effect.getPotionEffect());
             if (perkEffect == null || perkEffect.getStrength() < effect.getStrength()
                     || (perkEffect.getStrength() == effect.getStrength() && !perkEffect.isPermanent() && (perkEffect.getLength() < effect.getLength() || effect.isPermanent()))) {
-                potionEffects.put(effect.getType(), effect);
+                potionEffects.put(effect.getPotionEffect(), effect);
             }
         }
 

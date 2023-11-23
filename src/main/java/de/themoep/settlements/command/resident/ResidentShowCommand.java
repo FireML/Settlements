@@ -25,7 +25,7 @@ public class ResidentShowCommand extends SubCommand {
             if (args.length > 0) {
                 target = ResidentManager.getInstance().getResident(args[0]);
                 if (target == null) {
-                    MessageUtils.tell(sender, getError("player-not-found"), "name", args[0]);
+                    MessageUtils.tell(sender, getError("player-not-found").getReplacedComponent("name", args[0]));
                     return;
                 }
             } else {

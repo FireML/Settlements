@@ -1,10 +1,10 @@
 package de.themoep.settlements.perk;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.lang3.Validate;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class PerkData implements ConfigurationSerializable {
     private int times;
@@ -24,9 +24,9 @@ public class PerkData implements ConfigurationSerializable {
     }
 
     public static PerkData deserialize(Map<String, Object> map) {
-        Validate.notNull(map.get("times"));
-        Validate.notNull(map.get("lastUsed"));
-        Validate.notNull(map.get("active"));
+        Objects.requireNonNull(map.get("times"));
+        Objects.requireNonNull(map.get("lastUsed"));
+        Objects.requireNonNull(map.get("active"));
         return new PerkData(
                 (Integer) map.get("times"),
                 (Long) map.get("lastUsed"),

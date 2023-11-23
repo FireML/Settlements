@@ -6,9 +6,11 @@ import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
+import uk.firedev.poleislib.Loggers;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.logging.Level;
 
 public class RankManager {
     private static RankManager instance;
@@ -43,7 +45,7 @@ public class RankManager {
             try {
                 settlementPermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
             } catch (InvalidConfigurationException e) {
-                SettlementsPlugin.getInstance().getLogger().severe("Error while loading " + groupName + " settlement group! " + e.getMessage());
+                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while loading " + groupName + " settlement group! " + e.getMessage());
             }
         }
 
@@ -80,7 +82,7 @@ public class RankManager {
             if (settlementChiefRank.getPermissionValue(permission)) {
                 settlementToggleablePerms.add(permission);
             } else {
-                SettlementsPlugin.getInstance().getLogger().warning("Cannot make settlement permission '" + permission + "' toggleable as chief rank doesn't have it!");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Cannot make settlement permission '" + permission + "' toggleable as chief rank doesn't have it!");
             }
         }
         if (settlementToggleablePerms.isEmpty()) {
@@ -96,7 +98,7 @@ public class RankManager {
             try {
                 empirePermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
             } catch (InvalidConfigurationException e) {
-                SettlementsPlugin.getInstance().getLogger().severe("Error while loading " + groupName + " empire group! " + e.getMessage());
+                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while loading " + groupName + " empire group! " + e.getMessage());
             }
         }
 
@@ -125,7 +127,7 @@ public class RankManager {
             if (empireLeaderRank.getPermissionValue(permission)) {
                 empireToggleablePerms.add(permission);
             } else {
-                SettlementsPlugin.getInstance().getLogger().warning("Cannot make empire permission '" + permission + "' toggleable as leader rank doesn't have it!");
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Cannot make empire permission '" + permission + "' toggleable as leader rank doesn't have it!");
             }
         }
         if (empireToggleablePerms.isEmpty()) {

@@ -35,6 +35,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import uk.firedev.poleislib.Loggers;
 import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.*;
@@ -75,7 +76,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     @Override
     public void doUpkeep() {
         if (isAbandoned()) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " is abandoned. No upkeep.");
+            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), getStateTag() + " " + getName() + " is abandoned. No upkeep.");
             return;
         }
 
@@ -177,23 +178,23 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     private void payUpkeep(long lastTax) {
         long total = getUpkeep();
         if (removeFromBank(total)) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " was charged an upkeep of " + total + "!");
-            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.charged"), "charged", String.valueOf(total));
+            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), getStateTag() + " " + getName() + " was charged an upkeep of " + total + "!");
+            MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.charged").getReplacedComponent("charged", String.valueOf(total)));
             if (!has(total - lastTax)) {
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay"), "amount", String.valueOf(total));
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.cant-pay").getReplacedComponent("amount", String.valueOf(total)));
             }
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveEmpire(this);
                 DatabaseManager.getInstance().log(this, null, "upkeep", "cash", total);
             });
         } else {
-            SettlementsPlugin.getInstance().getLogger().log(Level.INFO, getStateTag() + " " + getName() + " wasn't able to pay the upkeep of " + total + " and was abandoned!");
+            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), getStateTag() + " " + getName() + " wasn't able to pay the upkeep of " + total + " and was abandoned!");
             setBank(0);
             if (Config.Empire.Upkeep.ABANDON_TIME > 0) {
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.abandoned"));
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.abandoned").getComponent());
                 EmpireManager.getInstance().abandonEmpire(this);
             } else {
-                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.deleted"));
+                MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.empire-alert.deleted").getComponent());
                 EmpireManager.getInstance().deleteEmpire(this);
             }
         }
@@ -391,7 +392,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             return null;
         }
         if (map == null || map.get("capitalId") == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Empire! (" + map + ")");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize Empire! (" + map + ")");
             return null;
         }
         if (Config.Empire.World.RENAME) {
@@ -584,10 +585,11 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
             ConfigManager.getInstance().getDataConfig().getConfig().set("empire.level" + level, getName());
             ConfigManager.getInstance().getDataConfig().saveConfig();
             for (Player player : Bukkit.getOnlinePlayers()) {
-                MessageUtils.tell(player, Message.get("first-to-reach-level"),
+                MessageUtils.tell(player, Message.get("first-to-reach-level").getReplacedComponent(
                         "name", this.getName(),
                         "state", "empire",
-                        "level", String.valueOf(level));
+                        "level", String.valueOf(level)
+                ));
             }
         }
     }

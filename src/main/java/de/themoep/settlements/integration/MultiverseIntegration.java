@@ -8,7 +8,9 @@ import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Loggers;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +33,7 @@ public class MultiverseIntegration {
                     world.getName(),
                     world.getEnvironment(),
                     String.valueOf(world.getSeed()),
-                    world.getWorldType(),
+                    WorldType.NORMAL,
                     world.canGenerateStructures(),
                     SettlementsPlugin.getInstance().getConfig().getString("empires-world.generator", ""),
                     true
@@ -44,7 +46,7 @@ public class MultiverseIntegration {
     }
 
     public String getVersion() {
-        return mvCore.getDescription().getVersion();
+        return mvCore.getPluginMeta().getVersion();
     }
 
     public World renameWorld(World world, String newWorldName) {
@@ -61,20 +63,20 @@ public class MultiverseIntegration {
 
         boolean wasAutoSave = world.isAutoSave();
         if (!mvCore.getMVWorldManager().cloneWorld(world.getName(), newWorldName)) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not clone world " + world.getName() + " to " + newWorldName);
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not clone world " + world.getName() + " to " + newWorldName);
             return null;
         }
 
         World newWorld = Bukkit.getWorld(newWorldName);
         if (newWorld == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not get the cloned world " + newWorldName + "!");
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not get the cloned world " + newWorldName + "!");
             mvCore.getMVWorldManager().removeWorldFromConfig(newWorldName);
             return null;
         }
 
         File newWorldFolder = newWorld.getWorldFolder();
         if (!mvCore.getMVWorldManager().unloadWorld(newWorld.getName())) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not fully create the new world " + newWorldName + "! (Unload error)");
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not fully create the new world " + newWorldName + "! (Unload error)");
             deleteWorld(newWorld);
             return null;
         }
@@ -84,18 +86,19 @@ public class MultiverseIntegration {
         try {
             Files.copy(uidFile.toPath(), newUidFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not clone UUID of new world " + newWorldName + "!", e);
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not clone UUID of new world " + newWorldName + "!");
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
             return null;
         }
         String worldName = world.getName();
         if (!mvCore.getMVWorldManager().unloadWorld(world.getName())) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not unload old world " + world.getName() + "!");
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not unload old world " + world.getName() + "!");
             mvCore.getMVWorldManager().removeWorldFromConfig(newWorldName);
             return null;
         }
 
         if (!mvCore.getMVWorldManager().loadWorld(newWorldName)) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not load new world " + world.getName() + "!");
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not load new world " + world.getName() + "!");
             mvCore.getMVWorldManager().removeWorldFromConfig(newWorldName);
             mvCore.getMVWorldManager().loadWorld(worldName);
             return null;
@@ -103,7 +106,7 @@ public class MultiverseIntegration {
 
         newWorld = Bukkit.getWorld(newWorldName);
         if (newWorld == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not get the new world " + world.getName() + " in Bukkit!");
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not get the new world " + world.getName() + " in Bukkit!");
             mvCore.getMVWorldManager().removeWorldFromConfig(newWorldName);
             mvCore.getMVWorldManager().loadWorld(worldName);
             return null;
@@ -113,7 +116,8 @@ public class MultiverseIntegration {
         try {
             FileUtils.deleteDirectory(worldFolder);
         } catch (IOException e) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Could not delete old world folder " + worldFolder.getName() + "!", e);
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not delete old world folder " + worldFolder.getName() + "!");
+            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
         }
 
         MultiverseWorld newMvWorld = mvCore.getMVWorldManager().getMVWorld(newWorld);
@@ -130,7 +134,7 @@ public class MultiverseIntegration {
         for (Map.Entry<Player, Location> e : positions.entrySet()) {
             if (e.getKey().isOnline()) {
                 e.getValue().setWorld(newWorld);
-                SettlementsPlugin.getInstance().getServerAdapter().teleportAsync(e.getKey(), e.getValue());
+                e.getKey().teleportAsync(e.getValue());
             }
         }
         return newWorld;

@@ -1,7 +1,6 @@
 package de.themoep.settlements.event;
 
 import de.themoep.settlements.utils.MaterialUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -35,7 +34,7 @@ public class Reward {
         for (Map<?, ?> rawMap : config.getMapList("items")) {
             Map<String, Object> map = (Map<String, Object>) rawMap;
             if (!map.containsKey("v")) {
-                map.put("v", Bukkit.getUnsafe().getDataVersion());
+                map.put("v", new ItemStack(Material.DIRT).serialize().get("v"));
             }
             if (map.get("type") instanceof String string) {
                 map.put("type", string.toUpperCase());

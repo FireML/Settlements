@@ -21,7 +21,7 @@ public class SettlementShowCommand extends SubCommand {
         if (args.length == 0 && sender instanceof Player) {
             Settlement settlement = SettlementManager.getInstance().getFromPlayer((Player) sender);
             if (settlement == null) {
-                MessageUtils.tell(sender, getError("not-in-settlement"));
+                MessageUtils.tell(sender, getError("not-in-settlement").getComponent());
                 return false;
             }
             getMessage(settlement.hasEmpire() ? "empire" : settlement.isAbandoned() ? "abandoned" : "general")

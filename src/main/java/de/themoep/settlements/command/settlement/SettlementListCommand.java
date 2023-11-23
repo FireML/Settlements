@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.settlement;
 
-import com.google.common.collect.ImmutableMap;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.settlement.JoinType;
@@ -9,15 +8,15 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class SettlementListCommand extends SubCommand {
@@ -72,36 +71,44 @@ public class SettlementListCommand extends SubCommand {
 
             for (int i = (finalPage - 1) * Config.ENTRIES_PER_PAGE; i < settlements.size() && i < finalPage * Config.ENTRIES_PER_PAGE; i++) {
                 Settlement v = settlements.get(i);
-                getMessage("entry" + (v.isAbandoned() ? "-abandoned" : "")).tell(sender, v.getReplacements(this,
+                Component component = getMessage("entry" + (v.isAbandoned() ? "-abandoned" : "")).getReplacedComponent(v.getReplacements(this,
                         "place", String.valueOf(i + 1),
                         "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : ""
                 ));
+                if (!v.isAbandoned()) {
+                    component = component.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("entry-hover").getReplacedComponent(
+                            v.getReplacements(this)
+                    )));
+                    component = component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/s info " + v.getName()));
+                }
+                MessageUtils.tell(sender, component);
             }
 
-            ComponentBuilder next = new ComponentBuilder("")
-                    .append(getMessage("next").getReplacedComponents("next", String.valueOf(finalPage + 1)));
+            Component next = getMessage("next").getComponent();
             if (finalPage + 1 > pages) {
-                next.color(ChatColor.GRAY);
+                next = next.color(NamedTextColor.GRAY);
             } else {
-                next.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage + 1)));
-                next.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(ChatColor.YELLOW + ">>"))));
-            }
-            ComponentBuilder previous = new ComponentBuilder("")
-                    .append(getMessage("previous").getReplacedComponents("previous", String.valueOf(finalPage - 1)));
-            if (finalPage - 1 <= 0) {
-                previous.color(ChatColor.GRAY);
-            } else {
-                previous.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage - 1)));
-                previous.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(TextComponent.fromLegacyText(ChatColor.YELLOW + "<<"))));
+                next = next.color(NamedTextColor.AQUA);
+                next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage + 1)));
+                next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
             }
 
-            MessageUtils.tell(sender, MessageUtils.replacePlaceholders(getMessage("footer").getReplacedComponents(
-                    "page", String.valueOf(finalPage),
-                    "maxpage", String.valueOf(pages)
-            ), ImmutableMap.of(
-                    "next", next.create(),
-                    "previous", previous.create()
-            )));
+            Component previous = getMessage("previous").getComponent();
+            if (finalPage - 1 <= 0) {
+                previous = previous.color(NamedTextColor.GRAY);
+            } else {
+                previous = previous.color(NamedTextColor.AQUA);
+                previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage - 1)));
+                previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
+            }
+
+            Map<String, Component> replacements = Map.of(
+                    "next", next,
+                    "previous", previous,
+                    "page", ComponentUtils.parseComponent(String.valueOf(finalPage)),
+                    "maxpage", ComponentUtils.parseComponent(String.valueOf(pages))
+            );
+            MessageUtils.tell(sender, getMessage("footer").getReplacedComponent(replacements));
         });
 
         return true;

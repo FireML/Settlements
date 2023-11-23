@@ -7,18 +7,19 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.ConfigMessages;
-import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.NamedLocation;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.hover.content.Text;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.Loggers;
+import uk.firedev.poleislib.utils.ColorUtils;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -35,25 +36,25 @@ public class ChatMap {
         this.messages = messages;
         this.landOwner = landOwner;
         MapGenerator generator = new ChatMap.MapGenerator(player);
-        BaseComponent[][][] map = generator.getComponents();
+        Component[][][] map = generator.getComponents();
         rowEnds = generator.getRowEnds();
         messages.getMessage("head").tell(player);
         for (int i = 0; i < map.length; ++i) {
-            ComponentBuilder cb = new ComponentBuilder("");
-            BaseComponent[] rowBase = getRowBase(i, player);
-            if (rowBase.length > 0) {
-                cb.append(rowBase);
+            Component cb = Component.text("");
+            Component rowBase = getRowBase(i, player);
+            if (!ComponentUtils.toString(rowBase).isEmpty()) {
+                cb = cb.append(rowBase);
             }
             for (int j = this.getStart(i); j < 29; ++j) {
-                if (map[i][j].length > 0) {
-                    cb.append(map[i][j], ComponentBuilder.FormatRetention.NONE);
+                for (Component c : map[i][j]) {
+                    cb = cb.append(c);
                 }
             }
-            BaseComponent[] rowEnd = getRowEnd(i);
-            if (rowEnd.length > 0) {
-                cb.append(rowEnd, ComponentBuilder.FormatRetention.NONE);
+            Component rowEnd = getRowEnd(i);
+            if (!ComponentUtils.toString(rowEnd).isEmpty()) {
+                cb = cb.append(rowEnd);
             }
-            player.spigot().sendMessage(cb.create());
+            player.sendMessage(cb);
         }
     }
 
@@ -92,19 +93,19 @@ public class ChatMap {
         return temp;
     }
 
-    private BaseComponent[] getRowBase(int row, Player p) {
+    private Component getRowBase(int row, Player p) {
         List<String> tmp = this.getRowSymbols(p);
         if (row >= 0 && row < tmp.size()) {
-            return MessageUtils.toColoredComponents(tmp.get(row));
+            return ComponentUtils.parseComponent(tmp.get(row));
         }
-        return new BaseComponent[0];
+        return Component.text("");
     }
 
-    private BaseComponent[] getRowEnd(int row) {
+    private Component getRowEnd(int row) {
         if (rowEnds.size() > row) {
-            return messages.getMessage("explanations." + rowEnds.get(row).getKey()).getComponents();
+            return messages.getMessage("explanations." + rowEnds.get(row).getKey()).getComponent();
         }
-        return new BaseComponent[0];
+        return Component.text("");
     }
 
     private int getStart(int row) {
@@ -159,8 +160,8 @@ public class ChatMap {
             }
         }
 
-        private BaseComponent[][][] getComponents() {
-            BaseComponent[][][] map = new BaseComponent[HEIGHT][WIDTH][0];
+        private Component[][][] getComponents() {
+            Component[][][] map = new Component[HEIGHT][WIDTH][0];
             int x = (player.getLocation().getBlockX() >> 4) - WIDTH / 2;
             int z = (player.getLocation().getBlockZ() >> 4) - HEIGHT / 2;
             for (int countX = 0; countX < WIDTH; countX++) {
@@ -171,23 +172,23 @@ public class ChatMap {
             return map;
         }
 
-        private BaseComponent[] getSymbol(int x, int z, World world, Resident resident, boolean current) {
+        private Component[] getSymbol(int x, int z, World world, Resident resident, boolean current) {
             OwnedLand land = LandManager.getInstance().getLand(x, z, world);
             if (land == null) {
-                ComponentBuilder cb = new ComponentBuilder((current ? Symbol.CURRENT : Symbol.NORMAL).getText());
+                Component cb = ComponentUtils.parseComponent((current ? Symbol.CURRENT : Symbol.NORMAL).getText());
                 if (landOwner != null && claimable && canClaimCoords) {
-                    cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + landOwner.getKey() + " claim " + x + " " + z + " map"));
-                    cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(messages.getMessage("hover.click-to-claim")
-                            .getReplacedComponents(
+                    cb = cb.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + landOwner.getKey() + " claim " + x + " " + z + " map"));
+                    cb = cb.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, messages.getMessage("hover.click-to-claim")
+                            .getReplacedComponent(
                                     "location", x + "-" + z,
                                     "centerx", String.valueOf(x * 16 + 8),
                                     "centerz", String.valueOf(z * 16 + 8),
                                     "x", String.valueOf(x),
                                     "z", String.valueOf(z)
-                            ))));
+                            )));
                 }
                 legend.add(RowEnd.UNCLAIMED);
-                return cb.color(Relation.UNCLAIMED.getColor()).create();
+                return new Component[]{ ComponentUtils.parseComponent("&" + Relation.UNCLAIMED.getColor().asHexString()).append(cb)};
             }
             Symbol symbol = Symbol.NORMAL;
             Relation relation;
@@ -247,22 +248,22 @@ public class ChatMap {
                 symbol = Symbol.EMBASSY;
             }
 
-            ComponentBuilder hover = new ComponentBuilder();
-            hover.append(messages.getMessage("hover.info").getReplacedComponents(
+            Component hover = Component.text("");
+            hover = hover.append(messages.getMessage("hover.info").getReplacedComponent(
                     "state", land.getLandOwner().getStateTag(),
                     "name", land.getLandOwner().getName()
             ));
             if (land.getLandOwner().isAbandoned()) {
-                hover.append("\n").append(messages.getMessage("hover.abandoned").getReplacedComponents(
+                hover = hover.append(Component.newline()).append(messages.getMessage("hover.abandoned").getReplacedComponent(
                         "countdown", UtilTime.format(land.getLandOwner().getCreated()
                                 + TimeUnit.MINUTES.toMillis(land.getLandOwner().getAbandonTimeConfig()) - System.currentTimeMillis())
                 ));
             } else {
                 if (!land.getDescription().isEmpty()) {
-                    hover.append("\n").append(land.getDescription());
+                    hover = hover.append(Component.newline()).append(ComponentUtils.parseComponent(land.getDescription()));
                 }
                 if (messages.getMessage("hover." + symbol.getKey()).exists()) {
-                    hover.append("\n").append(messages.getMessage("hover." + symbol.getKey()).getReplacedComponents(
+                    hover = hover.append(Component.newline()).append(messages.getMessage("hover." + symbol.getKey()).getReplacedComponent(
                             "owner", land.isPlot() ? ResidentManager.getInstance().getResidentName(land.getPlotOwner()) : "none",
                             "price", land.isForSale() ? String.valueOf(land.getPrice()) : messages.getText("not-for-sale"),
                             "tax", land.isForSale() ? String.valueOf(land.getTax()) : "0",
@@ -276,11 +277,11 @@ public class ChatMap {
                 symbol = Symbol.CURRENT;
             }
 
-            ComponentBuilder cb = new ComponentBuilder(MessageUtils.replaceColorCodes(symbol.getText())).color(relation.getColor());
+            Component cb = ComponentUtils.parseComponent("&" + relation.getColor().asHexString() + symbol.getText());
             if (canLinkPlot && land.isPlotOwner(playerLand.getPlotOwner())) {
                 if (land.hasLink()) {
-                    hover.append("\n").append(messages.getMessage("hover.linked")
-                            .getReplacedComponents(
+                    hover = hover.append(Component.newline()).append(messages.getMessage("hover.linked")
+                            .getReplacedComponent(
                                     "location", x + "-" + z,
                                     "x", String.valueOf(x),
                                     "z", String.valueOf(z),
@@ -290,34 +291,34 @@ public class ChatMap {
                 }
                 if (!current) {
                     if (land.isLinked(playerLand)) {
-                        hover.append("\n").append(messages.getMessage("hover.click-to-unlink")
-                                .getReplacedComponents(
+                        hover = hover.append(Component.newline()).append(messages.getMessage("hover.click-to-unlink")
+                                .getReplacedComponent(
                                         "location", x + "-" + z,
                                         "x", String.valueOf(x),
                                         "z", String.valueOf(z)
                                 ));
-                        cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot unlink " + x + " " + z + " map"));
+                        cb = cb.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/plot unlink " + x + " " + z + " map"));
                     } else {
-                        hover.append("\n").append(messages.getMessage("hover.click-to-link")
-                                .getReplacedComponents(
+                        hover = hover.append(Component.newline()).append(messages.getMessage("hover.click-to-link")
+                                .getReplacedComponent(
                                         "location", x + "-" + z,
                                         "x", String.valueOf(x),
                                         "z", String.valueOf(z)
                                 ));
-                        cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/plot link " + x + " " + z + " map"));
+                        cb = cb.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/plot link " + x + " " + z + " map"));
                     }
                 }
             } else if (claimable && canUnclaimCoords && land.isOwnedBy(landOwner)) {
-                hover.append("\n").append(messages.getMessage("hover.click-to-unclaim")
-                        .getReplacedComponents(
+                hover = hover.append(Component.newline()).append(messages.getMessage("hover.click-to-unclaim")
+                        .getReplacedComponent(
                                 "location", x + "-" + z,
                                 "x", String.valueOf(x),
                                 "z", String.valueOf(z)
                         ));
-                cb.event(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/" + landOwner.getKey() + " unclaim " + x + " " + z + " map"));
+                cb = cb.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + landOwner.getKey() + " unclaim " + x + " " + z + " map"));
             }
 
-            return cb.event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hover.create()))).create();
+            return new Component[]{cb.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, hover))};
         }
 
         public List<RowEnd> getRowEnds() {
@@ -343,20 +344,20 @@ public class ChatMap {
         UNCLAIMED,
         CURRENT;
 
-        private final ChatColor color;
+        private final TextColor color;
 
         Relation() {
-            ChatColor temp;
+            TextColor temp;
             try {
-                temp = ChatColor.valueOf(ConfigManager.getInstance().getMapConfig().getString("color." + getKey()).toUpperCase());
+                temp = ColorUtils.getColor(ConfigManager.getInstance().getMapConfig().getString("color." + getKey()).toLowerCase(), NamedTextColor.WHITE);
             } catch (IllegalArgumentException e) {
-                temp = ChatColor.GRAY;
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Wrong color string for " + name() + "! " + e.getMessage());
+                temp = NamedTextColor.GRAY;
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Wrong color string for " + name() + "! " + e.getMessage());
             }
             color = temp;
         }
 
-        public ChatColor getColor() {
+        public TextColor getColor() {
             return color;
         }
     }

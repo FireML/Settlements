@@ -21,6 +21,7 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.data.Directional;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.minecart.HopperMinecart;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -33,6 +34,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -161,8 +163,8 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
         if (event.getClickedBlock() == null) {
             return;
         }
-
-        boolean canAccess = !event.isCancelled();
+        boolean isCancelled = (event.useInteractedBlock() == Event.Result.DENY);
+        boolean canAccess = !isCancelled;
         Lock lock = LockManager.getInstance().getLock(event.getClickedBlock());
         if (lock != null) {
             if (!lock.canAccess(event.getPlayer())) {
@@ -175,7 +177,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                             "block", NameTag.getTag(lock.getBlock())
                     );
                 });
-            } else if (event.isCancelled()) {
+            } else if (isCancelled) {
                 canAccess = true;
                 event.setCancelled(false);
             }
@@ -199,7 +201,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                                     getMessage("new-lock").tell(event.getPlayer(), "block", NameTag.getTag(l.getBlock()));
                                     return;
                                 } else {
-                                    MessageUtils.tell(event.getPlayer(), response.getRight());
+                                    MessageUtils.tell(event.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
                                 }
                             }
                             getError("locked").tell(event.getPlayer(),
@@ -312,25 +314,25 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
                                     "hoppers", MessageUtils.yesOrNo(lock.isAllowHoppers())
                             );
                             if (!lock.getAllowedPlayers().isEmpty()) {
-                                event.getPlayer().sendMessage(lock.getAllowedPlayers().stream()
+                                event.getPlayer().sendMessage(ComponentUtils.parseComponent(lock.getAllowedPlayers().stream()
                                         .map(id -> ResidentManager.getInstance().getResident(id))
                                         .filter(Objects::nonNull)
                                         .map(r -> getMessage("info.entry").getReplacedText("name", r.getName(), "title", r.getSettlementTitle()))
-                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                                        .collect(Collectors.joining(getMessage("info.separator").getText()))));
                             }
                             if (!lock.getAllowedSettlementIds().isEmpty()) {
-                                event.getPlayer().sendMessage(lock.getAllowedSettlementIds().stream()
+                                event.getPlayer().sendMessage(ComponentUtils.parseComponent(lock.getAllowedSettlementIds().stream()
                                         .map(i -> SettlementManager.getInstance().getFromId(i))
                                         .filter(Objects::nonNull)
                                         .map(v -> getMessage("info.entry").getReplacedText("name", v.getName(), "title", v.getStateTag()))
-                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                                        .collect(Collectors.joining(getMessage("info.separator").getText()))));
                             }
                             if (!lock.getAllowedEmpireIds().isEmpty()) {
-                                event.getPlayer().sendMessage(lock.getAllowedEmpireIds().stream()
+                                event.getPlayer().sendMessage(ComponentUtils.parseComponent(lock.getAllowedEmpireIds().stream()
                                         .map(i -> EmpireManager.getInstance().getEmpireFromId(i))
                                         .filter(Objects::nonNull)
                                         .map(e -> getMessage("info.entry").getReplacedText("name", e.getName(), "title", e.getStateTag()))
-                                        .collect(Collectors.joining(getMessage("info.separator").getText())));
+                                        .collect(Collectors.joining(getMessage("info.separator").getText()))));
                             }
                         });
                     }
@@ -366,8 +368,8 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
     public void onHopperMove(InventoryMoveItemEvent event) {
         if (Config.Lock.ALTERNATIVE_HOPPER_PROTECTION
-                && !(SettlementsPlugin.getInstance().getServerAdapter().getHolder(event.getSource()) instanceof HopperMinecart
-                        || SettlementsPlugin.getInstance().getServerAdapter().getHolder(event.getDestination()) instanceof HopperMinecart)) {
+                && !(event.getSource().getHolder(false) instanceof HopperMinecart)
+                        || (event.getDestination().getHolder(false) instanceof HopperMinecart)) {
             return;
         }
         Lock sourceLock = LockManager.getInstance().getLock(event.getSource().getHolder());
@@ -404,7 +406,7 @@ public class LockListener implements Listener, LandAccessChecker, TargetParser {
     }
 
     private boolean checkForHopperLock(Player player, Block block) {
-        if (!block.isEmpty() && SettlementsPlugin.getInstance().getServerAdapter().getBlockState(block, false) instanceof InventoryHolder) {
+        if (!block.isEmpty() && block.getState(false) instanceof InventoryHolder) {
             // we use the alternative hopper protection, check if the hopper is placed below a container!
             Lock lock = LockManager.getInstance().getLock(block);
             if (lock != null && !lock.isAllowHoppers() && !lock.canAccess(player)) {

@@ -15,6 +15,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.permissions.Permission;
+import uk.firedev.poleislib.Loggers;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -62,9 +64,9 @@ public class CommandManager implements TabExecutor {
         if (command != null) {
             command.setExecutor(this);
             command.setPermission(ex.getPermission());
-            command.setPermissionMessage(ex.getError("no-permission").getReplacedText("permission", ex.getPermission()));
+            command.permissionMessage(ex.getError("no-permission").getReplacedComponent("permission", ex.getPermission()));
         } else {
-            SettlementsPlugin.getInstance().getLogger().log(Level.SEVERE, "Tried to register command by the name of " + ex.name() + " but it's not defined in the plugin.yml?");
+            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Tried to register command by the name of " + ex.name() + " but it's not defined in the plugin.yml?");
         }
     }
 
@@ -72,12 +74,12 @@ public class CommandManager implements TabExecutor {
     public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
         SubCommand cmd = getCommand(command.getName());
         if (cmd == null) {
-            MessageUtils.tell(sender, "&c&lUnknown command!");
+            MessageUtils.tell(sender, ComponentUtils.parseComponent("&c&lUnknown command!"));
         } else if (!cmd.execute(sender, null, alias, args)) {
             if (cmd.getMessage("usage").exists()) {
                 cmd.getMessage("usage").tell(sender, "alias", alias);
             } else if (!cmd.getHelpCommand().run(sender, cmd.getShortestAlias(), "help")) {
-                MessageUtils.tell(sender, "&c" + cmd.getUsage(null));
+                MessageUtils.tell(sender, ComponentUtils.parseComponent("&c" + cmd.getUsage(null)));
             } else {
                 return false;
             }

@@ -32,7 +32,7 @@ public class EmpireSetWorldSpawnCommand extends EmpireSubCommand {
         empire.setHome(player.getLocation());
         empire.save();
 
-        MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success"),
+        MessageUtils.tellResidents(empire.getOnlineResidents(), getMessage("success").getReplacedComponent(
                 "rank", res.getEmpireRank().getTag(),
                 "title", res.getSettlementTitle(),
                 "displaytitle", res.getDisplayTitle(),
@@ -41,7 +41,8 @@ public class EmpireSetWorldSpawnCommand extends EmpireSubCommand {
                 "world", player.getLocation().getWorld().getName(),
                 "x", String.valueOf(player.getLocation().getBlockX()),
                 "y", String.valueOf(player.getLocation().getBlockY()),
-                "z", String.valueOf(player.getLocation().getBlockZ()));
+                "z", String.valueOf(player.getLocation().getBlockZ())
+        ));
         return true;
     }
 }

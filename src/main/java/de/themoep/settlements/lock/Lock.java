@@ -19,6 +19,7 @@ import de.themoep.settlements.world.SimpleBlockLocation;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import uk.firedev.poleislib.Loggers;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -189,7 +190,7 @@ public class Lock implements DatabaseSerializable {
 
     public static Lock deserialize(Map<String, Object> map) {
         if (map == null || map.get("owner") == null || map.get("block") == null || map.get("allowHoppers") == null || map.get("allowed") == null) {
-            SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Could not deserialize Lock! (" + map + ")");
+            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize Lock! (" + map + ")");
             return null;
         }
         Lock lock = new Lock(
@@ -225,7 +226,7 @@ public class Lock implements DatabaseSerializable {
                     }
                 }
             } catch (IllegalArgumentException e) {
-                SettlementsPlugin.getInstance().getLogger().log(Level.WARNING, "Allowed entry " + s + " could not be parsed for lock " + lock.getLocation().getKey() + "! " + e.getMessage());
+                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Allowed entry " + s + " could not be parsed for lock " + lock.getLocation().getKey() + "! " + e.getMessage());
             }
         }
         return lock;

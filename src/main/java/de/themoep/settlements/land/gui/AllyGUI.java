@@ -21,7 +21,7 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
     public AllyGUI(@NonNull LandOwner landOwner, Resident resident, Ally ally) {
         super(resident, landOwner.getKey() + ".ally");
 
-        gui.addElement(new StaticGuiElement('i', ally.getLandOwner().getIcon(), Utils.wrapLore(getText("info." + ally.getType(), ally.getLandOwner().getReplacements(this)))));
+        gui.addElement(new StaticGuiElement('i', ally.getLandOwner().getIcon(), getText("info." + ally.getType(), ally.getLandOwner().getReplacements(this))));
 
         if (landOwner.hasPermission(resident, "manageally")) {
             gui.addElement(new DynamicGuiElement('c', who -> new StaticGuiElement('c', getIcon("nearbyclaim"), click -> {

@@ -1,13 +1,19 @@
 package de.themoep.settlements.command.friend;
 
 import de.themoep.settlements.command.PlayerSubCommand;
+import de.themoep.settlements.resident.Friend;
 import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
-import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,26 +32,35 @@ public class FriendListCommand extends PlayerSubCommand {
                 getError("no-friends").tell(resident);
             } else {
                 getMessage("head").tell(resident);
-                MessageUtils.tell(player, resident.getFriends().stream().map(friend -> {
+                TextComponent.Builder builder = Component.text();
+                for (Friend friend : resident.getFriends()) {
                     Player p = friend.getPlayer();
+                    Component append;
                     if (p != null && p.isOnline()) {
-                        return getMessage("entry").getReplacedText("online", getText("online"), "name", p.getName());
+                        append = ComponentUtils.parseComponent(getMessage("entry").getReplacedText("online", getText("online"), "name", p.getName()));
+                        append = append.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("/res show " + p.getName())));
+                        append = append.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/res show " + p.getName()));
+                    } else {
+                        append = ComponentUtils.parseComponent(getMessage("entry").getReplacedText("online", getText("offline"), "name", friend.getPlayerName()));
+                        append = append.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("/res show " + friend.getPlayerName())));
+                        append = append.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/res show " + friend.getPlayerName()));
                     }
-                    return getMessage("entry").getReplacedText("online", getText("offline"), "name", friend.getPlayerName());
-                }).collect(Collectors.joining(getText("separator"))));
+                    builder.append(append).append(ComponentUtils.parseComponent(getText("separator")));
+                }
+                MessageUtils.tell(player, builder.build());
             }
             if (!resident.getFriendRequests().isEmpty()) {
                 getMessage("head-requests").tell(resident);
-                ComponentBuilder builder = new ComponentBuilder();
+                Component builder = Component.text("");
                 List<FriendRequest> requests = new ArrayList<>(resident.getFriendRequests());
                 for (int i = 0; i < requests.size(); i++) {
                     if (i > 0) {
-                        builder.append(getMessage("separator").getComponents());
+                        builder = builder.append(getMessage("separator").getComponent());
                     }
                     FriendRequest request = requests.get(i);
-                    builder.append(getMessage("request-entry").getReplacedComponents("name", request.getSenderName()));
+                    builder = builder.append(getMessage("request-entry").getReplacedComponent("name", request.getSenderName()));
                 }
-                MessageUtils.tell(player, builder.create());
+                MessageUtils.tell(player, builder);
             }
         });
         return true;

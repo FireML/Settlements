@@ -19,24 +19,24 @@ public class SettlementKickCommand extends SettlementSubCommand {
         }
 
         if (args[0].equalsIgnoreCase(player.getName())) {
-            MessageUtils.tell(player, getMessage("cant-kick-yourself"));
+            MessageUtils.tell(player, getMessage("cant-kick-yourself").getComponent());
             return true;
         }
         Utils.runAsync(() -> {
             Resident res = ResidentManager.getInstance().getResident(args[0]);
             if (res == null) {
-                MessageUtils.tell(player, getError("player-not-found"));
+                MessageUtils.tell(player, getError("player-not-found").getComponent());
                 return;
             }
             if (!player.getSettlement().equals(res.getSettlement())) {
-                MessageUtils.tell(player, getError("not-in-current"));
+                MessageUtils.tell(player, getError("not-in-current").getComponent());
                 return;
             }
             if (res.getSettlementRank().atLeast(player.getSettlementRank())) {
-                MessageUtils.tell(player, getMessage("cant-kick-higher"), "rank", res.getSettlementRank().getTag(res.getSettlement()));
+                MessageUtils.tell(player, getMessage("cant-kick-higher").getReplacedComponent("rank", res.getSettlementRank().getTag(res.getSettlement())));
                 return;
             }
-            MessageUtils.tellResidents(res.getSettlement().getOnlineResidents(), getMessage("kicked-alert"), "player", res.getName());
+            MessageUtils.tellResidents(res.getSettlement().getOnlineResidents(), getMessage("kicked-alert").getReplacedComponent("player", res.getName()));
             Utils.runSync(() -> {
                 InviteManager.getInstance().removeInvite(res, res.getSettlement());
                 res.leaveSettlement();

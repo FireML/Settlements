@@ -3,7 +3,6 @@ package de.themoep.settlements.command.plot;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import uk.firedev.poleislib.utils.StringUtils;
 
@@ -14,7 +13,7 @@ public class PlotNameCommand extends PlotSubCommand {
 
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
-        String name = MessageUtils.replaceColorCodes(Utils.filterAllCurses(String.join(" ", args)));
+        String name = StringUtils.parseColors(Utils.filterAllCurses(String.join(" ", args)));
         if (StringUtils.stripColors(name).length() > 16) {
             getError("too-long").tell(res, "input", name, "amount", "16");
             return true;

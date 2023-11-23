@@ -24,6 +24,7 @@ import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.jetbrains.annotations.Nullable;
 import org.spigotmc.event.entity.EntityMountEvent;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 public class LandUseListener implements LandAccessChecker, Listener {
 
@@ -32,7 +33,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
         if (e.getEntity() instanceof Player player) {
             Pair<Boolean, String> response = this.canUse(player, Use.RIDE, e.getMount().getLocation());
             if (!response.getLeft()) {
-                MessageUtils.tell(player, response.getRight());
+                MessageUtils.tell(player, ComponentUtils.parseComponent(response.getRight()));
                 e.setCancelled(true);
             }
         }
@@ -42,7 +43,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
     public void on(PlayerPortalEvent e) {
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.PORTAL, e.getFrom());
         if (!response.getLeft()) {
-            MessageUtils.tell(e.getPlayer(), response.getRight());
+            MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
             e.setCancelled(true);
         }
     }
@@ -51,7 +52,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
     public void on(PlayerBedEnterEvent e) {
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BED, e.getBed().getLocation());
         if (!response.getLeft()) {
-            MessageUtils.tell(e.getPlayer(), response.getRight());
+            MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
             e.setCancelled(true);
         }
     }
@@ -81,7 +82,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
         }
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.FISH, e.getHook().getLocation());
         if (!response.getLeft()) {
-            MessageUtils.tell(e.getPlayer(), response.getRight());
+            MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
             e.setCancelled(true);
         }
     }
@@ -90,7 +91,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
     public void on(PlayerArmorStandManipulateEvent e) {
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.ARMOR_STAND, e.getRightClicked().getLocation());
         if (!response.getLeft()) {
-            MessageUtils.tell(e.getPlayer(), response.getRight());
+            MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
             e.setCancelled(true);
         }
     }
@@ -99,7 +100,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
     public void on(PlayerLeashEntityEvent e) {
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.LEASH, e.getEntity().getLocation());
         if (!response.getLeft()) {
-            MessageUtils.tell(e.getPlayer(), response.getRight());
+            MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
             e.setCancelled(true);
         }
     }
@@ -108,7 +109,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
     public void on(PlayerShearEntityEvent e) {
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.SHEAR, e.getEntity().getLocation());
         if (!response.getLeft()) {
-            MessageUtils.tell(e.getPlayer(), response.getRight());
+            MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
             e.setCancelled(true);
         }
     }
@@ -122,13 +123,13 @@ public class LandUseListener implements LandAccessChecker, Listener {
                         : p.getEquipment().getItemInOffHand()) == Material.BUCKET) {
             Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.MILK, e.getRightClicked().getLocation());
             if (!response.getLeft()) {
-                MessageUtils.tell(e.getPlayer(), response.getRight());
+                MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
                 e.setCancelled(true);
             }
         } else if (e.getRightClicked() instanceof ItemFrame) {
             Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.ITEM_FRAME, e.getRightClicked().getLocation());
             if (!response.getLeft()) {
-                MessageUtils.tell(e.getPlayer(), response.getRight());
+                MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
                 e.setCancelled(true);
             }
         }
@@ -141,7 +142,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
             e.setUseInteractedBlock(Event.Result.DENY);
             Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.MAP, e.getPlayer().getLocation());
             if (!response.getLeft()) {
-                MessageUtils.tell(e.getPlayer(), response.getRight());
+                MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
                 e.setUseItemInHand(Event.Result.DENY);
             }
             return;
@@ -192,7 +193,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
                 if (!response.getLeft()) {
                     if (use != Use.PRESSURE_PLATE && e.getHand() == EquipmentSlot.HAND
                             && (use != Use.CHEST || LockManager.getInstance().getLock(e.getClickedBlock()) == null)) {
-                        MessageUtils.tell(e.getPlayer(), response.getRight());
+                        MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
                     }
                     e.setCancelled(true);
                 }
@@ -207,7 +208,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
         }
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getRelative(e.getBlockFace()).getLocation());
         if (!response.getLeft()) {
-            MessageUtils.tell(e.getPlayer(), response.getRight());
+            MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
             e.setCancelled(true);
             e.getPlayer().updateInventory();
         }
@@ -217,7 +218,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
     public void on(PlayerBucketEmptyEvent e) {
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.BUCKET, e.getBlockClicked().getRelative(e.getBlockFace()).getLocation());
         if (!response.getLeft()) {
-            MessageUtils.tell(e.getPlayer(), response.getRight());
+            MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
             e.setCancelled(true);
             e.getPlayer().updateInventory();
         }
@@ -266,7 +267,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
         if (damager != null) {
             Pair<Boolean, String> response = this.canUse(damager, use, e.getEntity().getLocation());
             if (!response.getLeft()) {
-                MessageUtils.tell(e.getDamager(), response.getRight());
+                MessageUtils.tell(e.getDamager(), ComponentUtils.parseComponent(response.getRight()));
                 e.setCancelled(true);
             }
         }
@@ -322,7 +323,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.LECTERN, e.getLectern().getLocation());
         if (!response.getLeft()) {
             e.setCancelled(true);
-            MessageUtils.tell(e.getPlayer(), response.getRight());
+            MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
         }
     }
 }

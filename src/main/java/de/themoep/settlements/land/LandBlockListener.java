@@ -22,6 +22,7 @@ import org.bukkit.event.vehicle.VehicleDamageEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.*;
 
@@ -50,7 +51,7 @@ public class LandBlockListener implements LandAccessChecker, Listener {
             return;
         }
 
-        MessageUtils.tell(e.getPlayer(), response.getRight());
+        MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
         e.setCancelled(true);
     }
 
@@ -82,7 +83,7 @@ public class LandBlockListener implements LandAccessChecker, Listener {
         if (player != null) {
             Pair<Boolean, String> response = this.getCanBuildAll(player, e.getBlock().getLocation());
             if (!response.getLeft()) {
-                MessageUtils.tell(player, response.getRight());
+                MessageUtils.tell(player, ComponentUtils.parseComponent(response.getRight()));
                 e.setCancelled(true);
             }
         }
@@ -98,7 +99,7 @@ public class LandBlockListener implements LandAccessChecker, Listener {
                 Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getClickedBlock().getRelative(e.getBlockFace()).getLocation());
                 if (!response.getLeft()) {
                     if (e.getHand() == EquipmentSlot.HAND) {
-                        MessageUtils.tell(e.getPlayer(), response.getRight());
+                        MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
                     }
                     e.setCancelled(true);
                 }
@@ -124,7 +125,7 @@ public class LandBlockListener implements LandAccessChecker, Listener {
 
         Pair<Boolean, String> response = this.getCanBuildAll(e.getPlayer(), e.getBlock().getLocation());
         if (!response.getLeft()) {
-            MessageUtils.tell(e.getPlayer(), response.getRight());
+            MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
             e.setCancelled(true);
         }
     }
@@ -174,7 +175,7 @@ public class LandBlockListener implements LandAccessChecker, Listener {
             if (p != null) {
                 Pair<Boolean, String> response = this.getCanBuildAll(p, damaged.getLocation());
                 if (!response.getLeft()) {
-                    MessageUtils.tell(p, response.getRight());
+                    MessageUtils.tell(p, ComponentUtils.parseComponent(response.getRight()));
                     return true;
                 }
             }

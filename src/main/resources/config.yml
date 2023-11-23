@@ -10,7 +10,8 @@ entries-per-page: 10
 # How many players should show up in settlement/empire member lists
 players-in-info: 40
 # Max lengths of the rules
-max-rules-length: 10000
+# In characters
+max-rules-length: 25000
 # How long in seconds a player has time to confirm certain commands
 command-confirm-time: 30
 
@@ -59,6 +60,7 @@ claiming:
   - Resource_the_end
   - Spawn
   - Events
+  - Mapart
   # Distance in chunks that have to be between claims of non-allied landowners
   enemy-distance: 4
   # Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands
@@ -87,6 +89,7 @@ claiming:
       - "Resource_the_end"
       - "Events"
       - "Spawn"
+      - "Mapart"
       # The time in minutes a disabled close building notification stays around
       toggle-time: 30
     unclaim:
@@ -145,6 +148,7 @@ settlement:
       # Worlds in which claiming of Settlement chunks are disabled
       disabled-worlds:
       - Spawn
+      - Mapart
       - Resource
       - Resource_the_end
       - Resource_nether
@@ -391,7 +395,7 @@ chat:
   # Should all channels be set to the default config on player login or be the same as on logout
   reset-channels-on-login: false
   # Which channel should players be put in when they rejoin the server? Set to none to disable.
-  default-channel: none
+  default-channel: general
   
   # The default chat channel colors
   channel-colors:
@@ -444,6 +448,7 @@ chat:
   - light_purple
   - yellow
   - white
+  - black
   
   notify:
     # The sound that is played when a player's name is mentioned in chat
@@ -479,7 +484,7 @@ brewery:
     event: 1
     general: 1
     settlement: 9001
-    empire: 1
+    empire: 9001
     ally: 1
     empireally: 1
     admin: 9001

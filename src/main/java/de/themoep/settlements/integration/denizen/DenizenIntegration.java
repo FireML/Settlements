@@ -77,8 +77,4 @@ public class DenizenIntegration {
         TagManager.registerTagHandler(ResidentTag.class, "resident", (attribute) -> ResidentTag.valueOf(attribute.getParam(), attribute.context));
     }
 
-    public String getDenizenVersion() {
-        return denizen.getDescription().getVersion();
-    }
-
 }

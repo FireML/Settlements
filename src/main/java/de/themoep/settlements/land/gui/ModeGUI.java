@@ -2,9 +2,11 @@ package de.themoep.settlements.land.gui;
 
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.land.events.LandModeChangeEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.Utils;
 import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
 import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
@@ -29,6 +31,7 @@ public class ModeGUI extends ConfigurableGui {
                                     boolean state = !m.get(landOwner);
                                     if (m.set(state, landOwner)) {
                                         landOwner.save();
+                                        landOwner.getLand().forEach(land -> Utils.callEvent(new LandModeChangeEvent(land)));
                                     }
                                     Message.get("command." + landOwner.getKey() + ".mode.success").tell(this.resident,
                                             "mode", m.getTag(),

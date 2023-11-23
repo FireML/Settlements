@@ -8,6 +8,7 @@ import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 public class BreweryIntegration implements Listener, ConfigMessages {
     private Brewery instance;
@@ -23,11 +24,11 @@ public class BreweryIntegration implements Listener, ConfigMessages {
         int max = Utils.getMaxDrunkeness(e.getChannel());
         if (p != null && p.getDrunkeness() >= max) {
             e.setCancelled(true);
-            getMessage("too-drunk-for-channel").tell(e.getPlayer(),
+            ComponentUtils.parsePlaceholders(getMessage("too-drunk-for-channel").getComponent(),
                     "channel", e.getChannel().getTag(),
                     "drunkeness", String.valueOf(p.getDrunkeness()),
                     "channel-drunkeness", String.valueOf(max),
-                    "message", e.getMessage()
+                    "message", ComponentUtils.toString(e.getMessage())
             );
         }
     }

@@ -5,7 +5,6 @@ import de.themoep.settlements.land.gui.RankPermsGUI;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Utils;
-import org.bukkit.ChatColor;
 
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +32,7 @@ public class SettlementRanksCommand extends SettlementSubCommand {
                             "permission", e.getKey(),
                             "value", String.valueOf(e.getValue().orElse(false)),
                             "opposite", String.valueOf(!e.getValue().orElse(false)),
-                            "color",  String.valueOf(e.getValue().orElse(false) ? ChatColor.GREEN : ChatColor.RED)
+                            "color",  String.valueOf(e.getValue().orElse(false) ? "§a" : "§c")
                     );
                 }
                 getMessage("footer").tell(resident, "rank", rank.getTag(resident.getSettlement()));
