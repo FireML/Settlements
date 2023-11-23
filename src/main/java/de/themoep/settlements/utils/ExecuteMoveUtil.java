@@ -69,7 +69,7 @@ public class ExecuteMoveUtil implements Listener {
         ActionRunnable action = scheduled.remove(e.getPlayer().getUniqueId());
         if (action != null) {
             action.cancel();
-            if (Message.get("move-cancelled.message").exists()) {
+            if (Message.get("move-cancelled.message").exists() && !Message.get("move-cancelled.message").getText().isEmpty()) {
                 Message.get("move-cancelled.message").tell(e.getPlayer(), "action", action.getAction());
             }
             Map<String, Component> replacements = Map.of("action", ComponentUtils.parseComponent(action.getAction()));

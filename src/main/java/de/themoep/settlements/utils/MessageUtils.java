@@ -82,7 +82,10 @@ public class MessageUtils {
     }
 
     public static void tellAdvanced(Player player, String key, String... replacements) {
-        tell(player, Message.get(key + ".message").getReplacedComponent(replacements));
+        String message = Message.get(key + ".message").getReplacedText(replacements);
+        if (!message.isEmpty()) {
+            tell(player, ComponentUtils.parseComponent(message));
+        }
         new TitleBuilder()
                 .withTitle(Message.get(key + ".title").getComponent())
                 .withSubtitle(Message.get(key + ".subtitle").getComponent())
