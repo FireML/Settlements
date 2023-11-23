@@ -2803,7 +2803,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMissions: &e{missions}
+          &fMissions: &e{missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2815,7 +2815,7 @@ command:
           &fRank: &e{title}
           &fBalance: &e☧ {balance}
           &fTax: &e☧ {tax}
-          &fMissions: &e{missions}
+          &fMissions: &e{missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
