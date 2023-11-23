@@ -1915,7 +1915,7 @@ gui:
       &f➤ Rank {rank}
       &f➤ Plots Owned {plots}
       
-      &fPlayer Info
+      &fPlayer Info:
       &f➤ Rank {vaultprefix}
       &f➤ Balance &6{balance}
       &f➤ Last Login &c{lastloginduration}
@@ -1930,7 +1930,7 @@ gui:
       &f➤ Rank: &6{rank}
       &f➤ Plots Owned: &6{plots}
       
-      &fPlayer Info
+      &fPlayer Info:
       &f➤ Rank: &6{vaultprefix}
       &f➤ Balance: &6☧ {balance}
       &f➤ Mission Points: &6{missionpoints}
