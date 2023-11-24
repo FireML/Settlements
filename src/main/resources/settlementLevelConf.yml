@@ -384,7 +384,7 @@ kingdom:
       crimson_stem: 4000
       dark_oak_sapling: 5000
       dark_prismarine_stairs: 3500
-      diamond_ore: 500
+      diamond_ore: 300
       dirt: 7500
       ender_eye: 2000
       glow_lichen: 3000
@@ -414,7 +414,7 @@ kingdom:
     # To get to Level 9 Kingdom
     requirements:
       missions: 876
-      ancient_debris: 500
+      ancient_debris: 250
       apple: 2500
       blaze_rod: 2500
       blue_ice: 2500
@@ -437,7 +437,7 @@ kingdom:
       purple_dye: 600
       respawn_anchor: 25
       rotten_flesh: 3000
-      sculk_shrieker: 1000
+      sculk_shrieker: 500
       smithing_table: 60
       soul_sand: 8000
       soul_lantern: 250
@@ -469,8 +469,8 @@ kingdom:
       fletching_table: 70
       green_dye: 700
       iron_block: 500
-      lapis_ore: 300
-      lava_bucket: 1500
+      deepslate_lapis_ore: 300
+      lava_bucket: 1000
       light_gray_dye: 700
       magma_cream: 2500
       mangrove_log: 4500
@@ -506,7 +506,7 @@ kingdom:
       cobweb: 5000
       crying_obsidian: 2000
       dead_bush: 2500
-      deepslate_emerald_ore: 150
+      deepslate_emerald_ore: 25
       diamond_horse_armor: 20
       diamond_block: 200
       ghast_tear: 760
@@ -546,7 +546,7 @@ kingdom:
       cake: 1750
       crimson_nylium: 3500
       dead_tube_coral_fan: 1000
-      deepslate_coal_ore: 250
+      deepslate_coal_ore: 200
       end_stone_brick_slab: 4500
       flowering_azalea_leaves: 3500
       ghast_tear: 50
@@ -598,7 +598,7 @@ kingdom:
       cyan_bed: 200
       dark_oak_leaves: 2000
       dark_prismarine: 2000
-      deepslate_coal_ore: 750
+      deepslate_iron_ore: 1000
       egg: 5500
       end_stone: 4000
       glass_bottle: 2500
@@ -635,7 +635,7 @@ kingdom:
       cobblestone: 7000
       cooked_cod: 2000
       crying_obsidian: 150
-      deepslate_copper_ore: 2000
+      deepslate_copper_ore: 1500
       diamond: 1500
       emerald: 2000
       ender_eye: 4000
@@ -698,5 +698,5 @@ kingdom:
       rotten_flesh: 5000
       scaffolding: 1500
       spore_blossom: 1000
-      totem_of_undying: 50
+      totem_of_undying: 75
       vine: 2500
