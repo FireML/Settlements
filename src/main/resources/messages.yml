@@ -220,6 +220,7 @@ levels:
   perk-unlocked: "&6{perk} &7has been unlocked!"
 missions:
   completed: "&e&l(!) &r&b{player} &r&7has completed mission: &r&e{mission} &r&7for &r&e{state} {name}&r&7! &b({finishedmissions})"
+  awarded: "&e&l(!) &r&7Your {state} has been awarded {amount} mission points! &b({finishedmissions})"
 upkeep:
   alert:
     level-removed: "&a&l(!) &7Your settlement has had a level removed because you couldn't pay the upkeep!"

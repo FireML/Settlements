@@ -4,8 +4,13 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.common.TargetParser;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.missions.MissionProvider;
+import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Targetable;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
+import uk.firedev.poleislib.utils.ComponentUtils;
 
 public class AdminMissionCommand extends SubCommand implements TargetParser {
     public AdminMissionCommand(SubCommand parent) {
@@ -40,6 +45,15 @@ public class AdminMissionCommand extends SubCommand implements TargetParser {
                         "amount", String.valueOf(amount),
                         "name", targetable.getName()
                 );
+                if (targetable instanceof Settlement settlement) {
+                    Component message = Message.get("missions.awarded").getReplacedComponent(settlement.getReplacements(this));
+                    message = ComponentUtils.parsePlaceholders(message,
+                            "finishedmissions", String.valueOf(settlement.getFinishedMissions()),
+                            "amount", String.valueOf(amount),
+                            "state", settlement.getStateTag()
+                    );
+                    MessageUtils.tellResidents(settlement.getOnlineResidents(), message);
+                }
                 if (targetable instanceof DatabaseSerializable) {
                     ((DatabaseSerializable) targetable).save();
                 }
