@@ -4,7 +4,6 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigMessages;
-import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -105,7 +104,11 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         }
         if (BuildState.TRUSTED == state) {
             Resident resident = ResidentManager.getInstance().getResident(building);
-            allowed |= land.getLandOwner().isMember(resident) || land.getLandOwner().isTrusted(resident);
+            if (resident == null) {
+                allowed = false;
+            } else {
+                allowed |= land.getLandOwner().isMember(resident) || land.getLandOwner().isTrusted(resident);
+            }
         }
         if (BuildState.PUBLIC.atLeast(state)) {
             allowed = true;

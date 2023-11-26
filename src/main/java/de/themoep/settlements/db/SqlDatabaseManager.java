@@ -1,6 +1,5 @@
 package de.themoep.settlements.db;
 
-import com.Acrobot.ChestShop.Libs.ORMlite.logger.Log;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;

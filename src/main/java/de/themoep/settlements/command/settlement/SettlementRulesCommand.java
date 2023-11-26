@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.settlement;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Message;
@@ -8,7 +7,6 @@ import de.themoep.settlements.utils.config.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import org.eclipse.sisu.space.SpaceScanner;
 import uk.firedev.poleislib.builders.BookBuilder;
 import uk.firedev.poleislib.utils.ComponentUtils;
 

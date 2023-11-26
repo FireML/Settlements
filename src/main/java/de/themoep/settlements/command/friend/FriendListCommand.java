@@ -11,13 +11,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 import uk.firedev.poleislib.utils.ComponentUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class FriendListCommand extends PlayerSubCommand {
     public FriendListCommand(PlayerSubCommand parent) {

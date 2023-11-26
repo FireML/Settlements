@@ -34,7 +34,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.util.logging.Level;

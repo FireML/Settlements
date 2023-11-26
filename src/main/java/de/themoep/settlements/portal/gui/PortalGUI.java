@@ -1,6 +1,5 @@
 package de.themoep.settlements.portal.gui;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
 import org.bukkit.Material;

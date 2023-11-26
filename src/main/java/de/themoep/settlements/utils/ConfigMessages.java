@@ -3,8 +3,6 @@ package de.themoep.settlements.utils;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.perk.Perk;
-import net.kyori.adventure.text.Component;
-import uk.firedev.poleislib.utils.ComponentUtils;
 import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.ArrayList;

@@ -1,6 +1,5 @@
 package de.themoep.settlements;
 
-import com.Acrobot.ChestShop.Libs.ORMlite.logger.Log;
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.command.CommandManager;

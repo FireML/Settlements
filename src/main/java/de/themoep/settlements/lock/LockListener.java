@@ -1,6 +1,5 @@
 package de.themoep.settlements.lock;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.common.TargetParser;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.EmpireManager;
