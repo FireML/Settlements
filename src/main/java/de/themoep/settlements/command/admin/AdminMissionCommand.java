@@ -45,7 +45,7 @@ public class AdminMissionCommand extends SubCommand implements TargetParser {
                         "amount", String.valueOf(amount),
                         "name", targetable.getName()
                 );
-                if (targetable instanceof Settlement settlement) {
+                if (operation.equals(Operation.ADD) && targetable instanceof Settlement settlement) {
                     Component message = Message.get("missions.awarded").getReplacedComponent(settlement.getReplacements(this));
                     message = ComponentUtils.parsePlaceholders(message,
                             "finishedmissions", String.valueOf(settlement.getFinishedMissions()),
