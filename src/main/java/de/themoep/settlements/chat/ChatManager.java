@@ -32,6 +32,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDownParser;
 import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
@@ -196,6 +197,20 @@ public class ChatManager implements ConfigMessages, Listener {
             filteredMessage = ComponentUtils.parseComponent(ConfigManager.getInstance().getToggleableCurses().filterCurses(message));
             unfilteredMessage = ComponentUtils.parseComponent(message);
         }
+
+        Component hover = ComponentUtils.getHoverItem(sender.getInventory().getItemInMainHand());
+        filteredMessage = new ComponentReplacer(filteredMessage)
+                .prefix("[")
+                .suffix("]")
+                .replace("item", hover)
+                .replace("i", hover)
+                .build();
+        unfilteredMessage = new ComponentReplacer(unfilteredMessage)
+                .prefix("[")
+                .suffix("]")
+                .replace("item", hover)
+                .replace("i", hover)
+                .build();
 
         TextColor channelDefault = Utils.getChannelColor(channel, ChatColorType.MESSAGE);
         TextColor channelPrefixDefault = Utils.getChannelColor(channel, ChatColorType.PREFIX);
