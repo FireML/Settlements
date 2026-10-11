@@ -63,7 +63,10 @@ bukkit {
     author = "FireML"
     description = project.description.toString()
 
-    depend = listOf("Vault")
+    depend = listOf(
+        "Vault",
+        "LuckPerms"
+    )
 
     generateLibrariesJson = true
     paperSkipLibraries = true
