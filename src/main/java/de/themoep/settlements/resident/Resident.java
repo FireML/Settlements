@@ -692,7 +692,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         primarygroup(r -> {
             Player player = r.getPlayer();
             if (player != null) {
-                return SettlementsPlugin.chat.getPrimaryGroup(player);
+                return SettlementsPlugin.getInstance().getChat().getPrimaryGroup(player);
             }
             return "Unknown";
         }),

@@ -54,7 +54,6 @@ import java.util.stream.Collectors;
 public class SettlementsPlugin extends JavaPlugin implements Listener {
     private static SettlementsPlugin instance;
     private LandPerks lPerks;
-    private Economy econ = null;
     private CitizensIntegration citizensIntegration = null;
     private MultiverseIntegration multiverse = null;
     private PlaceholderApiIntegration placeholderApi = null;
@@ -67,7 +66,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private final Set<ShopProvider> shopProviders = new LinkedHashSet<>();
     private final Set<MailProvider> mailProviders = new LinkedHashSet<>();
 
-    public static Chat chat = null;
     private boolean running = false;
     private static final Timer timer = new Timer();
     private LandModeListener landModeListener;
@@ -411,7 +409,11 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     }
 
     public Economy getEconomy() {
-        return econ;
+        return VaultWrapper.get().getEconomy();
+    }
+
+    public Chat getChat() {
+        return VaultWrapper.get().getChat();
     }
 
     public void registerListener(Listener listener) {

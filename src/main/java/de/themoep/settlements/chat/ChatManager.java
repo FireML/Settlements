@@ -465,27 +465,27 @@ public class ChatManager implements ConfigMessages, Listener {
     }
 
     public String getPlayerPrefix(Player sender) {
-        return SettlementsPlugin.chat != null ? StringUtils.parseColors(SettlementsPlugin.chat.getPlayerPrefix(sender)) : "";
+        return SettlementsPlugin.getInstance().getChat() != null ? StringUtils.parseColors(SettlementsPlugin.getInstance().getChat().getPlayerPrefix(sender)) : "";
     }
 
     public String getPlayerGroupPrefix(Player sender) {
-        if (SettlementsPlugin.chat == null) {
+        if (SettlementsPlugin.getInstance().getChat() == null) {
             return "";
         }
-        String group = SettlementsPlugin.chat.getPrimaryGroup(sender);
-        return SettlementsPlugin.chat.getGroupPrefix((String) null, group);
+        String group = SettlementsPlugin.getInstance().getChat().getPrimaryGroup(sender);
+        return SettlementsPlugin.getInstance().getChat().getGroupPrefix((String) null, group);
     }
 
     public String getPlayerSuffix(Player sender) {
-        return SettlementsPlugin.chat != null ? StringUtils.parseColors(SettlementsPlugin.chat.getPlayerSuffix(sender)) : "";
+        return SettlementsPlugin.getInstance().getChat() != null ? StringUtils.parseColors(SettlementsPlugin.getInstance().getChat().getPlayerSuffix(sender)) : "";
     }
 
     public String getPlayerGroupSuffix(Player sender) {
-        if (SettlementsPlugin.chat == null) {
+        if (SettlementsPlugin.getInstance().getChat() == null) {
             return "";
         }
-        String group = SettlementsPlugin.chat.getPrimaryGroup(sender);
-        return SettlementsPlugin.chat.getGroupSuffix((String) null, group);
+        String group = SettlementsPlugin.getInstance().getChat().getPrimaryGroup(sender);
+        return SettlementsPlugin.getInstance().getChat().getGroupSuffix((String) null, group);
     }
 
     public static ChatManager getInstance() {
