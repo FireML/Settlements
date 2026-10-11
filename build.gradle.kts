@@ -4,16 +4,15 @@ plugins {
     `java-library`
     `maven-publish`
     id("com.gradleup.shadow") version "9.6.1"
-    id("de.eldoria.plugin-yml.paper") version "0.9.0"
+    id("de.eldoria.plugin-yml.bukkit") version "0.9.0"
 }
 
 repositories {
+    maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.minebench.de")
     maven("https://maven.citizensnpcs.co/repo")
     maven("https://repo.codemc.io/repository/maven-public/")
     maven("https://repo.codemc.io/repository/FireML/")
-    maven("https://jitpack.io")
-    maven("https://repo.papermc.io/repository/maven-public/")
-    maven("https://repo.minebench.de")
     maven("https://repo.dmulloy2.net/nexus/repository/snapshots/")
     maven("https://repo.onarandombox.com/content/repositories/multiverse")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
@@ -21,18 +20,19 @@ repositories {
     maven("https://repo.onarandombox.com/content/groups/public/")
     maven("https://repo.jsinco.dev/releases")
     maven("https://mvn.wesjd.net/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.3.build.+")
 
-    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
-    implementation("com.zaxxer:HikariCP:5.1.0")
+    bukkitLibrary("com.github.ben-manes.caffeine:caffeine:3.1.8")
+    bukkitLibrary("com.zaxxer:HikariCP:5.1.0")
 
     implementation("uk.firedev:DaisyLib:4.2")
-    paperLibrary("de.themoep:minedown-adventure:1.7.6-SNAPSHOT")
-    paperLibrary("de.themoep:inventorygui:1.6.7-SNAPSHOT")
-    paperLibrary("net.wesjd:anvilgui:1.10.13-SNAPSHOT")
+    implementation("de.themoep:inventorygui:1.6.7-SNAPSHOT")
+    bukkitLibrary("de.themoep:minedown-adventure:1.7.6-SNAPSHOT")
+    bukkitLibrary("net.wesjd:anvilgui:1.10.13-SNAPSHOT")
 
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 
@@ -55,7 +55,7 @@ group = "uk.firedev"
 version = project.property("project-version") as String
 java.sourceCompatibility = JavaVersion.VERSION_25
 
-paper {
+bukkit {
     name = project.name
     version = project.version.toString()
     main = "de.themoep.settlements.SettlementsPlugin"
@@ -63,13 +63,139 @@ paper {
     author = "FireML"
     description = project.description.toString()
 
-    serverDependencies {
-        register("Vault") {
-            required = true
-            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+    depend = listOf("Vault")
+
+    generateLibrariesJson = true
+    paperSkipLibraries = true
+    paperPluginLoader = "de.themoep.settlements.LibraryLoader"
+
+    commands {
+        register("portal") {
+            description = "Portal Commands."
+            aliases = listOf("netherportal")
+        }
+
+        register("lock") {
+            description = "Lock Commands."
+            aliases = listOf("protection", "secure")
+        }
+
+        register("unlock") {
+            description = "Unlock a container."
+            aliases = listOf("unprotection", "unsecure")
+        }
+
+        register("settlement") {
+            description = "Settlement Commands."
+            aliases = listOf("s", "village", "kingdom", "k", "v")
+        }
+
+        register("empire") {
+            description = "Empire Commands."
+            aliases = listOf("e", "nation")
+        }
+
+        register("settlementadmin") {
+            description = "Admin Commands."
+            aliases = listOf("villageadmin", "va", "sa", "kingdomadmin", "ka", "empireadmin", "ea")
+        }
+
+        register("resident") {
+            description = "Shows you the name of the players settlement."
+            aliases = listOf("res")
+        }
+
+        register("tax") {
+            description = "Shows tax information."
+        }
+
+        register("chat") {
+            description = "Chat Channel Commands."
+            aliases = listOf("c")
+        }
+
+        register("localchat") {
+            description = "Local chat"
+            aliases = listOf("local", "lc", "cl")
+        }
+
+        register("tradechat") {
+            description = "Trade chat"
+            aliases = listOf("trade", "tc", "ct")
+        }
+
+        register("generalchat") {
+            description = "General chat"
+            aliases = listOf("general", "gc", "g", "cg")
+        }
+
+        register("helpchat") {
+            description = "Help chat"
+        }
+
+        register("eventchat") {
+            description = "Event chat"
+            aliases = listOf("event", "evc")
+        }
+
+        register("settlementchat") {
+            description = "Settlement chat"
+            aliases = listOf("villagechat", "sc", "vc", "cs", "cv")
+        }
+
+        register("allychat") {
+            description = "Ally chat"
+            aliases = listOf("ally", "ac", "ca")
+        }
+
+        register("empirechat") {
+            description = "Empire chat"
+            aliases = listOf("ec", "ce")
+        }
+
+        register("empireallychat") {
+            description = "Empire ally chat"
+            aliases = listOf("eally", "eac", "alliance", "cea")
+        }
+
+        register("adminchat") {
+            description = "Admin chat"
+            aliases = listOf("admin", "adc", "cad")
+        }
+
+        register("staffchat") {
+            description = "Staff chat"
+            aliases = listOf("staff", "stc", "cst")
+        }
+
+        register("ccemchat") {
+            description = "CCEM Chat"
+            aliases = listOf("content", "cc", "ccem")
+        }
+
+        register("friend") {
+            description = "Friending command"
+            aliases = listOf("friends", "f")
+        }
+
+        register("scoreboard") {
+            description = "Scoreboard command"
+        }
+
+        register("scoreboardadmin") {
+            description = "Scoreboard admin command"
+        }
+
+        register("warningtoggle") {
+            description = "Toggle the warning when building near settlements"
+            aliases = listOf("togglewarning")
+            usage = "/<command> <settlement>"
+        }
+
+        register("towny") {
+            aliases = listOf("t")
         }
     }
-
 }
 
 publishing {
@@ -108,13 +234,13 @@ tasks {
         archiveVersion.set(project.version.toString())
         archiveClassifier.set("")
 
-        relocate("uk.firedev.daisylib", "uk.firedev.firefly.libs.daisylib")
-        relocate("com.jeff_media.customblockdata", "uk.firedev.firefly.libs.customblockdata")
+        relocate("uk.firedev.daisylib", "de.themoep.settlements.libs.daisylib")
+        relocate("de.themoep.inventorygui", "de.themoep.settlements.libs.inventorygui")
     }
     withType<JavaCompile> {
         options.encoding = "UTF-8"
     }
-    generatePaperPluginDescription {
+    generateBukkitPluginDescription {
         useGoogleMavenCentralProxy()
     }
 }

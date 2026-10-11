@@ -23,7 +23,7 @@ public class LandPerks {
     private static final String PERK_EFFECT_KEY = "perk_effects";
 
     public void runTimer() {
-        Scheduling.runTaskTimer(() -> updateEffects(true), 0L, 160L);
+        Scheduling.runTaskTimer(() -> updateEffects(true), 1L, 160L);
     }
 
     /**

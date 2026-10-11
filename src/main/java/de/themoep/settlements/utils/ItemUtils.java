@@ -1,5 +1,6 @@
 package de.themoep.settlements.utils;
 
+import com.destroystokyo.paper.profile.ProfileProperty;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import org.bukkit.inventory.ItemFlag;
@@ -10,18 +11,15 @@ import java.util.UUID;
 
 public class ItemUtils {
 
-    public static ItemStack getHead(String string) {
+    public static ItemStack getHead(String textures) {
         ItemStack skull = ItemType.PLAYER_HEAD.createItemStack();
         skull.setData(
             DataComponentTypes.PROFILE,
             ResolvableProfile.resolvableProfile()
                 .uuid(UUID.randomUUID())
-                .name(string)
+                .name("SettlementsSkull")
+                .addProperty(new ProfileProperty("textures", textures))
                 .build()
-        );
-        skull.setData(
-            DataComponentTypes.CUSTOM_NAME,
-            ComponentUtils.parseComponent(string)
         );
         return skull;
     }
