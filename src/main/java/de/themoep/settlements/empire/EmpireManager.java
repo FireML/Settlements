@@ -22,14 +22,14 @@ import de.themoep.settlements.utils.*;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.SimpleLocation;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.utils.ComponentUtils;
+
+import de.themoep.settlements.utils.ComponentUtils;
+import org.codehaus.plexus.util.FileUtils;
 
 import java.io.*;
 import java.util.*;
@@ -70,7 +70,7 @@ public class EmpireManager {
                 long delay = timeAbandoned > abandonTime ? 0 : abandonTime - timeAbandoned;
                 SettlementsPlugin.logDebug(empire.getStateTag() + " " + empire.getName() + " will be removed after " + Config.Empire.Upkeep.ABANDON_TIME + " minutes in " + delay + "!");
                 Utils.runLater(() -> {
-                    Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Config.Empire.Upkeep.ABANDON_TIME + " minutes!");
+                    SettlementsPlugin.getInstance().getLogging().info(empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Config.Empire.Upkeep.ABANDON_TIME + " minutes!");
                     deleteEmpire(empire);
                     ComponentUtils.broadcastMessage(Message.get("broadcast.empire-deletion").getReplacedComponent("name", empire.getName()));
                 }, delay, TimeUnit.MILLISECONDS);
@@ -130,8 +130,8 @@ public class EmpireManager {
             try (FileWriter writer = new FileWriter(idFile)) {
                 writer.write(String.valueOf(empire.getId().value()));
             } catch (IOException e) {
-                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while trying to write empire id into world folder " + world.getName());
-                Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+                SettlementsPlugin.getInstance().getLogging().error("Error while trying to write empire id into world folder " + world.getName());
+                SettlementsPlugin.getInstance().getLogging().exception(e);
             }
         }
     }
@@ -147,7 +147,7 @@ public class EmpireManager {
                 perkTags.put(perk.getTag().toLowerCase(), perk);
                 unlockables.addAll(perk.getUnlockables());
             } catch (IllegalArgumentException e) {
-                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Config for Empire Perk " + perkName + " was invalid! " + e.getMessage());
+                SettlementsPlugin.getInstance().getLogging().error("Config for Empire Perk " + perkName + " was invalid! " + e.getMessage());
             }
         }
     }
@@ -158,7 +158,7 @@ public class EmpireManager {
             try {
                 missions.put(missionId.toLowerCase(Locale.ROOT), new EmpireMission(ConfigManager.getInstance().getEmpireMissionsConfig().getConfigurationSection(missionId)));
             } catch (IllegalArgumentException e) {
-                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Config for Empire Mission " + missionId + " was invalid! " + e.getMessage());
+                SettlementsPlugin.getInstance().getLogging().error("Config for Empire Mission " + missionId + " was invalid! " + e.getMessage());
             }
         }
     }
@@ -259,7 +259,7 @@ public class EmpireManager {
 
     public void registerNewEmpire(Resident resident, Empire empire) {
         if (!empire.getId().isNull()) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Error while saving empire " + empire.getName() + " to the database! It already had an ID defined?");
+            SettlementsPlugin.getInstance().getLogging().warn("Error while saving empire " + empire.getName() + " to the database! It already had an ID defined?");
             return;
         }
         empire.setBank(Config.Empire.START_BALANCE);
@@ -286,7 +286,7 @@ public class EmpireManager {
                 }
                 Utils.runSync(() -> Utils.callEvent(new LandownerCreatedEvent(empire, resident)));
             } else {
-                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
+                SettlementsPlugin.getInstance().getLogging().warn("Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }
         });
     }
@@ -384,14 +384,14 @@ public class EmpireManager {
                 try {
                     FileUtils.deleteDirectory(empireWorld.getWorldFolder());
                 } catch (IOException e) {
-                    Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could delete the files of world " + empireWorld.getName());
-                    Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+                    SettlementsPlugin.getInstance().getLogging().error("Could delete the files of world " + empireWorld.getName());
+                    SettlementsPlugin.getInstance().getLogging().exception(e);
                 }
             } else {
-                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not unload and delete the world " + empireWorld.getName());
+                SettlementsPlugin.getInstance().getLogging().error("Could not unload and delete the world " + empireWorld.getName());
             }
         } else if (!SettlementsPlugin.getInstance().getMultiverse().deleteWorld(empireWorld)) {
-            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Multiverse could not unload and delete the world " + empireWorld.getName());
+            SettlementsPlugin.getInstance().getLogging().error("Multiverse could not unload and delete the world " + empireWorld.getName());
         }
     }
 
@@ -466,7 +466,7 @@ public class EmpireManager {
         DatabaseManager.getInstance().saveResidents(modifiedResidents);
 
         Utils.runLater(() -> {
-            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Config.Empire.Upkeep.ABANDON_TIME + " minutes!");
+            SettlementsPlugin.getInstance().getLogging().info(empire.getStateTag() + " " + empire.getName() + " was removed because it has been abandoned for " + Config.Empire.Upkeep.ABANDON_TIME + " minutes!");
             deleteEmpire(empire);
         }, Config.Empire.Upkeep.ABANDON_TIME, TimeUnit.MINUTES);
     }
@@ -588,12 +588,12 @@ public class EmpireManager {
                         if (empire != null && empire.hasWorld()) {
                             return empire;
                         } else {
-                            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "No world " + worldName + " specified empire with ID " + id + " but no empire with such an id was found?");
+                            SettlementsPlugin.getInstance().getLogging().warn("No world " + worldName + " specified empire with ID " + id + " but no empire with such an id was found?");
                         }
                     }
                 } catch (IOException | NumberFormatException e) {
-                    Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while trying to read empire id file from world folder " + worldName);
-                    Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+                    SettlementsPlugin.getInstance().getLogging().error("Error while trying to read empire id file from world folder " + worldName);
+                    SettlementsPlugin.getInstance().getLogging().exception(e);
                 }
             }
             return null;
@@ -666,15 +666,16 @@ public class EmpireManager {
             File worldFolder = world.getWorldFolder();
             File newFolder = new File(Bukkit.getWorldContainer(), empire.getWorldName());
             if (newFolder.exists()) {
-                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "World with name " + empire.getWorldName() + " already exists?");
+                SettlementsPlugin.getInstance().getLogging().error("World with name " + empire.getWorldName() + " already exists?");
                 return false;
             }
             Bukkit.unloadWorld(world, true);
             try {
-                FileUtils.moveDirectory(worldFolder, newFolder);
+                FileUtils.copyDirectory(worldFolder, newFolder);
+                FileUtils.deleteDirectory(worldFolder);
             } catch (IOException e) {
-                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while copying world " + worldFolder.getName() + " to " + empire.getWorldName() + "!");
-                Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+                SettlementsPlugin.getInstance().getLogging().error("Error while copying world " + worldFolder.getName() + " to " + empire.getWorldName() + "!");
+                SettlementsPlugin.getInstance().getLogging().exception(e);
                 return false;
             }
 

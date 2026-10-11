@@ -5,7 +5,7 @@ import de.themoep.settlements.event.Event;
 import de.themoep.settlements.event.EventManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.Collection;
 import java.util.Map;

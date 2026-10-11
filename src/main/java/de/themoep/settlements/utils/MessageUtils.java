@@ -7,8 +7,7 @@ import de.themoep.settlements.resident.Resident;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.builders.TitleBuilder;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import uk.firedev.daisylib.builders.TitleBuilder;
 
 import java.util.Collection;
 import java.util.List;
@@ -86,10 +85,10 @@ public class MessageUtils {
         if (!message.isEmpty()) {
             tell(player, ComponentUtils.parseComponent(message));
         }
-        new TitleBuilder()
-                .withTitle(Message.get(key + ".title").getComponent())
-                .withSubtitle(Message.get(key + ".subtitle").getComponent())
-                .send(player, replacements);
+        TitleBuilder.create()
+                .withTitle(Message.get(key + ".title").getReplacedComponent(replacements))
+                .withSubtitle(Message.get(key + ".subtitle").getReplacedComponent(replacements))
+                .send(player);
         ComponentUtils.sendActionBar(Message.get(key + ".actionbar").getReplacedComponent(replacements), player);
     }
 

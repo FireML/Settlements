@@ -9,11 +9,11 @@ import de.themoep.settlements.utils.Utils;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.event.inventory.ClickType;
-import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.utils.ColorUtils;
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.utils.ColorUtils;
 
 public class ColorTypeSelectGui extends ConfigurableGui {
 
@@ -43,7 +43,7 @@ public class ColorTypeSelectGui extends ConfigurableGui {
                         new ColorSelectGui(channel, resident, type).open();
                         return true;
                     }, getText("entry",
-                            "color", ColorUtils.hexToLegacy("&" + NamedTextColor.nearestTo(textColor).asHexString()),
+                            "color", "&#" + NamedTextColor.nearestTo(textColor).asHexString(),
                             "type", type.getTag(),
                             "name", NamedTextColor.nearestTo(textColor).toString()
                     )

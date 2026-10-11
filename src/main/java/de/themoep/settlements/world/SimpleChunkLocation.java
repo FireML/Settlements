@@ -6,7 +6,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import uk.firedev.poleislib.Loggers;
+
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -110,7 +110,7 @@ public class SimpleChunkLocation implements ConfigurationSerializable {
 
     public static SimpleChunkLocation deserialize(Map<String, Object> map) {
         if (map == null || map.get("x") == null || map.get("z") == null || map.get("world") == null) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize SimpleBlockLocation! (" + map + ")");
+            SettlementsPlugin.getInstance().getLogging().warn("Could not deserialize SimpleBlockLocation! (" + map + ")");
             return null;
         }
         return new SimpleChunkLocation(

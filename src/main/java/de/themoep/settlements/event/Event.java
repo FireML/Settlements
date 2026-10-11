@@ -5,7 +5,7 @@ import com.google.common.collect.MultimapBuilder;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.NameTag;
 import org.bukkit.configuration.ConfigurationSection;
-import uk.firedev.poleislib.Loggers;
+
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,8 +35,8 @@ public class Event {
                 List<String> rewardsList = config.getStringList("rewards." + place);
                 rewards.put(place, rewardsList);
                 if (rewardsList.size() > 9 * 6) {
-                    Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(),
-                            "Detected an issue while loading event " + id + "! It had " + rewardsList.size() + " rewards defined but" +
+                    SettlementsPlugin.getInstance().getLogging().warn(
+                        "Detected an issue while loading event " + id + "! It had " + rewardsList.size() + " rewards defined but" +
                                     " currently only " + (9 * 6) + " different ones are supported per event!" +
                                     "You should group them together.");
                 }

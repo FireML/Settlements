@@ -35,10 +35,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.utils.ColorUtils;
-import uk.firedev.poleislib.utils.ComponentUtils;
-import uk.firedev.poleislib.utils.ItemUtils;
+
+import de.themoep.settlements.utils.ColorUtils;
+import de.themoep.settlements.utils.ComponentUtils;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.sql.Date;
 import java.util.*;
@@ -765,7 +765,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public static Resident deserialize(Map<String, Object> map) {
         if (map == null || map.get("uuid") == null || map.get("name") == null) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize Resident! (" + map + ")");
+            SettlementsPlugin.getInstance().getLogging().warn("Could not deserialize Resident! (" + map + ")");
             return null;
         }
         Resident resident = new Resident(UUID.fromString((String) map.get("uuid")), (String) map.get("name"));
@@ -776,12 +776,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         try {
             resident.setSettlementRank(SettlementRank.valueOf((String) map.get("rank")));
         } catch (IllegalArgumentException e) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid settlement rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
+            SettlementsPlugin.getInstance().getLogging().warn("Invalid settlement rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
         }
         try {
             resident.setEmpireRank(EmpireRank.valueOf((String) map.get("empirerank")));
         } catch (IllegalArgumentException e) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid empire rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("empirerank"));
+            SettlementsPlugin.getInstance().getLogging().warn("Invalid empire rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("empirerank"));
         }
         if (map.get("settlementName") != null) {
             resident.setSettlement(SettlementManager.getInstance().getFromName((String) map.get("settlementName")));
@@ -798,7 +798,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         try {
             resident.setTaxDebtAction(TaxDebtAction.valueOf((String) map.get("taxDebtAction")));
         } catch (IllegalArgumentException e) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid tax debt action for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("taxDebtAction"));
+            SettlementsPlugin.getInstance().getLogging().warn("Invalid tax debt action for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("taxDebtAction"));
         }
         resident.taxPaid = Utils.getLong(map.get("taxPaid"));
         resident.donated = Utils.getLong(map.get("donated"));
@@ -825,7 +825,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         try {
             resident.setActiveChannel(ChatChannel.valueOf(((String) map.get("activeChannel")).toUpperCase()));
         } catch (Exception e) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid active channel for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("activeChannel"));
+            SettlementsPlugin.getInstance().getLogging().warn("Invalid active channel for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("activeChannel"));
         }
         if (map.containsKey("channelColors")) {
             for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelColors")).entrySet()) {

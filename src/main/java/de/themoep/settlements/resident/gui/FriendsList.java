@@ -11,8 +11,8 @@ import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

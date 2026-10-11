@@ -11,7 +11,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 public class AdminJoinCommand extends SubCommand {
     public AdminJoinCommand(SubCommand parent) {

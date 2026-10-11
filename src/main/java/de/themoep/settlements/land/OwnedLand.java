@@ -1,5 +1,6 @@
 package de.themoep.settlements.land;
 
+import com.dre.brewery.depend.universalScheduler.UniversalRunnable;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
@@ -12,6 +13,7 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.StringUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.NamedLocation;
@@ -20,9 +22,6 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
-import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -428,7 +427,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     public static OwnedLand deserialize(Map<String, Object> map) {
         if (map == null || map.get("world") == null || map.get("x") == null || map.get("z") == null) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize OwnedLand! (" + map + ")");
+            SettlementsPlugin.getInstance().getLogging().warn("Could not deserialize OwnedLand! (" + map + ")");
             return null;
         }
         SimpleChunkLocation location = new SimpleChunkLocation((String) map.get("world"), (Integer) map.get("x"), (Integer) map.get("z"));
@@ -444,7 +443,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
             }
         }
         if (landOwner == null) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not find owner for OwnedLand! Removing it from database... (" + map + ")");
+            SettlementsPlugin.getInstance().getLogging().warn("Could not find owner for OwnedLand! Removing it from database... (" + map + ")");
             DatabaseManager.getInstance().deleteLand(IdObject.get(map));
             return null;
         }

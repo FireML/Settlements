@@ -17,9 +17,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.utils.ColorUtils;
-import uk.firedev.poleislib.utils.ComponentUtils;
+
+import de.themoep.settlements.utils.ColorUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -177,8 +177,8 @@ public class ChatMap {
             if (land == null) {
                 Component cb = ComponentUtils.parseComponent((current ? Symbol.CURRENT : Symbol.NORMAL).getText());
                 if (landOwner != null && claimable && canClaimCoords) {
-                    cb = cb.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + landOwner.getKey() + " claim " + x + " " + z + " map"));
-                    cb = cb.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, messages.getMessage("hover.click-to-claim")
+                    cb = cb.clickEvent(ClickEvent.runCommand("/" + landOwner.getKey() + " claim " + x + " " + z + " map"));
+                    cb = cb.hoverEvent(HoverEvent.showText(messages.getMessage("hover.click-to-claim")
                             .getReplacedComponent(
                                     "location", x + "-" + z,
                                     "centerx", String.valueOf(x * 16 + 8),
@@ -297,7 +297,7 @@ public class ChatMap {
                                         "x", String.valueOf(x),
                                         "z", String.valueOf(z)
                                 ));
-                        cb = cb.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/plot unlink " + x + " " + z + " map"));
+                        cb = cb.clickEvent(ClickEvent.runCommand("/plot unlink " + x + " " + z + " map"));
                     } else {
                         hover = hover.append(Component.newline()).append(messages.getMessage("hover.click-to-link")
                                 .getReplacedComponent(
@@ -305,7 +305,7 @@ public class ChatMap {
                                         "x", String.valueOf(x),
                                         "z", String.valueOf(z)
                                 ));
-                        cb = cb.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/plot link " + x + " " + z + " map"));
+                        cb = cb.clickEvent(ClickEvent.runCommand("/plot link " + x + " " + z + " map"));
                     }
                 }
             } else if (claimable && canUnclaimCoords && land.isOwnedBy(landOwner)) {
@@ -315,10 +315,10 @@ public class ChatMap {
                                 "x", String.valueOf(x),
                                 "z", String.valueOf(z)
                         ));
-                cb = cb.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + landOwner.getKey() + " unclaim " + x + " " + z + " map"));
+                cb = cb.clickEvent(ClickEvent.runCommand("/" + landOwner.getKey() + " unclaim " + x + " " + z + " map"));
             }
 
-            return new Component[]{cb.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, hover))};
+            return new Component[]{cb.hoverEvent(HoverEvent.showText(hover))};
         }
 
         public List<RowEnd> getRowEnds() {
@@ -352,7 +352,7 @@ public class ChatMap {
                 temp = ColorUtils.getColor(ConfigManager.getInstance().getMapConfig().getString("color." + getKey()).toLowerCase(), NamedTextColor.WHITE);
             } catch (IllegalArgumentException e) {
                 temp = NamedTextColor.GRAY;
-                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Wrong color string for " + name() + "! " + e.getMessage());
+                SettlementsPlugin.getInstance().getLogging().warn("Wrong color string for " + name() + "! " + e.getMessage());
             }
             color = temp;
         }

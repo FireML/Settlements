@@ -1,5 +1,6 @@
 package de.themoep.settlements;
 
+import com.dre.brewery.depend.universalScheduler.scheduling.schedulers.TaskScheduler;
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.command.CommandManager;
@@ -12,7 +13,6 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.integration.*;
 import de.themoep.settlements.integration.citizens.CitizensIntegration;
-import de.themoep.settlements.integration.denizen.DenizenIntegration;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.*;
 import de.themoep.settlements.land.events.listeners.LandChangeListener;
@@ -38,27 +38,28 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalScheduler;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.schedulers.TaskScheduler;
+import org.jspecify.annotations.NonNull;
+import uk.firedev.daisylib.DaisyLib;
+import uk.firedev.daisylib.external.vault.VaultWrapper;
+import uk.firedev.daisylib.logging.ComponentLogging;
+import uk.firedev.daisylib.logging.Logging;
+import uk.firedev.daisylib.utils.Scheduling;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class SettlementsPlugin extends JavaPlugin implements Listener {
     private static SettlementsPlugin instance;
-    private static TaskScheduler scheduler;
     private LandPerks lPerks;
     private Economy econ = null;
     private CitizensIntegration citizensIntegration = null;
     private MultiverseIntegration multiverse = null;
     private PlaceholderApiIntegration placeholderApi = null;
+
+    private final ComponentLogging logging = Logging.logging(this);
 
     private final Set<LockProvider> lockProviders = new LinkedHashSet<>();
     private final Set<IgnoreProvider> ignoreProviders = new LinkedHashSet<>();
@@ -87,25 +88,25 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             running = false;
         }
         if (Config.Storage.SAVE_ON_SHUTDOWN) {
-            Loggers.log(Level.INFO, getLogger(), "Saving all resident data...");
+            logging.info("Saving all resident data...");
             DatabaseManager.getInstance().saveResidents(ResidentManager.getInstance().getCachedResidents());
             DatabaseManager.getInstance().saveResidentMissionData(ResidentManager.getInstance().getCachedResidents());
-            Loggers.log(Level.INFO, getLogger(), "Saving all settlement data...");
+            logging.info("Saving all settlement data...");
             DatabaseManager.getInstance().saveSettlements(SettlementManager.getInstance().getSettlements());
             DatabaseManager.getInstance().saveSettlementMissionData(SettlementManager.getInstance().getSettlements());
             for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
                 DatabaseManager.getInstance().saveNpcs(settlement.getNpcData());
             }
-            Loggers.log(Level.INFO, getLogger(), "Saving all empire data...");
+            logging.info("Saving all empire data...");
             DatabaseManager.getInstance().saveEmpires(EmpireManager.getInstance().getEmpires());
             for (Empire empire : EmpireManager.getInstance().getEmpires()) {
                 DatabaseManager.getInstance().saveNpcs(empire.getNpcData());
             }
-            Loggers.log(Level.INFO, getLogger(), "Saving all lock data...");
+            logging.info("Saving all lock data...");
             DatabaseManager.getInstance().saveLocks(LockManager.getInstance().getLocks());
-            Loggers.log(Level.INFO, getLogger(), "Saving all land data...");
+            logging.info("Saving all land data...");
             DatabaseManager.getInstance().saveLand(LandManager.getInstance().getAllLand());
-            Loggers.log(Level.INFO, getLogger(), "Saving all portal data...");
+            logging.info("Saving all portal data...");
             DatabaseManager.getInstance().savePortals(PortalManager.getInstance().getPortals());
         }
         ConfigManager.getInstance().getDataConfig().saveConfig();
@@ -115,16 +116,13 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
         instance = this;
-        scheduler = UniversalScheduler.getScheduler(this);
+        DaisyLib.get().init(this);
         registerListener(this);
         logDebug("Using improved API provided by Paper.");
         this.checkDataFolder();
-        if (!this.setupEconomy()) {
-            Loggers.log(Level.SEVERE, getLogger(), "Disabled due to missing economy!");
-            this.getServer().getPluginManager().disablePlugin(this);
-            return;
+        if (!VaultWrapper.get().isEconomyAvailable()) {
+            throw new IllegalStateException("Vault Economy is not available.");
         }
-        this.setupChat();
 
         if (!loadManagers()) {
             return;
@@ -167,14 +165,14 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     }
 
     private void upkeep() {
-        UniversalRunnable runnable = new UniversalRunnable() {
+        Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                Loggers.log(Level.INFO, getLogger(), "UPKEEP");
+                logging.info("UPKEEP");
                 ConfigManager.getInstance().updateLastUpkeep();
-                Loggers.log(Level.INFO, getLogger(), "Checking chunk unclaiming...");
+                logging.info("Checking chunk unclaiming...");
                 LandManager.getInstance().checkUnclaim();
-                Loggers.log(Level.INFO, getLogger(), "Handling settlement taxes and upkeep...");
+                logging.info("Handling settlement taxes and upkeep...");
                 newlyAbandonedSettlements.clear();
                 newlyDeletedSettlements.clear();
 
@@ -204,7 +202,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                 }
                 newlyDeletedSettlements.clear();
 
-                Loggers.log(Level.INFO, getLogger(), "Handling empire taxes and upkeep...");
+                logging.info("Handling empire taxes and upkeep...");
                 newlyAbandonedEmpires.clear();
                 newlyDeletedEmpires.clear();
 
@@ -234,17 +232,17 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                 }
                 newlyDeletedEmpires.clear();
 
-                Loggers.log(Level.INFO, getLogger(), "UPKEEP FINISHED!");
+                logging.info("UPKEEP FINISHED!");
             }
         };
 
         // check if the last upkeep should have happened while the server was offline
         long lastUpkeep = ConfigManager.getInstance().getLastUpkeep();
         if (lastUpkeep > 0 && lastUpkeep + TimeUnit.DAYS.toMillis(1) < System.currentTimeMillis()) {
-            Loggers.log(Level.INFO, getLogger(), "Last upkeep was at " + Utils.ISO_TIME_FORMAT.format(new Date(lastUpkeep)) + " (" + lastUpkeep + ") which is longer ago than a day, running upkeep once to catch up!");
-            runnable.run();
+            logging.info("Last upkeep was at " + Utils.ISO_TIME_FORMAT.format(new Date(lastUpkeep)) + " (" + lastUpkeep + ") which is longer ago than a day, running upkeep once to catch up!");
+            Scheduling.runTask(runnable);
         } else {
-            Loggers.log(Level.INFO, getLogger(), "Last upkeep was at " + Utils.ISO_TIME_FORMAT.format(new Date(lastUpkeep)) + " (" + lastUpkeep + ")");
+            logging.info("Last upkeep was at " + Utils.ISO_TIME_FORMAT.format(new Date(lastUpkeep)) + " (" + lastUpkeep + ")");
         }
 
         scheduleUpkeep(runnable);
@@ -268,7 +266,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     private void scheduleUpkeep(Runnable runnable) {
         Date nextUpkeepDate = Utils.getNextUpkeep();
-        Loggers.log(Level.INFO, getLogger(), "Next upkeep: " + Utils.ISO_TIME_FORMAT.format(nextUpkeepDate) + " (" + nextUpkeepDate.getTime() + ")!");
+        logging.info("Next upkeep: " + Utils.ISO_TIME_FORMAT.format(nextUpkeepDate) + " (" + nextUpkeepDate.getTime() + ")!");
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -289,51 +287,13 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onLoad() {
-        registerDependency("CMI", p -> {
-            new CmiIntegration();
-            return true;
-        });
         registerDependency("PlaceholderAPI", p -> {
             placeholderApi = new PlaceholderApiIntegration();
-            return true;
-        });
-        registerDependency("Brewery", p -> {
-            new BreweryIntegration();
-            return true;
-        });
-        registerDependency("Citizens", p -> {
-            if (!Config.Chat.CHAT_ONLY) {
-                citizensIntegration = new CitizensIntegration();
-            }
-            return true;
-        });
-        registerDependency("Denizen", p -> {
-            if (!Config.Chat.CHAT_ONLY) {
-                new DenizenIntegration().init();
-            }
-            return true;
-        });
-        registerDependency("Multiverse-Core", p -> {
-            if (!Config.Chat.CHAT_ONLY) {
-                multiverse = new MultiverseIntegration(this);
-            }
-            return true;
-        });
-        registerDependency("LWC", p -> {
-            if (!Config.Chat.CHAT_ONLY) {
-                new LWCIntegration();
-            }
             return true;
         });
         registerDependency("ChestShop", p -> {
             if (!Config.Chat.CHAT_ONLY) {
                 new ChestShopIntegration();
-            }
-            return true;
-        });
-        registerDependency("UpgradeableHoppers", p -> {
-            if (!Config.Chat.CHAT_ONLY) {
-                getServer().getPluginManager().registerEvents(new UpgradeableHoppersIntegration(), this);
             }
             return true;
         });
@@ -347,9 +307,9 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         Function<Plugin, Boolean> hook = dependencies.get(plugin.getName().toLowerCase(Locale.ROOT));
         if (hook != null) {
             if (hook.apply(plugin)) {
-                Loggers.log(Level.INFO, getLogger(), "Hooked into " + plugin.getName());
+                logging.info("Hooked into " + plugin.getName());
             } else {
-                Loggers.log(Level.WARNING, getLogger(), "Error while trying to hook into " + plugin.getName());
+                logging.warn("Error while trying to hook into " + plugin.getName());
             }
         }
     }
@@ -366,8 +326,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         try {
             DatabaseManager.getInstance().connect();
         } catch (Exception e) {
-            Loggers.log(Level.SEVERE, getLogger(), "Disabled due to database error!");
-            Loggers.logException(e, getLogger());
+            logging.error("Disabled due to database error!");
+            logging.exception(e);
             this.getServer().getPluginManager().disablePlugin(this);
             return false;
         }
@@ -400,36 +360,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         return true;
     }
 
-    private boolean setupChat() {
-        if (!this.getServer().getPluginManager().isPluginEnabled("Vault")) {
-            Loggers.log(Level.SEVERE, getLogger(), "Vault is not available?");
-            return false;
-        }
-        RegisteredServiceProvider<Chat> rsp = this.getServer().getServicesManager().getRegistration(Chat.class);
-        if (rsp == null) {
-            Loggers.log(Level.WARNING, getLogger(), "No chat service provider registered!");
-            return false;
-        }
-        chat = rsp.getProvider();
-        Loggers.log(Level.INFO, getLogger(), "Hooked into chat service provider " + chat.getName());
-        return chat != null;
-    }
-
-    private boolean setupEconomy() {
-        if (!this.getServer().getPluginManager().isPluginEnabled("Vault")) {
-            Loggers.log(Level.SEVERE, getLogger(), "Vault is not available?");
-            return false;
-        }
-        RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
-        if (rsp == null) {
-            Loggers.log(Level.SEVERE, getLogger(), "No economy service provider registered!");
-            return false;
-        }
-        econ = rsp.getProvider();
-        Loggers.log(Level.INFO, getLogger(), "Hooked into economy service provider " + econ.getName());
-        return econ != null;
-    }
-
     public void checkDataFolder() {
         if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdirs();
@@ -439,8 +369,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     public static SettlementsPlugin getInstance() {
         return instance;
     }
-
-    public static TaskScheduler getScheduler() { return scheduler; }
 
     public boolean isRunning() {
         return running;
@@ -496,7 +424,12 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     public static void logDebug(String message) {
         if (Config.DEBUG) {
-            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "[DEBUG] " + message);
+            instance.logging.info("[DEBUG] " + message);
         }
     }
+
+    public @NonNull ComponentLogging getLogging() {
+        return this.logging;
+    }
+
 }

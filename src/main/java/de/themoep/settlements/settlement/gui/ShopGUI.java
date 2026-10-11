@@ -16,11 +16,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
-import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class ShopGUI extends ConfigurableGui {
 
                 group.addElement(new DynamicGuiElement('g', h -> {
                     List<String> description = new ArrayList<>();
-                    ItemStack item = ItemUtils.toIcon(perk.getIcon());
+                    ItemStack item = ItemStack.of(perk.getIcon());
                     if (resident.getSettlement().hasUnlocked(perk)) {
                         PerkData perkData = resident.getSettlement().getPerkData(perk);
                         if (perk.getRepeat() != 0) {
@@ -136,8 +136,7 @@ public class ShopGUI extends ConfigurableGui {
                     if (!perk.getEffects().isEmpty()) {
                         ItemMeta itemMeta = item.getItemMeta();
                         if (itemMeta instanceof PotionMeta potionMeta) {
-                            potionMeta.removeItemFlags(ItemFlag.HIDE_ITEM_SPECIFICS);
-                            PotionEffect effect = perk.getEffects().get(0).getPotionEffect();
+                            PotionEffect effect = perk.getEffects().getFirst().getPotionEffect();
                             if (effect != null) {
                                 potionMeta.addCustomEffect(effect, true);
                             }

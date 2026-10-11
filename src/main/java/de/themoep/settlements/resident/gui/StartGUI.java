@@ -22,9 +22,9 @@ import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.inventorygui.StaticGuiElement;
+import net.wesjd.anvilgui.AnvilGUI;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

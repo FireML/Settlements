@@ -13,10 +13,10 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiStorageElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
-import uk.firedev.poleislib.utils.ComponentUtils;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.inventorygui.GuiStorageElement;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.settlements.utils.ComponentUtils;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -138,7 +138,7 @@ public class TurnInGUI extends SettlementsGUI {
     private void addToInventory(Player player, ItemStack itemStack) {
         for (ItemStack rest : player.getInventory().addItem(itemStack).values()) {
             Item item = player.getWorld().dropItem(player.getLocation(), rest);
-            ItemUtils.markOwned(item, player);
+            item.setOwner(player.getUniqueId());
         }
     }
 

@@ -11,9 +11,9 @@ import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
+import net.wesjd.anvilgui.AnvilGUI;
 
 import java.util.List;
 

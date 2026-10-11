@@ -10,17 +10,17 @@ import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.StringUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
+import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
-import uk.firedev.poleislib.utils.ItemUtils;
-import uk.firedev.poleislib.utils.StringUtils;
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -64,7 +64,7 @@ public class SettingsGUI extends PlotGUI {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
                 new AnvilGUI.Builder()
-                        .itemLeft(ItemUtils.toIcon(Material.WRITABLE_BOOK))
+                        .itemLeft(ItemStack.of(Material.WRITABLE_BOOK))
                         .title(getText("name.anvil.title", "name", land.getName()))
                         .text(getText("name.anvil.placeholder", "name", land.getName().isEmpty() ? " " : land.getName().replace('§', '&')))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
@@ -103,7 +103,7 @@ public class SettingsGUI extends PlotGUI {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
             if (land != null) {
                 new AnvilGUI.Builder()
-                        .itemLeft(ItemUtils.toIcon(Material.WRITABLE_BOOK))
+                        .itemLeft(ItemStack.of(Material.WRITABLE_BOOK))
                         .title(getText("desc.anvil.title", "description", land.getDescription()))
                         .text(getText("desc.anvil.placeholder", "description", land.getDescription().isEmpty() ? " " : land.getDescription().replace('§', '&')))
                         .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))
@@ -158,7 +158,7 @@ public class SettingsGUI extends PlotGUI {
                         Message.get("command.plot.unsale.success").tell(resident);
                     } else {
                         new AnvilGUI.Builder()
-                                .itemLeft(ItemUtils.toIcon(Material.EMERALD))
+                                .itemLeft(ItemStack.of(Material.EMERALD))
                                 .title(getText("sale.anvil.title", "price", String.valueOf(land.getPrice())))
                                 .text(getText("sale.anvil.placeholder", "price", land.getPrice() > 0 ? String.valueOf(land.getPrice()) : " "))
                                 .onClose(player -> Utils.runLater(() -> new SettingsGUI(resident).open(), 1))

@@ -13,7 +13,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -76,10 +76,10 @@ public class SettlementListCommand extends SubCommand {
                         "access", v.getAccess() != LandAccess.PRIVATE ? v.getAccess().getTag() : ""
                 ));
                 if (!v.isAbandoned()) {
-                    component = component.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, getMessage("entry-hover").getReplacedComponent(
+                    component = component.hoverEvent(HoverEvent.showText(getMessage("entry-hover").getReplacedComponent(
                             v.getReplacements(this)
                     )));
-                    component = component.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/s info " + v.getName()));
+                    component = component.clickEvent(ClickEvent.runCommand("/s info " + v.getName()));
                 }
                 MessageUtils.tell(sender, component);
             }
@@ -89,8 +89,8 @@ public class SettlementListCommand extends SubCommand {
                 next = next.color(NamedTextColor.GRAY);
             } else {
                 next = next.color(NamedTextColor.AQUA);
-                next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage + 1)));
-                next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
+                next = next.clickEvent(ClickEvent.runCommand("/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage + 1)));
+                next = next.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("&e>>")));
             }
 
             Component previous = getMessage("previous").getComponent();
@@ -98,8 +98,8 @@ public class SettlementListCommand extends SubCommand {
                 previous = previous.color(NamedTextColor.GRAY);
             } else {
                 previous = previous.color(NamedTextColor.AQUA);
-                previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage - 1)));
-                previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
+                previous = previous.clickEvent(ClickEvent.runCommand("/" + base + " " + alias + " " + (finalTag != null ? finalTag + " " : "") + (finalPage - 1)));
+                previous = previous.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("&e<<")));
             }
 
             Map<String, Component> replacements = Map.of(

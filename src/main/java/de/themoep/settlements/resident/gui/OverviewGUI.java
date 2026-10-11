@@ -13,9 +13,9 @@ import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
-import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.Collection;
 

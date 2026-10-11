@@ -1,9 +1,9 @@
 package de.themoep.settlements.npc;
 
+import de.themoep.settlements.utils.StringUtils;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
-import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.Collections;
 import java.util.List;

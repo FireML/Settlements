@@ -1,19 +1,15 @@
 package de.themoep.settlements.utils;
 
+import de.themoep.minedown.adventure.MineDown;
+import de.themoep.minedown.adventure.MineDownParser;
+import de.themoep.minedown.adventure.Replacer;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
-import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDownParser;
-import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
-import uk.firedev.poleislib.utils.ComponentUtils;
-import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Message {
@@ -45,7 +41,7 @@ public class Message {
                 text = checkText;
             }
         } catch (IllegalArgumentException e) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
+            SettlementsPlugin.getInstance().getLogging().warn("Message with key " + key + " has an invalid MineDown format! " + e.getMessage());
         }
         this.text = text;
     }
@@ -171,7 +167,7 @@ public class Message {
         messages.clear();
     }
 
-    public class MessageReplacer extends Replacer {
+    public static class MessageReplacer extends Replacer {
         private Message message;
 
         public MessageReplacer(Message message) {

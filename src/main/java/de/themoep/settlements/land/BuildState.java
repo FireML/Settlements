@@ -4,7 +4,6 @@ import de.themoep.settlements.rank.Rankable;
 import de.themoep.settlements.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.utils.ItemUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -45,7 +44,7 @@ public enum BuildState implements NameTag, Rankable {
     }
 
     public ItemStack getItem() {
-        return ItemUtils.toIcon(icon);
+        return ItemStack.of(icon);
     }
 
     public BuildState next(AppliesTo to) {

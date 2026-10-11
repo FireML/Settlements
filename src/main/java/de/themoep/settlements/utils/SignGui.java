@@ -1,6 +1,7 @@
 package de.themoep.settlements.utils;
 
 import de.themoep.settlements.SettlementsPlugin;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -12,7 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +58,8 @@ public class SignGui {
         public void onSignChange(SignChangeEvent e) {
             SignGui gui = signs.get(e.getBlock());
             if (gui != null) {
-                gui.inputConsumer.accept(ComponentUtils.toStringList(e.lines()).toArray(String[]::new));
+                String[] strings = e.lines().stream().map(PlainTextComponentSerializer.plainText()::serialize).toArray(String[]::new);
+                gui.inputConsumer.accept(strings);
                 e.setCancelled(true);
                 e.getBlock().setType(Material.AIR, false);
             }

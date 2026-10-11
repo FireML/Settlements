@@ -33,7 +33,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.InventoryHolder;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.Arrays;
 import java.util.Iterator;

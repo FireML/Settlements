@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+import uk.firedev.daisylib.utils.Scheduling;
 
 public class BanishListener implements Listener {
 
@@ -26,7 +27,7 @@ public class BanishListener implements Listener {
                 sendInfo(p, landOwner, "move");
                 e.setCancelled(true);
                 Location to = e.getPlayer().getLocation().add(e.getPlayer().getLocation().getDirection().setY(0).multiply(-1));
-                SettlementsPlugin.getScheduler().runTask(() -> e.getPlayer().teleport(to));
+                e.getPlayer().teleportAsync(to);
             }
         });
     }
@@ -38,7 +39,7 @@ public class BanishListener implements Listener {
             if (!e.getPlayer().hasPermission("settlements.bypass.banish")) {
                 e.setCancelled(true);
                 if (!e.getTo().getChunk().equals(e.getTo().getChunk())) {
-                    SettlementsPlugin.getScheduler().runTask(() -> Utils.teleportToSpawn(p));
+                    Utils.teleportToSpawn(p);
                 }
             }
         });

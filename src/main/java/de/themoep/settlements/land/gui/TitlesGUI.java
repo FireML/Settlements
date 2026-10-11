@@ -8,16 +8,16 @@ import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.rank.Rank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.StringUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import uk.firedev.poleislib.libs.themoep.inventorygui.*;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
-import uk.firedev.poleislib.utils.ItemUtils;
-import uk.firedev.poleislib.utils.StringUtils;
+import de.themoep.inventorygui.*;
+import net.wesjd.anvilgui.AnvilGUI;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,7 +104,7 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                 gui.addElement(new StaticGuiElement('a', getIcon("title"), click -> {
                     if (resident.hasPermission(type + ".titles.add")) {
                         new AnvilGUI.Builder()
-                                .itemLeft(ItemUtils.toIcon(Material.WRITABLE_BOOK))
+                                .itemLeft(ItemStack.of(Material.WRITABLE_BOOK))
                                 .title(getMessage("add.anvil.title").getReplacedText(
                                         "rank", rank.getTag(landOwner),
                                         "state", landOwner.getStateTag()

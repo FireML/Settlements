@@ -10,7 +10,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Targetable;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 public class AdminMissionCommand extends SubCommand implements TargetParser {
     public AdminMissionCommand(SubCommand parent) {

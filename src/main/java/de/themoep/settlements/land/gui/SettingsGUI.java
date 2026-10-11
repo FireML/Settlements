@@ -14,16 +14,17 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.SignGui;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiStateElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiStateElement;
+import de.themoep.inventorygui.StaticGuiElement;
+import net.wesjd.anvilgui.AnvilGUI;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -128,7 +129,7 @@ public class SettingsGUI extends ConfigurableGui {
                 if (cursor != null) {
                     ItemMeta meta = cursor.getItemMeta();
                     if (meta instanceof BookMeta bmeta) {
-                        String rules = String.join("\n", ComponentUtils.toStringList(bmeta.pages()));
+                        String rules = bmeta.pages().stream().map(PlainTextComponentSerializer.plainText()::serialize).collect(Collectors.joining("\n"));
                         if (rules.length() > Config.MAX_RULES_LENGTH) {
                             getError("too-long").tell(resident, "input", "Text", "amount", String.valueOf(Config.MAX_RULES_LENGTH));
                             return true;

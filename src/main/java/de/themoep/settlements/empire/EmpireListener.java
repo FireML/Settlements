@@ -16,7 +16,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import uk.firedev.poleislib.Loggers;
+
 
 import java.util.logging.Level;
 
@@ -27,11 +27,11 @@ public class EmpireListener implements Listener {
     public EmpireListener() {
         keepInvPerk = EmpireManager.getInstance().getPerk("keep-inv");
         if (keepInvPerk == null) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "keep-inv perk is not defined in empirePerksConfig.yml?");
+            SettlementsPlugin.getInstance().getLogging().warn("keep-inv perk is not defined in empirePerksConfig.yml?");
         }
         keepExpPerk = EmpireManager.getInstance().getPerk("keep-exp");
         if (keepExpPerk == null) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "keep-exp perk is not defined in empirePerksConfig.yml?");
+            SettlementsPlugin.getInstance().getLogging().warn("keep-exp perk is not defined in empirePerksConfig.yml?");
         }
     }
 

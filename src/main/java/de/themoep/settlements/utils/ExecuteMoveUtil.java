@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
-import uk.firedev.poleislib.builders.TitleBuilder;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import uk.firedev.daisylib.builders.TitleBuilder;
+import uk.firedev.daisylib.messages.replacer.Replacer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,11 +38,12 @@ public class ExecuteMoveUtil implements Listener {
                                 "seconds", ComponentUtils.parseComponent(String.valueOf(waiting.get())),
                                 "action", ComponentUtils.parseComponent(action)
                         );
-                        new TitleBuilder()
-                                .withTitle(messages.getMessage("waiting.title").getComponent())
-                                .withSubtitle(messages.getMessage("waiting.subtitle").getComponent())
-                                .withTimings(0, 21, 0)
-                                .send(p, replacements);
+                        Replacer replacer = Replacer.replacer().addReplacements(replacements);
+                        TitleBuilder.create()
+                                .withTitle(replacer.apply(messages.getMessage("waiting.title").getComponent()))
+                                .withSubtitle(replacer.apply(messages.getMessage("waiting.subtitle").getComponent()))
+                                .withTimings(0, 20, 0)
+                                .send(p);
                         ComponentUtils.sendActionBar(messages.getMessage("waiting.actionbar").getReplacedComponent(replacements), p);
                     } else {
                         ActionRunnable waiting = scheduled.remove(p.getUniqueId());
@@ -73,10 +74,11 @@ public class ExecuteMoveUtil implements Listener {
                 Message.get("move-cancelled.message").tell(e.getPlayer(), "action", action.getAction());
             }
             Map<String, Component> replacements = Map.of("action", ComponentUtils.parseComponent(action.getAction()));
-            new TitleBuilder()
-                    .withTitle(Message.get("move-cancelled.title").getComponent())
-                    .withSubtitle(Message.get("move-cancelled.subtitle").getComponent())
-                    .send(e.getPlayer(), replacements);
+            Replacer replacer = Replacer.replacer().addReplacements(replacements);
+            TitleBuilder.create()
+                    .withTitle(replacer.apply(Message.get("move-cancelled.title").getComponent()))
+                    .withSubtitle(replacer.apply(Message.get("move-cancelled.subtitle").getComponent()))
+                    .send(e.getPlayer());
             ComponentUtils.sendActionBar(Message.get("move-cancelled.actionbar").getReplacedComponent(replacements), e.getPlayer());
         }
     }

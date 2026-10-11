@@ -12,7 +12,8 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
+import uk.firedev.daisylib.utils.Scheduling;
 
 import java.util.regex.Pattern;
 
@@ -54,7 +55,12 @@ public class SettlementCreateCommand extends ResidentSubCommand {
             Settlement settlement = new Settlement(name, resident.getUUID(), 1, SettlementState.VILLAGE);
             SettlementManager.getInstance().registerNew(resident, settlement);
             if (settlement.getMaxClaimableChunks() > 0) {
-                SettlementsPlugin.getScheduler().runTaskLater(resident.getPlayer(), () -> Bukkit.dispatchCommand(resident.getPlayer(), "s claim"), 10L);
+                resident.getPlayer().getScheduler().runDelayed(
+                    SettlementsPlugin.getInstance(),
+                    _ -> Bukkit.dispatchCommand(resident.getPlayer(), "s claim"),
+                    null,
+                    10L
+                );
             }
 
             getMessage("broadcast").broadcast(

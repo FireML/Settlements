@@ -6,8 +6,8 @@ import de.themoep.settlements.perk.PerkEffect;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementState;
 import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.StringUtils;
 import org.bukkit.configuration.ConfigurationSection;
-import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

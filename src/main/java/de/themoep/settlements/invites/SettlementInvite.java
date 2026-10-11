@@ -7,7 +7,7 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.Map;
 

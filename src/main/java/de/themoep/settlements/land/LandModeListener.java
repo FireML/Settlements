@@ -1,5 +1,6 @@
 package de.themoep.settlements.land;
 
+import com.dre.brewery.depend.universalScheduler.scheduling.tasks.MyScheduledTask;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.CreaturePreSpawnEvent;
 import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
@@ -16,6 +17,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -33,13 +35,10 @@ import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
-
-import java.util.logging.Level;
+import uk.firedev.daisylib.utils.Scheduling;
 
 public class LandModeListener implements LandAccessChecker {
-    private MyScheduledTask mobCheckTask = null;
+    private ScheduledTask mobCheckTask = null;
     private long mobCheckPeriod = 0;
 
     public LandModeListener() {
@@ -53,7 +52,7 @@ public class LandModeListener implements LandAccessChecker {
                 mobCheckTask.cancel();
             }
             if (mobCheckPeriod > 0) {
-                mobCheckTask = SettlementsPlugin.getScheduler().runTaskTimer(() -> {
+                mobCheckTask = Bukkit.getGlobalRegionScheduler().runAtFixedRate(SettlementsPlugin.getInstance(), _ -> {
                     int amount = 0;
                     for (World world : Bukkit.getWorlds()) {
                         if (Utils.isWorldClaimable(world) && LandManager.getInstance().hasLand(world)) {
@@ -61,7 +60,7 @@ public class LandModeListener implements LandAccessChecker {
                                 if (Utils.isHostile(entity)) {
                                     OwnedLand land = LandManager.getInstance().getLand(entity.getLocation());
                                     if (land != null && !land.getMode(PlotMode.mobSpawning)) {
-                                        SettlementsPlugin.getScheduler().runTask(entity, entity::remove);
+                                        entity.remove();
                                         amount++;
                                     }
                                 }
@@ -69,7 +68,7 @@ public class LandModeListener implements LandAccessChecker {
                         }
                     }
                     if (amount > 0) {
-                        Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Removed " + amount + " hostile mob" + (amount > 1 ? "s" : "") + " that wandered into no-mobs-claims");
+                        SettlementsPlugin.getInstance().getLogging().info("Removed " + amount + " hostile mob" + (amount > 1 ? "s" : "") + " that wandered into no-mobs-claims");
                     }
                 }, mobCheckPeriod * 20, mobCheckPeriod * 20);
             }
@@ -162,7 +161,7 @@ public class LandModeListener implements LandAccessChecker {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        SettlementsPlugin.getScheduler().runTaskLater(() -> {
+        Scheduling.runTaskLater(() -> {
             BossBar bb = ConfigManager.getInstance().getBossBar();
             Player p = e.getPlayer();
             OwnedLand land = LandManager.getInstance().getLand(p.getLocation().getChunk());

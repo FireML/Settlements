@@ -1,5 +1,6 @@
 package de.themoep.settlements.db;
 
+import com.dre.brewery.depend.universalScheduler.scheduling.tasks.MyScheduledTask;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
@@ -23,10 +24,10 @@ import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,6 +35,7 @@ import java.sql.*;
 import java.util.Date;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -1037,7 +1039,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             }
             sta.executeBatch();
         } catch (SQLException e) {
-            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().exception(e);
         }
     }
 
@@ -1092,7 +1094,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         try {
             closeConnection();
         } catch (SQLException e) {
-            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().exception(e);
         }
     }
 
@@ -1446,8 +1448,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private IdObject save(Connection conn, DatabaseSerializable serializable, String... ignored) throws SQLException {
         if (serializable == null) {
-            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Tried to save something to the database but it was null?");
-            Loggers.logException(new NullPointerException().fillInStackTrace(), SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().error("Tried to save something to the database but it was null?");
+            SettlementsPlugin.getInstance().getLogging().exception(new NullPointerException().fillInStackTrace());
             return IdObject.get(null);
         }
         Map<String, Object> serialized = serializable.serialize();
@@ -1614,14 +1616,14 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 try {
                     list.add((D) deserialize.invoke(null, map));
                 } catch (InvocationTargetException | IllegalAccessException e) {
-                    Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Unable to deserialize " + deserializable.getSimpleName() + " object from " + tableName + " with values " + map);
-                    Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+                    SettlementsPlugin.getInstance().getLogging().warn("Unable to deserialize " + deserializable.getSimpleName() + " object from " + tableName + " with values " + map);
+                    SettlementsPlugin.getInstance().getLogging().exception(e);
                 }
             }
             return list;
         } catch (NoSuchMethodException e) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), deserializable.getSimpleName() + " class does not have static deserialize method?");
-            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().warn(deserializable.getSimpleName() + " class does not have static deserialize method?");
+            SettlementsPlugin.getInstance().getLogging().exception(e);
         }
         return Collections.emptyList();
     }
@@ -1853,7 +1855,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         private final String type;
         private BiConsumer<Connection, T> handleSave;
 
-        private MyScheduledTask task = null;
+        private ScheduledTask task = null;
         private final Map<IdObject, T> queue = new ConcurrentHashMap<>();
         private Runnable saving = () -> {
             Utils.catchSync();
@@ -1883,8 +1885,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                             queue.remove(e.getKey());
                         }
                     } catch (SQLException e) {
-                        Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while saving " + queue.size() + " " + (name != null ? name : "object") + "s to database!");
-                        Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+                        SettlementsPlugin.getInstance().getLogging().error("Error while saving " + queue.size() + " " + (name != null ? name : "object") + "s to database!");
+                        SettlementsPlugin.getInstance().getLogging().exception(e);
                     } finally {
                         db.close(conn);
                     }
@@ -1917,7 +1919,12 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 SettlementsPlugin.logDebug("Triggering " + type + " save queue due to add reaching max size (" + queue.size() + ")");
                 Utils.runAsync(saving);
             } else if (!forceSave && task == null && SettlementsPlugin.getInstance().isEnabled()) {
-                task = SettlementsPlugin.getScheduler().runTaskLaterAsynchronously(saving, saveWait * 20L);
+                task = Bukkit.getAsyncScheduler().runDelayed(
+                    SettlementsPlugin.getInstance(),
+                    _ -> saving.run(),
+                    saveWait,
+                    TimeUnit.SECONDS
+                );
             }
         }
 

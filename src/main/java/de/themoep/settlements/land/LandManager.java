@@ -23,7 +23,7 @@ import de.themoep.settlements.world.SimpleLocation;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
-import uk.firedev.poleislib.Loggers;
+
 
 import java.util.*;
 import java.util.function.Function;
@@ -97,7 +97,7 @@ public class LandManager {
             }
             landOwner.save();
         }
-        Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Chunk " + land.getKey() + " was claimed by " + landOwner.getStateTag() + " " + landOwner.getName());
+        SettlementsPlugin.getInstance().getLogging().info("Chunk " + land.getKey() + " was claimed by " + landOwner.getStateTag() + " " + landOwner.getName());
         cacheLand(land);
         Utils.callEvent(new LandClaimEvent(land));
         return land;
@@ -197,7 +197,7 @@ public class LandManager {
             } else if (land.getLandOwner() instanceof Empire) {
                 empireLands.remove(land.getLandOwner().getId(), land);
             }
-            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Chunk " + land.getKey() + " owned by " + land.getLandOwner().getStateTag() + " " + land.getLandOwner().getName() + " was unclaimed");
+            SettlementsPlugin.getInstance().getLogging().info("Chunk " + land.getKey() + " owned by " + land.getLandOwner().getStateTag() + " " + land.getLandOwner().getName() + " was unclaimed");
             land.setLandOwner(null);
 
             if (Config.Portal.ENABLED) {
@@ -233,7 +233,7 @@ public class LandManager {
                 Utils.callEvent(new LandUnclaimEvent(claim));
                 removeLink(claim);
                 landTable.remove(claim.getWorld(), claim.getSimpleKey());
-                Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Chunk " + claim.getKey() + " owned by " + landowner.getName() + " was unclaimed");
+                SettlementsPlugin.getInstance().getLogging().info("Chunk " + claim.getKey() + " owned by " + landowner.getName() + " was unclaimed");
             }
             if (landowner instanceof Settlement) {
                 settlementLands.removeAll(landowner.getId());

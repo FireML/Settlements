@@ -2,7 +2,7 @@ package de.themoep.settlements.utils;
 
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
-import uk.firedev.poleislib.Loggers;
+
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -30,7 +30,7 @@ public class CursesFilter {
             try {
                 regexCurses.add(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
             } catch (PatternSyntaxException e) {
-                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), regex + " is not a valid curse regex pattern!");
+                SettlementsPlugin.getInstance().getLogging().warn(regex + " is not a valid curse regex pattern!");
             }
         }
     }

@@ -5,10 +5,10 @@ import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
+
+import de.themoep.inventorygui.GuiElement;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -19,7 +19,7 @@ public class ConfirmationGui extends SettlementsGUI {
     public ConfirmationGui(String name, Consumer<GuiElement.Click> confirmedAction, Consumer<GuiElement.Click> cancelAction, String... replacements) {
         super(name);
         if (getSetup().length == 0) {
-            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Missing setup for GUI " + name + " in guis.yml!");
+            SettlementsPlugin.getInstance().getLogging().error("Missing setup for GUI " + name + " in guis.yml!");
         }
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title", replacements), getSetup());
         gui.addElements(getConfiguredElements());

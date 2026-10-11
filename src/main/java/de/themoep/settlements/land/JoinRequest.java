@@ -8,10 +8,14 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Targetable;
+import io.papermc.paper.datacomponent.DataComponentTypes;
+import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.utils.ItemUtils;
+import org.bukkit.inventory.ItemType;
+import uk.firedev.daisylib.utils.CommonUtils;
 
 import java.util.Map;
 

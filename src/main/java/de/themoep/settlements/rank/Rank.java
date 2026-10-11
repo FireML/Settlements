@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
-import uk.firedev.poleislib.Loggers;
+
 
 import java.util.*;
 import java.util.logging.Level;
@@ -49,7 +49,7 @@ public abstract class Rank<L extends LandOwner, R extends Rankable> implements N
             if (config.isString("icon")) {
                 Material icon = MaterialUtils.getMaterial(config.getString("icon"));
                 if (icon != null && !icon.isItem()) {
-                    Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), icon + " is not a valid icon type for " + getClass().getSimpleName() + " " + name + "! That type has no item for the GUI!");
+                    SettlementsPlugin.getInstance().getLogging().warn(icon + " is not a valid icon type for " + getClass().getSimpleName() + " " + name + "! That type has no item for the GUI!");
                     icon = null;
                 }
                 if (icon == null) {

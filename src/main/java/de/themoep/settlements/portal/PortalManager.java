@@ -1,5 +1,6 @@
 package de.themoep.settlements.portal;
 
+import com.dre.brewery.depend.universalScheduler.UniversalRunnable;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -28,11 +29,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
 
 import java.util.*;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class PortalManager {
@@ -215,7 +213,7 @@ public class PortalManager {
             if (!portal.getId().isNull()) {
                 portals.put(portal.getId(), portal);
             } else {
-                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Error while saving portal at " + portal.getLocation() + " to the database! No ID was returned.");
+                SettlementsPlugin.getInstance().getLogging().warn("Error while saving portal at " + portal.getLocation() + " to the database! No ID was returned.");
             }
         });
     }
@@ -223,7 +221,7 @@ public class PortalManager {
     public boolean removePortal(Portal portal) {
         portalLocations.remove(portal.getLocation().getChunkKey(), portal.getLocation());
         if (!portal.getId().isNull()) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Tried removing portal " + portal.getLocation() + " with null id?");
+            SettlementsPlugin.getInstance().getLogging().warn("Tried removing portal " + portal.getLocation() + " with null id?");
             for (IdObject id : portalLinks.removeAll(portal.getId())) {
                 Portal linked = getPortal(id);
                 if (linked != null) {
@@ -241,7 +239,7 @@ public class PortalManager {
         for (Portal portal : toRemove) {
             portalLocations.remove(portal.getLocation().getChunkKey(), portal.getLocation());
             if (portal.getId().isNull()) {
-                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Tried removing portal " + portal.getLocation() + " with null id?");
+                SettlementsPlugin.getInstance().getLogging().warn("Tried removing portal " + portal.getLocation() + " with null id?");
                 continue;
             }
             for (IdObject id : portalLinks.removeAll(portal.getId())) {
@@ -259,7 +257,7 @@ public class PortalManager {
 
     public boolean linkPortals(Portal source, Portal target) {
         if (source.getId().isNull() || target.getId().isNull()) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Tried linking portals with null id?");
+            SettlementsPlugin.getInstance().getLogging().warn("Tried linking portals with null id?");
             return false;
         }
         boolean save = false;
@@ -278,7 +276,7 @@ public class PortalManager {
 
     public boolean unlinkPortals(Portal source, Portal target) {
         if (source.getId().isNull() || target.getId().isNull()) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Tried unlinking portals with null id?");
+            SettlementsPlugin.getInstance().getLogging().warn("Tried unlinking portals with null id?");
             return false;
         }
         boolean save = false;

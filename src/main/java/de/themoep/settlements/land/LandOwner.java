@@ -21,6 +21,7 @@ import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Sortable;
+import de.themoep.settlements.utils.StringUtils;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.SimpleLocation;
@@ -28,8 +29,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.utils.StringUtils;
+
 
 import java.util.*;
 import java.util.logging.Level;
@@ -937,7 +937,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
 
     public static <T extends LandOwner> T deserialize(T landOwner, Map<String, Object> map) {
         if (map == null || map.get("name") == null || map.get("buildState") == null) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not deserialize LandOwner! (" + map + ")");
+            SettlementsPlugin.getInstance().getLogging().warn("Could not deserialize LandOwner! (" + map + ")");
             return null;
         }
         landOwner.setName((String) map.get("name"));

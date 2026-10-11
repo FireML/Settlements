@@ -8,7 +8,7 @@ import de.themoep.settlements.utils.Message;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import uk.firedev.poleislib.libs.themoep.inventorygui.*;
+import de.themoep.inventorygui.*;
 
 import java.util.ArrayList;
 import java.util.List;

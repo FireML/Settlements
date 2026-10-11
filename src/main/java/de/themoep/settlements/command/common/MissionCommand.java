@@ -1,12 +1,13 @@
 package de.themoep.settlements.command.common;
 
+import com.dre.brewery.depend.universalScheduler.UniversalRunnable;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Utils;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.UniversalRunnable;
+import uk.firedev.daisylib.utils.Scheduling;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +23,7 @@ public interface MissionCommand<M extends Mission> extends ConfigMessages {
             getMessage("redistribute.confirm").tell(resident,
                     "price", Utils.CURRENCY_FORMAT.format(missionProvider.getMissionRedistributePrice())
             );
-            new UniversalRunnable() {
-                @Override
-                public void run() {
-                    confirmation.remove(resident);
-                }
-            }.runTaskLater(SettlementsPlugin.getInstance(), 100L);
+            Scheduling.runTaskLater(() -> confirmation.remove(resident), 100L);
             return;
         }
 

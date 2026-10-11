@@ -9,7 +9,7 @@ import de.themoep.settlements.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.LinkedHashMap;
 import java.util.Locale;
@@ -102,17 +102,17 @@ public abstract class Mission implements NameTag {
 
     public ItemStack getIcon() {
         if (icon != null) {
-            return ItemUtils.toIcon(icon);
+            return ItemStack.of(icon);
         }
         for (String r : getRequirements().keySet()) {
             try {
                 Material type = Material.valueOf(r);
                 if (type.isItem()) {
-                    return ItemUtils.toIcon(type);
+                    return ItemStack.of(type);
                 }
             } catch (IllegalArgumentException ignored) {}
         }
-        return ItemUtils.toIcon(Material.DIRT);
+        return ItemStack.of(Material.DIRT);
     }
 
     public abstract void finish(Resident resident);

@@ -12,7 +12,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +36,12 @@ public class FriendListCommand extends PlayerSubCommand {
                     Component append;
                     if (p != null && p.isOnline()) {
                         append = ComponentUtils.parseComponent(getMessage("entry").getReplacedText("online", getText("online"), "name", p.getName()));
-                        append = append.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("/res show " + p.getName())));
-                        append = append.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/res show " + p.getName()));
+                        append = append.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("/res show " + p.getName())));
+                        append = append.clickEvent(ClickEvent.runCommand("/res show " + p.getName()));
                     } else {
                         append = ComponentUtils.parseComponent(getMessage("entry").getReplacedText("online", getText("offline"), "name", friend.getPlayerName()));
-                        append = append.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("/res show " + friend.getPlayerName())));
-                        append = append.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/res show " + friend.getPlayerName()));
+                        append = append.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("/res show " + friend.getPlayerName())));
+                        append = append.clickEvent(ClickEvent.runCommand("/res show " + friend.getPlayerName()));
                     }
                     builder.append(append).append(ComponentUtils.parseComponent(getText("separator")));
                 }

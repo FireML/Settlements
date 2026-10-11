@@ -5,10 +5,10 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Pair;
+import de.themoep.settlements.utils.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import uk.firedev.poleislib.utils.StringUtils;
 
 public interface LandAccessChecker extends ConfigMessages, Listener {
 

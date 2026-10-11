@@ -11,7 +11,7 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.Collection;
 import java.util.Date;
@@ -72,16 +72,16 @@ public class SettlementActiveCommand extends SettlementSubCommand {
                 next = next.color(NamedTextColor.GRAY);
             } else {
                 next = next.color(NamedTextColor.AQUA);
-                next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalPage + 1)));
-                next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
+                next = next.clickEvent(ClickEvent.runCommand("/" + base + " " + alias + " " + (finalPage + 1)));
+                next = next.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("&e>>")));
             }
             Component previous = getMessage("previous").getReplacedComponent("previous", String.valueOf(finalPage - 1));
             if (finalPage - 1 <= 0) {
                 previous = previous.color(NamedTextColor.GRAY);
             } else {
                 previous = previous.color(NamedTextColor.AQUA);
-                previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (finalPage - 1)));
-                previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
+                previous = previous.clickEvent(ClickEvent.runCommand("/" + base + " " + alias + " " + (finalPage - 1)));
+                previous = previous.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("&e<<")));
             }
 
             Map<String, Component> replacements = Map.of(

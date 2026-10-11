@@ -1,6 +1,5 @@
 package de.themoep.settlements.utils;
 
-import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.Locale;
 

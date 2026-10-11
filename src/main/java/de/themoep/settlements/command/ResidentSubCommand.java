@@ -3,7 +3,7 @@ package de.themoep.settlements.command;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 public abstract class ResidentSubCommand extends PlayerSubCommand {
 

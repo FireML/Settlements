@@ -5,7 +5,7 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
 import org.bukkit.command.CommandSender;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 public class AdminLevelCommand extends SubCommand {
     public AdminLevelCommand(SubCommand parent) {

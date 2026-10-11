@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
+import uk.firedev.daisylib.utils.Scheduling;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,7 +23,7 @@ public class LandPerks {
     private static final String PERK_EFFECT_KEY = "perk_effects";
 
     public void runTimer() {
-        SettlementsPlugin.getScheduler().runTaskTimerAsynchronously(() -> updateEffects(true), 0L, 160L);
+        Scheduling.runTaskTimer(() -> updateEffects(true), 0L, 160L);
     }
 
     /**

@@ -12,9 +12,9 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.NamedLocation;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.libs.wesjd.anvilgui.AnvilGUI;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.inventorygui.StaticGuiElement;
+import net.wesjd.anvilgui.AnvilGUI;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.Collection;
 import java.util.List;

@@ -6,9 +6,9 @@ import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.event.Reward;
 import de.themoep.settlements.settlement.Settlement;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.InventoryGui;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 
 import java.util.Collections;
 import java.util.Set;

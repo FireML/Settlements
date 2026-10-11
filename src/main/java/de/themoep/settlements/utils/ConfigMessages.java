@@ -3,7 +3,6 @@ package de.themoep.settlements.utils;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.perk.Perk;
-import uk.firedev.poleislib.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -8,11 +8,12 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.event.inventory.ClickType;
-import uk.firedev.poleislib.libs.themoep.inventorygui.DynamicGuiElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.utils.ItemUtils;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,8 +56,10 @@ public class ModeGUI extends PlotGUI {
                             ));
                         }
                     }
+                    ItemStack item = m.getItem();
+                    ItemUtils.setGlowing(item, enabled);
                     return new StaticGuiElement('m',
-                            ItemUtils.setGlowing(m.getItem(), enabled),
+                            item,
                             click -> {
                                 OwnedLand currentLand = LandManager.getInstance().getLand(landLocation);
                                 if (currentLand != null) {

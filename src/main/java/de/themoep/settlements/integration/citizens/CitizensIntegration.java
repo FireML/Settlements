@@ -52,9 +52,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.utils.ComponentUtils;
-import uk.firedev.poleislib.utils.StringUtils;
+
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -206,7 +205,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         }
 
         if (config == null) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Tried to create " + type + " NPC for " + landOwner.getKey() + " " + landOwner.getName() + " but there was no config specified for that NPC type?");
+            SettlementsPlugin.getInstance().getLogging().warn("Tried to create " + type + " NPC for " + landOwner.getKey() + " " + landOwner.getName() + " but there was no config specified for that NPC type?");
             return null;
         }
 
@@ -292,7 +291,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
                         skinTrait.setSkinName(skinName);
                     }
                 } catch (IllegalArgumentException e) {
-                    Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid texture data specified! (name: " + skinName + ", texture: " + texture + ", signature: " + signature + ") " + e.getMessage());
+                    SettlementsPlugin.getInstance().getLogging().warn("Invalid texture data specified! (name: " + skinName + ", texture: " + texture + ", signature: " + signature + ") " + e.getMessage());
                 }
             }
             case VILLAGER -> {
@@ -537,7 +536,7 @@ public class CitizensIntegration implements Listener, ConfigMessages, LandAccess
         try {
             return CitizensAPI.getNPCRegistry().getById(npcData.getNpcId());
         } catch (IllegalArgumentException e) {
-            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while trying to get NPC with id " + npcData.getNpcId() + ": " + e.getMessage());
+            SettlementsPlugin.getInstance().getLogging().error("Error while trying to get NPC with id " + npcData.getNpcId() + ": " + e.getMessage());
             return null;
         }
     }

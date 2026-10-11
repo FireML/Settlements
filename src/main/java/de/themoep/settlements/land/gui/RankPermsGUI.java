@@ -10,13 +10,13 @@ import de.themoep.settlements.utils.ConfirmationGui;
 import de.themoep.settlements.utils.Message;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.apache.commons.text.WordUtils;
+import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import uk.firedev.poleislib.libs.themoep.inventorygui.*;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.inventorygui.*;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.*;
 

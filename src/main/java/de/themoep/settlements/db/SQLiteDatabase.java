@@ -2,7 +2,7 @@ package de.themoep.settlements.db;
 
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import uk.firedev.poleislib.Loggers;
+
 
 import java.io.File;
 import java.sql.*;
@@ -34,8 +34,8 @@ public class SQLiteDatabase extends SqlDatabaseManager {
                 return connection;
             }
         } catch (SQLException e) {
-            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while trying to get database connection");
-            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().error("Error while trying to get database connection");
+            SettlementsPlugin.getInstance().getLogging().exception(e);
         }
         return null;
     }

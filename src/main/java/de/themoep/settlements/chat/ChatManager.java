@@ -2,6 +2,9 @@ package de.themoep.settlements.chat;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import de.themoep.minedown.adventure.MineDown;
+import de.themoep.minedown.adventure.MineDownParser;
+import de.themoep.minedown.adventure.Replacer;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.events.ChannelChatEvent;
 import de.themoep.settlements.command.ChatCommand;
@@ -18,6 +21,7 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.StringUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
@@ -27,18 +31,13 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDown;
-import uk.firedev.poleislib.libs.themoep.minedown.adventure.MineDownParser;
-import uk.firedev.poleislib.libs.themoep.minedown.adventure.Replacer;
-import uk.firedev.poleislib.replacers.ComponentReplacer;
-import uk.firedev.poleislib.utils.ComponentUtils;
-import uk.firedev.poleislib.utils.StringUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -151,8 +150,8 @@ public class ChatManager implements ConfigMessages, Listener {
         Component prefix = ComponentUtils.parseComponent(senderPrefix);
 
         if (res.hasPermission("poleis.staff.punish")) {
-            prefix = prefix.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/punish " + sender.getName()));
-            prefix = prefix.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&b/punish " + sender.getName())));
+            prefix = prefix.clickEvent(ClickEvent.suggestCommand("/punish " + sender.getName()));
+            prefix = prefix.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("&b/punish " + sender.getName())));
         }
 
         Component componentSender = getMessage("format.name").getComponent();
@@ -174,7 +173,7 @@ public class ChatManager implements ConfigMessages, Listener {
                 "empire", ComponentUtils.parseComponent(res.hasEmpire() ? settlement.getEmpire().getName() : ""),
                 "sender", componentSender
                         .hoverEvent(getHover(sender, res))
-                        .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/msg " + sender.getName()))
+                        .clickEvent(ClickEvent.suggestCommand("/msg " + sender.getName()))
         );
 
         Component filteredMessage;
@@ -198,19 +197,19 @@ public class ChatManager implements ConfigMessages, Listener {
             unfilteredMessage = ComponentUtils.parseComponent(message);
         }
 
-        Component hover = ComponentUtils.getHoverItem(sender.getInventory().getItemInMainHand());
-        filteredMessage = new ComponentReplacer(filteredMessage)
-                .prefix("[")
-                .suffix("]")
+        Component hover = sender.getInventory().getItemInMainHand().displayName();
+        filteredMessage = new Replacer()
+                .placeholderPrefix("[")
+                .placeholderSuffix("]")
                 .replace("item", hover)
                 .replace("i", hover)
-                .build();
-        unfilteredMessage = new ComponentReplacer(unfilteredMessage)
-                .prefix("[")
-                .suffix("]")
-                .replace("item", hover)
-                .replace("i", hover)
-                .build();
+                .replaceIn(filteredMessage);
+        unfilteredMessage = new Replacer()
+            .placeholderPrefix("[")
+            .placeholderSuffix("]")
+            .replace("item", hover)
+            .replace("i", hover)
+            .replaceIn(unfilteredMessage);
 
         TextColor channelDefault = Utils.getChannelColor(channel, ChatColorType.MESSAGE);
         TextColor channelPrefixDefault = Utils.getChannelColor(channel, ChatColorType.PREFIX);
@@ -338,26 +337,26 @@ public class ChatManager implements ConfigMessages, Listener {
 
     private void tell(Player sender, List<Resident> receivers, ChatChannel channel, TextColor defaultColor, TextColor defaultPrefixColor, Component unfilteredMessage, Component filteredMessage, Map<String, Component> replacements, boolean logged) {
         for (Resident receiver : receivers) {
-            Component component = new ComponentReplacer(getFormat(sender, channel, receiver.getChannelColor(channel, ChatColorType.MESSAGE, defaultColor), receiver.getChannelColor(channel, ChatColorType.PREFIX, defaultPrefixColor)))
+            Component component = new Replacer()
                     .replace(replacements)
                     .replace("message", receiver.getSwear() ? unfilteredMessage : filteredMessage)
-                    .build();
+                    .replaceIn(getFormat(sender, channel, receiver.getChannelColor(channel, ChatColorType.MESSAGE, defaultColor), receiver.getChannelColor(channel, ChatColorType.PREFIX, defaultPrefixColor)));
             tell(receiver, component);
             if (!logged) {
                 logged = true;
-                Bukkit.getLogger().info(ComponentUtils.toUncoloredString(component));
+                SettlementsPlugin.getInstance().getLogging().info(PlainTextComponentSerializer.plainText().serialize(component));
             }
         }
     }
 
     private void tell(Player sender, Resident receiver, ChatChannel channel, TextColor defaultColor, TextColor defaultPrefixColor, Component unfilteredMessage, Component filteredMessage, Map<String, Component> replacements, boolean logged) {
-        Component component = new ComponentReplacer(getFormat(sender, channel, receiver.getChannelColor(channel, ChatColorType.MESSAGE, defaultColor), receiver.getChannelColor(channel, ChatColorType.PREFIX, defaultPrefixColor)))
+        Component component = new Replacer()
                 .replace(replacements)
                 .replace("message", receiver.getSwear() ? unfilteredMessage : filteredMessage)
-                .build();
+                .replaceIn(getFormat(sender, channel, receiver.getChannelColor(channel, ChatColorType.MESSAGE, defaultColor), receiver.getChannelColor(channel, ChatColorType.PREFIX, defaultPrefixColor)));
         tell(receiver, component);
         if (logged) {
-            Bukkit.getLogger().info(ComponentUtils.toUncoloredString(component));
+            SettlementsPlugin.getInstance().getLogging().info(PlainTextComponentSerializer.plainText().serialize(component));
         }
     }
 
@@ -428,7 +427,7 @@ public class ChatManager implements ConfigMessages, Listener {
         } else {
             hover = getMessage("hover.info").getComponent();
         }
-        return HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parsePlaceholders(hover,
+        return HoverEvent.showText(ComponentUtils.parsePlaceholders(hover,
                 "name", player.getName(),
                 "displayname", ComponentUtils.toString(player.displayName()),
                 "prefix", getPlayerPrefix(player),

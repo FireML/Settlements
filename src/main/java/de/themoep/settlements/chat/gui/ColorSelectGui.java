@@ -11,11 +11,12 @@ import de.themoep.settlements.utils.config.Config;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiBackElement;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.utils.ColorUtils;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.utils.ColorUtils;
+import de.themoep.settlements.utils.ItemUtils;
+import org.bukkit.inventory.ItemStack;
 
 public class ColorSelectGui extends ConfigurableGui {
 
@@ -35,9 +36,11 @@ public class ColorSelectGui extends ConfigurableGui {
                 continue;
             }
 
+            ItemStack colorHead = ColorUtils.getColorHead(NamedTextColor.nearestTo(chatColor));
+            ItemUtils.setGlowing(colorHead, residentColor == chatColor);
             group.addElement(new StaticGuiElement(
                     'g',
-                    ItemUtils.setGlowing(ColorUtils.getColorHead(NamedTextColor.nearestTo(chatColor)), residentColor == chatColor),
+                    colorHead,
                     click -> {
                         Resident r = ResidentManager.getInstance().getResident((Player) click.getWhoClicked());
                         r.setChannelColor(channel, type, chatColor);
@@ -54,7 +57,7 @@ public class ColorSelectGui extends ConfigurableGui {
                         return true;
                     },
                     getText((residentColor == chatColor ? "selected-" : "") + "color-entry",
-                            "color", ColorUtils.hexToLegacy("&" + NamedTextColor.nearestTo(chatColor).asHexString()),
+                            "color", "&#" + NamedTextColor.nearestTo(chatColor).asHexString(),
                             "name", NamedTextColor.nearestTo(chatColor).toString())
             ));
         }

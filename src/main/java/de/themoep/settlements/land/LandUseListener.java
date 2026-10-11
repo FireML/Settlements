@@ -17,14 +17,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityMountEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.jetbrains.annotations.Nullable;
-import org.spigotmc.event.entity.EntityMountEvent;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 public class LandUseListener implements LandAccessChecker, Listener {
 
@@ -77,9 +77,6 @@ public class LandUseListener implements LandAccessChecker, Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void on(PlayerFishEvent e) {
-        if (e.getPlayer() == null || e.getHook() == null) {
-            return;
-        }
         Pair<Boolean, String> response = this.canUse(e.getPlayer(), Use.FISH, e.getHook().getLocation());
         if (!response.getLeft()) {
             MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));

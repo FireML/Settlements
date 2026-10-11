@@ -8,7 +8,7 @@ import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 public class AdminWorldCommand extends PlayerSubCommand {
     public AdminWorldCommand(SubCommand parent) {

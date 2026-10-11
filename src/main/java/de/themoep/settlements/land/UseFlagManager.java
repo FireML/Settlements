@@ -6,8 +6,8 @@ import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.utils.ItemUtils;
+
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.*;
 import java.util.logging.Level;
@@ -37,14 +37,14 @@ public class UseFlagManager {
                     try {
                         uses.add(Use.valueOf(config.getString("type").toUpperCase()));
                     } catch (IllegalArgumentException e) {
-                        Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), config.getString("type") + " is not a valid use type for flag " + name + " in useflags.yml!");
+                        SettlementsPlugin.getInstance().getLogging().warn(config.getString("type") + " is not a valid use type for flag " + name + " in useflags.yml!");
                     }
                 } else if (config.contains("types", true) && config.isList("types")) {
                     for (String type : config.getStringList("types")) {
                         try {
                             uses.add(Use.valueOf(type.toUpperCase()));
                         } catch (IllegalArgumentException e) {
-                            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), type + " is not a valid use type for flag " + name + " in useflags.yml!");
+                            SettlementsPlugin.getInstance().getLogging().warn(type + " is not a valid use type for flag " + name + " in useflags.yml!");
                         }
                     }
                 }
@@ -54,7 +54,7 @@ public class UseFlagManager {
                     icon = MaterialUtils.getMaterial(config.getString("icon"));
                 }
                 if (icon != null && !icon.isItem()) {
-                    Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), icon + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
+                    SettlementsPlugin.getInstance().getLogging().warn(icon + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
                     icon = null;
                 }
                 if (icon == null) {
@@ -77,7 +77,7 @@ public class UseFlagManager {
                     try {
                         defaultState = BuildState.valueOf(config.getString("default-state", "unknown").toUpperCase(Locale.ROOT));
                     } catch (IllegalArgumentException e) {
-                        Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), config.getString("default-state") + " is not a valid BuildState for flag " + name + " in useflags.yml!");
+                        SettlementsPlugin.getInstance().getLogging().warn(config.getString("default-state") + " is not a valid BuildState for flag " + name + " in useflags.yml!");
                     }
                 }
 
@@ -97,7 +97,7 @@ public class UseFlagManager {
                     if (flag != null) {
                         flags.add(flag);
                     } else {
-                        Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), config.getString("flag") + " is not a valid use flag for group " + name + " in useflags.yml!");
+                        SettlementsPlugin.getInstance().getLogging().warn(config.getString("flag") + " is not a valid use flag for group " + name + " in useflags.yml!");
                     }
                 } else if (config.contains("flags", true) && config.isList("flags")) {
                     for (String type : config.getStringList("flags")) {
@@ -105,12 +105,12 @@ public class UseFlagManager {
                         if (flag != null) {
                             flags.add(flag);
                         } else {
-                            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), type + " is not a valid use flag for group " + name + " in useflags.yml!");
+                            SettlementsPlugin.getInstance().getLogging().warn(type + " is not a valid use flag for group " + name + " in useflags.yml!");
                         }
                     }
                 }
 
-                ItemStack icon = ItemUtils.toIcon(Material.BARRIER);
+                ItemStack icon = ItemStack.of(Material.BARRIER);
                 String matStr = config.getString("icon");
                 if (matStr != null) {
                     Material material;
@@ -127,15 +127,15 @@ public class UseFlagManager {
                     } else {
                         material = Material.matchMaterial(matStr);
                         if (material != null && material.isItem()) {
-                            icon = ItemUtils.toIcon(material);
+                            icon = ItemStack.of(material);
                         } else {
-                            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), matStr + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
-                            icon = ItemUtils.toIcon(Material.BARRIER);
+                            SettlementsPlugin.getInstance().getLogging().warn(matStr + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
+                            icon = ItemStack.of(Material.BARRIER);
                         }
                     }
                 } else {
-                    Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), matStr + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
-                    icon = ItemUtils.toIcon(Material.BARRIER);
+                    SettlementsPlugin.getInstance().getLogging().warn(matStr + " is not a valid icon type for flag " + name + " in useflags.yml! That type has no item which can be displayed");
+                    icon = ItemStack.of(Material.BARRIER);
                 }
 
                 BuildState defaultState = null;
@@ -143,7 +143,7 @@ public class UseFlagManager {
                     try {
                         defaultState = BuildState.valueOf(config.getString("default-state", "unknown").toUpperCase(Locale.ROOT));
                     } catch (IllegalArgumentException e) {
-                        Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), config.getString("default-state") + " is not a valid BuildState for group " + name + " in useflags.yml!");
+                        SettlementsPlugin.getInstance().getLogging().warn(config.getString("default-state") + " is not a valid BuildState for group " + name + " in useflags.yml!");
                     }
                 }
 
@@ -154,7 +154,7 @@ public class UseFlagManager {
 
     private void addGroup(UseGroup group) {
         if (group.getUseFlags().isEmpty()) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Group " + group.name() + " in useflags.yml is not valid as it contains no use flags!");
+            SettlementsPlugin.getInstance().getLogging().warn("Group " + group.name() + " in useflags.yml is not valid as it contains no use flags!");
             return;
         }
         groups.put(group.getKey(), group);
@@ -162,14 +162,14 @@ public class UseFlagManager {
 
     private void addFlag(UseFlag flag) {
         if (flag.getUseTypes().isEmpty()) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Flag " + flag.name() + " in useflags.yml is not valid as it contains no use types!");
+            SettlementsPlugin.getInstance().getLogging().warn("Flag " + flag.name() + " in useflags.yml is not valid as it contains no use types!");
             return;
         }
         byId.put(flag.name().toLowerCase(Locale.ROOT), flag);
         for (Use useType : flag.getUseTypes()) {
             UseFlag old = byUseType.put(useType, flag);
             if (old != null) {
-                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Use type " + useType.name() + " was defined for multiple flags (" + old.name()  + " and " + flag.name() + " in useflags.yml! Use types can only be defined for one flag! Flag " + flag.name() + " will use it.");
+                SettlementsPlugin.getInstance().getLogging().warn("Use type " + useType.name() + " was defined for multiple flags (" + old.name()  + " and " + flag.name() + " in useflags.yml! Use types can only be defined for one flag! Flag " + flag.name() + " will use it.");
             }
         }
     }

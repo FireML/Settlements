@@ -3,7 +3,7 @@ package de.themoep.settlements.land;
 import de.themoep.settlements.utils.NameTag;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.utils.ItemUtils;
+import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -24,7 +24,7 @@ public class UseFlag implements NameTag {
     }
 
     public ItemStack getItem() {
-        return ItemUtils.toIcon(getIcon());
+        return ItemStack.of(getIcon());
     }
 
     public Material getIcon() {

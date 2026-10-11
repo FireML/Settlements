@@ -4,7 +4,7 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import org.bukkit.command.CommandSender;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 public class AdminEmpireLevelCommand extends SubCommand {
     public AdminEmpireLevelCommand(SubCommand parent) {

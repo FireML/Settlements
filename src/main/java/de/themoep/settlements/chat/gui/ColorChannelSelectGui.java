@@ -8,9 +8,9 @@ import de.themoep.settlements.utils.Utils;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
-import uk.firedev.poleislib.utils.ColorUtils;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.utils.ColorUtils;
 
 public class ColorChannelSelectGui extends ConfigurableGui {
 
@@ -31,7 +31,7 @@ public class ColorChannelSelectGui extends ConfigurableGui {
                 new ColorTypeSelectGui(resident, channel).open();
                 return true;
             }, getText("channel-entry",
-                    "color", ColorUtils.hexToLegacy("&" + NamedTextColor.nearestTo(resColor).asHexString()),
+                    "color", "&#" + NamedTextColor.nearestTo(resColor).asHexString(),
                     "color-name", NamedTextColor.nearestTo(resColor).toString(),
                     "channel", channel.getTag()
             )));

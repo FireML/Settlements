@@ -1,5 +1,6 @@
 package de.themoep.settlements.lock;
 
+import com.dre.brewery.depend.universalScheduler.scheduling.tasks.MyScheduledTask;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.google.common.collect.ImmutableMap;
@@ -12,6 +13,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleBlockLocation;
 import de.themoep.settlements.world.SimpleChunkLocation;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -22,7 +24,6 @@ import org.bukkit.block.data.type.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.util.Vector;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
 
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
@@ -36,7 +37,7 @@ import java.util.stream.Stream;
 public class LockManager implements LockProvider {
     private static final String LOADING_KEY = "LOADING_MARKER";
     private static LockManager instance;
-    private MyScheduledTask loadQueueTask = null;
+    private ScheduledTask loadQueueTask = null;
     private final BlockingQueue<SimpleChunkLocation> loadQueue = new LinkedBlockingQueue<>();
     private final Map<String, Map<SimpleChunkLocation, Map<String, Lock>>> lockTable = new ConcurrentHashMap<>();
 
@@ -89,7 +90,7 @@ public class LockManager implements LockProvider {
     private void queueChunkLoad(Collection<SimpleChunkLocation> chunks) {
         loadQueue.addAll(chunks);
         if (loadQueueTask == null || loadQueueTask.isCancelled()) {
-            loadQueueTask = SettlementsPlugin.getScheduler().runTaskLaterAsynchronously(() -> {
+            Runnable task = () -> {
                 loadQueueTask = null;
                 if (!loadQueue.isEmpty()) {
                     // Load locks in chunks
@@ -108,7 +109,8 @@ public class LockManager implements LockProvider {
                         }
                     }
                 }
-            }, Config.Lock.LOAD_QUEUE_TICKS);
+            };
+            loadQueueTask = Bukkit.getAsyncScheduler().runDelayed(SettlementsPlugin.getInstance(), _ -> task.run(), Config.Lock.LOAD_QUEUE_TICKS / 20, TimeUnit.SECONDS);
         }
     }
 

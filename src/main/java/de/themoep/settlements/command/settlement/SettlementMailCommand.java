@@ -4,7 +4,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.resident.Resident;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 public class SettlementMailCommand extends SettlementSubCommand {
     public SettlementMailCommand(SubCommand parent) {

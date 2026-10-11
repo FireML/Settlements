@@ -5,8 +5,8 @@ import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.entity.Player;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
 
 import java.util.Collection;
 

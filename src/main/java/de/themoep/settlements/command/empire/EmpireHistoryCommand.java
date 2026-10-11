@@ -10,7 +10,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -52,16 +52,16 @@ public class EmpireHistoryCommand extends EmpireSubCommand {
                 next = next.color(NamedTextColor.GRAY);
             } else {
                 next = next.color(NamedTextColor.AQUA);
-                next = next.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (page + 1)));
-                next = next.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e>>")));
+                next = next.clickEvent(ClickEvent.runCommand("/" + base + " " + alias + " " + (page + 1)));
+                next = next.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("&e>>")));
             }
             Component previous = getMessage("previous").getReplacedComponent("previous", String.valueOf(page - 1));
             if (page - 1 <= 0) {
                 previous = previous.color(NamedTextColor.GRAY);
             } else {
                 previous = previous.color(NamedTextColor.AQUA);
-                previous = previous.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/" + base + " " + alias + " " + (page - 1)));
-                previous = previous.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("&e<<")));
+                previous = previous.clickEvent(ClickEvent.runCommand("/" + base + " " + alias + " " + (page - 1)));
+                previous = previous.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("&e<<")));
             }
 
             Map<String, Component> replacements = Map.of(

@@ -4,7 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import uk.firedev.poleislib.Loggers;
+
 
 import java.sql.*;
 import java.util.*;
@@ -49,8 +49,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
         try {
             return ds.getConnection();
         } catch (SQLException e) {
-            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while trying to get database connection");
-            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().error("Error while trying to get database connection");
+            SettlementsPlugin.getInstance().getLogging().exception(e);
         }
         return null;
     }
@@ -65,8 +65,8 @@ public class MySqlDatabase extends SqlDatabaseManager {
         try {
             if (conn != null) conn.close();
         } catch (SQLException e) {
-            Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Error while trying to close a MySQL connection");
-            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().error("Error while trying to close a MySQL connection");
+            SettlementsPlugin.getInstance().getLogging().exception(e);
         }
     }
 
@@ -161,7 +161,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
             dataSourceClassName = tryDataSourceClassName("com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
         }
         if (dataSourceClassName != null) {
-            Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Using " + dataSourceClassName + " database source");
+            SettlementsPlugin.getInstance().getLogging().info("Using " + dataSourceClassName + " database source");
             ds.setDataSourceClassName(dataSourceClassName);
         }
 
@@ -175,7 +175,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
             }
 
             if (driverClassName != null) {
-                Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Using " + driverClassName + " database driver");
+                SettlementsPlugin.getInstance().getLogging().info("Using " + driverClassName + " database driver");
                 ds.setDriverClassName(driverClassName);
             } else {
                 throw new RuntimeException("Could not find database driver or data source class! Plugin wont work without a database!");
@@ -273,7 +273,7 @@ public class MySqlDatabase extends SqlDatabaseManager {
             Statement sta = conn.createStatement();
             sta.execute(sql);
         } catch (SQLException e) {
-            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().exception(e);
         }
     }
 }

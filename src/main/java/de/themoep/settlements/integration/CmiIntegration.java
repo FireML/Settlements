@@ -17,8 +17,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.utils.ComponentUtils;
+
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.lang.reflect.Field;
 import java.util.UUID;
@@ -32,7 +32,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
     public CmiIntegration() {
         cmi = CMI.getInstance();
         if (cmi.getConfigManager().getOptimizationsSimilarCommandChecker() > 0) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "You have OptimizationsSimilarCommandChecker enabled in your CMI config." +
+            SettlementsPlugin.getInstance().getLogging().warn("You have OptimizationsSimilarCommandChecker enabled in your CMI config." +
                     " If you want 100% from certain CMI commands then you will have to disable that!" +
                     " Unfortunately CMI does not provide a proper API to handle that securely otherwise.");
         }
@@ -44,7 +44,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
             formatStringsField = FormattedCommandAlias.class.getDeclaredField("formatStrings");
             formatStringsField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().exception(e);
         }
     }
 
@@ -79,7 +79,7 @@ public class CmiIntegration implements IgnoreProvider, AfkProvider, MailProvider
                         return;
                     }
                 } catch (IllegalAccessException e) {
-                    Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+                    SettlementsPlugin.getInstance().getLogging().exception(e);
                 }
             } else {
                 return;

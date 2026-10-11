@@ -12,6 +12,7 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
+import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -23,19 +24,15 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.*;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
-import uk.firedev.poleislib.Loggers;
-import uk.firedev.poleislib.builders.TitleBuilder;
-import uk.firedev.poleislib.libs.Anon8281.universalScheduler.scheduling.tasks.MyScheduledTask;
-import uk.firedev.poleislib.utils.ColorUtils;
-import uk.firedev.poleislib.utils.ComponentUtils;
-import uk.firedev.poleislib.utils.StringUtils;
+
+import uk.firedev.daisylib.builders.TitleBuilder;
+import uk.firedev.daisylib.utils.Scheduling;
 
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class Utils {
     public final static DecimalFormat CURRENCY_FORMAT = new DecimalFormat("#,###");
@@ -59,7 +56,7 @@ public class Utils {
             EntityType.EVOKER_FANGS
     );
     private static final Set<EntityType> SPECIAL_PASSIVE = EnumSet.of(
-            EntityType.SNOWMAN,
+            EntityType.SNOW_GOLEM,
             EntityType.VILLAGER,
             EntityType.SQUID,
             EntityType.IRON_GOLEM
@@ -79,7 +76,7 @@ public class Utils {
             Field f = Config.Teleport.Delay.class.getField(type.toUpperCase());
             return (int) f.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().exception(e);
         }
         return 0;
     }
@@ -89,7 +86,7 @@ public class Utils {
             Field f = Config.Teleport.Cooldown.class.getField(type.toUpperCase());
             return (int) f.get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            Loggers.logException(e, SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().exception(e);
         }
         return 0;
     }
@@ -139,59 +136,39 @@ public class Utils {
      * Make sure to run something not on the primary server thread.
      * A new task is started if this is the primary thread, if not the current one is used!
      * @param run What to run
-     * @return The MyScheduledTask that was started or null if we are already on an async thread
+     * @return The ScheduledTask that was started or null if we are already on an async thread
      */
-    public static MyScheduledTask runAsync(Runnable run) {
-        return runAsync(run, false);
-    }
-
-    /**
-     * Make sure to run something not on the primary server thread.
-     * @param run What to run
-     * @param force Whether we should force run this async (only works if the plugin is still running)
-     * @return The MyScheduledTask that was started or null if we are already on an async thread
-     */
-    public static MyScheduledTask runAsync(Runnable run, boolean force) {
-        if ((force || Bukkit.isPrimaryThread()) && SettlementsPlugin.getInstance().isRunning() && SettlementsPlugin.getInstance().isEnabled()) {
-            return SettlementsPlugin.getScheduler().runTaskAsynchronously(run);
-        } else {
-            run.run();
-        }
-        return null;
+    public static void runAsync(Runnable run) {
+        Bukkit.getAsyncScheduler().runNow(SettlementsPlugin.getInstance(), _ -> run.run());
     }
 
     /**
      * Make sure to run something on the primary server thread.
      * A new task is started if this is not the primary thread, if not the main one is used!
      * @param run What to run
-     * @return The MyScheduledTask that was started or null if we are already on the main thread
+     * @return The ScheduledTask that was started or null if we are already on the main thread
      */
-    public static MyScheduledTask runSync(Runnable run) {
-        if (!Bukkit.isPrimaryThread()) {
-            return SettlementsPlugin.getScheduler().runTask(run);
-        } else {
-            run.run();
-        }
-        return null;
+    public static void runSync(Runnable run) {
+        Scheduling.runTask(run);
     }
 
     /**
      * Run something in the next tick on the primary server thread.
      * @param run What to run
-     * @return The MyScheduledTask that was started
+     * @return The ScheduledTask that was started
      */
-    public static MyScheduledTask runNextTick(Runnable run) {
-        return SettlementsPlugin.getScheduler().runTask(run);
+    public static void runNextTick(Runnable run) {
+        Scheduling.runTask(run);
     }
 
     /**
      * Run something later on the primary server thread.
      * @param run   What to run
      * @param ticks The ticks to wait
-     * @return The MyScheduledTask that was started
+     * @return The ScheduledTask that was started
      */
-    public static MyScheduledTask runLater(Runnable run, long ticks) {
-        return SettlementsPlugin.getScheduler().runTaskLater(run, ticks);
+    public static ScheduledTask runLater(Runnable run, long ticks) {
+        return Scheduling.runTaskLater(run, ticks);
     }
 
     /**
@@ -256,8 +233,8 @@ public class Utils {
 
     public static void catchSync() {
         if (SettlementsPlugin.getInstance().isRunning() && Bukkit.isPrimaryThread()) {
-            Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Doing an operation on the main thread that should be done async!");
-            Loggers.logException(new Throwable(), SettlementsPlugin.getInstance().getLogger());
+            SettlementsPlugin.getInstance().getLogging().warn("Doing an operation on the main thread that should be done async!");
+            SettlementsPlugin.getInstance().getLogging().exception(new Throwable());
         }
     }
 
@@ -390,10 +367,10 @@ public class Utils {
             player.teleportAsync(loc).thenAccept(success -> {
                 String path = success ? "success" : "fail";
                 messages.getMessage(path).tell(player, replacements);
-                new TitleBuilder()
-                        .withTitle(messages.getMessage(path + "-title.title").getComponent())
-                        .withSubtitle(messages.getMessage(path + "-title.subtitle").getComponent())
-                        .send(player, replacements);
+                TitleBuilder.create()
+                        .withTitle(messages.getMessage(path + "-title.title").getReplacedComponent(replacements))
+                        .withSubtitle(messages.getMessage(path + "-title.subtitle").getReplacedComponent(replacements))
+                        .send(player);
                 ComponentUtils.sendActionBar(messages.getMessage(path + "-title.actionbar").getReplacedComponent(replacements), player);
                 if (!success) {
                     SettlementsPlugin.logDebug("Failed to teleport " + player.getName() + " to " + loc);
@@ -427,10 +404,10 @@ public class Utils {
         String command = Config.Teleport.SPAWN_COMMAND;
         if (!command.isEmpty()) {
             if (!Bukkit.dispatchCommand(Bukkit.getConsoleSender(), StringUtils.parsePlaceholders(command, "player", target.getName()))) {
-                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Could not execute spawn teleport command? Is " + command + " a valid command?");
+                SettlementsPlugin.getInstance().getLogging().warn("Could not execute spawn teleport command? Is " + command + " a valid command?");
             }
         } else {
-            target.teleportAsync(Bukkit.getWorlds().get(0).getSpawnLocation());
+            target.teleportAsync(Bukkit.getWorlds().getFirst().getSpawnLocation());
         }
     }
 

@@ -7,8 +7,8 @@ import de.themoep.settlements.utils.config.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import uk.firedev.poleislib.builders.BookBuilder;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
+import uk.firedev.daisylib.builders.BookBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,8 +61,8 @@ public class SettlementRulesCommand extends SettlementSubCommand {
                 pageBuilder.append("\n").append(line);
             } else {
                 Component acceptComponent = ComponentUtils.parseComponent(resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getText() : "");
-                acceptComponent = acceptComponent.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("/s rules accept")));
-                acceptComponent = acceptComponent.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/s rules accept"));
+                acceptComponent = acceptComponent.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("/s rules accept")));
+                acceptComponent = acceptComponent.clickEvent(ClickEvent.runCommand("/s rules accept"));
                 pages.add(ComponentUtils.parseComponent(pageBuilder.toString(),
                         Map.of("accept", acceptComponent)));
                 pageLines = 0;
@@ -73,16 +73,16 @@ public class SettlementRulesCommand extends SettlementSubCommand {
         String page = pageBuilder.toString();
         if (!page.isEmpty()) {
             Component acceptComponent = ComponentUtils.parseComponent(resident.hasPermission("settlement.rules.accept") ? Message.get("rules.accept-action").getText() : "");
-            acceptComponent = acceptComponent.hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, ComponentUtils.parseComponent("/s rules accept")));
-            acceptComponent = acceptComponent.clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/s rules accept"));
+            acceptComponent = acceptComponent.hoverEvent(HoverEvent.showText(ComponentUtils.parseComponent("/s rules accept")));
+            acceptComponent = acceptComponent.clickEvent(ClickEvent.runCommand("/s rules accept"));
             pages.add(ComponentUtils.parseComponent(page, Map.of("accept", acceptComponent)));
         }
 
         if (!pages.isEmpty()) {
-            new BookBuilder()
+            BookBuilder.bookBuilder()
                     .withTitle(ComponentUtils.parseComponent("Rules"))
                     .withAuthor(ComponentUtils.parseComponent(resident.getSettlement().getStateTag() + " " + resident.getSettlement().getName()))
-                    .withPages(pages)
+                    .addPages(pages)
                     .show(resident.getPlayer());
         } else {
             resident.tell("Error while getting the rules!");

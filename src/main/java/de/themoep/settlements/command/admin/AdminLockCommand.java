@@ -13,7 +13,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.SimpleBlockLocation;
 import org.bukkit.Chunk;
 import org.bukkit.command.CommandSender;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.Objects;
 import java.util.stream.Collectors;

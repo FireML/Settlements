@@ -6,7 +6,7 @@ import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.utils.Targetable;
 import org.bukkit.command.CommandSender;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 public class AdminDistributeMissionCommand extends SubCommand implements TargetParser {
     public AdminDistributeMissionCommand(SubCommand parent) {

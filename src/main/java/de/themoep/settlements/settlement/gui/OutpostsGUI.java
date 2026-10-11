@@ -11,8 +11,8 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.world.NamedLocation;
-import uk.firedev.poleislib.libs.themoep.inventorygui.GuiElementGroup;
-import uk.firedev.poleislib.libs.themoep.inventorygui.StaticGuiElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
 
 import java.util.stream.Collectors;
 

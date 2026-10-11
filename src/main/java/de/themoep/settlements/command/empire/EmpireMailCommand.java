@@ -5,7 +5,7 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
-import uk.firedev.poleislib.utils.ComponentUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 
 public class EmpireMailCommand extends EmpireSubCommand {
     public EmpireMailCommand(SubCommand parent) {

@@ -50,7 +50,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
-import uk.firedev.poleislib.Loggers;
+
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -79,7 +79,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
             if (Properties.VALID_PLAYERNAME_REGEXP.equals("^\\w+$")) {
                 Properties.VALID_PLAYERNAME_REGEXP = "^([ksve]:(\\w+)?|\\w+)$";
             } else if (!Properties.VALID_PLAYERNAME_REGEXP.equals("^([ksve]:(\\w+)?|\\w+)$")) {
-                Loggers.log(Level.INFO, SettlementsPlugin.getInstance().getLogger(), "Please make sure that `VALID_PLAYERNAME_REGEXP` in your ChestShop config.yml matches settlement IDs! E.g. \"^([ksve]:(\\w+)?|\\w+)$\"");
+                SettlementsPlugin.getInstance().getLogging().info("Please make sure that `VALID_PLAYERNAME_REGEXP` in your ChestShop config.yml matches settlement IDs! E.g. \"^([ksve]:(\\w+)?|\\w+)$\"");
             }
         } catch (NoSuchFieldError ignored) {}
     }
@@ -182,7 +182,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                     return EmpireManager.getInstance().getEmpireFromId(IdObject.get(id));
                 }
             } catch (IllegalArgumentException e) {
-                Loggers.log(Level.WARNING, SettlementsPlugin.getInstance().getLogger(), "Invalid shop owner ID " + name);
+                SettlementsPlugin.getInstance().getLogging().warn("Invalid shop owner ID " + name);
             }
         } else if (parts.length == 2) {
             if ("s".equalsIgnoreCase(parts[0]) || "v".equalsIgnoreCase(parts[0]) || "k".equalsIgnoreCase(parts[0])) {
@@ -436,7 +436,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                     event.hasEnough(landOwner.has(amount));
                     event.setHandled(true);
                 } catch (ArithmeticException e) {
-                    Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not check balance of " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
+                    SettlementsPlugin.getInstance().getLogging().error("Could not check balance of " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
                     event.hasEnough(false);
                 }
             }
@@ -474,7 +474,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 event.setHandled(true);
                 DatabaseManager.getInstance().save(landOwner);
             } catch (ArithmeticException e) {
-                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not add money to " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
+                SettlementsPlugin.getInstance().getLogging().error("Could not add money to " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
             }
         }
     }
@@ -492,7 +492,7 @@ public class ChestShopIntegration extends EconomyAdapter implements LockProvider
                 event.setHandled(true);
                 DatabaseManager.getInstance().save(landOwner);
             } catch (ArithmeticException e) {
-                Loggers.log(Level.SEVERE, SettlementsPlugin.getInstance().getLogger(), "Could not remove money from " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
+                SettlementsPlugin.getInstance().getLogging().error("Could not remove money from " + landOwner.getStateTag() + " " + landOwner.getName() + "! " + e.getMessage());
             }
         }
     }
