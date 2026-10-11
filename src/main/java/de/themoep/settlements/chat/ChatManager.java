@@ -338,6 +338,8 @@ public class ChatManager implements ConfigMessages, Listener {
     private void tell(Player sender, List<Resident> receivers, ChatChannel channel, TextColor defaultColor, TextColor defaultPrefixColor, Component unfilteredMessage, Component filteredMessage, Map<String, Component> replacements, boolean logged) {
         for (Resident receiver : receivers) {
             Component component = new Replacer()
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
                     .replace(replacements)
                     .replace("message", receiver.getSwear() ? unfilteredMessage : filteredMessage)
                     .replaceIn(getFormat(sender, channel, receiver.getChannelColor(channel, ChatColorType.MESSAGE, defaultColor), receiver.getChannelColor(channel, ChatColorType.PREFIX, defaultPrefixColor)));
@@ -351,9 +353,11 @@ public class ChatManager implements ConfigMessages, Listener {
 
     private void tell(Player sender, Resident receiver, ChatChannel channel, TextColor defaultColor, TextColor defaultPrefixColor, Component unfilteredMessage, Component filteredMessage, Map<String, Component> replacements, boolean logged) {
         Component component = new Replacer()
-                .replace(replacements)
-                .replace("message", receiver.getSwear() ? unfilteredMessage : filteredMessage)
-                .replaceIn(getFormat(sender, channel, receiver.getChannelColor(channel, ChatColorType.MESSAGE, defaultColor), receiver.getChannelColor(channel, ChatColorType.PREFIX, defaultPrefixColor)));
+            .placeholderPrefix("{")
+            .placeholderSuffix("}")
+            .replace(replacements)
+            .replace("message", receiver.getSwear() ? unfilteredMessage : filteredMessage)
+            .replaceIn(getFormat(sender, channel, receiver.getChannelColor(channel, ChatColorType.MESSAGE, defaultColor), receiver.getChannelColor(channel, ChatColorType.PREFIX, defaultPrefixColor)));
         tell(receiver, component);
         if (logged) {
             SettlementsPlugin.getInstance().getLogging().info(PlainTextComponentSerializer.plainText().serialize(component));

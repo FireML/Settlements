@@ -1,17 +1,13 @@
 package de.themoep.settlements.utils;
 
 import de.themoep.minedown.adventure.MineDown;
-import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.chat.ChatColorType;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import uk.firedev.daisylib.messages.replacer.Replacer;
+import de.themoep.minedown.adventure.Replacer;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ComponentUtils {
@@ -29,34 +25,32 @@ public class ComponentUtils {
     }
 
     public static Component parseComponent(String text, Map<String, ?> replacements) {
-        Replacer replacer = Replacer.replacer().addReplacements(replacements);
-        return replacer.apply(MineDown.parse(text));
+        return new Replacer()
+            .placeholderPrefix("{")
+            .placeholderSuffix("}")
+            .replace(replacements)
+            .replaceIn(MineDown.parse(text));
     }
 
-    public static Component parsePlaceholders(Component component, Map<String, Component> replacements) {
-        Replacer replacer = Replacer.replacer();
-        replacements.forEach((string, replacement) -> {
-            replacer.addReplacement("{" + string + "}", replacement);
-        });
-        return replacer.apply(component);
+    public static Component parsePlaceholders(Component component, Map<String, ?> replacements) {
+        return new Replacer()
+            .placeholderPrefix("{")
+            .placeholderSuffix("}")
+            .replace(replacements)
+            .replaceIn(component);
     }
 
     public static Component parsePlaceholders(Component component, String... replacements) {
-        if (replacements.length % 2 != 0) {
-            SettlementsPlugin.getInstance().getLogging().debug("Invalid replacement array size. Replacements will not be added.");
-            return component;
-        }
-        Replacer replacer = Replacer.replacer();
-        for (int i = 0; i + 1 < replacements.length; i += 2) {
-            replacer.addReplacement(replacements[i], replacements[i + 1]);
-        }
-        return replacer.apply(component);
+        return new Replacer()
+            .placeholderPrefix("{")
+            .placeholderSuffix("}")
+            .replace(replacements)
+            .replaceIn(component);
     }
 
     public static Component parseColors(Component component) {
         String str = LegacyComponentSerializer.legacySection().serialize(component);
-        str = ChatColor.translateAlternateColorCodes('&', str);
-        return LegacyComponentSerializer.legacySection().deserialize(str);
+        return MineDown.parse(str);
     }
 
     public static void broadcastMessage(Component component) {
