@@ -5,13 +5,12 @@ import com.google.common.cache.CacheBuilder;
 import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.portal.Portal;
-import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Chunk;
 
+import java.time.Duration;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class OutpostUnclaimCommand extends SettlementSubCommand {
 
-    private Cache<UUID, Runnable> confirm = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+    private final Cache<UUID, Runnable> confirm = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(1)).build();
 
     public OutpostUnclaimCommand(SettlementSubCommand parent) {
         super(parent, "unclaim");
@@ -83,23 +82,8 @@ public class OutpostUnclaimCommand extends SettlementSubCommand {
                     "z", String.valueOf(resident.getPlayer().getLocation().getBlockZ())
             ));
         };
-        Set<Portal> portals = new HashSet<>();
-        if (Config.Portal.ENABLED) {
-            for (OwnedLand ownedLand : toUnclaim) {
-                portals.addAll(PortalManager.getInstance().getPortals(ownedLand));
-            }
-        }
-        if (toUnclaim.size() == 1 && portals.isEmpty()) {
+        if (toUnclaim.size() == 1) {
             unclaim.run();
-        } else {
-            confirm.put(resident.getUUID(), unclaim);
-            getMessage("confirm").tell(resident,
-                    "command", base + " " + alias + " confirm",
-                    "amount", String.valueOf(toUnclaim.size()),
-                    "claims", toUnclaim.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", ")),
-                    "portal-amount", String.valueOf(portals.size()),
-                    "portals", portals.stream().map(Portal::getLocation).map(l -> l.getX() + "/" + l.getY() + "/" + l.getZ()).collect(Collectors.joining(", "))
-            );
         }
         return true;
     }

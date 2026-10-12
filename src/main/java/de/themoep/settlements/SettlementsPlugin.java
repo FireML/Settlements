@@ -22,7 +22,6 @@ import de.themoep.settlements.land.events.listeners.LandChangeListener;
 import de.themoep.settlements.land.events.listeners.LandEnterListener;
 import de.themoep.settlements.land.events.listeners.LandLeaveListener;
 import de.themoep.settlements.missions.MissionListener;
-import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -34,10 +33,7 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.server.PluginEnableEvent;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NonNull;
 import uk.firedev.daisylib.DaisyLib;
@@ -48,16 +44,10 @@ import uk.firedev.daisylib.utils.Scheduling;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SettlementsPlugin extends JavaPlugin implements Listener {
@@ -95,8 +85,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             DatabaseManager.getInstance().saveEmpires(EmpireManager.getInstance().getEmpires());
             logging.info("Saving all land data...");
             DatabaseManager.getInstance().saveLand(LandManager.getInstance().getAllLand());
-            logging.info("Saving all portal data...");
-            DatabaseManager.getInstance().savePortals(PortalManager.getInstance().getPortals());
         }
         ConfigManager.getInstance().getDataConfig().saveConfig();
         DatabaseManager.getInstance().disable();
@@ -294,9 +282,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             LandManager.load();
         }
         InviteManager.load();
-        if (Config.Portal.ENABLED) {
-            PortalManager.load();
-        }
         if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
             EventManager.load();
         }

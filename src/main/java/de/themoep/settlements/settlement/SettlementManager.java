@@ -19,7 +19,6 @@ import de.themoep.settlements.land.events.LandownerLeveledEvent;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.perk.SettlementPerk;
-import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
@@ -238,9 +237,6 @@ public class SettlementManager {
         List<Resident> residents = settlement.getResidents();
         for (Resident resident : residents) {
             removeResidentFromSettlement(resident);
-        }
-        for (OwnedLand land : settlement.getLand()) {
-            PortalManager.getInstance().removePortals(PortalManager.getInstance().getPortals(land.getLocation()));
         }
         LandManager.getInstance().unclaimLand(settlement);
         DatabaseManager.getInstance().saveResidents(residents);

@@ -10,7 +10,6 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.missions.MissionTaker;
-import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.IdObject;
@@ -115,8 +114,6 @@ public abstract class DatabaseManager {
 
     public abstract Collection<Empire> getAllEmpires();
 
-    public abstract Collection<Portal> getAllPortals();
-
     public abstract Resident getResident(int id);
 
     public abstract Resident getResident(UUID uuid);
@@ -132,12 +129,6 @@ public abstract class DatabaseManager {
      * Should be run async!
      */
     public abstract void saveResidentNow(Resident resident);
-
-    public abstract void savePortal(Portal portal);
-
-    public abstract void savePortals(Collection<Portal> portals);
-
-    public abstract void deletePortals(Portal... portals);
 
     public abstract void log(Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values);
 

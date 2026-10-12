@@ -13,8 +13,6 @@ import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.events.LandClaimEvent;
 import de.themoep.settlements.land.events.LandPreClaimEvent;
 import de.themoep.settlements.land.events.LandUnclaimEvent;
-import de.themoep.settlements.portal.Portal;
-import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.IdObject;
@@ -192,7 +190,6 @@ public class LandManager {
 
     public void unclaimLand(OwnedLand... lands) {
         Set<Settlement> saveSettlements = new HashSet<>();
-        Set<Portal> portals = new HashSet<>();
         for (OwnedLand land : lands) {
             if (land.getLandOwner() == null) {
                 continue;
@@ -215,12 +212,6 @@ public class LandManager {
             SettlementsPlugin.getInstance().getLogging().info("Chunk " + land.getKey() + " owned by " + land.getLandOwner().getStateTag() + " " + land.getLandOwner().getName() + " was unclaimed");
             land.setLandOwner(null);
 
-            if (Config.Portal.ENABLED) {
-                portals.addAll(PortalManager.getInstance().getPortals(land));
-            }
-        }
-        if (!portals.isEmpty()) {
-            PortalManager.getInstance().removePortals(portals);
         }
         if (nearbyRadius > 0) {
             for (OwnedLand land : lands) {

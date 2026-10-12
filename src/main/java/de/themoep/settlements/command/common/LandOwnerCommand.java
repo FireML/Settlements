@@ -9,8 +9,6 @@ import de.themoep.settlements.land.ChatMap;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.portal.Portal;
-import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -335,20 +333,12 @@ public interface LandOwnerCommand extends ConfigMessages {
                 }
 
             };
-            Set<Portal> portals = new HashSet<>();
-            if (Config.Portal.ENABLED) {
-                for (OwnedLand land : unclaimedLand) {
-                    portals.addAll(PortalManager.getInstance().getPortals(land));
-                }
-            }
-            if (unclaimedLand.size() > 1 || !portals.isEmpty() || (args.length >= 3 && "map".equalsIgnoreCase(args[2]))) {
+            if (unclaimedLand.size() > 1 || (args.length >= 3 && "map".equalsIgnoreCase(args[2]))) {
                 confirm.put(res.getUUID(), unclaim);
                 getMessage("confirm").tell(res,
                         "command", base + " " + alias + " confirm",
                         "amount", String.valueOf(unclaimedLand.size()),
-                        "claims", unclaimedLand.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", ")),
-                        "portal-amount", String.valueOf(portals.size()),
-                        "portals", portals.stream().map(Portal::getLocation).map(l -> l.getX() + "/" + l.getY() + "/" + l.getZ()).collect(Collectors.joining(", "))
+                        "claims", unclaimedLand.stream().map(l -> l.getX() + "/" + l.getZ()).collect(Collectors.joining(", "))
                 );
             } else {
                 unclaim.run();

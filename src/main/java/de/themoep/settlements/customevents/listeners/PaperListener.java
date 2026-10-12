@@ -6,8 +6,6 @@ import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import de.themoep.settlements.customevents.CreaturePreSpawnEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.portal.Portal;
-import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.config.Config;
@@ -31,26 +29,5 @@ public class PaperListener implements Listener {
             e.setCancelled(true);
         }
     }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onPortalDestroy(BlockDestroyEvent e) {
-        if (!Config.Portal.ENABLED) {
-            return;
-        }
-
-        if (e.getBlock().getType() != Material.NETHER_PORTAL && e.getBlock().getType() != Material.OBSIDIAN) {
-            return;
-        }
-
-        OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
-        if (land == null || !(land.getLandOwner() instanceof Settlement)) {
-            return;
-        }
-
-        Portal portal = PortalManager.getInstance().getPortal(e.getBlock());
-
-        if (portal != null && PortalManager.getInstance().removePortal(portal)) {
-            Message.get("portal.destroy-broadcast").tell(land.getLandOwner().getOnlineResidents(), portal.getReplacements());
-        }
-    }
+    
 }
