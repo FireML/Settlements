@@ -5,14 +5,17 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.land.*;
+import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.BuildState;
+import de.themoep.settlements.land.LandAccess;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.land.events.LandownerDisbandEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
-import de.themoep.settlements.lock.LockProvider;
-import de.themoep.settlements.npc.NpcData;
-import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.perk.SettlementPerk;
@@ -21,18 +24,32 @@ import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.utils.*;
+import de.themoep.settlements.utils.ComponentUtils;
+import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.StringUtils;
+import de.themoep.settlements.utils.Targetable;
+import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import de.themoep.settlements.utils.ComponentUtils;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class SettlementManager {
     private static SettlementManager instance;
@@ -288,9 +305,6 @@ public class SettlementManager {
             }
         }
 
-        for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
-            lockProvider.removeInChunks(LandManager.getInstance().getClaimedLand(settlement));
-        }
         for (Perk perk : settlement.getPerks()) {
             if (perk.hasEffects()) {
                 PerkData perkData = settlement.getPerkData(perk);
@@ -389,13 +403,6 @@ public class SettlementManager {
                     MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.perk-available").getReplacedComponent("perk", perk.getTag()));
                 }
                 perksDesc.add(perk.getTag());
-            }
-        }
-
-        if (settlement.getLevelInfo().getNPCs() != null) {
-            for (NpcType npc : settlement.getLevelInfo().getNPCs()) {
-                NpcData npcData = settlement.getNpcData(npc);
-                perksDesc.add(npcData.getTag());
             }
         }
 

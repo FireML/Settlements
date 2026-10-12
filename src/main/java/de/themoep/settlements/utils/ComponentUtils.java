@@ -1,12 +1,12 @@
 package de.themoep.settlements.utils;
 
 import de.themoep.minedown.adventure.MineDown;
+import de.themoep.minedown.adventure.Replacer;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import de.themoep.minedown.adventure.Replacer;
 
 import java.util.Map;
 

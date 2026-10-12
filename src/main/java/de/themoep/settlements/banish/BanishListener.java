@@ -1,6 +1,5 @@
 package de.themoep.settlements.banish;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
@@ -9,11 +8,8 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
-import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
-import net.luckperms.api.model.user.UserManager;
-import net.luckperms.api.node.types.PermissionNode;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -21,9 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
-import uk.firedev.daisylib.external.vault.VaultWrapper;
-import uk.firedev.daisylib.utils.Scheduling;
 
 import java.util.UUID;
 

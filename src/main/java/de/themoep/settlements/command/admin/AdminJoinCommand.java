@@ -6,12 +6,12 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import de.themoep.settlements.utils.ComponentUtils;
 
 public class AdminJoinCommand extends SubCommand {
     public AdminJoinCommand(SubCommand parent) {

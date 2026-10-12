@@ -3,8 +3,8 @@ package de.themoep.settlements.resident;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
-import org.bukkit.inventory.ItemStack;
 import de.themoep.settlements.utils.ItemUtils;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 import java.util.UUID;

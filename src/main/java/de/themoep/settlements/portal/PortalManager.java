@@ -1,6 +1,5 @@
 package de.themoep.settlements.portal;
 
-import com.dre.brewery.depend.universalScheduler.UniversalRunnable;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
@@ -29,8 +28,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.util.Vector;
+import uk.firedev.daisylib.utils.Scheduling;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PortalManager {
@@ -336,12 +340,7 @@ public class PortalManager {
 
                 player.sendBlockChange(down.getLocation(), down.getBlockData());
                 portalCooldown.add(player);
-                Utils.runLater(new UniversalRunnable() {
-                    @Override
-                    public void run() {
-                        portalCooldown.remove(player);
-                    }
-                }, 60);
+                Scheduling.runTaskLater(() -> portalCooldown.remove(player), 60);
                 player.teleportAsync(down.getRelative(BlockFace.UP).getLocation().add(0.5, 0, 0.5)).thenAccept(success -> {
                     if (!success) {
                         Message.get("error.destination-obstructed").tell(player);

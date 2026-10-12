@@ -6,12 +6,10 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.NameTag;
 import org.bukkit.configuration.ConfigurationSection;
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Event {

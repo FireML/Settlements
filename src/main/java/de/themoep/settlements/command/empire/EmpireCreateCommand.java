@@ -5,9 +5,9 @@ import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.regex.Pattern;
 

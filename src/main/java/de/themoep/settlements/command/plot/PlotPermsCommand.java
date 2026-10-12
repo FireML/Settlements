@@ -1,6 +1,10 @@
 package de.themoep.settlements.command.plot;
 
-import de.themoep.settlements.land.*;
+import de.themoep.settlements.land.BuildState;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.land.UseFlag;
+import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.land.gui.BuildGUI;
 import de.themoep.settlements.land.gui.PermsGUI;
 import de.themoep.settlements.resident.Resident;

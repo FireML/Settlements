@@ -3,11 +3,9 @@ package de.themoep.settlements.utils;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;

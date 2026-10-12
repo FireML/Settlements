@@ -7,10 +7,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
-
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class SimpleLocation implements ConfigurationSerializable {
     private String world;

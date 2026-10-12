@@ -1,23 +1,28 @@
 package de.themoep.settlements.settlement.gui;
 
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.land.JoinRequest;
 import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.land.gui.*;
+import de.themoep.settlements.land.gui.AlliesGUI;
+import de.themoep.settlements.land.gui.BanishedGUI;
+import de.themoep.settlements.land.gui.BuildGUI;
+import de.themoep.settlements.land.gui.PermsGUI;
+import de.themoep.settlements.land.gui.RankPermsGUI;
+import de.themoep.settlements.land.gui.SettingsGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.inventorygui.GuiBackElement;
-import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -101,15 +106,6 @@ public class ManagementGUI extends SettlementsGUI {
                 "state", landOwner.getStateTag(),
                 "action", (landOwner.hasUnlocked("allies") || !Config.Citizens.UNLOCK_DEPENDENCY) ? landOwner.hasPermission(resident, "allies") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission") : getUnlockText(landOwner, "allies")
         )));
-
-        if (SettlementsPlugin.getInstance().getCitizens() != null && landOwner.hasPermission(resident, "npc")) {
-            gui.addElement(new StaticGuiElement('n', getIcon("npc"), click -> {
-                if (landOwner.hasPermission(resident, "npc")) {
-                    new NpcListGUI(resident, resident.getSettlement()).open();
-                }
-                return true;
-            }, getText("npc")));
-        }
 
         gui.addElement(new StaticGuiElement('t', getIcon("ranks"), click -> {
             if (landOwner.hasPermission(resident, "ranks")) {

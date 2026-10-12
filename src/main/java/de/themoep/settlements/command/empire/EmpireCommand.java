@@ -3,8 +3,6 @@ package de.themoep.settlements.command.empire;
 import de.themoep.settlements.command.ChatCommand;
 import de.themoep.settlements.command.HelpCommand;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.command.lock.LockCommand;
-import de.themoep.settlements.command.lock.UnlockCommand;
 import de.themoep.settlements.command.plot.PlotCommand;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.command.CommandSender;
@@ -33,7 +31,6 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpireKickCommand(this));
         registerCommand(new EmpireLeaveCommand(this));
         registerCommand(new EmpireListCommand(this));
-        registerCommand(new EmpireMailCommand(this));
         registerCommand(new EmpireMapCommand(this));
         registerCommand(new EmpireMemberListCommand(this));
         if (Config.Empire.Missions.ENABLED) {
@@ -45,10 +42,6 @@ public class EmpireCommand extends SubCommand {
         registerCommand(new EmpirePerksCommand(this));
         registerCommand(new EmpireRanksCommand(this));
         registerCommand(new PlotCommand(this));
-        if (Config.Lock.ENABLED) {
-            registerCommand(new LockCommand());
-            registerCommand(new UnlockCommand());
-        }
         registerCommand(new EmpireSetAccessCommand(this));
         registerCommand(new EmpireSetRecruitmentCommand(this));
         registerCommand(new EmpireSetWorldSpawnCommand(this));

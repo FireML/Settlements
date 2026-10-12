@@ -9,7 +9,13 @@ import de.themoep.settlements.utils.config.ConfigManager;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Message {

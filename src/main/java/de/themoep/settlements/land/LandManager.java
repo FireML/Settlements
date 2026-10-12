@@ -1,6 +1,11 @@
 package de.themoep.settlements.land;
 
-import com.google.common.collect.*;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
@@ -24,10 +29,20 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class LandManager {
@@ -218,9 +233,6 @@ public class LandManager {
             }
         }
         Utils.runAsync(() -> {
-            if (Config.Lock.Unclaim.REMOVE) {
-                removeLocks(lands);
-            }
             DatabaseManager.getInstance().unclaimLand(lands);
             DatabaseManager.getInstance().saveSettlements(saveSettlements);
         });
@@ -239,9 +251,6 @@ public class LandManager {
                 settlementLands.removeAll(landowner.getId());
             } else if (landowner instanceof Empire) {
                 empireLands.removeAll(landowner.getId());
-            }
-            if (Config.Lock.Unclaim.REMOVE) {
-                removeLocks(claims);
             }
         });
         Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(landowner));
@@ -270,14 +279,6 @@ public class LandManager {
             return linkedPlots.get(land.getLink());
         }
         return new HashSet<>();
-    }
-
-    private void removeLocks(OwnedLand... lands) {
-        removeLocks(Arrays.asList(lands));
-    }
-
-    private void removeLocks(Collection<? extends SimpleChunkLocation> claims) {
-        SettlementsPlugin.getInstance().getLockProviders().forEach(i -> i.removeInChunks(claims));
     }
 
     public static LandManager getInstance() {

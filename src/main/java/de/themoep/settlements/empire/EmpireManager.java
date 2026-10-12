@@ -3,14 +3,16 @@ package de.themoep.settlements.empire;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.land.*;
+import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.BuildState;
+import de.themoep.settlements.land.LandAccess;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.land.Use;
 import de.themoep.settlements.land.events.LandownerAbandonedEvent;
 import de.themoep.settlements.land.events.LandownerCreatedEvent;
 import de.themoep.settlements.land.events.LandownerDisbandEvent;
 import de.themoep.settlements.land.events.LandownerLeveledEvent;
-import de.themoep.settlements.lock.LockProvider;
-import de.themoep.settlements.npc.NpcData;
-import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.EmpirePerk;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
@@ -18,7 +20,12 @@ import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.utils.*;
+import de.themoep.settlements.utils.ComponentUtils;
+import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.Targetable;
+import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.SimpleLocation;
@@ -27,15 +34,27 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Player;
-
-import de.themoep.settlements.utils.ComponentUtils;
 import org.codehaus.plexus.util.FileUtils;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class EmpireManager {
     private static EmpireManager instance;
@@ -334,9 +353,6 @@ public class EmpireManager {
             // if not set to highest at 0 0
             world.setSpawnLocation(new Location(world, 0, world.getHighestBlockYAt(0, 0), 0));
         }
-        if (SettlementsPlugin.getInstance().getMultiverse() != null) {
-            SettlementsPlugin.getInstance().getMultiverse().importWorld(world);
-        }
         return world;
     }
 
@@ -364,9 +380,6 @@ public class EmpireManager {
                 for (Player player : empireWorld.getPlayers()) {
                     Utils.teleportToSpawn(player);
                 }
-                for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
-                    lockProvider.removeInWorld(empireWorld);
-                }
                 deleteWorld(empireWorld);
             }
         }
@@ -379,19 +392,15 @@ public class EmpireManager {
     }
 
     private void deleteWorld(World empireWorld) {
-        if (SettlementsPlugin.getInstance().getMultiverse() == null) {
-            if (Bukkit.unloadWorld(empireWorld, true)) {
-                try {
-                    FileUtils.deleteDirectory(empireWorld.getWorldFolder());
-                } catch (IOException e) {
-                    SettlementsPlugin.getInstance().getLogging().error("Could delete the files of world " + empireWorld.getName());
-                    SettlementsPlugin.getInstance().getLogging().exception(e);
-                }
-            } else {
-                SettlementsPlugin.getInstance().getLogging().error("Could not unload and delete the world " + empireWorld.getName());
+        if (Bukkit.unloadWorld(empireWorld, true)) {
+            try {
+                FileUtils.deleteDirectory(empireWorld.getWorldFolder());
+            } catch (IOException e) {
+                SettlementsPlugin.getInstance().getLogging().error("Could delete the files of world " + empireWorld.getName());
+                SettlementsPlugin.getInstance().getLogging().exception(e);
             }
-        } else if (!SettlementsPlugin.getInstance().getMultiverse().deleteWorld(empireWorld)) {
-            SettlementsPlugin.getInstance().getLogging().error("Multiverse could not unload and delete the world " + empireWorld.getName());
+        } else {
+            SettlementsPlugin.getInstance().getLogging().error("Could not unload and delete the world " + empireWorld.getName());
         }
     }
 
@@ -428,18 +437,6 @@ public class EmpireManager {
             if (mode.appliesTo(PlotMode.AppliesTo.LAND_OWNER)) {
                 empire.setMode(mode, Utils.getPlotMode(mode, "abandoned." + empire.getStateKey()));
             }
-        }
-
-        if (Config.Empire.World.ENABLED && empire.hasWorld()) {
-            World empireWorld = Bukkit.getWorld(empire.getWorldName());
-            if (empireWorld != null) {
-                for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
-                    lockProvider.removeInWorld(empireWorld);
-                }
-            }
-        }
-        for (LockProvider lockProvider : SettlementsPlugin.getInstance().getLockProviders()) {
-            lockProvider.removeInChunks(empire.getLand());
         }
         if (empire.hasWorld()) {
             LandManager.getInstance().removeWorld(empire.getWorldName());
@@ -552,12 +549,6 @@ public class EmpireManager {
             }
         }
 
-
-        for (NpcType npc : empire.getLevelInfo().getNPCs()) {
-            NpcData npcData = empire.getNpcData(npc);
-            perksDesc.add(npcData.getTag());
-        }
-
         Utils.callEvent(new LandownerLeveledEvent(empire, res));
         empire.save();
         return true;
@@ -646,50 +637,36 @@ public class EmpireManager {
         }
 
         String oldWorldName = world.getName();
-        if (SettlementsPlugin.getInstance().getMultiverse() != null) {
-            World newWorld = SettlementsPlugin.getInstance().getMultiverse().renameWorld(world, empire.getWorldName());
-            if (newWorld == null) {
-                return false;
-            }
-            if (empire.getHome() == null) {
-                empire.setHome(new SimpleLocation(empire.getWorldName(), 0, world.getHighestBlockYAt(0, 0), 0));
-            } else {
-                empire.getHome().setWorld(empire.getWorldName());
-            }
-            newWorld.setSpawnLocation(empire.getHome().toBukkitLocation());
-        } else {
-            Map<Player, Location> positions = new LinkedHashMap<>();
-            for (Player player : world.getPlayers()) {
-                positions.put(player, player.getLocation());
-                Utils.teleportToSpawn(player);
-            }
-            File worldFolder = world.getWorldFolder();
-            File newFolder = new File(Bukkit.getWorldContainer(), empire.getWorldName());
-            if (newFolder.exists()) {
-                SettlementsPlugin.getInstance().getLogging().error("World with name " + empire.getWorldName() + " already exists?");
-                return false;
-            }
-            Bukkit.unloadWorld(world, true);
-            try {
-                FileUtils.copyDirectory(worldFolder, newFolder);
-                FileUtils.deleteDirectory(worldFolder);
-            } catch (IOException e) {
-                SettlementsPlugin.getInstance().getLogging().error("Error while copying world " + worldFolder.getName() + " to " + empire.getWorldName() + "!");
-                SettlementsPlugin.getInstance().getLogging().exception(e);
-                return false;
-            }
+        Map<Player, Location> positions = new LinkedHashMap<>();
+        for (Player player : world.getPlayers()) {
+            positions.put(player, player.getLocation());
+            Utils.teleportToSpawn(player);
+        }
+        File worldFolder = world.getWorldFolder();
+        File newFolder = new File(Bukkit.getWorldContainer(), empire.getWorldName());
+        if (newFolder.exists()) {
+            SettlementsPlugin.getInstance().getLogging().error("World with name " + empire.getWorldName() + " already exists?");
+            return false;
+        }
+        Bukkit.unloadWorld(world, true);
+        try {
+            FileUtils.copyDirectory(worldFolder, newFolder);
+            FileUtils.deleteDirectory(worldFolder);
+        } catch (IOException e) {
+            SettlementsPlugin.getInstance().getLogging().error("Error while copying world " + worldFolder.getName() + " to " + empire.getWorldName() + "!");
+            SettlementsPlugin.getInstance().getLogging().exception(e);
+            return false;
+        }
 
-            World newWorld = createEmpireWorld(empire);
+        World newWorld = createEmpireWorld(empire);
 
-            for (Map.Entry<Player, Location> e : positions.entrySet()) {
-                if (e.getKey().isOnline()) {
-                    e.getValue().setWorld(newWorld);
-                    e.getKey().teleportAsync(e.getValue());
-                }
+        for (Map.Entry<Player, Location> e : positions.entrySet()) {
+            if (e.getKey().isOnline()) {
+                e.getValue().setWorld(newWorld);
+                e.getKey().teleportAsync(e.getValue());
             }
         }
         LandManager.getInstance().renameWorld(oldWorldName, empire.getWorldName());
-        SettlementsPlugin.getInstance().getLockProviders().forEach(lp -> lp.renameWorld(oldWorldName, empire.getWorldName()));
         return true;
     }
 

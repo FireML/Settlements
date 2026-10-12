@@ -2,12 +2,9 @@ package de.themoep.settlements.utils;
 
 import de.themoep.minedown.adventure.MineDown;
 import de.themoep.minedown.adventure.Replacer;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class StringUtils {

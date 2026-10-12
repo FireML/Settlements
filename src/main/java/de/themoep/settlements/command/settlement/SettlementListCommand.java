@@ -5,6 +5,7 @@ import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.settlement.JoinType;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
@@ -13,7 +14,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
-import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.List;
 import java.util.Map;

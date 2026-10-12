@@ -1,19 +1,18 @@
 package de.themoep.settlements.empire.gui;
 
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.empire.EmpireSetWorldSpawnCommand;
 import de.themoep.settlements.command.empire.EmpireWorldCommand;
 import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
-import de.themoep.inventorygui.GuiBackElement;
-import de.themoep.inventorygui.StaticGuiElement;
 
 public class WorldGUI extends ConfigurableGui {
 
     public WorldGUI(Resident resident, Empire empire) {
-        super(resident, "empire.world", "type", empire.getNpcData(NpcType.TRAVELING_MERCHANT).getTag());
+        super(resident, "empire.world");
 
         if (empire.hasWorld()) {
             gui.addElement(new StaticGuiElement('w', getIcon("world"), click -> {

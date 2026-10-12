@@ -1,17 +1,15 @@
 package de.themoep.settlements.utils;
 
+import de.themoep.inventorygui.GuiElement;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import de.themoep.inventorygui.GuiElement;
-import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
-
 import java.util.function.Consumer;
-import java.util.logging.Level;
 
 public class ConfirmationGui extends SettlementsGUI {
     private final InventoryGui gui;

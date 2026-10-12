@@ -2,9 +2,6 @@ package de.themoep.settlements.banish;
 
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
-import org.bukkit.entity.Player;
-
-import java.util.UUID;
 
 public interface CustomRunnable {
 

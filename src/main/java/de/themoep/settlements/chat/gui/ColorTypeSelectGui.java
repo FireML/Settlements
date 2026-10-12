@@ -1,19 +1,19 @@
 package de.themoep.settlements.chat.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ColorUtils;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Utils;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.event.inventory.ClickType;
-import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiBackElement;
-import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.utils.ColorUtils;
 
 public class ColorTypeSelectGui extends ConfigurableGui {
 

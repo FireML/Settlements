@@ -6,8 +6,8 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
-import org.bukkit.inventory.ItemStack;
 import de.themoep.settlements.utils.ItemUtils;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 

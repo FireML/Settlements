@@ -1,7 +1,6 @@
 package de.themoep.settlements.utils;
 
 import com.destroystokyo.paper.profile.ProfileProperty;
-import de.themoep.settlements.SettlementsPlugin;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.ResolvableProfile;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -9,10 +8,8 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.UUID;

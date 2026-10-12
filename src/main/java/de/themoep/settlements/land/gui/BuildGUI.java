@@ -1,5 +1,10 @@
 package de.themoep.settlements.land.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.BuildState;
@@ -8,7 +13,6 @@ import de.themoep.settlements.utils.Message;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import de.themoep.inventorygui.*;
 
 import java.util.ArrayList;
 import java.util.List;

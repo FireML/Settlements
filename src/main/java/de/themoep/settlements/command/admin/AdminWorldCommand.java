@@ -5,10 +5,10 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.entity.Player;
-import de.themoep.settlements.utils.ComponentUtils;
 
 public class AdminWorldCommand extends PlayerSubCommand {
     public AdminWorldCommand(SubCommand parent) {

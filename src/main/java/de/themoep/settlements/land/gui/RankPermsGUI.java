@@ -1,5 +1,10 @@
 package de.themoep.settlements.land.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.LandOwner;
@@ -7,6 +12,7 @@ import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.rank.Rank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfirmationGui;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
@@ -15,10 +21,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import de.themoep.inventorygui.*;
-import de.themoep.settlements.utils.ItemUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Rank<L, R>> extends SettlementsGUI {
     private final Resident res;

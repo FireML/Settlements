@@ -1,6 +1,5 @@
 package de.themoep.settlements;
 
-import com.dre.brewery.depend.universalScheduler.scheduling.schedulers.TaskScheduler;
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.command.CommandManager;
@@ -11,17 +10,18 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireListener;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.event.EventManager;
-import de.themoep.settlements.integration.*;
-import de.themoep.settlements.integration.citizens.CitizensIntegration;
 import de.themoep.settlements.invites.InviteManager;
-import de.themoep.settlements.land.*;
+import de.themoep.settlements.land.LandBlockListener;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.LandModeListener;
+import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.land.LandPerks;
+import de.themoep.settlements.land.LandUseListener;
+import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.land.events.listeners.LandChangeListener;
 import de.themoep.settlements.land.events.listeners.LandEnterListener;
 import de.themoep.settlements.land.events.listeners.LandLeaveListener;
-import de.themoep.settlements.lock.LockManager;
-import de.themoep.settlements.lock.LockProvider;
 import de.themoep.settlements.missions.MissionListener;
-import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.portal.PortalManager;
 import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.resident.ResidentManager;
@@ -46,7 +46,16 @@ import uk.firedev.daisylib.logging.ComponentLogging;
 import uk.firedev.daisylib.logging.Logging;
 import uk.firedev.daisylib.utils.Scheduling;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -54,17 +63,8 @@ import java.util.stream.Collectors;
 public class SettlementsPlugin extends JavaPlugin implements Listener {
     private static SettlementsPlugin instance;
     private LandPerks lPerks;
-    private CitizensIntegration citizensIntegration = null;
-    private MultiverseIntegration multiverse = null;
-    private PlaceholderApiIntegration placeholderApi = null;
 
     private final ComponentLogging logging = Logging.logging(this);
-
-    private final Set<LockProvider> lockProviders = new LinkedHashSet<>();
-    private final Set<IgnoreProvider> ignoreProviders = new LinkedHashSet<>();
-    private final Set<AfkProvider> afkProviders = new LinkedHashSet<>();
-    private final Set<ShopProvider> shopProviders = new LinkedHashSet<>();
-    private final Set<MailProvider> mailProviders = new LinkedHashSet<>();
 
     private boolean running = false;
     private static final Timer timer = new Timer();
@@ -74,7 +74,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private final List<Settlement> newlyDeletedSettlements = new ArrayList<>();
     private final List<Empire> newlyAbandonedEmpires = new ArrayList<>();
     private final List<Empire> newlyDeletedEmpires = new ArrayList<>();
-    private Map<String, Function<Plugin, Boolean>> dependencies = new HashMap<>();
 
     @Override
     public void onDisable() {
@@ -92,16 +91,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             logging.info("Saving all settlement data...");
             DatabaseManager.getInstance().saveSettlements(SettlementManager.getInstance().getSettlements());
             DatabaseManager.getInstance().saveSettlementMissionData(SettlementManager.getInstance().getSettlements());
-            for (Settlement settlement : SettlementManager.getInstance().getSettlements()) {
-                DatabaseManager.getInstance().saveNpcs(settlement.getNpcData());
-            }
             logging.info("Saving all empire data...");
             DatabaseManager.getInstance().saveEmpires(EmpireManager.getInstance().getEmpires());
-            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
-                DatabaseManager.getInstance().saveNpcs(empire.getNpcData());
-            }
-            logging.info("Saving all lock data...");
-            DatabaseManager.getInstance().saveLocks(LockManager.getInstance().getLocks());
             logging.info("Saving all land data...");
             DatabaseManager.getInstance().saveLand(LandManager.getInstance().getAllLand());
             logging.info("Saving all portal data...");
@@ -124,13 +115,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
         if (!loadManagers()) {
             return;
-        }
-
-        for (Map.Entry<String, Function<Plugin, Boolean>> entry : dependencies.entrySet()) {
-            Plugin plugin = getServer().getPluginManager().getPlugin(entry.getKey());
-            if (plugin != null && plugin.isEnabled()) {
-                handleDependency(plugin);
-            }
         }
 
         registerListener(new SettlementsListener());
@@ -163,75 +147,72 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     }
 
     private void upkeep() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                logging.info("UPKEEP");
-                ConfigManager.getInstance().updateLastUpkeep();
-                logging.info("Checking chunk unclaiming...");
-                LandManager.getInstance().checkUnclaim();
-                logging.info("Handling settlement taxes and upkeep...");
-                newlyAbandonedSettlements.clear();
-                newlyDeletedSettlements.clear();
+        Runnable runnable = () -> {
+            logging.info("UPKEEP");
+            ConfigManager.getInstance().updateLastUpkeep();
+            logging.info("Checking chunk unclaiming...");
+            LandManager.getInstance().checkUnclaim();
+            logging.info("Handling settlement taxes and upkeep...");
+            newlyAbandonedSettlements.clear();
+            newlyDeletedSettlements.clear();
 
-                for (Settlement settlement : new ArrayList<>(SettlementManager.getInstance().getSettlements())) {
-                    settlement.doUpkeep();
-                }
-
-                if (!newlyAbandonedSettlements.isEmpty()) {
-                    if (newlyAbandonedSettlements.size() > 1) {
-                        Message.get("broadcast.settlements-abandoned").broadcast("settlements", newlyAbandonedSettlements.stream()
-                                .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
-                                .collect(Collectors.joining(", ")));
-                    } else {
-                        Message.get("broadcast.settlement-abandoned").broadcast("state", newlyAbandonedSettlements.get(0).getStateTag(), "name", newlyAbandonedSettlements.get(0).getName());
-                    }
-                }
-                newlyAbandonedSettlements.clear();
-
-                if (!newlyDeletedSettlements.isEmpty()) {
-                    if (newlyDeletedSettlements.size() > 1) {
-                        Message.get("broadcast.settlements-deletion").broadcast("settlements", newlyDeletedSettlements.stream()
-                                .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
-                                .collect(Collectors.joining(", ")));
-                    } else {
-                        Message.get("broadcast.settlement-deletion").broadcast("state", newlyDeletedSettlements.get(0).getStateTag(), "name", newlyDeletedSettlements.get(0).getName());
-                    }
-                }
-                newlyDeletedSettlements.clear();
-
-                logging.info("Handling empire taxes and upkeep...");
-                newlyAbandonedEmpires.clear();
-                newlyDeletedEmpires.clear();
-
-                for (Empire empire : EmpireManager.getInstance().getEmpires()) {
-                    empire.doUpkeep();
-                }
-
-                if (!newlyAbandonedEmpires.isEmpty()) {
-                    if (newlyAbandonedEmpires.size() > 1) {
-                        Message.get("broadcast.empires-abandoned").broadcast("empires", newlyAbandonedEmpires.stream()
-                                .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
-                                .collect(Collectors.joining(", ")));
-                    } else {
-                        Message.get("broadcast.empire-abandoned").broadcast("state", newlyAbandonedEmpires.get(0).getStateTag(), "name", newlyAbandonedEmpires.get(0).getName());
-                    }
-                }
-                newlyAbandonedEmpires.clear();
-
-                if (!newlyDeletedEmpires.isEmpty()) {
-                    if (newlyDeletedEmpires.size() > 1) {
-                        Message.get("broadcast.empires-deletion").broadcast("empires", newlyDeletedEmpires.stream()
-                                .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
-                                .collect(Collectors.joining(", ")));
-                    } else {
-                        Message.get("broadcast.empire-deletion").broadcast("state", newlyDeletedEmpires.get(0).getStateTag(), "name", newlyDeletedEmpires.get(0).getName());
-                    }
-                }
-                newlyDeletedEmpires.clear();
-
-                logging.info("UPKEEP FINISHED!");
+            for (Settlement settlement : new ArrayList<>(SettlementManager.getInstance().getSettlements())) {
+                settlement.doUpkeep();
             }
+
+            if (!newlyAbandonedSettlements.isEmpty()) {
+                if (newlyAbandonedSettlements.size() > 1) {
+                    Message.get("broadcast.settlements-abandoned").broadcast("settlements", newlyAbandonedSettlements.stream()
+                            .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
+                            .collect(Collectors.joining(", ")));
+                } else {
+                    Message.get("broadcast.settlement-abandoned").broadcast("state", newlyAbandonedSettlements.get(0).getStateTag(), "name", newlyAbandonedSettlements.get(0).getName());
+                }
+            }
+            newlyAbandonedSettlements.clear();
+
+            if (!newlyDeletedSettlements.isEmpty()) {
+                if (newlyDeletedSettlements.size() > 1) {
+                    Message.get("broadcast.settlements-deletion").broadcast("settlements", newlyDeletedSettlements.stream()
+                            .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
+                            .collect(Collectors.joining(", ")));
+                } else {
+                    Message.get("broadcast.settlement-deletion").broadcast("state", newlyDeletedSettlements.get(0).getStateTag(), "name", newlyDeletedSettlements.get(0).getName());
+                }
+            }
+            newlyDeletedSettlements.clear();
+
+            logging.info("Handling empire taxes and upkeep...");
+            newlyAbandonedEmpires.clear();
+            newlyDeletedEmpires.clear();
+
+            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
+                empire.doUpkeep();
+            }
+
+            if (!newlyAbandonedEmpires.isEmpty()) {
+                if (newlyAbandonedEmpires.size() > 1) {
+                    Message.get("broadcast.empires-abandoned").broadcast("empires", newlyAbandonedEmpires.stream()
+                            .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
+                            .collect(Collectors.joining(", ")));
+                } else {
+                    Message.get("broadcast.empire-abandoned").broadcast("state", newlyAbandonedEmpires.get(0).getStateTag(), "name", newlyAbandonedEmpires.get(0).getName());
+                }
+            }
+            newlyAbandonedEmpires.clear();
+
+            if (!newlyDeletedEmpires.isEmpty()) {
+                if (newlyDeletedEmpires.size() > 1) {
+                    Message.get("broadcast.empires-deletion").broadcast("empires", newlyDeletedEmpires.stream()
+                            .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
+                            .collect(Collectors.joining(", ")));
+                } else {
+                    Message.get("broadcast.empire-deletion").broadcast("state", newlyDeletedEmpires.get(0).getStateTag(), "name", newlyDeletedEmpires.get(0).getName());
+                }
+            }
+            newlyDeletedEmpires.clear();
+
+            logging.info("UPKEEP FINISHED!");
         };
 
         // check if the last upkeep should have happened while the server was offline
@@ -285,36 +266,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onLoad() {
-        registerDependency("PlaceholderAPI", p -> {
-            placeholderApi = new PlaceholderApiIntegration();
-            return true;
-        });
-        registerDependency("ChestShop", p -> {
-            if (!Config.Chat.CHAT_ONLY) {
-                new ChestShopIntegration();
-            }
-            return true;
-        });
-    }
-
-    private void registerDependency(String name, Function<Plugin, Boolean> hook) {
-        dependencies.put(name.toLowerCase(Locale.ROOT), hook);
-    }
-
-    private void handleDependency(Plugin plugin) {
-        Function<Plugin, Boolean> hook = dependencies.get(plugin.getName().toLowerCase(Locale.ROOT));
-        if (hook != null) {
-            if (hook.apply(plugin)) {
-                logging.info("Hooked into " + plugin.getName());
-            } else {
-                logging.warn("Error while trying to hook into " + plugin.getName());
-            }
-        }
-    }
-
-    @EventHandler
-    public void onPluginEnable(PluginEnableEvent event) {
-        handleDependency(event.getPlugin());
+        // Register dependencies here
     }
 
     public boolean loadManagers() {
@@ -338,16 +290,12 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         // Post load actions after residents, settlements and empires are accessible
         EmpireManager.getInstance().postLoad();
         SettlementManager.getInstance().postLoad();
-        NpcManager.load();
         if (!Config.Chat.CHAT_ONLY) {
             LandManager.load();
         }
         InviteManager.load();
         if (Config.Portal.ENABLED) {
             PortalManager.load();
-        }
-        if (Config.Lock.ENABLED) {
-            LockManager.load();
         }
         if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
             EventManager.load();
@@ -370,38 +318,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     public boolean isRunning() {
         return running;
-    }
-
-    public Set<LockProvider> getLockProviders() {
-        return lockProviders;
-    }
-
-    public Set<IgnoreProvider> getIgnoreProviders() {
-        return ignoreProviders;
-    }
-
-    public Set<AfkProvider> getAfkProviders() {
-        return afkProviders;
-    }
-
-    public Set<ShopProvider> getShopProviders() {
-        return shopProviders;
-    }
-
-    public Set<MailProvider> getMailProviders() {
-        return mailProviders;
-    }
-
-    public MultiverseIntegration getMultiverse() {
-        return multiverse;
-    }
-
-    public PlaceholderApiIntegration getPlaceholderApi() {
-        return placeholderApi;
-    }
-
-    public CitizensIntegration getCitizens() {
-        return citizensIntegration;
     }
 
     public LandModeListener getLandModeListener() {

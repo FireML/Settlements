@@ -5,6 +5,7 @@ import de.themoep.settlements.resident.Friend;
 import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -12,7 +13,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.entity.Player;
-import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.ArrayList;
 import java.util.List;

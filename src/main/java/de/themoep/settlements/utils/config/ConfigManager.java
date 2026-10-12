@@ -4,7 +4,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.land.UseFlagManager;
-import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.CursesFilter;
 import de.themoep.settlements.utils.Message;
@@ -16,12 +15,24 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.logging.Level;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -182,7 +193,6 @@ public class ConfigManager {
         } else if (SettlementsPlugin.getInstance().isRunning()) {
             EmpireManager.getInstance().loadConfig();
             SettlementManager.getInstance().loadConfig();
-            NpcManager.getInstance().loadConfig();
             UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
             SettlementsPlugin.getInstance().getLandModeListener().reload();

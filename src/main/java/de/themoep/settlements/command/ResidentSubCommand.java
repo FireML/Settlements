@@ -2,8 +2,8 @@ package de.themoep.settlements.command;
 
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import org.bukkit.entity.Player;
 import de.themoep.settlements.utils.ComponentUtils;
+import org.bukkit.entity.Player;
 
 public abstract class ResidentSubCommand extends PlayerSubCommand {
 

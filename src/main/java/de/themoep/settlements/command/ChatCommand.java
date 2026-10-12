@@ -6,12 +6,12 @@ import de.themoep.settlements.chat.gui.ColorChannelSelectGui;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.entity.Player;
-import de.themoep.settlements.utils.ComponentUtils;
 
 public class ChatCommand extends PlayerSubCommand {
 

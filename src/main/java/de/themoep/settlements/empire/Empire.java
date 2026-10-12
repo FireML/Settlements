@@ -8,12 +8,17 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.InviteCache;
 import de.themoep.settlements.empire.events.EmpireJoinEvent;
 import de.themoep.settlements.empire.events.EmpireLeaveEvent;
-import de.themoep.settlements.land.*;
+import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.BuildState;
+import de.themoep.settlements.land.LandAccess;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
-import de.themoep.settlements.npc.NpcData;
-import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.perk.EmpirePerk;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.perk.Perk;
@@ -25,7 +30,16 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
-import de.themoep.settlements.utils.*;
+import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.NameTag;
+import de.themoep.settlements.utils.Sortable;
+import de.themoep.settlements.utils.Targetable;
+import de.themoep.settlements.utils.UtilTime;
+import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Bukkit;
@@ -36,12 +50,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import de.themoep.settlements.utils.ItemUtils;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -353,10 +377,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public Collection<? extends Perk> getAvailablePerks() {
-        List<Perk> perks = new ArrayList<>();
-        perks.addAll(EmpireManager.getInstance().getPerks());
-        perks.addAll(NpcManager.getInstance().getPerks(this));
-        return perks;
+        return EmpireManager.getInstance().getPerks();
     }
 
     @Override
@@ -768,9 +789,6 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
         for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
             amount += getClaimUpkeep(land.getWorld());
-        }
-        for (NpcData data : getNpcData()) {
-            amount += data.getLevelInfo().getUpkeep();
         }
         return amount;
     }

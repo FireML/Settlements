@@ -1,7 +1,6 @@
 package de.themoep.settlements.utils;
 
 import de.themoep.settlements.world.SimpleChunkLocation;
-import org.bukkit.GameRule;
 import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.block.Block;

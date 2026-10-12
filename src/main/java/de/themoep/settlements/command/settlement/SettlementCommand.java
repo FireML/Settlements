@@ -3,8 +3,6 @@ package de.themoep.settlements.command.settlement;
 import de.themoep.settlements.command.ChatCommand;
 import de.themoep.settlements.command.HelpCommand;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.command.lock.LockCommand;
-import de.themoep.settlements.command.lock.UnlockCommand;
 import de.themoep.settlements.command.plot.PlotCommand;
 import de.themoep.settlements.command.settlement.money.SettlementMoneyCommand;
 import de.themoep.settlements.command.settlement.outpost.OutpostTeleportCommand;
@@ -51,7 +49,6 @@ public class SettlementCommand extends SubCommand {
         registerCommand(new SettlementKickNoticeCommand(this));
         registerCommand(new SettlementLeaveCommand(this));
         registerCommand(new SettlementListCommand(this));
-        registerCommand(new SettlementMailCommand(this));
         registerCommand(new SettlementMapCommand(this));
         if (Config.Settlement.Missions.ENABLED) {
             registerCommand(new SettlementMissionsCommand(this));
@@ -63,10 +60,6 @@ public class SettlementCommand extends SubCommand {
         registerCommand(new OutpostTeleportCommand(outpostCommand));
         registerCommand(new SettlementPerksCommand(this));
         registerCommand(new PlotCommand(this));
-        if (Config.Lock.ENABLED) {
-            registerCommand(new LockCommand());
-            registerCommand(new UnlockCommand());
-        }
         registerCommand(new SettlementRanksCommand(this));
         registerCommand(new SettlementRenameCommand(this));
         registerCommand(new SettlementResCommand(this));

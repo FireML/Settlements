@@ -3,6 +3,7 @@ package de.themoep.settlements.command;
 import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.PermissionGroup;
 import de.themoep.settlements.rank.SettlementRank;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
@@ -13,9 +14,14 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.command.CommandSender;
-import de.themoep.settlements.utils.ComponentUtils;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 public class HelpCommand extends SubCommand {

@@ -3,9 +3,9 @@ package de.themoep.settlements.command.admin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.event.Event;
 import de.themoep.settlements.event.EventManager;
+import de.themoep.settlements.utils.ComponentUtils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.Collection;
 import java.util.Map;

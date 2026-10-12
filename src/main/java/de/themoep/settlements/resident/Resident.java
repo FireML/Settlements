@@ -10,7 +10,6 @@ import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.integration.AfkProvider;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
@@ -26,7 +25,17 @@ import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementMission;
-import de.themoep.settlements.utils.*;
+import de.themoep.settlements.utils.ColorUtils;
+import de.themoep.settlements.utils.ComponentUtils;
+import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.Sortable;
+import de.themoep.settlements.utils.Targetable;
+import de.themoep.settlements.utils.UtilTime;
+import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -36,16 +45,23 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import de.themoep.settlements.utils.ColorUtils;
-import de.themoep.settlements.utils.ComponentUtils;
-import de.themoep.settlements.utils.ItemUtils;
-
 import java.sql.Date;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, MissionTaker<SettlementMission>, Sortable<Resident> {
@@ -199,24 +215,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public Collection<FriendRequest> getFriendRequests() {
         return friendRequests.values();
-    }
-
-    public Set<UUID> getIgnore() {
-        return ignore;
-    }
-
-    public boolean addIgnore(UUID ignore) {
-        SettlementsPlugin.getInstance().getIgnoreProviders().forEach(i -> i.addIgnore(this, ignore));
-        return this.ignore.add(ignore);
-    }
-
-    public boolean isAfk() {
-        for (AfkProvider provider : SettlementsPlugin.getInstance().getAfkProviders()) {
-            if (provider.isAfk(this)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean getSwear() {
@@ -757,7 +755,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         map.put("swear", getSwear());
         map.put("socialSpy", getSocialSpy());
         map.put("bonusClaims", getBonusClaims());
-        map.put("ignores", getIgnore().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("friends", getFriends().stream().map(f -> f.getPlayerId().toString()).collect(Collectors.toList()));
         map.put("friendRequests", getFriendRequests());
         return map;

@@ -2,7 +2,6 @@ package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -45,16 +44,6 @@ public class SettlementInviteCommand extends SettlementSubCommand {
                             "joinfee", String.valueOf(res.getSettlement().getJoinFee()),
                             "tax", String.valueOf(res.getSettlement().getTax())
                     );
-                } else {
-                    for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                        provider.sendMail(res.getSettlementTitle() + " " + res.getName(), invitedPlayer, getText("mail",
-                                "name", res.getSettlement().getName(),
-                                "state", res.getSettlement().getState().getTag(),
-                                "amount", String.valueOf(res.getSettlement().getJoinFee()),
-                                "joinfee", String.valueOf(res.getSettlement().getJoinFee()),
-                                "tax", String.valueOf(res.getSettlement().getTax())
-                        ));
-                    }
                 }
             });
             getMessage("alert").tell(res.getSettlement().getOnlineResidents(), "player", invitedPlayer.getName());

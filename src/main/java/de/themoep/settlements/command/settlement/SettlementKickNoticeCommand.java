@@ -2,7 +2,6 @@ package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.SubCommand;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Message;
@@ -32,22 +31,6 @@ public class SettlementKickNoticeCommand extends SettlementSubCommand {
             }
             if (res.getSettlementRank().atLeast(player.getSettlementRank())) {
                 MessageUtils.tell(player, getMessage("cant-kick-higher").getReplacedComponent("rank", res.getSettlementRank().getTag(res.getSettlement())));
-                return;
-            }
-            if (res.getSettlement().hasPermission(player, "kicknotice")) {
-                for (MailProvider mailProvider : SettlementsPlugin.getInstance().getMailProviders()) {
-                    mailProvider.sendMail(Message.get("eviction.letter.sender").getReplacedText(
-                                    "state", res.getSettlement().getStateTag(),
-                                    "name", res.getSettlement().getName(),
-                                    "chieftitle", res.getSettlement().getChief().getSettlementTitle(),
-                                    "chiefname", res.getSettlement().getChief().getName()
-                            ), res,
-                            Message.get("eviction.letter.text").getReplacedText(
-                                    "state", res.getSettlement().getStateTag(),
-                                    "name", res.getSettlement().getName()
-                            ));
-                }
-                getText("success", "name", res.getName());
             }
         });
         return true;

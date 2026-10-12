@@ -17,9 +17,6 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-
-import java.util.logging.Level;
-
 public class EmpireListener implements Listener {
     private final EmpirePerk keepInvPerk;
     private final EmpirePerk keepExpPerk;

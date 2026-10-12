@@ -1,16 +1,23 @@
 package de.themoep.settlements.land;
 
 import de.themoep.settlements.SettlementsPlugin;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
-import de.themoep.settlements.utils.ItemUtils;
-
-import java.util.*;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 public class UseFlagManager {
     private static UseFlagManager instance;

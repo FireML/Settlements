@@ -9,9 +9,7 @@ import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.lock.Lock;
 import de.themoep.settlements.missions.MissionTaker;
-import de.themoep.settlements.npc.NpcData;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
@@ -20,9 +18,12 @@ import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.world.SimpleChunkLocation;
 
-
-import java.util.*;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 public abstract class DatabaseManager {
     private static DatabaseManager instance;
@@ -108,12 +109,6 @@ public abstract class DatabaseManager {
 
     public abstract Collection<SettlementInvite> getSettlementInvites();
 
-    public abstract void addNewNpc(NpcData npcData);
-
-    public abstract void saveNpc(NpcData npcData);
-
-    public abstract void saveNpcs(Collection<NpcData> npcData);
-
     public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void save(Invite<T,S> invite);
 
     public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void delete(Invite<T,S> invite);
@@ -138,59 +133,11 @@ public abstract class DatabaseManager {
      */
     public abstract void saveResidentNow(Resident resident);
 
-    public abstract void renameLockWorld(String oldName, String newName);
-
     public abstract void savePortal(Portal portal);
 
     public abstract void savePortals(Collection<Portal> portals);
 
     public abstract void deletePortals(Portal... portals);
-
-    /**
-     * Queue locks for saving, does not have to be run async
-     * @param locks The locks to save
-     */
-    public abstract void saveLocks(Collection<Lock> locks);
-
-    /**
-     * Queue a lock for saving, does not have to be run async
-     * @param lock The lock to save
-     */
-    public abstract void saveLock(Lock lock);
-
-    /**
-     * Queue lock deletion, does not have to be run async
-     * @param locks The locks to delete
-     */
-    public abstract void deleteLocks(Lock... locks);
-
-    /**
-     * Queue lock deletion, does not have to be run async
-     * @param locks The locks to delete
-     */
-    public void deleteLocks(Collection<Lock> locks) {
-        deleteLocks(locks.toArray(new Lock[0]));
-    }
-
-    /**
-     * Queue lock deletion, does not have to be run async
-     * @param chunks The chunks to delete the locks in
-     */
-    public abstract void deleteLocksInChunks(Collection<? extends SimpleChunkLocation> chunks);
-
-    /**
-     * Queue lock deletion, does not have to be run async
-     * @param worldName The name of the world to delete the locks in
-     */
-    public abstract void deleteLocks(String worldName);
-
-    public abstract Collection<Lock> getAllLocks();
-
-    public abstract Collection<Lock> getLocks(SimpleChunkLocation... chunks);
-
-    public Collection<Lock> getLocks(Collection<? extends SimpleChunkLocation> chunks) {
-        return getLocks(chunks.toArray(new SimpleChunkLocation[0]));
-    }
 
     public abstract void log(Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values);
 

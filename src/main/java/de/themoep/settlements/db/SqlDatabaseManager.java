@@ -1,6 +1,5 @@
 package de.themoep.settlements.db;
 
-import com.dre.brewery.depend.universalScheduler.scheduling.tasks.MyScheduledTask;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
@@ -8,9 +7,15 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.invites.SettlementInvite;
-import de.themoep.settlements.land.*;
-import de.themoep.settlements.lock.Lock;
-import de.themoep.settlements.npc.NpcData;
+import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.AllyRequest;
+import de.themoep.settlements.land.Banished;
+import de.themoep.settlements.land.JoinRequest;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.land.Unbanished;
 import de.themoep.settlements.portal.Portal;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Friend;
@@ -31,9 +36,28 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.*;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
@@ -53,9 +77,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private SaveQueue<Resident> residentMissionDataQueue;
     private SaveQueue<OwnedLand> landQueue;
     private SaveQueue<Portal> portalQueue;
-    private SaveQueue<Consumer<Connection>> lockQueue;
     private SaveQueue<Invite<?, ?>> inviteQueue;
-    private SaveQueue<NpcData> npcQueue;
 
     @Override
     public void connect() throws Exception {
@@ -74,9 +96,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         residentQueue = new SaveQueue<>("resident", this, queueSize, queueWait, this::saveResident);
         landQueue = new SaveQueue<>("land", this, queueSize, queueWait, this::saveLand);
         portalQueue = new SaveQueue<>("portal", this, queueSize, queueWait, this::savePortal);
-        lockQueue = new SaveQueue<>("lock", this, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
         inviteQueue = new SaveQueue<>("invite", this, queueSize, queueWait, this::saveInvite);
-        npcQueue = new SaveQueue<>("npc", this, queueSize, queueWait, this::saveNpc);
 
         initializeTables();
     }
@@ -105,11 +125,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             saveEmpire(conn, empire);
         } finally {
             close(conn);
-        }
-        if (!empire.getId().isNull()) {
-            for (NpcData data : empire.getNpcData()) {
-                saveNpc(data);
-            }
         }
     }
 
@@ -180,11 +195,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             saveSettlement(conn, settlement);
         } finally {
             close(conn);
-        }
-        if (!settlement.getId().isNull()) {
-            for (NpcData data : settlement.getNpcData()) {
-                saveNpc(data);
-            }
         }
     }
 
@@ -315,44 +325,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             } finally {
                 close(conn);
             }
-        }
-    }
-
-    @Override
-    public void addNewNpc(NpcData npcData) {
-        Utils.catchSync();
-        Connection conn = getConnection();
-        try {
-            saveNpc(conn, npcData);
-        } finally {
-            close(conn);
-        }
-    }
-
-    @Override
-    public void saveNpcs(Collection<NpcData> npcData) {
-        for (NpcData data : npcData) {
-            npcQueue.add(data.getId(), data);
-        }
-        npcQueue.finishAdding();
-    }
-
-    @Override
-    public void saveNpc(NpcData npcData) {
-        npcQueue.add(npcData.getId(), npcData);
-        npcQueue.finishAdding();
-    }
-
-    private void saveNpc(Connection conn, NpcData npcData) {
-        if (npcData.getOwner().getId().isNull()) {
-            return;
-        }
-        try {
-            if (!save(conn, npcData, "vault").isNull()) {
-                updateDataMap(conn, npcData.getOwner().getDbName() + "_npc_vaults", "npcId", (Integer) npcData.getId().value(), "content", "amount", npcData.getVault());
-            }
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while saving npc data " + npcData + " to database!", e);
         }
     }
 
@@ -720,7 +692,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             if (resident.getId() != null && !resident.getId().isNull()) {
                 updateList(conn, "resident_channels", "userId", (Integer) resident.getId().value(), "channel", resident.getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
                 updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId().value(), "friendId", resident.getFriends().stream().map(Friend::getPlayerId).collect(Collectors.toList()));
-                updateUserList(conn, "resident_ignores", "userId", (Integer) resident.getId().value(), "ignoredId", resident.getIgnore());
                 updateDataMap(conn, "resident_channel_colors", "userId", (Integer) resident.getId().value(), "channel", "color", Arrays.stream(ChatChannel.values())
                         .filter(c -> resident.getChannelColor(c, ChatColorType.MESSAGE) != null)
                         .collect(Collectors.toMap(Enum::name, c -> NamedTextColor.nearestTo(resident.getChannelColor(c, ChatColorType.MESSAGE)).toString())));
@@ -832,181 +803,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
     }
 
-
-    @Override
-    public void renameLockWorld(String oldName, String newName) {
-        Utils.catchSync();
-
-        Connection conn = getConnection();
-        try (PreparedStatement sta = conn.prepareStatement("UPDATE " + tablePrefix + "locks SET world = ? WHERE world = ?;")) {
-            sta.setString(1, newName);
-            sta.setString(2, oldName);
-            sta.executeUpdate();
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to change locks world from " + oldName + " to " + newName + " in database! ", e);
-        } finally {
-            close(conn);
-        }
-    }
-
-    @Override
-    public void saveLocks(Collection<Lock> locks) {
-        for (Lock lock : locks) {
-            if (lock.isValid()) {
-                lockQueue.add(lock.getId(), conn -> {
-                    try {
-                        save(conn, lock);
-                    } catch (SQLException e) {
-                        plugin.getLogger().log(Level.SEVERE, "Error while saving lock at " + lock.getLocation().getKey() + " to database!", e);
-                    }
-                });
-            }
-        }
-        lockQueue.finishAdding();
-    }
-
-    @Override
-    public void saveLock(Lock lock) {
-        if (lock.isValid()) {
-            lockQueue.add(lock.getId(), conn -> {
-                try {
-                    save(conn, lock);
-                } catch (SQLException e) {
-                    plugin.getLogger().log(Level.SEVERE, "Error while saving lock at " + lock.getLocation().getKey() + " to database!", e);
-                }
-            });
-            lockQueue.finishAdding();
-        }
-    }
-
-    @Override
-    public void deleteLocks(Lock... locks) {
-        if (locks.length == 0) {
-            return;
-        }
-        for (Lock lock : locks) {
-            lockQueue.add(lock.getId(), conn -> {
-                try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE " +
-                         (lock.getId() == null || lock.getId().isNull() ? "world = ? AND x = ? AND y = ? AND z = ?;" : "id = ?;"))) {
-                    if (lock.getId() == null || lock.getId().isNull()) {
-                        sta.setString(1, lock.getLocation().getWorld());
-                        sta.setInt(2, lock.getLocation().getX());
-                        sta.setInt(3, lock.getLocation().getY());
-                        sta.setInt(4, lock.getLocation().getZ());
-                    } else {
-                        sta.setObject(1, lock.getId().value());
-                    }
-                    sta.execute();
-                } catch (SQLException e) {
-                    plugin.getLogger().log(Level.SEVERE, "Error while trying to delete " + locks.length + " locks from database!", e);
-                }
-            });
-        }
-        lockQueue.finishAdding();
-    }
-
-    @Override
-    public void deleteLocksInChunks(Collection<? extends SimpleChunkLocation> chunks) {
-        if (chunks.isEmpty()) {
-            return;
-        }
-
-        lockQueue.add(conn -> {
-            String sql = "DELETE FROM " + tablePrefix + "locks" +
-                    " WHERE world = ? AND x BETWEEN ? AND ? AND z BETWEEN ? AND ?;";
-            try (PreparedStatement sta = conn.prepareStatement(sql)) {
-                for (SimpleChunkLocation chunk : chunks) {
-                    sta.setString(1, chunk.getWorld());
-                    sta.setInt(2, chunk.getX() << 4);
-                    sta.setInt(3, (chunk.getX() << 4) + 16);
-                    sta.setInt(4, chunk.getZ() << 4);
-                    sta.setInt(5, (chunk.getZ() << 4) + 16);
-                    sta.addBatch();
-                }
-                sta.executeBatch();
-            } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete locks in " + chunks.size() + " chunks from database!", e);
-            }
-        });
-        lockQueue.forceSave = true;
-        lockQueue.finishAdding();
-    }
-
-    @Override
-    public void deleteLocks(String worldName) {
-        lockQueue.add(conn -> {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "locks WHERE world = ?;")) {
-                sta.setString(1, worldName);
-                sta.executeUpdate();
-            } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete locks in world " + worldName + " from database!", e);
-            }
-        });
-        lockQueue.forceSave = true;
-        lockQueue.finishAdding();
-    }
-
-    @Override
-    public Collection<Lock> getAllLocks() {
-        Utils.catchSync();
-        // make sure to save before getting new locks
-        lockQueue.forceSave();
-        String sql = "SELECT l.*, r.uuid AS `owner` FROM " + tablePrefix + "locks AS l LEFT JOIN " + tablePrefix + "residents AS r ON l.ownerId = r.id;";
-        Connection conn = getConnection();
-        try (ResultSet rs = conn.createStatement().executeQuery(sql)) {
-            List<Lock> locks = new ArrayList<>();
-            while (rs.next()) {
-                Lock lock = createLock(conn, rs);
-                if (lock != null) {
-                    locks.add(lock);
-                }
-            }
-            return locks;
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all locks from database!", e);
-        } finally {
-            close(conn);
-        }
-        return Collections.EMPTY_LIST;
-    }
-
-    @Override
-    public Collection<Lock> getLocks(SimpleChunkLocation... chunks) {
-        if (chunks.length == 0) {
-            return  Collections.EMPTY_LIST;
-        }
-        Utils.catchSync();
-        // make sure to save before getting new locks
-        lockQueue.forceSave();
-        String sql = "SELECT l.*, r.uuid AS `owner` FROM " + tablePrefix + "locks AS l" +
-                " LEFT JOIN " + tablePrefix + "residents AS r ON l.ownerId = r.id" +
-                " WHERE world = ? AND x BETWEEN ? AND ? AND z BETWEEN ? AND ?;";
-        List<Lock> locks = new ArrayList<>();
-        Connection conn = getConnection();
-        try (PreparedStatement sta = conn.prepareStatement(sql)) {
-            for (SimpleChunkLocation chunk : chunks) {
-                sta.setString(1, chunk.getWorld());
-                sta.setInt(2, chunk.getX() << 4);
-                sta.setInt(3, (chunk.getX() << 4) + 16);
-                sta.setInt(4, chunk.getZ() << 4);
-                sta.setInt(5, (chunk.getZ() << 4) + 16);
-                ResultSet rs = sta.executeQuery();
-                while (rs.next()) {
-                    Lock lock = createLock(conn, rs);
-                    if (lock != null) {
-                        locks.add(lock);
-                    }
-                }
-            }
-            return locks;
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to get locks in " + chunks.length + " chunks from database!", e);
-        } finally {
-            close(conn);
-        }
-        return Collections.EMPTY_LIST;
-    }
-
     @Override
     public void log(Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values) {
         if (values.isEmpty()
@@ -1090,7 +886,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         empireQueue.forceSave();
         residentQueue.forceSave();
         landQueue.forceSave();
-        lockQueue.forceSave();
         try {
             closeConnection();
         } catch (SQLException e) {
@@ -1198,19 +993,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("vault", selectMap(conn, "empire_vaults", "empireId", id, "content", "amount", Long.class));
         map.put("defaulttitles", selectMap(conn, "empire_defaulttitles", "empireId", id, "rank", "title", String.class));
 
-        PreparedStatement nSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_npcs WHERE empireId = ?;");
-        nSta.setInt(1, id);
-        ResultSet nRs = nSta.executeQuery();
-        List<NpcData> npcs = new ArrayList<>();
-        while (nRs.next()) {
-            Map<String, Object> npc = toMap(nRs);
-
-            npc.put("vault", selectMap(conn, "empire_npc_vaults", "npcId", (Integer) npc.get("id"), "content", "amount", Long.class));
-
-            npcs.add(NpcData.deserialize(npc));
-        }
-        map.put("npcs", npcs);
-
         PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_perks WHERE empireId = ?;");
         pSta.setInt(1, id);
         ResultSet pRs = pSta.executeQuery();
@@ -1264,19 +1046,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("uses", selectMap(conn, "settlement_uses", "settlementId", id, "type", "state", String.class));
         map.put("vault", selectMap(conn, "settlement_vaults", "settlementId", id, "content", "amount", Long.class));
         map.put("defaulttitles", selectMap(conn, "settlement_defaulttitles", "settlementId", id, "rank", "title", String.class));
-
-        PreparedStatement nSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_npcs WHERE settlementId = ?;");
-        nSta.setInt(1, id);
-        ResultSet nRs = nSta.executeQuery();
-        List<NpcData> npcs = new ArrayList<>();
-        while (nRs.next()) {
-            Map<String, Object> npc = toMap(nRs);
-
-            npc.put("vault", selectMap(conn, "settlement_npc_vaults", "npcId", (Integer) npc.get("id"), "content", "amount", Long.class));
-
-            npcs.add(NpcData.deserialize(npc));
-        }
-        map.put("npcs", npcs);
 
         PreparedStatement oSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_outposts WHERE settlementId = ?;");
         oSta.setInt(1, id);
@@ -1436,12 +1205,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Map<String, Object> map = toMap(rs);
         map.put("links", selectList(conn, "portal_links", "sourceId", rs.getInt("id"), "targetId"));
         return Portal.deserialize(map);
-    }
-
-    private Lock createLock(Connection conn, ResultSet rs) throws SQLException {
-        Map<String, Object> map = toMap(rs);
-        map.put("allowed", selectList(conn, "lock_allowed", "lockId", rs.getInt("id"), "allowed"));
-        return Lock.deserialize(map);
     }
 
     // ------ Database operation helpers ----- //

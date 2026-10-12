@@ -1,18 +1,17 @@
 package de.themoep.settlements.resident.gui;
 
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.resident.Friend;
 import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.entity.Player;
-import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -73,12 +72,6 @@ public class FriendsList extends SettlementsGUI {
                                     Message.get("command.friend.accept.success.target").tell(resident, "name", sender.getName());
                                     if (sender.getPlayer() != null) {
                                         Message.get("command.friend.accept.success.sender").tell(sender, "name", resident.getName());
-                                    } else {
-                                        for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                                            provider.sendMail(resident.getSettlementTitle() + " " + resident.getName(), sender,
-                                                    Message.get("friend.add.mail").getReplacedText("name", resident.getName())
-                                            );
-                                        }
                                     }
                                     sender.save();
                                     resident.save();

@@ -1,14 +1,14 @@
 package de.themoep.settlements.land.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.StaticGuiElement;
 
 public class AccessGUI extends ConfigurableGui {
 

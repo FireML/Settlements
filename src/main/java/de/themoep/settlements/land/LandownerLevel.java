@@ -1,13 +1,15 @@
 package de.themoep.settlements.land;
 
 import de.themoep.settlements.leveling.LevelInfo;
-import de.themoep.settlements.npc.NpcType;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 public abstract class LandownerLevel extends LevelInfo {
-    private Set<NpcType> npcs = new LinkedHashSet<>();
     protected final long claimUpkeep;
     protected final Map<String, Long> worldClaimUpkeep = new LinkedHashMap<>();
     private final int chunks;
@@ -26,9 +28,6 @@ public abstract class LandownerLevel extends LevelInfo {
             }
         }
         size = config.getInt("size", -1);
-        for (String npc : config.getStringList("npcs")) {
-            npcs.add(NpcType.valueOf(npc.replace('-', '_').toUpperCase(Locale.ROOT)));
-        }
     }
 
     public int getChunks() {
@@ -37,18 +36,6 @@ public abstract class LandownerLevel extends LevelInfo {
 
     public long getClaimUpkeep(String world) {
         return worldClaimUpkeep.getOrDefault(world, claimUpkeep);
-    }
-
-    public Set<NpcType> getInheritedNPCs() {
-        Set<NpcType> combinedNpcs = new LinkedHashSet<>(npcs);
-        if (getPrevious() != null) {
-            combinedNpcs.addAll(getPrevious().getInheritedNPCs());
-        }
-        return combinedNpcs;
-    }
-
-    public Set<NpcType> getNPCs() {
-        return npcs;
     }
 
     public int getMissions() {

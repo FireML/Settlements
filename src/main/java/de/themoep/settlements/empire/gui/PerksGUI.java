@@ -1,20 +1,20 @@
 package de.themoep.settlements.empire.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.perk.EmpirePerk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
+import de.themoep.settlements.utils.ItemUtils;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
-import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiBackElement;
-import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.utils.ItemUtils;
 
 import java.util.ArrayList;
 import java.util.List;

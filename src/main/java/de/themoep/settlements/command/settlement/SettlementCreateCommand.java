@@ -7,13 +7,12 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
-import de.themoep.settlements.utils.ComponentUtils;
-import uk.firedev.daisylib.utils.Scheduling;
 
 import java.util.regex.Pattern;
 

@@ -1,11 +1,11 @@
 package de.themoep.settlements.missions;
 
-import de.themoep.settlements.resident.Resident;
-import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ConfigurableGui;
 
 public class MissionGui extends ConfigurableGui {
 

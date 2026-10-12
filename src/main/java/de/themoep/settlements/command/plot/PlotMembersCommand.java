@@ -6,6 +6,7 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.gui.plot.MembersGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
 import de.themoep.settlements.utils.Utils;
@@ -16,7 +17,6 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.Map;
 

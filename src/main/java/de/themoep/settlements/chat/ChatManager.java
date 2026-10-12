@@ -13,11 +13,11 @@ import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.integration.PlaceholderApiIntegration;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
@@ -37,10 +37,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import de.themoep.settlements.utils.ComponentUtils;
 
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -223,8 +228,6 @@ public class ChatManager implements ConfigMessages, Listener {
                         .filter(p -> !p.equals(sender)
                                 && sender.getLocation().distanceSquared(p.getLocation()) < 200 * 200)
                         .map(p -> ResidentManager.getInstance().getResident(p))
-                        .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .toList();
                 if (!nearbyPlayers.isEmpty()) {
                     tell(sender, nearbyPlayers, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, true);
@@ -252,30 +255,24 @@ public class ChatManager implements ConfigMessages, Listener {
                 List<Resident> targets = new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .filter(channel::canChat)
                         .map(p -> ResidentManager.getInstance().getResident(p))
-                        .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .toList();
                 tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
             case ALLY -> {
-                Set<Resident> residentSet = settlement.getAllies().stream()
+                List<Resident> residentSet = settlement.getAllies().stream()
                         .map(Ally::getLandOwner)
                         .filter(a -> a instanceof Settlement)
                         .flatMap(a -> a.getOnlineResidents().stream())
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toCollection(ArrayList::new));
                 residentSet.addAll(settlement.getOnlineResidents());
-                List<Resident> targets = residentSet.stream()
-                        .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .toList();
-                tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
+                tell(sender, residentSet, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
             case EMPIREALLY -> {
-                Set<Resident> eAllySet = settlement.getAllies().stream()
+                List<Resident> eAllySet = settlement.getAllies().stream()
                         .map(Ally::getLandOwner)
                         .filter(a -> a instanceof Empire)
                         .flatMap(a -> a.getOnlineResidents().stream())
-                        .collect(Collectors.toSet());
+                        .collect(Collectors.toCollection(ArrayList::new));
                 eAllySet.addAll(settlement.getOnlineResidents());
                 if (settlement.hasEmpire()) {
                     eAllySet.addAll(settlement.getEmpire().getOnlineResidents());
@@ -284,26 +281,16 @@ public class ChatManager implements ConfigMessages, Listener {
                             .flatMap(a -> a.getOnlineResidents().stream())
                             .forEach(eAllySet::add);
                 }
-                List<Resident> targets = eAllySet.stream()
-                        .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .toList();
-                tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
+                tell(sender, eAllySet, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
             case EMPIRE -> {
                 if (settlement.hasEmpire()) {
-                    List<Resident> targets = settlement.getEmpire().getOnlineResidents().stream()
-                            .filter(r -> r.isListening(channel)
-                                    && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                            .toList();
+                    List<Resident> targets = settlement.getEmpire().getOnlineResidents();
                     tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
                 }
             }
             case SETTLEMENT -> {
-                List<Resident> targets = settlement.getOnlineResidents().stream()
-                        .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
-                        .toList();
+                List<Resident> targets = settlement.getOnlineResidents();
                 tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
             case EVENT -> {
@@ -314,8 +301,6 @@ public class ChatManager implements ConfigMessages, Listener {
                 }
                 List<Resident> targets = new ArrayList<>(sender.getWorld().getPlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
-                        .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .toList();
                 tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
@@ -327,8 +312,6 @@ public class ChatManager implements ConfigMessages, Listener {
                 }
                 List<Resident> targets = new ArrayList<>(Bukkit.getOnlinePlayers()).stream()
                         .map(p -> ResidentManager.getInstance().getResident(p))
-                        .filter(r -> r.isListening(channel)
-                                && !(r.getIgnore().contains(sender.getUniqueId()) && !sender.hasPermission("settlements.bypass.ignore")))
                         .toList();
                 tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
             }
@@ -379,22 +362,8 @@ public class ChatManager implements ConfigMessages, Listener {
     }
 
     private Component getFormat(Player sender, ChatChannel channel, TextColor channelColor, TextColor channelPrefixColor) {
-        Component format;
-        if (SettlementsPlugin.getInstance().getPlaceholderApi() != null && Config.Chat.PlaceholderApi.Format.CHANNEL) {
-            if (channelColor == null) {
-                channelColor = NamedTextColor.WHITE;
-            }
-            if (channelPrefixColor == null) {
-                channelPrefixColor = NamedTextColor.AQUA;
-            }
-            format = MineDown.parse(
-                    PlaceholderApiIntegration.setPlaceholders(
-                            sender, getMessage("format.channel." + channel.getKey())
-                                    .getReplacedText("color", "&" + channelColor.asHexString(), "prefixColor", "&" + channelPrefixColor.asHexString())));
-        } else {
-            format = MineDown.parse(getMessage("format.channel." + channel.getKey())
+        Component format = MineDown.parse(getMessage("format.channel." + channel.getKey())
                     .getReplacedText("color", "&" + channelColor.asHexString(), "prefixColor", "&" + channelPrefixColor.asHexString()));
-        }
         return ComponentUtils.parseColors(format);
     }
 
@@ -423,14 +392,7 @@ public class ChatManager implements ConfigMessages, Listener {
     }
 
     private HoverEvent<?> getHover(Player player, Resident res) {
-        Component hover;
-        if (SettlementsPlugin.getInstance().getPlaceholderApi() != null && Config.Chat.PlaceholderApi.HOVER) {
-            hover = MineDown.parse(
-                    PlaceholderApiIntegration.setPlaceholders(
-                            player, getMessage("hover.info").getRawText()));
-        } else {
-            hover = getMessage("hover.info").getComponent();
-        }
+        Component hover = getMessage("hover.info").getComponent();
         return HoverEvent.showText(ComponentUtils.parsePlaceholders(hover,
                 "name", player.getName(),
                 "displayname", ComponentUtils.toString(player.displayName()),

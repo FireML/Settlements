@@ -7,10 +7,8 @@ import org.bukkit.World;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.util.NumberConversions;
 
-
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class SimpleBlockLocation implements ConfigurationSerializable {
     private String world;

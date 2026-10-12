@@ -1,29 +1,31 @@
 package de.themoep.settlements.land.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiBackElement;
+import de.themoep.inventorygui.GuiElementGroup;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.empire.EmpireLevel;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.LandownerLevel;
 import de.themoep.settlements.leveling.LevelInfo;
 import de.themoep.settlements.leveling.Levelable;
-import de.themoep.settlements.npc.NpcData;
-import de.themoep.settlements.npc.NpcLevel;
-import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.SettlementLevel;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.HumanReadable;
+import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiBackElement;
-import de.themoep.inventorygui.GuiElementGroup;
-import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.utils.ItemUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class UpgradeGUI extends ConfigurableGui {
 
@@ -34,16 +36,6 @@ public class UpgradeGUI extends ConfigurableGui {
 
         List<Levelable<? extends LevelInfo>> levelables = new ArrayList<>();
         levelables.add(landOwner);
-
-        NpcType.AppliesTo landOwnerType = NpcType.AppliesTo.fromKey(landOwner.getKey());
-        for (NpcType npcType : NpcType.values()) {
-            if (npcType.appliesTo(landOwnerType)) {
-                NpcData data = landOwner.getNpcData(npcType);
-                if (data != null && data.isAvailable() && data.hasLevels()) {
-                    levelables.add(data);
-                }
-            }
-        }
 
         for (Levelable<? extends LevelInfo> levelable : levelables) {
             if (!levelable.isMaxLevel()) {
@@ -75,7 +67,7 @@ public class UpgradeGUI extends ConfigurableGui {
                                 "name", levelable instanceof LandOwner
                                         ? ((LandOwner<?, ?>) levelable).getStateTag() + " " + ((LandOwner<?, ?>) levelable).getName()
                                         : levelable.getTag(),
-                                "type", levelable instanceof NpcData ? "npc" : levelable.getTag(),
+                                "type", levelable.getTag(),
                                 "level", String.valueOf(levelable.getLevel())
             ))));
         }
@@ -118,9 +110,6 @@ public class UpgradeGUI extends ConfigurableGui {
             if (nextLevel != null) {
                 Collection<? extends LevelPerk> perks = selected.getPerks(nextLevel.getLevel());
                 List<String> benefits = new ArrayList<>();
-                if (nextLevel instanceof NpcLevel && ((NpcLevel) nextLevel).getUpkeep() > 0) {
-                    benefits.add("NPC Upkeep: " + ((NpcLevel) nextLevel).getUpkeep());
-                }
                 if (nextLevel instanceof LandownerLevel && level instanceof  LandownerLevel) {
                     if (((LandownerLevel) nextLevel).getSize() > ((LandownerLevel) level).getSize()) {
                         benefits.add(((LandownerLevel) nextLevel).getSize() + " Members");
@@ -151,11 +140,6 @@ public class UpgradeGUI extends ConfigurableGui {
                         }
                         if (((EmpireLevel) nextLevel).getUpkeepReduction() > ((EmpireLevel) level).getUpkeepReduction()) {
                             benefits.add(((EmpireLevel) nextLevel).getUpkeepReduction() + " Upkeep Reduction");
-                        }
-                    }
-                    if (!((LandownerLevel) nextLevel).getNPCs().isEmpty()) {
-                        for (NpcType npcType : ((LandownerLevel) nextLevel).getNPCs()) {
-                            benefits.add(npcType.getTag() + " NPC");
                         }
                     }
                 }

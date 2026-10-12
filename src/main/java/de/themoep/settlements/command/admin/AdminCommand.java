@@ -31,9 +31,6 @@ public class AdminCommand extends SubCommand {
             }
             this.registerCommand(new AdminJoinCommand(this));
             this.registerCommand(new AdminLevelCommand(this));
-            if (Config.Lock.ENABLED) {
-                this.registerCommand(new AdminLockCommand(this));
-            }
         }
     }
 

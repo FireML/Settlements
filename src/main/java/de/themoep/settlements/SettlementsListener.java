@@ -4,6 +4,7 @@ import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.event.EventHandler;
@@ -12,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
-import de.themoep.settlements.utils.ComponentUtils;
 
 public class SettlementsListener implements Listener {
 

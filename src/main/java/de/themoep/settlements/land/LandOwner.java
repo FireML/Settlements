@@ -8,9 +8,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.leveling.Levelable;
-import de.themoep.settlements.npc.NpcData;
-import de.themoep.settlements.npc.NpcManager;
-import de.themoep.settlements.npc.NpcType;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.perk.events.PerkUnlockedEvent;
@@ -30,9 +27,19 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-
-import java.util.*;
-import java.util.logging.Level;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implements DatabaseSerializable, Levelable<L>, Targetable, ModeAble, FlagAble, Sortable {
@@ -69,8 +76,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
 
     protected Table<String, IdObject, Banished> banished = HashBasedTable.create();
     private List<Unbanished> unbanished = new ArrayList<>();
-
-    private Map<NpcType, NpcData> npcs = new EnumMap<>(NpcType.class);
 
     protected LandOwner() {}
 
@@ -184,11 +189,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         for (Perk perk : getPerks()) {
             if (perk.getUnlockables().contains(unlockable.toLowerCase(Locale.ROOT))
                     && hasUnlocked(perk)) {
-                return true;
-            }
-        }
-        for (Perk perk : NpcManager.getInstance().getPerks(this)) {
-            if (perk.getUnlockables().contains(unlockable.toLowerCase(Locale.ROOT))) {
                 return true;
             }
         }
@@ -931,7 +931,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         map.put("permissions", getRanksPermissions());
         map.put("titles", getRankTitles());
         map.put("defaulttiles", getDefaultRankTitles());
-        map.put("npcs", npcs.values());
         return map;
     }
 
@@ -1004,9 +1003,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
             landOwner.rankTitles.putAll(entry.getKey().toLowerCase(), entry.getValue());
         }
         ((Map<String, Object>) map.get("defaulttitles")).forEach((key, value) -> landOwner.defaultRankTitles.put(key.toLowerCase(), value));
-        for (NpcData npcData : ((Collection<NpcData>) map.get("npcs"))) {
-            landOwner.addNpc(npcData);
-        }
         return landOwner;
     }
 
@@ -1023,24 +1019,6 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     @Override
     public boolean equals(Object o) {
         return o != null && o.getClass().equals(getClass()) && ((LandOwner) o).getId().equals(getId());
-    }
-
-    public NpcData getNpcData(NpcType type) {
-        if (!type.appliesTo(NpcType.AppliesTo.fromKey(getKey()))) {
-            throw new IllegalArgumentException("NPC type " + type + " does not work with " + getKey() + "!");
-        }
-        NpcData def = new NpcData(-1, type);
-        def.setOwner(this);
-        return npcs.getOrDefault(type, def);
-    }
-
-    public void addNpc(NpcData npcData) {
-        npcData.setOwner(this);
-        npcs.put(npcData.getType(), npcData);
-    }
-
-    public Collection<NpcData> getNpcData() {
-        return npcs.values();
     }
 
     @Override

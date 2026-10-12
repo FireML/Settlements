@@ -33,7 +33,6 @@ public class SettlementLevel extends LandownerLevel {
                 ", worldClaimUpkeep=" + worldClaimUpkeep +
                 ", missions=" + getMissions() +
                 ", extraMissions=" + extraMissions +
-                ", npcs=" + getNPCs() +
                 '}';
     }
 }

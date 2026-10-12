@@ -8,7 +8,11 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.world.SimpleChunkLocation;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PlotLinkCommand extends PlotSubCommand {

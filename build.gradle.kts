@@ -36,19 +36,8 @@ dependencies {
 
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
 
-    compileOnly("com.onarandombox.multiversecore:multiverse-core:4.3.12")
-    compileOnly("com.github.Zrips:CMI-API:9.8.6.4")
     compileOnly("com.acrobot.chestshop:chestshop:3.12.2")
-    compileOnly("com.griefcraft:lwc:2.3.2-dev")
     compileOnly("me.clip:placeholderapi:2.11.5")
-    compileOnly("com.dre.brewery:BreweryX:3.7.0")
-
-    compileOnly("net.citizensnpcs:citizens-main:2.0.32-SNAPSHOT")
-    compileOnly("com.denizenscript:denizen:1.2.8-SNAPSHOT")
-
-    compileOnly("com.github.Zrips:CMILib:1.5.9.6")
-    //compileOnly("uk.firedev:PoleisLib:1.0-SNAPSHOT")
-    compileOnly("com.github.angeschossen:UpgradeableHoppersAPI:4.13.10")
 
     compileOnly("net.luckperms:api:5.5")
 }

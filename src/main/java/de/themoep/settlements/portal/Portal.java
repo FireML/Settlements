@@ -9,9 +9,11 @@ import de.themoep.settlements.world.SimpleBlockLocation;
 import org.bukkit.block.BlockFace;
 import org.jetbrains.annotations.NotNull;
 
-
-import java.util.*;
-import java.util.logging.Level;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Portal implements DatabaseSerializable {
     private IdObject id = IdObject.get(null);

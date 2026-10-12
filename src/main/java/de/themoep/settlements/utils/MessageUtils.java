@@ -1,7 +1,6 @@
 package de.themoep.settlements.utils;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
 import net.kyori.adventure.text.Component;
@@ -73,10 +72,6 @@ public class MessageUtils {
     public static void notify(LandOwner sender, Resident resident, Message message, String... replacements) {
         if (resident.getPlayer() != null) {
             message.tell(resident, replacements);
-        } else {
-            for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                provider.sendMail(sender.getStateTag() + " " + sender.getName(), resident, message.getReplacedText(replacements));
-            }
         }
     }
 

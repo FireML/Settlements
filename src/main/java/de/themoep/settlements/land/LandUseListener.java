@@ -1,15 +1,25 @@
 package de.themoep.settlements.land;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.integration.ShopProvider;
-import de.themoep.settlements.lock.LockManager;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Pair;
 import de.themoep.settlements.utils.Utils;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.FluidCollisionMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.entity.*;
+import org.bukkit.entity.Cow;
+import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Mob;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -20,11 +30,19 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityMountEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerLeashEntityEvent;
-import org.bukkit.event.player.*;
+import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
+import org.bukkit.event.player.PlayerTakeLecternBookEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.jetbrains.annotations.Nullable;
-import de.themoep.settlements.utils.ComponentUtils;
 
 public class LandUseListener implements LandAccessChecker, Listener {
 
@@ -150,15 +168,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
             if (e.getAction() == Action.PHYSICAL && Tag.PRESSURE_PLATES.isTagged(e.getClickedBlock().getType())) {
                 use = Use.PRESSURE_PLATE;
             } else {
-                if (e.getAction() == Action.RIGHT_CLICK_BLOCK || e.getAction() == Action.LEFT_CLICK_BLOCK) {
-                    for (ShopProvider provider : SettlementsPlugin.getInstance().getShopProviders()) {
-                        if (provider.isShop(e.getClickedBlock())) {
-                            use = Use.SHOP;
-                            break;
-                        }
-                    }
-                }
-                if (e.getAction() != Action.LEFT_CLICK_BLOCK && use == null && e.getClickedBlock() != null && !e.getClickedBlock().isEmpty() && !e.getClickedBlock().isLiquid()) {
+                if (e.getAction() != Action.LEFT_CLICK_BLOCK && e.getClickedBlock() != null && !e.getClickedBlock().isEmpty() && !e.getClickedBlock().isLiquid()) {
                     use = Use.getByMaterial(e.getClickedBlock().getType());
                     if ((e.getItem() != null && MaterialUtils.isPlanting(e.getItem().getType(), e.getClickedBlock().getType(), e.getClickedBlock().getRelative(e.getBlockFace()).getType()))
                             || (e.getMaterial() == Material.BONE_MEAL && MaterialUtils.FARM_BLOCKS.contains(e.getClickedBlock().getType()))
@@ -188,8 +198,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
             if (use != null) {
                 Pair<Boolean, String> response = this.canUse(e.getPlayer(), use, e.getClickedBlock().getLocation());
                 if (!response.getLeft()) {
-                    if (use != Use.PRESSURE_PLATE && e.getHand() == EquipmentSlot.HAND
-                            && (use != Use.CHEST || LockManager.getInstance().getLock(e.getClickedBlock()) == null)) {
+                    if (use != Use.PRESSURE_PLATE && e.getHand() == EquipmentSlot.HAND && use != Use.CHEST) {
                         MessageUtils.tell(e.getPlayer(), ComponentUtils.parseComponent(response.getRight()));
                     }
                     e.setCancelled(true);

@@ -8,17 +8,18 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.empire.EmpireMission;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.invites.InviteManager;
-import de.themoep.settlements.land.*;
+import de.themoep.settlements.land.BuildState;
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.LandOwner;
+import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.land.PlotMode;
+import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
-import de.themoep.settlements.npc.NpcData;
-import de.themoep.settlements.npc.NpcLevel;
-import de.themoep.settlements.npc.NpcManager;
 import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.SettlementPerk;
@@ -29,7 +30,15 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.events.SettlementJoinEvent;
 import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
-import de.themoep.settlements.utils.*;
+import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.IdObject;
+import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.Sortable;
+import de.themoep.settlements.utils.Targetable;
+import de.themoep.settlements.utils.UtilTime;
+import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.NamedLocation;
@@ -45,12 +54,22 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import de.themoep.settlements.utils.ItemUtils;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -94,11 +113,6 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
         int inactiveDays = Config.Settlement.Upkeep.INACTIVE_TIME;
         if (getState() == SettlementState.VILLAGE && getLevel() == 1 && System.currentTimeMillis() - getCreated() >= TimeUnit.DAYS.toMillis(inactiveDays)) {
-            for (Resident resident : getResidents()) {
-                for (MailProvider mailProvider : SettlementsPlugin.getInstance().getMailProviders()) {
-                    mailProvider.sendMail("Server", resident, "Your settlement has been disbanded because it is more than a week old and is Village Level 1.");
-                }
-            }
             SettlementManager.getInstance().abandon(this);
             return;
         }
@@ -329,12 +343,6 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         long amount = 0;
         for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
             amount += getClaimUpkeep(land.getWorld());
-        }
-        for (NpcData data : getNpcData()) {
-            NpcLevel npcLevel = data.getLevelInfo();
-            if (npcLevel != null) {
-                amount += data.getLevelInfo().getUpkeep();
-            }
         }
         return amount;
     }
@@ -717,10 +725,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
 
     @Override
     public Collection<? extends Perk> getAvailablePerks() {
-        List<Perk> perks = new ArrayList<>();
-        perks.addAll(SettlementManager.getInstance().getPerks());
-        perks.addAll(NpcManager.getInstance().getPerks(this));
-        return perks;
+        return SettlementManager.getInstance().getPerks();
     }
 
     @Override

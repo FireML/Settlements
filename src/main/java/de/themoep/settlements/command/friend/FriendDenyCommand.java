@@ -3,7 +3,6 @@ package de.themoep.settlements.command.friend;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -41,12 +40,6 @@ public class FriendDenyCommand extends PlayerSubCommand {
                 getMessage("success.target").tell(player, "name", target.getName());
                 if (target.getPlayer() != null) {
                     getMessage("success.sender").tell(target, "name", res.getName());
-                } else {
-                    for (MailProvider provider : SettlementsPlugin.getInstance().getMailProviders()) {
-                        provider.sendMail(res.getSettlementTitle() + " " + res.getName(), target, getText("success.mail",
-                                "name", res.getName()
-                        ));
-                    }
                 }
                 target.save();
                 res.save();

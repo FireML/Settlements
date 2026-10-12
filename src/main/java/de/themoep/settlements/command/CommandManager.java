@@ -7,6 +7,7 @@ import de.themoep.settlements.command.friend.FriendCommand;
 import de.themoep.settlements.command.plot.PlotCommand;
 import de.themoep.settlements.command.resident.ResidentCommand;
 import de.themoep.settlements.command.settlement.SettlementCommand;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Bukkit;
@@ -16,12 +17,9 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.permissions.Permission;
 
-import de.themoep.settlements.utils.ComponentUtils;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class CommandManager implements TabExecutor {
     private static CommandManager instance;

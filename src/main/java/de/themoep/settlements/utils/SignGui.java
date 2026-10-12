@@ -13,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -5,6 +5,8 @@ import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.utils.ColorUtils;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.UtilTime;
@@ -18,12 +20,13 @@ import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
-import de.themoep.settlements.utils.ColorUtils;
-import de.themoep.settlements.utils.ComponentUtils;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class ChatMap {
     private static final int HEIGHT = 13;

@@ -2,6 +2,7 @@ package de.themoep.settlements.command.settlement;
 
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
@@ -11,7 +12,6 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
-import de.themoep.settlements.utils.ComponentUtils;
 
 import java.util.Collection;
 import java.util.Date;

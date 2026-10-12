@@ -5,12 +5,12 @@ import de.themoep.settlements.command.common.TargetParser;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.settlement.Settlement;
+import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Targetable;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
-import de.themoep.settlements.utils.ComponentUtils;
 
 public class AdminMissionCommand extends SubCommand implements TargetParser {
     public AdminMissionCommand(SubCommand parent) {

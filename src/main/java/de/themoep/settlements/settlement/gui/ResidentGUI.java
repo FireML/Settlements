@@ -1,7 +1,10 @@
 package de.themoep.settlements.settlement.gui;
 
+import de.themoep.inventorygui.DynamicGuiElement;
+import de.themoep.inventorygui.GuiStateElement;
+import de.themoep.inventorygui.InventoryGui;
+import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.integration.MailProvider;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.land.gui.RankSelectGUI;
@@ -9,14 +12,14 @@ import de.themoep.settlements.land.gui.TitleGUI;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.utils.*;
-import org.bukkit.entity.Player;
-import de.themoep.inventorygui.DynamicGuiElement;
-import de.themoep.inventorygui.GuiStateElement;
-import de.themoep.inventorygui.InventoryGui;
-import de.themoep.inventorygui.StaticGuiElement;
-import net.wesjd.anvilgui.AnvilGUI;
+import de.themoep.settlements.utils.ConfigurableGui;
+import de.themoep.settlements.utils.ConfirmationGui;
 import de.themoep.settlements.utils.ItemUtils;
+import de.themoep.settlements.utils.Message;
+import de.themoep.settlements.utils.MessageUtils;
+import de.themoep.settlements.utils.Utils;
+import net.wesjd.anvilgui.AnvilGUI;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -130,18 +133,6 @@ public class ResidentGUI extends ConfigurableGui {
 
         gui.addElement(new StaticGuiElement('l', getIcon("eviction"), click -> {
             if (resident.getSettlement().hasPermission(sender, "kicknotice") && sender.getSettlementRank().above(resident.getSettlementRank())) {
-                for (MailProvider mailProvider : SettlementsPlugin.getInstance().getMailProviders()) {
-                    mailProvider.sendMail(Message.get("eviction.letter.sender").getReplacedText(
-                                    "state", resident.getSettlement().getStateTag(),
-                                    "name", resident.getSettlement().getName(),
-                                    "chieftitle", resident.getSettlement().getChief().getSettlementTitle(),
-                                    "chiefname", resident.getSettlement().getChief().getName()
-                            ), resident,
-                            Message.get("eviction.letter.text").getReplacedText(
-                                    "state", resident.getSettlement().getStateTag(),
-                                    "name", resident.getSettlement().getName()
-                            ));
-                }
                 Message.get("command.settlement.kicknotice.success").tell(sender, "name", resident.getName());
                 Message.get("command.settlement.kicknotice.success").actionbar(sender, "name", resident.getName());
             }
