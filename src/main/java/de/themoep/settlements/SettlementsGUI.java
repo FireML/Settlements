@@ -23,7 +23,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 public abstract class SettlementsGUI implements ConfigMessages {
-    protected static final ItemStack BORDER_ITEM = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
 
     private final String name;
 

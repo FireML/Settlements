@@ -1,5 +1,7 @@
 package de.themoep.settlements.customevents;
 
+import com.destroystokyo.paper.event.entity.PhantomPreSpawnEvent;
+import com.destroystokyo.paper.event.entity.PreCreatureSpawnEvent;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.listeners.PaperListener;
 import org.bukkit.Bukkit;
@@ -9,8 +11,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class CustomEventManager implements Listener {
-    public CustomEventManager() {
-        SettlementsPlugin.getInstance().registerListener(new PaperListener());
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onPhantomPreSpawn(PhantomPreSpawnEvent e) {
+        if (!new CreaturePreSpawnEvent(e.getType(), e.getSpawnLocation(), e.getReason()).callEvent()) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onCreaturePreSpawn(PreCreatureSpawnEvent e) {
+        if (!new CreaturePreSpawnEvent(e.getType(), e.getSpawnLocation(), e.getReason()).callEvent()) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
