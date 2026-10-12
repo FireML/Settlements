@@ -280,6 +280,9 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
             return;
         }
         long total = getUpkeep();
+        if (total <= 0) {
+            return; // no upkeep, no message.
+        }
         if (removeFromBank(total)) {
             SettlementsPlugin.getInstance().getLogging().info(getState().getTag() + " " + getName() + " (level " + getLevel() + ") was charged an upkeep of " + total + "!");
             MessageUtils.tellResidents(getOnlineResidents(), Message.get("upkeep.alert.charged").getReplacedComponent("charged", String.valueOf(total)));
