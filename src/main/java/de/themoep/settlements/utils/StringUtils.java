@@ -1,6 +1,8 @@
 package de.themoep.settlements.utils;
 
 import de.themoep.minedown.adventure.MineDown;
+import de.themoep.minedown.adventure.Replacer;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 
@@ -19,20 +21,23 @@ public class StringUtils {
     }
 
     public static String parseColors(String string, String... replacements) {
-        return LegacyComponentSerializer.legacySection().serialize(MineDown.parse(string, replacements));
+        return LegacyComponentSerializer.legacySection().serialize(ComponentUtils.parseComponent(string, replacements));
     }
 
     public static String parsePlaceholders(String text, String... replacements) {
-        return LegacyComponentSerializer.legacySection().serialize(MineDown.parse(text, replacements));
+        return new Replacer()
+            .placeholderPrefix("{")
+            .placeholderSuffix("}")
+            .replace(replacements)
+            .replaceIn(text);
     }
 
     public static String parsePlaceholders(String text, Map<String, String> replacements) {
-        List<String> replacementList = new ArrayList<>();
-        replacements.forEach((key, value) -> {
-            replacementList.add(key);
-            replacementList.add(value);
-        });
-        return LegacyComponentSerializer.legacySection().serialize(MineDown.parse(text, replacementList.toArray(String[]::new)));
+        return new Replacer()
+            .placeholderPrefix("{")
+            .placeholderSuffix("}")
+            .replace(replacements)
+            .replaceIn(text);
     }
 
 }

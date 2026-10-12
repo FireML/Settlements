@@ -21,7 +21,11 @@ public class ComponentUtils {
     }
 
     public static Component parseComponent(String text, String... replacements) {
-        return MineDown.parse(text, replacements);
+        return new Replacer()
+            .placeholderPrefix("{")
+            .placeholderSuffix("}")
+            .replace(replacements)
+            .replaceIn(MineDown.parse(text));
     }
 
     public static Component parseComponent(String text, Map<String, ?> replacements) {
