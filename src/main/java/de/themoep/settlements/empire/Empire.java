@@ -519,7 +519,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         if (perk instanceof EmpirePerk && ((EmpirePerk) perk).getBonusRadius() > 0) {
             World world = hasWorld() ? Bukkit.getWorld(getWorldName()) : null;
             if (world != null) {
-                world.getWorldBorder().setSize(getWorldRadius() * 2, 5);
+                world.getWorldBorder().changeSize(getWorldRadius() * 2, 5);
             } else if (Config.Empire.World.ENABLED && !hasWorld() && getWorldRadius() > 0) {
                 if (Config.Empire.World.RENAME) {
                     setWorldName(Config.Empire.World.PREFIX + getName() + Config.Empire.World.SUFFIX);

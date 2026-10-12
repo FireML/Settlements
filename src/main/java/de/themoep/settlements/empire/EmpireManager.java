@@ -547,7 +547,7 @@ public class EmpireManager {
             } else if (empire.hasWorld()) {
                 World world = Bukkit.getWorld(empire.getWorldName());
                 if (world != null) {
-                    world.getWorldBorder().setSize(empire.getWorldRadius() * 2, 5);
+                    world.getWorldBorder().changeSize(empire.getWorldRadius() * 2, 5);
                 }
             }
         }

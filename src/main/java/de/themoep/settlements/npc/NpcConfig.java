@@ -1,6 +1,8 @@
 package de.themoep.settlements.npc;
 
 import de.themoep.settlements.utils.StringUtils;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Villager;
@@ -30,8 +32,11 @@ public class NpcConfig {
         name = StringUtils.parseColors(config.getString("name"));
         entityType = EntityType.valueOf(config.getString("type", "villager").toUpperCase(Locale.ROOT));
 
-        villagerType = Villager.Type.valueOf(config.getString("villager.type", "plains").toUpperCase(Locale.ROOT));
-        villagerProfession = Villager.Profession.valueOf(config.getString("villager.profession", "nitwit").toUpperCase(Locale.ROOT));
+        NamespacedKey typeKey = NamespacedKey.fromString(config.getString("villager.type", "plains").toUpperCase(Locale.ROOT));
+        this.villagerType = typeKey == null ? Villager.Type.PLAINS : Registry.VILLAGER_TYPE.get(typeKey);
+
+        NamespacedKey professionKey = NamespacedKey.fromString(config.getString("villager.profession", "nitwit").toUpperCase(Locale.ROOT));
+        this.villagerProfession = professionKey == null ? Villager.Profession.NITWIT : Registry.VILLAGER_PROFESSION.get(professionKey);
 
         skinName = config.getString("skin.name", "The_Moep");
         String stringId = config.getString("skin.uuid");

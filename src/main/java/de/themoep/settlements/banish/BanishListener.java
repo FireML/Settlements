@@ -8,6 +8,12 @@ import de.themoep.settlements.land.events.LandPreClaimEvent;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
+import io.papermc.paper.event.player.AsyncPlayerSpawnLocationEvent;
+import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
+import net.luckperms.api.model.user.User;
+import net.luckperms.api.model.user.UserManager;
+import net.luckperms.api.node.types.PermissionNode;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -16,7 +22,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
+import uk.firedev.daisylib.external.vault.VaultWrapper;
 import uk.firedev.daisylib.utils.Scheduling;
+
+import java.util.UUID;
 
 public class BanishListener implements Listener {
 
@@ -46,10 +55,22 @@ public class BanishListener implements Listener {
     }
 
     @EventHandler
-    public void on(PlayerSpawnLocationEvent e) {
-        ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getSpawnLocation()), e.getPlayer(), (land, p, landOwner) -> {
-            Utils.runLater(() -> sendInfo(p, landOwner, "join"), 10);
-            if (!e.getPlayer().hasPermission("settlements.bypass.banish")) {
+    public void on(AsyncPlayerSpawnLocationEvent e) {
+        UUID uuid = e.getConnection().getProfile().getId();
+        if (uuid == null) {
+            return;
+        }
+        User user = LuckPermsProvider.get()
+            .getUserManager()
+            .loadUser(uuid).join(); // Safe to block - We're off the main thread.
+        boolean hasBypass = user.getCachedData()
+            .getPermissionData()
+            .checkPermission("settlements.bypass.banish")
+            .asBoolean();
+
+        ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getSpawnLocation()), uuid, (_, u, landOwner) -> {
+            Utils.runLater(() -> sendInfo(u, landOwner, "join"), 10);
+            if (!hasBypass) {
                 e.setSpawnLocation(e.getSpawnLocation().getWorld().getSpawnLocation());
             }
         });
@@ -83,6 +104,14 @@ public class BanishListener implements Listener {
                 "name", landOwner.getName()
         };
         MessageUtils.tellAdvanced(p, "banished." + type, replacements);
+    }
+
+    private void sendInfo(UUID u, LandOwner landOwner, String type) {
+        Player player = Bukkit.getPlayer(u);
+        if (player == null) {
+            return;
+        }
+        sendInfo(player, landOwner, type);
     }
 
 }

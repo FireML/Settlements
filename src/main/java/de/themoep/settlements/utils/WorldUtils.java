@@ -2,6 +2,7 @@ package de.themoep.settlements.utils;
 
 import de.themoep.settlements.world.SimpleChunkLocation;
 import org.bukkit.GameRule;
+import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -44,7 +45,7 @@ public class WorldUtils {
     }
 
     public static WeatherState getWeatherState(World world) {
-        if (world.getGameRuleValue(GameRule.DO_WEATHER_CYCLE)) {
+        if (world.getGameRuleValue(GameRules.ADVANCE_WEATHER)) {
             return WeatherState.NORMAL;
         }
         if (world.isThundering()) {

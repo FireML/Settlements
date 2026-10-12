@@ -49,6 +49,8 @@ dependencies {
     compileOnly("com.github.Zrips:CMILib:1.5.9.6")
     //compileOnly("uk.firedev:PoleisLib:1.0-SNAPSHOT")
     compileOnly("com.github.angeschossen:UpgradeableHoppersAPI:4.13.10")
+
+    compileOnly("net.luckperms:api:5.5")
 }
 
 group = "uk.firedev"
