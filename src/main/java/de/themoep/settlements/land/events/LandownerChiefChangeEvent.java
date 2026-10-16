@@ -11,18 +11,18 @@ import org.jetbrains.annotations.NotNull;
  */
 public class LandownerChiefChangeEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final LandOwner landOwner;
+    private final LandOwner<?, ?> landOwner;
 
     private final Resident oldChief;
     private final Resident newChief;
 
-    public LandownerChiefChangeEvent(LandOwner landOwner, Resident oldChief, Resident newChief) {
+    public LandownerChiefChangeEvent(LandOwner<?, ?> landOwner, Resident oldChief, Resident newChief) {
         this.landOwner = landOwner;
         this.oldChief = oldChief;
         this.newChief = newChief;
     }
 
-    public LandOwner getLandOwner() {
+    public LandOwner<?, ?> getLandOwner() {
         return landOwner;
     }
 

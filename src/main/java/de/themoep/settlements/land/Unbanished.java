@@ -156,7 +156,7 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
         Targetable t = getTargetable();
         if (t instanceof Resident) {
             return ItemUtils.getHead((UUID) getBanishedId().value(), t.getName());
-        } else if (t instanceof LandOwner owner) {
+        } else if (t instanceof LandOwner<?, ?> owner) {
             return ItemUtils.getHead(owner.getChiefId(), owner.getChief().getName());
         }
         return null;

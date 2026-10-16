@@ -2,7 +2,7 @@ package de.themoep.settlements.land;
 
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.CreaturePreSpawnEvent;
-import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
+import uk.firedev.daisylib.events.move.PlayerMoveChunkEvent;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.land.events.LandChangeEvent;
 import de.themoep.settlements.land.events.LandEnterEvent;

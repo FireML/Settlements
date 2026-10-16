@@ -9,11 +9,12 @@ import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Message;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class EmpireDisbandCommand extends EmpireSubCommand {
-    private Cache<UUID, Boolean> confirm = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+    private final Cache<UUID, Boolean> confirm = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(1)).build();
 
     public EmpireDisbandCommand(SubCommand parent) {
         super(parent, "disband [confirm]");

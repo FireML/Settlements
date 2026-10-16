@@ -462,7 +462,7 @@ public class EventManager implements ConfigMessages {
     }
 
     public List<EventData> getTop(int amount) {
-        return eventData.values().stream().sorted(Comparator.reverseOrder()).limit(amount).collect(Collectors.toList());
+        return eventData.values().stream().sorted(Comparator.reverseOrder()).limit(amount).toList();
     }
 
     public class EventData implements Comparable<EventData>{

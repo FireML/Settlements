@@ -44,7 +44,7 @@ public class EmpireTransferCommand extends EmpireSubCommand {
         }
         Resident oldLeader = empire.getCapital().getChief();
         Resident newLeader = targetSettlement.getChief();
-        Utils.callEvent(new LandownerChiefChangeEvent(empire, oldLeader, newLeader));
+        new LandownerChiefChangeEvent(empire, oldLeader, newLeader).callEvent();
         oldLeader.setEmpireRank(EmpireRank.getLeader().next());
         newLeader.setEmpireRank(EmpireRank.getLeader());
         empire.setCapital(targetSettlement);

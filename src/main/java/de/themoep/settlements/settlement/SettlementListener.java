@@ -125,7 +125,7 @@ public class SettlementListener implements Listener {
 
             Resident resident = ResidentManager.getInstance().getResident(player);
             Message notification = Message.get("close-claim.settlement-warning." + type);
-            for (LandOwner landOwner : landOwners) {
+            for (LandOwner<?, ?> landOwner : landOwners) {
                 if (landOwner == null) {
                     continue;
                 }

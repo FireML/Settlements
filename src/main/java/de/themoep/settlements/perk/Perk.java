@@ -155,13 +155,13 @@ public class Perk implements NameTag {
         return !actions.isEmpty();
     }
 
-    public void toggleActions(Player player, LandOwner landOwner, boolean enable) {
+    public void toggleActions(Player player, LandOwner<?, ?> landOwner, boolean enable) {
         for (Action action : actions.values()) {
             action.onToggle(player, landOwner, enable);
         }
     }
 
-    public List<String> getActionStates(LandOwner landOwner) {
+    public List<String> getActionStates(LandOwner<?, ?> landOwner) {
         List<String> states = new ArrayList<>();
         for (Action action : actions.values()) {
             String state = action.getState(landOwner);

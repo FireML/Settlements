@@ -15,9 +15,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
-public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends Invite<LandOwner, S> {
+public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends Invite<LandOwner<?, ?>, S> {
 
-    public JoinRequest(LandOwner target, S source) {
+    public JoinRequest(LandOwner<?, ?> target, S source) {
         super(target, source);
     }
 
@@ -26,7 +26,7 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
     }
 
     @Override
-    public LandOwner getTarget() {
+    public LandOwner<?, ?> getTarget() {
         return (LandOwner) getTargetAble(getTargetType(), getTargetId());
     }
 
@@ -49,7 +49,7 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
         return "joinrequest";
     }
 
-    public static JoinRequest deserialize(Map<String, Object> map) {
+    public static JoinRequest<?> deserialize(Map<String, Object> map) {
         String targetType = (String) map.get("targetType");
         IdObject targetId = IdObject.get(map.get("targetId"));
 
@@ -65,7 +65,7 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
     @Override
     public String[] getReplacements(ConfigMessages configMessages, String... initial) {
         S source = getSource();
-        if (source instanceof LandOwner owner) {
+        if (source instanceof LandOwner<?, ?> owner) {
             return owner.getReplacements(configMessages, initial);
         } else if (source instanceof Resident res) {
             return res.getReplacements(initial);
@@ -76,7 +76,7 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
     @Override
     public ItemStack getIcon() {
         S source = getSource();
-        if (source instanceof LandOwner owner) {
+        if (source instanceof LandOwner<?, ?> owner) {
             return owner.getIcon();
         } else if (source instanceof Resident res) {
             return ItemUtils.getHead(res.getUUID(), source.getName());

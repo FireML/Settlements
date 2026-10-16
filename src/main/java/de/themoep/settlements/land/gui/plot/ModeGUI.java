@@ -92,7 +92,7 @@ public class ModeGUI extends PlotGUI {
                                             );
                                         }
                                         LandManager.getInstance().syncAndSave(currentLand);
-                                        Utils.callEvent(new LandModeChangeEvent(currentLand));
+                                        new LandModeChangeEvent(currentLand).callEvent();
                                         gui.draw();
                                     }
                                 }

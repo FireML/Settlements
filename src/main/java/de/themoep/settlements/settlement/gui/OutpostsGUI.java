@@ -56,7 +56,7 @@ public class OutpostsGUI extends ConfigurableGui {
         gui.addElement(new StaticGuiElement('p', getIcon("public"), click -> {
             new ListGui<>(resident, "general.public", () -> SettlementManager.getInstance().getSettlements().stream()
                     .filter(s -> s.getAccess() == LandAccess.PUBLIC)
-                    .collect(Collectors.toList()), (c, s) -> {
+                    .toList(), (c, s) -> {
                 // teleport to public settlements
                 if (s.getAccess() == LandAccess.PUBLIC) {
                     click.getGui().close();

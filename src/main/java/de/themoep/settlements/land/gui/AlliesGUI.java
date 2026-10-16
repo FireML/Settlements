@@ -79,7 +79,7 @@ public class AlliesGUI extends SettlementsGUI {
                         }
                         c.getGui().close();
                         Utils.runAsync(() -> {
-                            LandOwner sender = ((AllyRequest) request).getSource();
+                            LandOwner<?, ?> sender = ((AllyRequest) request).getSource();
                             DatabaseManager.getInstance().delete(request);
                             AllyRequest reverseRequest = sender.removeAllyRequest(landOwner);
                             if (reverseRequest != null) {

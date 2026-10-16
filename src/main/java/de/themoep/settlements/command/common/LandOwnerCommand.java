@@ -22,6 +22,7 @@ import de.themoep.settlements.world.SimpleBlockLocation;
 import de.themoep.settlements.world.SimpleChunkLocation;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -32,8 +33,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public interface LandOwnerCommand extends ConfigMessages {
-    default LandOwner getTarget(Resident resident, String arg) {
-        LandOwner target = null;
+    default LandOwner<?, ?> getTarget(Resident resident, String arg) {
+        LandOwner<?, ?> target = null;
         if (arg.startsWith("empire:") || arg.startsWith("e:")) {
             target = EmpireManager.getInstance().getEmpireFromName(arg.split(":")[1]);
             if (target == null) {
@@ -69,7 +70,7 @@ public interface LandOwnerCommand extends ConfigMessages {
         return target;
     }
 
-    default boolean handleClaim(Resident res, LandOwner landOwner, String... args) {
+    default boolean handleClaim(Resident res, LandOwner<?, ?> landOwner, String... args) {
         Player player = res.getPlayer();
         if (!landOwner.canClaim(player.getWorld())) {
             getError("world-not-claimable").tell(player, "world", player.getWorld().getName(), "state", landOwner.getStateTag());
@@ -217,9 +218,9 @@ public interface LandOwnerCommand extends ConfigMessages {
         return true;
     }
 
-    Cache<UUID, Runnable> confirm = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+    Cache<UUID, Runnable> confirm = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(1)).build();
 
-    default boolean handleUnclaim(Resident res, LandOwner landOwner, String base, String alias, String... args) {
+    default boolean handleUnclaim(Resident res, LandOwner<?, ?> landOwner, String base, String alias, String... args) {
         Player player = res.getPlayer();
         if (!landOwner.canClaim(player.getWorld())) {
             getError("world-not-claimable").tell(res, "world", player.getWorld().getName());

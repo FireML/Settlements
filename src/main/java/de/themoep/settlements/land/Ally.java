@@ -49,7 +49,7 @@ public class Ally implements DatabaseSerializable {
         return id;
     }
 
-    public LandOwner getLandOwner() {
+    public LandOwner<?, ?> getLandOwner() {
         return switch (type) {
             case "settlement" -> SettlementManager.getInstance().getFromId(id);
             case "empire" -> EmpireManager.getInstance().getEmpireFromId(id);
@@ -95,8 +95,8 @@ public class Ally implements DatabaseSerializable {
                 (Boolean) map.get("nearbyClaim"));
     }
 
-    public Ally removeAlly(LandOwner landOwner) {
-        LandOwner ally = getLandOwner();
+    public Ally removeAlly(LandOwner<?, ?> landOwner) {
+        LandOwner<?, ?> ally = getLandOwner();
         if (ally != null) {
             return ally.removeAlly(landOwner);
         }
@@ -105,8 +105,8 @@ public class Ally implements DatabaseSerializable {
 
     public int compareTo(Sort sort, Ally other) {
         if (getType().equals(other.getType())) {
-            LandOwner t = getLandOwner();
-            LandOwner o = other.getLandOwner();
+            LandOwner<?, ?> t = getLandOwner();
+            LandOwner<?, ?> o = other.getLandOwner();
 
             if (sort == Sort.LEVEL) {
                 if (t instanceof Empire empire1 && o instanceof Empire empire2) {

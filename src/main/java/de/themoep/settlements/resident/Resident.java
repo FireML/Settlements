@@ -908,7 +908,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         this.notifyEnabled = notifyEnabled;
     }
 
-    public boolean isReceivingCloseBuildingNotification(LandOwner landOwner) {
+    public boolean isReceivingCloseBuildingNotification(LandOwner<?, ?> landOwner) {
         return landOwner instanceof Settlement
                 && !landOwner.equals(getSettlement())
                 && closeBuildingNotificationToggles.getIfPresent(landOwner.getId()) == null;

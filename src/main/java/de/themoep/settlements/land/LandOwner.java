@@ -64,7 +64,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     private BuildState buildState = getDefaultBuildState();
     private LandAccess access = LandAccess.PRIVATE;
     private JoinType joinType = JoinType.INVITE_ONLY;
-    private Map<IdObject, JoinRequest> joinRequests = new HashMap<>();
+    private Map<IdObject, JoinRequest<?>> joinRequests = new HashMap<>();
     private Map<Use, BuildState> use = new EnumMap<>(Use.class);
 
     private Map<String, Map<String, Boolean>> ranksPermissions = new HashMap<>();
@@ -101,7 +101,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
 
     public abstract boolean hasPermission(Resident resident, String perm);
 
-    public abstract boolean isTrusted(LandOwner landOwner);
+    public abstract boolean isTrusted(LandOwner<?, ?> landOwner);
 
     public abstract boolean isChief(UUID playerId);
 
@@ -205,7 +205,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         return getPerksMap().keySet().stream()
                 .map(this::getPerk)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public PerkData getPerkData(Perk perk) {
@@ -245,7 +245,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         if (!hasUnlocked(perk)) {
             getPerksMap().put(perk.name().toLowerCase(), new PerkData());
             apply(resident.getPlayer(), perk);
-            Utils.callEvent(new PerkUnlockedEvent(this, resident, perk));
+            new PerkUnlockedEvent(this, resident, perk).callEvent();
             return true;
         }
         return false;
@@ -539,7 +539,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
             return banished.contains("player", IdObject.get(resident.getUUID()))
                     || (resident.hasSettlement() && isBanished(resident.getSettlement()))
                     || (resident.hasEmpire() && isBanished(resident.getSettlement().getEmpire()));
-        } else if (target instanceof LandOwner owner) {
+        } else if (target instanceof LandOwner<?, ?> owner) {
             if (banished.contains(owner.getKey(), owner.getId())) {
                 return true;
             } else if (target instanceof Settlement settlement && settlement.hasEmpire()) {
@@ -562,7 +562,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
                     sender != null ? sender.getUUID() : Utils.ZERO_UUID,
                     reason
             );
-        } else if (target instanceof LandOwner owner) {
+        } else if (target instanceof LandOwner<?, ?> owner) {
             entry = new Banished(
                     owner.getKey(),
                     target.getId(),
@@ -584,7 +584,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
                 return true;
             }
             return false;
-        } else if (target instanceof LandOwner owner) {
+        } else if (target instanceof LandOwner<?, ?> owner) {
             Banished entry = banished.remove(owner.getDbName(), owner.getId());
             if (entry != null) {
                 unbanished.add(entry.toUnbanish(sender));
@@ -650,19 +650,19 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         return joinRequests.containsKey(targetable.getId());
     }
 
-    public JoinRequest addJoinRequest(JoinRequest request) {
+    public JoinRequest<?> addJoinRequest(JoinRequest<?> request) {
         return joinRequests.put(request.getSourceId(), request);
     }
 
-    public JoinRequest removeJoinRequest(Targetable targetable) {
+    public JoinRequest<?> removeJoinRequest(Targetable targetable) {
         return joinRequests.remove(targetable.getId());
     }
 
-    public JoinRequest removeJoinRequest(JoinRequest request) {
+    public JoinRequest<?> removeJoinRequest(JoinRequest<?> request) {
         return joinRequests.remove(request.getSourceId());
     }
 
-    public Collection<JoinRequest> getJoinRequests() {
+    public Collection<JoinRequest<?>> getJoinRequests() {
         return joinRequests.values();
     }
 
@@ -947,7 +947,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         landOwner.setId(IdObject.get(map));
         landOwner.setBank(Utils.getLong(map.get("bank")));
         landOwner.setJoinFee(Utils.getLong(map.get("joinFee")));
-        for (JoinRequest request : ((Collection<JoinRequest>) map.get("joinRequests"))) {
+        for (JoinRequest<?> request : ((Collection<JoinRequest>) map.get("joinRequests"))) {
             landOwner.addJoinRequest(request);
         }
         landOwner.setTax(Utils.getLong(map.get("tax")));

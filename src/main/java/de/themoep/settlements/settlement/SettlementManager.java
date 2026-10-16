@@ -186,7 +186,7 @@ public class SettlementManager {
                 SettlementsPlugin.getInstance().getLogging().warn("Error while saving " + settlement.getName() + " to the database! No ID was returned.");
                 chief.tell(StringUtils.parseColors("&cError while saving " + settlement.getName() + " to the database! No ID was returned."));
             }
-            Utils.runSync(() -> Utils.callEvent(new LandownerCreatedEvent(settlement, chief)));
+            Utils.runSync(() -> new LandownerCreatedEvent(settlement, chief).callEvent());
         });
     }
 
@@ -225,7 +225,7 @@ public class SettlementManager {
     }
 
     public void delete(Settlement settlement) {
-        Utils.callEvent(new LandownerDisbandEvent(settlement));
+        new LandownerDisbandEvent(settlement).callEvent();
         settlements.remove(settlement.getName().replace(' ', '_').toLowerCase());
         settlementIDs.remove(settlement.getId());
         settlementUuids.remove(settlement.getUUID());
@@ -314,7 +314,7 @@ public class SettlementManager {
 
         settlement.setCreated(System.currentTimeMillis());
 
-        Utils.callEvent(new LandownerAbandonedEvent(settlement));
+        new LandownerAbandonedEvent(settlement).callEvent();
 
         DatabaseManager.getInstance().saveSettlement(settlement);
         DatabaseManager.getInstance().saveAllies(allies);
@@ -406,7 +406,7 @@ public class SettlementManager {
             Message.get("levels.perk-unlocked").tell(settlement, "perk", "Flight in Disabled Worlds");
         }
 
-        Utils.callEvent(new LandownerLeveledEvent(settlement, res));
+        new LandownerLeveledEvent(settlement, res).callEvent();
         settlement.save();
         return true;
     }

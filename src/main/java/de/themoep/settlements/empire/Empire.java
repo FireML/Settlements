@@ -320,10 +320,10 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public void removeMember(Targetable target) {
-        if (target instanceof Settlement && isMember((Settlement) target)) {
-            Utils.callEvent(new EmpireLeaveEvent(this, (Settlement) target));
+        if (target instanceof Settlement settlement && isMember(settlement)) {
+            new EmpireLeaveEvent(this, settlement).callEvent();
             members.remove(target.getId());
-            EmpireManager.getInstance().leaveEmpire((Settlement) target);
+            EmpireManager.getInstance().leaveEmpire(settlement);
         }
     }
 
@@ -331,7 +331,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         if (!isMember(settlement)) {
             members.add(settlement.getId());
         }
-        Utils.callEvent(new EmpireJoinEvent(this, settlement));
+        new EmpireJoinEvent(this, settlement).callEvent();
         settlement.setEmpire(this);
         if (Config.Empire.Missions.DISTRIBUTE_ON_JOIN) {
             distributeNewMissions(settlement);
@@ -489,7 +489,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public Collection<? extends LevelPerk> getPerks(int level) {
-        return EmpireManager.getInstance().getPerks().stream().filter(p -> p.getLevel() == level).collect(Collectors.toList());
+        return EmpireManager.getInstance().getPerks().stream().filter(p -> p.getLevel() == level).toList();
     }
 
     @Override
@@ -583,7 +583,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     public Collection<Settlement> getMembers() {
-        return getMemberIds().stream().map(i -> SettlementManager.getInstance().getFromId(i)).filter(Objects::nonNull).collect(Collectors.toList());
+        return getMemberIds().stream().map(i -> SettlementManager.getInstance().getFromId(i)).filter(Objects::nonNull).toList();
     }
 
     public boolean isFull() {
@@ -733,7 +733,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public List<Resident> getResidents() {
-        return getMembers().stream().flatMap(v -> v.getResidents().stream()).collect(Collectors.toList());
+        return getMembers().stream().flatMap(v -> v.getResidents().stream()).toList();
     }
 
     @Override
@@ -743,7 +743,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
 
     @Override
     public List<Resident> getOnlineResidents() {
-        return getMembers().stream().flatMap(v -> v.getOnlineResidents().stream()).collect(Collectors.toList());
+        return getMembers().stream().flatMap(v -> v.getOnlineResidents().stream()).toList();
     }
 
     @Override
@@ -881,7 +881,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public boolean isTrusted(LandOwner landOwner) {
+    public boolean isTrusted(LandOwner<?, ?> landOwner) {
         return landOwner instanceof Settlement && isMember((Settlement) landOwner);
     }
 

@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class AllyRequest extends Invite<LandOwner, LandOwner> {
 
-    public AllyRequest(LandOwner target, LandOwner source) {
+    public AllyRequest(LandOwner<?, ?> target, LandOwner<?, ?> source) {
         super(target, source);
     }
 
@@ -22,16 +22,16 @@ public class AllyRequest extends Invite<LandOwner, LandOwner> {
     }
 
     @Override
-    public LandOwner getTarget() {
+    public LandOwner<?, ?> getTarget() {
         return getLandOwner(getTargetType(), getTargetId());
     }
 
     @Override
-    public LandOwner getSource() {
+    public LandOwner<?, ?> getSource() {
         return getLandOwner(getSourceType(), getSourceId());
     }
 
-    private LandOwner getLandOwner(String type, IdObject id) {
+    private LandOwner<?, ?> getLandOwner(String type, IdObject id) {
         return switch (type) {
             case "settlement" -> SettlementManager.getInstance().getFromId(id);
             case "empire" -> EmpireManager.getInstance().getEmpireFromId(id);

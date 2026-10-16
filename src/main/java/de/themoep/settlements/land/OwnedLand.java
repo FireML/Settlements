@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 
 public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializable, ModeAble, FlagAble {
     private IdObject id = IdObject.get(null);
-    private LandOwner landOwner;
+    private LandOwner<?, ?> landOwner;
     private UUID plotOwner = null;
     private Set<UUID> plotMembers = new HashSet<>();
     private int unclaimIn = 0;
@@ -57,7 +57,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     private EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
     private UUID link;
 
-    public OwnedLand(LandOwner landOwner, SimpleChunkLocation location) {
+    public OwnedLand(LandOwner<?, ?> landOwner, SimpleChunkLocation location) {
         super(location.getWorld(), location.getX(), location.getZ());
         this.landOwner = landOwner;
     }
@@ -168,15 +168,15 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return outpost;
     }
 
-    public LandOwner getLandOwner() {
+    public LandOwner<?, ?> getLandOwner() {
         return landOwner;
     }
 
-    public void setLandOwner(LandOwner landOwner) {
+    public void setLandOwner(LandOwner<?, ?> landOwner) {
         this.landOwner = landOwner;
     }
 
-    public boolean isOwnedBy(LandOwner landOwner) {
+    public boolean isOwnedBy(LandOwner<?, ?> landOwner) {
         return getLandOwner() != null && getLandOwner().equals(landOwner);
     }
 
@@ -274,7 +274,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     public boolean unsetMode(PlotMode mode) {
         if (getModes().remove(mode) != null) {
-            Utils.callEvent(new LandModeChangeEvent(this));
+            new LandModeChangeEvent(this).callEvent();
             return true;
         }
         return false;
@@ -292,7 +292,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     @Override
     public boolean setMode(PlotMode mode, boolean value) {
         if (ModeAble.super.setMode(mode, value)) {
-            Utils.callEvent(new LandModeChangeEvent(this));
+            new LandModeChangeEvent(this).callEvent();
             if (SettlementsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
                 World world = Bukkit.getWorld(getWorldName());
                 if (world != null && world.isChunkLoaded(getX(), getZ())) {
@@ -437,7 +437,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
             return null;
         }
         SimpleChunkLocation location = new SimpleChunkLocation((String) map.get("world"), (Integer) map.get("x"), (Integer) map.get("z"));
-        LandOwner landOwner = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
+        LandOwner<?, ?> landOwner = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
         if (landOwner == null) {
             switch ((String) map.get("landOwnerType")) {
                 case "settlement" -> landOwner = map.get("landOwner") != null
@@ -597,7 +597,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         // Do not change or everything breaks!
         return super.hashCode();
     }

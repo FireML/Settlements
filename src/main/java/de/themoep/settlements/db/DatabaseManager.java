@@ -81,11 +81,11 @@ public abstract class DatabaseManager {
 
     public abstract void saveSettlements(Collection<Settlement> values);
 
-    public abstract void delete(LandOwner landOwner, Ally ally);
+    public abstract void delete(LandOwner<?, ?> landOwner, Ally ally);
 
     public abstract void unclaimLand(OwnedLand... lands);
 
-    public abstract void unclaimLand(LandOwner landOwner);
+    public abstract void unclaimLand(LandOwner<?, ?> landOwner);
 
     public abstract void unclaimLand(String worldName);
 
@@ -144,7 +144,7 @@ public abstract class DatabaseManager {
         log(empire, settlement, resident, action, ImmutableMap.of(type, amount));
     }
 
-    public void log(LandOwner claimsHolder, Resident resident, String action, String type, long amount) {
+    public void log(LandOwner<?, ?> claimsHolder, Resident resident, String action, String type, long amount) {
         if (claimsHolder instanceof Settlement settlement) {
             log(null, settlement, resident, action, ImmutableMap.of(type, amount));
         } else if (claimsHolder instanceof Empire empire) {
@@ -152,7 +152,7 @@ public abstract class DatabaseManager {
         }
     }
 
-    public void logDeposit(LandOwner landOwner, Resident resident, Map<String, Long> deposited) {
+    public void logDeposit(LandOwner<?, ?> landOwner, Resident resident, Map<String, Long> deposited) {
         log(
                 landOwner instanceof Empire empire ? empire : null,
                 landOwner instanceof Empire ? resident.getSettlement() : (Settlement) landOwner,
@@ -160,7 +160,7 @@ public abstract class DatabaseManager {
         );
     }
 
-    public void logDeposit(LandOwner landOwner, Resident resident, long deposited) {
+    public void logDeposit(LandOwner<?, ?> landOwner, Resident resident, long deposited) {
         if (landOwner instanceof Settlement settlement) {
             logDeposit(settlement, resident, deposited);
         } else if (landOwner instanceof Empire empire && resident.hasSettlement()) {
@@ -192,7 +192,7 @@ public abstract class DatabaseManager {
         log(null, settlement, resident, "levelup", removed);
     }
 
-    public void logWithdraw(LandOwner landOwner, Resident resident, long withdrawn) {
+    public void logWithdraw(LandOwner<?, ?> landOwner, Resident resident, long withdrawn) {
         if (landOwner instanceof Settlement settlement) {
             logWithdraw(settlement, resident, withdrawn);
         } else if (landOwner instanceof Empire empire && resident.hasSettlement()) {
@@ -214,14 +214,14 @@ public abstract class DatabaseManager {
 
     public abstract List<String[]> getLog(LandOwner<?, ?> landOwner, Resident resident, int page, LogType type);
 
-    public void save(LandOwner landOwner) {
+    public void save(LandOwner<?, ?> landOwner) {
         landOwner.save();
     }
 
     public void save(Collection<LandOwner> landOwners) {
         List<Settlement> settlements = new ArrayList<>();
         List<Empire> empires = new ArrayList<>();
-        for (LandOwner landOwner : landOwners) {
+        for (LandOwner<?, ?> landOwner : landOwners) {
             if (landOwner instanceof Settlement settlement) {
                 settlements.add(settlement);
             } else if (landOwner instanceof Empire empire) {

@@ -21,7 +21,7 @@ public class SettlementRank extends Rank<Settlement, SettlementRank> {
     public SettlementRank(String name, ConfigurationSection config) {
         super(name, config);
         for (SettlementState state : SettlementState.values()) {
-            List<String> titles = Message.get(state.getKey() + ".rank." + getKey()).getTextList().stream().map(StringUtils::stripColors).collect(Collectors.toList());
+            List<String> titles = Message.get(state.getKey() + ".rank." + getKey()).getTextList().stream().map(StringUtils::stripColors).toList();
             this.titles.putAll(state, titles);
         }
         PerkEffect.EffectInfluenced.register(new PerkEffect.EffectInfluenced(name));

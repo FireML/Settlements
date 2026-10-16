@@ -1,6 +1,6 @@
 package de.themoep.settlements.banish;
 
-import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
+import uk.firedev.daisylib.events.move.PlayerMoveChunkEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.land.events.LandPreClaimEvent;
@@ -71,7 +71,7 @@ public class BanishListener implements Listener {
 
     @EventHandler
     public void on(PlayerJoinEvent e) {
-        Utils.runLater( () -> ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getPlayer().getLocation()), e.getPlayer(), (land, p, landOwner) -> {
+        Utils.runLater(() -> ResidentManager.getInstance().isResBanished(LandManager.getInstance().getLand(e.getPlayer().getLocation()), e.getPlayer(), (land, p, landOwner) -> {
             sendInfo(p, landOwner, "join");
             if (!e.getPlayer().hasPermission("settlements.bypass.banish") && !e.getPlayer().getChunk().equals(e.getPlayer().getWorld().getSpawnLocation().getChunk())) {
                 Utils.teleportToSpawn(p);
@@ -91,7 +91,7 @@ public class BanishListener implements Listener {
         }
     }
 
-    private void sendInfo(Player p, LandOwner landOwner, String type) {
+    private void sendInfo(Player p, LandOwner<?, ?> landOwner, String type) {
         String[] replacements = new String[] {
                 "state", landOwner.getStateTag(),
                 "name", landOwner.getName()
@@ -99,7 +99,7 @@ public class BanishListener implements Listener {
         MessageUtils.tellAdvanced(p, "banished." + type, replacements);
     }
 
-    private void sendInfo(UUID u, LandOwner landOwner, String type) {
+    private void sendInfo(UUID u, LandOwner<?, ?> landOwner, String type) {
         Player player = Bukkit.getPlayer(u);
         if (player == null) {
             return;

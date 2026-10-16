@@ -18,7 +18,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class AllyGUI extends ConfigurableGui implements AllyCommand {
 
-    public AllyGUI(@NonNull LandOwner landOwner, Resident resident, Ally ally) {
+    public AllyGUI(@NonNull LandOwner<?, ?> landOwner, Resident resident, Ally ally) {
         super(resident, landOwner.getKey() + ".ally");
 
         gui.addElement(new StaticGuiElement('i', ally.getLandOwner().getIcon(), getText("info." + ally.getType(), ally.getLandOwner().getReplacements(this))));
@@ -47,7 +47,7 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
                         c.getGui().close();
                         return;
                     }
-                    LandOwner target = ally.getLandOwner();
+                    LandOwner<?, ?> target = ally.getLandOwner();
 
                     if (!landOwner.isAlly(target)) {
                         c.getGui().close();

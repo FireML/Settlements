@@ -124,7 +124,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         ));
     }
 
-    default Pair<Boolean, String> getCanBuild(Player building, LandOwner landOwner, BuildState state, String type) {
+    default Pair<Boolean, String> getCanBuild(Player building, LandOwner<?, ?> landOwner, BuildState state, String type) {
         if (landOwner.isChief(building.getUniqueId())) {
             return new Pair<>(true, "");
         }

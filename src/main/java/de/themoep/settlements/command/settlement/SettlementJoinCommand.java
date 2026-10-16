@@ -40,12 +40,12 @@ public class SettlementJoinCommand extends ResidentSubCommand {
             if (joinSettlement.getJoinType() == JoinType.APPLY) {
                 if (joinSettlement.hasUnlocked("recruitment") && joinSettlement.hasUnlocked("command.recruitment")) {
                     getMessage("applied").tell(resident, "name", joinSettlement.getName(), "state", joinSettlement.getStateTag());
-                    JoinRequest request = new JoinRequest(joinSettlement, resident);
+                    JoinRequest<?> request = new JoinRequest(joinSettlement, resident);
                     joinSettlement.addJoinRequest(request);
                     request.save();
                     MessageUtils.notify(
                             joinSettlement,
-                            joinSettlement.getResidents().stream().filter(r -> r.hasPermission("settlement.recruitment")).collect(Collectors.toList()),
+                            joinSettlement.getResidents().stream().filter(r -> r.hasPermission("settlement.recruitment")).toList(),
                             Message.get("command.settlement.join.someone-applied"),
                             "name", resident.getName(),
                             "state", joinSettlement.getStateTag()

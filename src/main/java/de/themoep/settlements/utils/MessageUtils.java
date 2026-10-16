@@ -63,13 +63,13 @@ public class MessageUtils {
         return b ? "Yes" : "No";
     }
 
-    public static void notify(LandOwner sender, List<Resident> residents, Message message, String... replacements) {
+    public static void notify(LandOwner<?, ?> sender, List<Resident> residents, Message message, String... replacements) {
         for (Resident resident : residents) {
             notify(sender, resident, message, replacements);
         }
     }
 
-    public static void notify(LandOwner sender, Resident resident, Message message, String... replacements) {
+    public static void notify(LandOwner<?, ?> sender, Resident resident, Message message, String... replacements) {
         if (resident.getPlayer() != null) {
             message.tell(resident, replacements);
         }

@@ -37,7 +37,7 @@ public abstract class SubCommand implements ConfigMessages, Rankable {
         super();
         this.parent = parent;
         this.usage = usage;
-        this.aliases = Arrays.stream(aliases).map(String::toLowerCase).collect(Collectors.toList());
+        this.aliases = Arrays.stream(aliases).map(String::toLowerCase).toList();
         name = usage.split(" ")[0];
     }
 

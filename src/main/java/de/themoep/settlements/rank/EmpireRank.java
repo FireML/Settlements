@@ -17,7 +17,7 @@ public class EmpireRank extends Rank<Empire, EmpireRank> implements Next<EmpireR
 
     public EmpireRank(String name, ConfigurationSection config) {
         super(name, config);
-        titles = Message.get("empire.rank." + getKey()).getTextList().stream().map(StringUtils::stripColors).collect(Collectors.toList());
+        titles = Message.get("empire.rank." + getKey()).getTextList().stream().map(StringUtils::stripColors).toList();
     }
 
     @Override

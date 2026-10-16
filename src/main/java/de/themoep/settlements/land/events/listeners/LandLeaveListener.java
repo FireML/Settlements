@@ -1,6 +1,6 @@
 package de.themoep.settlements.land.events.listeners;
 
-import de.themoep.settlements.customevents.PlayerMoveChunkEvent;
+import uk.firedev.daisylib.events.move.PlayerMoveChunkEvent;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.events.LandLeaveEvent;

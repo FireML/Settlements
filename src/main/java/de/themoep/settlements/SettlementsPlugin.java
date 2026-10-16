@@ -215,7 +215,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         scheduleUpkeep(runnable);
     }
 
-    public void addNewlyAbandoned(LandOwner landOwner) {
+    public void addNewlyAbandoned(LandOwner<?, ?> landOwner) {
         if (landOwner instanceof Settlement settlement) {
             newlyAbandonedSettlements.add(settlement);
         } else if (landOwner instanceof Empire empire) {
@@ -223,7 +223,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         }
     }
 
-    public void addNewlyDeleted(LandOwner landOwner) {
+    public void addNewlyDeleted(LandOwner<?, ?> landOwner) {
         if (landOwner instanceof Settlement settlement) {
             newlyDeletedSettlements.add(settlement);
         } else if (landOwner instanceof Empire empire) {

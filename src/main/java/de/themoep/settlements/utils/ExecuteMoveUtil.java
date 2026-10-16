@@ -1,7 +1,7 @@
 package de.themoep.settlements.utils;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.customevents.PlayerMoveBlockEvent;
+import uk.firedev.daisylib.events.move.PlayerMoveBlockEvent;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

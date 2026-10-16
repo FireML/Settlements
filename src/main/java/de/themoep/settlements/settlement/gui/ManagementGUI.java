@@ -58,9 +58,9 @@ public class ManagementGUI extends SettlementsGUI {
         Collection<Invite<?, ?>> requests = getRequests(resident);
         gui.addElement(new StaticGuiElement('e', ItemUtils.setGlowing(getIcon("recruitment"), !requests.isEmpty()), click -> {
             if ((landOwner.hasUnlocked("recruitment") || !Config.Citizens.UNLOCK_DEPENDENCY) && landOwner.hasPermission(resident, "recruitment")) {
-                new ListGui<>(resident, landOwner.getKey() + ".requests", true, () -> getRequests(resident), (c, request) -> {
+                new ListGui<>(resident, landOwner.getKey() + ".requests", true, () -> requests, (c, request) -> {
                     // accept invite
-                    if (request instanceof JoinRequest) {
+                    if (request instanceof JoinRequest<?> joinRequest) {
                         Resident source = (Resident) request.getSource();
                         if (c.getType().isLeftClick()) {
                             if (handleJoin(resident, source, resident.getSettlement())) {
@@ -69,7 +69,7 @@ public class ManagementGUI extends SettlementsGUI {
                                 c.getGui().draw();
                             }
                         } else if (c.getType().isRightClick()) {
-                            resident.getSettlement().removeJoinRequest((JoinRequest) request);
+                            resident.getSettlement().removeJoinRequest(joinRequest);
                             Utils.runAsync(() -> DatabaseManager.getInstance().delete(request));
                             c.getGui().draw();
                         }
@@ -147,7 +147,9 @@ public class ManagementGUI extends SettlementsGUI {
     }
 
     private Collection<Invite<?, ?>> getRequests(Resident resident) {
-        return resident.getSettlement().getJoinRequests().stream().map(r -> (Invite<?, ?>) r).collect(Collectors.toList());
+        return resident.getSettlement().getJoinRequests().stream()
+            .map(r -> (Invite<?, ?>) r)
+            .collect(Collectors.toList());
     }
 
     public void open() {

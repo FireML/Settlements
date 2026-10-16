@@ -251,7 +251,7 @@ public class LandBlockListener implements LandAccessChecker, Listener {
     }
 
     private boolean checkChunks(Collection<SimpleChunkLocation> chunks) {
-        LandOwner landOwner = null;
+        LandOwner<?, ?> landOwner = null;
         UUID plotOwner = null;
         List<SimpleChunkLocation> chunkList = new ArrayList<>(chunks);
         Collections.reverse(chunkList);

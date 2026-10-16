@@ -36,7 +36,7 @@ public enum BuildState implements NameTag, Rankable {
     }
 
     public static List<BuildState> values(AppliesTo to) {
-        return Arrays.stream(values()).filter(v -> v.appliesTo(to)).collect(Collectors.toList());
+        return Arrays.stream(values()).filter(v -> v.appliesTo(to)).toList();
     }
 
     public static BuildState valueOf(String s, AppliesTo to) {

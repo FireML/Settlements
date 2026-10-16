@@ -19,7 +19,7 @@ public class UnbanishedGUI extends SettlementsGUI {
         gui = new ListGui<>(resident, name(), true,  landOwner::getUnbanished, null, b -> {
             Targetable t = b.getTargetable();
             return new String[]{
-                    "name", (t instanceof LandOwner ? ((LandOwner<?, ?>) t).getStateTag() + " ": "") + t.getName(),
+                    "name", (t instanceof LandOwner<?, ?> ? ((LandOwner<?, ?>) t).getStateTag() + " ": "") + t.getName(),
                     "date", Utils.DATE_FORMAT.format(b.getBanishDate()),
                     "reason", b.getReason(),
                     "banisher", b.getBanisherId() != Utils.ZERO_UUID ? ResidentManager.getInstance().getResidentName(b.getBanisherId()) : "[Auto]",

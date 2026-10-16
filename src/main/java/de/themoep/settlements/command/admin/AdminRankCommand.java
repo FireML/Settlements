@@ -45,7 +45,7 @@ public class AdminRankCommand extends SubCommand {
                 Settlement settlement = tRes.getSettlement();
                 if (r.isChief()) {
                     Resident res = tRes.getSettlement().getChief();
-                    Utils.callEvent(new LandownerChiefChangeEvent(settlement, res, tRes));
+                    new LandownerChiefChangeEvent(settlement, res, tRes).callEvent();
                     res.setSettlementRank(tRes.getSettlementRank());
                     tRes.setSettlementRank(r);
                     settlement.setChief(tRes.getUUID());
@@ -57,7 +57,7 @@ public class AdminRankCommand extends SubCommand {
                     tRes.setSettlementRank(r);
                     DatabaseManager.getInstance().saveResident(tRes);
                 }
-                if (sender instanceof Player && !settlement.getResidentIds().contains(((Player) sender).getUniqueId())) {
+                if (sender instanceof Player player && !settlement.getResidentIds().contains(player.getUniqueId())) {
                     Message.get("command.settlement.setrank.success").tell(sender, "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(settlement));
                 }
                 Message.get("command.settlement.setrank.success").tell(settlement.getOnlineResidents(), "title", "", "setter", sender.getName(), "target", tRes.getName(), "rank", r.getTag(settlement));

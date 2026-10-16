@@ -98,9 +98,9 @@ public class LandManager {
         }
     }
 
-    public OwnedLand claimLand(SimpleChunkLocation chunk, Location location, LandOwner landOwner) {
+    public OwnedLand claimLand(SimpleChunkLocation chunk, Location location, LandOwner<?, ?> landOwner) {
         OwnedLand land = new OwnedLand(landOwner, chunk);
-        Utils.callEvent(new LandPreClaimEvent(land));
+        new LandPreClaimEvent(land).callEvent();
         if (this.getClaimedLandSize(landOwner) == 0) {
             SimpleLocation home = new SimpleLocation(location);
             if (chunk.contains(home)) {
@@ -112,7 +112,7 @@ public class LandManager {
         }
         SettlementsPlugin.getInstance().getLogging().info("Chunk " + land.getKey() + " was claimed by " + landOwner.getStateTag() + " " + landOwner.getName());
         cacheLand(land);
-        Utils.callEvent(new LandClaimEvent(land));
+        new LandClaimEvent(land).callEvent();
         return land;
     }
 
@@ -197,7 +197,7 @@ public class LandManager {
             if (land.containsHome()) {
                 land.getLandOwner().setHome((SimpleLocation) null);
             }
-            Utils.callEvent(new LandUnclaimEvent(land));
+            new LandUnclaimEvent(land).callEvent();
             landTable.remove(land.getWorldName(), land.getSimpleKey());
             if (land.getLandOwner() instanceof Settlement) {
                 settlementLands.remove(land.getLandOwner().getId(), land);
@@ -229,11 +229,11 @@ public class LandManager {
         });
     }
 
-    public void unclaimLand(LandOwner landowner) {
+    public void unclaimLand(LandOwner<?, ?> landowner) {
         Utils.runSync(() -> {
             List<OwnedLand> claims = new ArrayList<>(getClaimedLand(landowner));
             for (OwnedLand claim : claims) {
-                Utils.callEvent(new LandUnclaimEvent(claim));
+                new LandUnclaimEvent(claim).callEvent();
                 removeLink(claim);
                 landTable.remove(claim.getWorld(), claim.getSimpleKey());
                 SettlementsPlugin.getInstance().getLogging().info("Chunk " + claim.getKey() + " owned by " + landowner.getName() + " was unclaimed");
@@ -288,7 +288,7 @@ public class LandManager {
     }
 
     public Collection<OwnedLand> getOwnedPlot(UUID uniqueId) {
-        return playerPlots.get(uniqueId).stream().map(this::getLand).filter(Objects::nonNull).collect(Collectors.toList());
+        return playerPlots.get(uniqueId).stream().map(this::getLand).filter(Objects::nonNull).toList();
     }
 
     public boolean ownsPlot(UUID playerId) {
@@ -321,7 +321,7 @@ public class LandManager {
         return settlementLands.get(settlement.getId()).size();
     }
 
-    public int getClaimedLandSize(LandOwner landOwner) {
+    public int getClaimedLandSize(LandOwner<?, ?> landOwner) {
         if (landOwner instanceof Settlement) {
             return settlementLands.get(landOwner.getId()).size();
         } else if (landOwner instanceof Empire) {
@@ -334,7 +334,7 @@ public class LandManager {
         return landTable.row(world).values();
     }
 
-    public Collection<OwnedLand> getClaimedLand(LandOwner owner) {
+    public Collection<OwnedLand> getClaimedLand(LandOwner<?, ?> owner) {
         if (owner instanceof Settlement) {
             return settlementLands.get(owner.getId());
         } else if (owner instanceof Empire) {
@@ -464,7 +464,7 @@ public class LandManager {
         }
         unclaimLand(toUnclaim);
         toUnclaim.clear();
-        for (LandOwner landOwner : landUnclaims.keySet()) {
+        for (LandOwner<?, ?> landOwner : landUnclaims.keySet()) {
             for (OwnedLand land : getClaimedLand(landOwner)) {
                 if (landOwner instanceof Empire && ((Empire) landOwner).hasWorld()
                         && land.getWorldName().equals(((Empire) landOwner).getWorldName())) {
@@ -492,7 +492,7 @@ public class LandManager {
         }).isEmpty();
     }
 
-    public void checkClaimDistance(LandOwner source, LandOwner oldAlly) {
+    public void checkClaimDistance(LandOwner<?, ?> source, LandOwner<?, ?> oldAlly) {
         if (Config.Claiming.ENEMY_DISTANCE <= 0) {
             return;
         }

@@ -221,7 +221,7 @@ public class ResidentManager {
 
     public void isResBanished(OwnedLand land, Player p, CustomRunnable.Player customRunnable) {
         if (land != null) {
-            LandOwner landOwner = land.getLandOwner();
+            LandOwner<?, ?> landOwner = land.getLandOwner();
             Resident resident = ResidentManager.getInstance().getResident(p);
             if (landOwner != null && landOwner.isBanished(resident)) {
                 customRunnable.run(land, p, landOwner);
@@ -231,7 +231,7 @@ public class ResidentManager {
 
     public void isResBanished(OwnedLand land, UUID u, CustomRunnable.UUID customRunnable) {
         if (land != null) {
-            LandOwner landOwner = land.getLandOwner();
+            LandOwner<?, ?> landOwner = land.getLandOwner();
             Resident resident = ResidentManager.getInstance().getResident(u);
             if (landOwner != null && landOwner.isBanished(resident)) {
                 customRunnable.run(land, u, landOwner);

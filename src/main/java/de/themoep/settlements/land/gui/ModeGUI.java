@@ -31,7 +31,7 @@ public class ModeGUI extends ConfigurableGui {
                                     boolean state = !m.get(landOwner);
                                     if (m.set(state, landOwner)) {
                                         landOwner.save();
-                                        landOwner.getLand().forEach(land -> Utils.callEvent(new LandModeChangeEvent(land)));
+                                        landOwner.getLand().forEach(land -> new LandModeChangeEvent(land).callEvent());
                                     }
                                     Message.get("command." + landOwner.getKey() + ".mode.success").tell(this.resident,
                                             "mode", m.getTag(),

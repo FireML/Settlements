@@ -61,7 +61,7 @@ public class ManagementGUI extends SettlementsGUI {
             if (landOwner.hasUnlocked("recruitment") && landOwner.hasPermission(resident, "recruitment")) {
                 new ListGui<>(resident, landOwner.getKey() + ".requests", true, () -> getRequests(landOwner), (c, request) -> {
                     // accept invite
-                    if (request instanceof JoinRequest) {
+                    if (request instanceof JoinRequest<?> joinRequest) {
                         Resident source = (Resident) request.getSource();
                         if (c.getType().isLeftClick()) {
                             if (handleJoin(resident, source, landOwner)) {
@@ -70,7 +70,7 @@ public class ManagementGUI extends SettlementsGUI {
                                 c.getGui().draw();
                             }
                         } else if (c.getType().isRightClick()) {
-                            landOwner.removeJoinRequest((JoinRequest) request);
+                            landOwner.removeJoinRequest(joinRequest);
                             Utils.runAsync(() -> DatabaseManager.getInstance().delete(request));
                             c.getGui().draw();
                         }
@@ -88,7 +88,7 @@ public class ManagementGUI extends SettlementsGUI {
                 "state", landOwner.getStateTag()
         )));
 
-        gui.addElement(new StaticGuiElement('d', getIcon("banished"), click -> {
+        gui.addElement(new StaticGuiElement('d', getIcon("banished"), _ -> {
             if (landOwner.hasPermission(resident, "banished")) {
                 new BanishedGUI(resident, landOwner).open();
             }

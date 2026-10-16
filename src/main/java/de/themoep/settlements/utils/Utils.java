@@ -584,14 +584,6 @@ public class Utils {
         return playerId.toString();
     }
 
-    public static boolean callEvent(Event event) {
-        SettlementsPlugin.getInstance().getServer().getPluginManager().callEvent(event);
-        if (event instanceof Cancellable) {
-            return ((Cancellable) event).isCancelled();
-        }
-        return false;
-    }
-
     public static <R> void addAmount(Map<R, Long> m, R r, Long amount) {
         m.put(r, m.getOrDefault(r, (long) 0) + amount);
     }

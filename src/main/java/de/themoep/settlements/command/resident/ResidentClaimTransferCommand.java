@@ -18,7 +18,7 @@ public class ResidentClaimTransferCommand extends ResidentSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         int amountIndex = 1;
-        LandOwner target;
+        LandOwner<?, ?> target;
         if (args.length < 2) {
             if (args.length == 0) {
                 return false;

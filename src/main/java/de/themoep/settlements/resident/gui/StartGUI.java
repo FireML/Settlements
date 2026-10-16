@@ -158,7 +158,7 @@ public class StartGUI extends ConfigurableGui {
         gui.addElement(new StaticGuiElement('p', getIcon("public"), click -> {
             new ListGui<>(resident, "general.public", () -> SettlementManager.getInstance().getSettlements().stream()
                     .filter(s -> s.getAccess() == LandAccess.PUBLIC)
-                    .collect(Collectors.toList()), (c, settlement) -> {
+                    .toList(), (c, settlement) -> {
                 // teleport to public settlements
                 if (settlement.getAccess() == LandAccess.PUBLIC) {
                     click.getGui().close();

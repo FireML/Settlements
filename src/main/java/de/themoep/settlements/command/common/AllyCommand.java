@@ -21,7 +21,7 @@ public interface AllyCommand extends LandOwnerCommand {
         return true;
     }
 
-    default boolean addAlly(Resident resident, LandOwner source, String[] args) {
+    default boolean addAlly(Resident resident, LandOwner<?, ?> source, String[] args) {
         if (!source.hasUnlocked("allies")) {
             resident.tell(getUnlockText(source, "allies"));
             return true;
@@ -30,7 +30,7 @@ public interface AllyCommand extends LandOwnerCommand {
         if (args.length < 1) {
             return false;
         }
-        LandOwner target = getTarget(resident, args[0]);
+        LandOwner<?, ?> target = getTarget(resident, args[0]);
         if (target == null) {
             return true;
         }
@@ -63,11 +63,11 @@ public interface AllyCommand extends LandOwnerCommand {
         return true;
     }
 
-    default boolean removeAlly(Resident resident, LandOwner source, String[] args) {
+    default boolean removeAlly(Resident resident, LandOwner<?, ?> source, String[] args) {
         if (args.length < 1) {
             return false;
         }
-        LandOwner target = getTarget(resident, args[0]);
+        LandOwner<?, ?> target = getTarget(resident, args[0]);
         if (target == null) {
             return true;
         }

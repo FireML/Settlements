@@ -8,6 +8,8 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
+    mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.minebench.de")
     maven("https://maven.citizensnpcs.co/repo")
@@ -29,7 +31,7 @@ dependencies {
     bukkitLibrary("com.github.ben-manes.caffeine:caffeine:3.1.8")
     bukkitLibrary("com.zaxxer:HikariCP:5.1.0")
 
-    implementation("uk.firedev:DaisyLib:4.2")
+    implementation("uk.firedev:DaisyLib:4.3-SNAPSHOT")
     implementation("de.themoep:inventorygui:1.6.7-SNAPSHOT")
     bukkitLibrary("de.themoep:minedown-adventure:1.7.6-SNAPSHOT")
     bukkitLibrary("net.wesjd:anvilgui:1.10.13-SNAPSHOT")

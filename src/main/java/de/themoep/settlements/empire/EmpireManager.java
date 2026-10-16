@@ -303,7 +303,7 @@ public class EmpireManager {
                         Message.get("empire-world-generated").tell(empire.getOnlineResidents());
                     });
                 }
-                Utils.runSync(() -> Utils.callEvent(new LandownerCreatedEvent(empire, resident)));
+                Utils.runSync(() -> new LandownerCreatedEvent(empire, resident).callEvent());
             } else {
                 SettlementsPlugin.getInstance().getLogging().warn("Error while saving empire " + empire.getName() + " to the database! No ID was returned.");
             }
@@ -357,7 +357,7 @@ public class EmpireManager {
     }
 
     public void deleteEmpire(Empire empire) {
-        Utils.callEvent(new LandownerDisbandEvent(empire));
+        new LandownerDisbandEvent(empire).callEvent();
         empires.remove(empire.getName().toLowerCase());
         empireIds.remove(empire.getId());
         empireUuids.remove(empire.getUUID());
@@ -454,7 +454,7 @@ public class EmpireManager {
 
         empire.setCreated(System.currentTimeMillis());
 
-        Utils.callEvent(new LandownerAbandonedEvent(empire));
+        new LandownerAbandonedEvent(empire).callEvent();
 
         DatabaseManager.getInstance().saveEmpire(empire);
         DatabaseManager.getInstance().saveAllies(allies);
@@ -549,7 +549,7 @@ public class EmpireManager {
             }
         }
 
-        Utils.callEvent(new LandownerLeveledEvent(empire, res));
+        new LandownerLeveledEvent(empire, res).callEvent();
         empire.save();
         return true;
     }

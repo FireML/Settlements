@@ -61,7 +61,7 @@ public enum PlotMode implements NameTag {
     }
 
     public static List<PlotMode> values(AppliesTo to) {
-        return Arrays.stream(values()).filter(v -> v.appliesTo(to)).collect(Collectors.toList());
+        return Arrays.stream(values()).filter(v -> v.appliesTo(to)).toList();
     }
 
     public static PlotMode get(String s, AppliesTo to) {

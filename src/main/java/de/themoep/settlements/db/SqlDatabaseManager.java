@@ -300,7 +300,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void delete(LandOwner landOwner, Ally ally) {
+    public void delete(LandOwner<?, ?> landOwner, Ally ally) {
         Utils.catchSync();
         Connection conn = getConnection();
         if (ally.getId() != null && !ally.getId().isNull()) {
@@ -401,7 +401,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void unclaimLand(LandOwner landOwner) {
+    public void unclaimLand(LandOwner<?, ?> landOwner) {
         Utils.catchSync();
         if (landOwner.getId().value() == null) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of " + landOwner.getDbName() + " " + landOwner.getName() + " from database! It has no ID?");
@@ -1035,7 +1035,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             ResultSet rs = sta.executeQuery();
             List<JoinRequest> requests = new ArrayList<>();
             while (rs.next()) {
-                JoinRequest request = JoinRequest.deserialize(toMap(rs));
+                JoinRequest<?> request = JoinRequest.deserialize(toMap(rs));
                 if (request != null) {
                     requests.add(request);
                 }

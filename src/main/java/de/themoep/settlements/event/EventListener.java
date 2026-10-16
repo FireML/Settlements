@@ -1,6 +1,6 @@
 package de.themoep.settlements.event;
 
-import de.themoep.settlements.customevents.PlayerMoveBlockEvent;
+import uk.firedev.daisylib.events.move.PlayerMoveBlockEvent;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -71,10 +71,16 @@ public class EventListener implements Listener {
     public void onMove(PlayerMoveBlockEvent event) {
         Player player = event.getPlayer();
         String type = "walk";
-        if (event.getFrom().getBlockX() == event.getTo().getBlockX() && event.getFrom().getBlockZ() == event.getFrom().getBlockZ()) {
-            if (event.getFrom().getBlockY() > event.getFrom().getBlockY()) {
+        int fromX = event.getFrom().getX();
+        int fromY = event.getFrom().getY();
+        int fromZ = event.getFrom().getZ();
+        int toX = event.getTo().getX();
+        int toY = event.getTo().getY();
+        int toZ = event.getTo().getZ();
+        if (fromX == toX && fromZ == toZ) {
+            if (fromY > toY) {
                 type = "fall";
-            } else if (event.getFrom().getBlockY() > event.getFrom().getBlockY()) {
+            } else if (toY > fromY) {
                 type = "rise";
             } else {
                 return;

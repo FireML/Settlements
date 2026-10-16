@@ -20,7 +20,6 @@ import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
 import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.missions.MissionTaker;
-import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.rank.EmpireRank;
@@ -53,6 +52,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,11 +81,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     private UUID chief;
     private Empire empire;
     private SettlementState settlementState;
-    private Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
-    private Set<UUID> residents = new LinkedHashSet<>();
+    private final Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
+    private final Set<UUID> residents = new LinkedHashSet<>();
     private long missionPoints = 0;
     private long finishedMissions = 0;
-    private Map<String, MissionData> missionData = new LinkedHashMap<>();
+    private final Map<String, MissionData> missionData = new LinkedHashMap<>();
     private long empireDisband = 0;
 
     protected Settlement() {
@@ -279,7 +279,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                 if (isMember(resident) && resident.hasRankPermission(getKey() + ".tax.exempt")) {
                     continue;
                 }
-                taxes.put(resident, taxes.computeIfAbsent(resident, r -> 0L) + land.getTax());
+                taxes.put(resident, taxes.computeIfAbsent(resident, _ -> 0L) + land.getTax());
             }
         }
         return taxes;
@@ -387,7 +387,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     @Override
-    public boolean isTrusted(LandOwner landOwner) {
+    public boolean isTrusted(LandOwner<?, ?> landOwner) {
         return (landOwner instanceof Empire && landOwner.equals(getEmpire()))
                 || (landOwner instanceof Settlement && hasEmpire() && getEmpire().isMember((Settlement) landOwner));
     }
@@ -476,7 +476,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     public List<Resident> getResidents() {
         return residents.stream()
                 .map(id -> ResidentManager.getInstance().getResident(id)).filter(Objects::nonNull)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -484,7 +484,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return residents.stream()
                 .map(Bukkit::getPlayer).filter(Objects::nonNull)
                 .map(p -> ResidentManager.getInstance().getResident(p))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -656,8 +656,10 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     @Override
-    public Collection<? extends LevelPerk> getPerks(int level) {
-        return SettlementManager.getInstance().getPerks().stream().filter(p -> p.getLevel() == level && p.getState() == settlementState).collect(Collectors.toList());
+    public Collection<SettlementPerk> getPerks(int level) {
+        return SettlementManager.getInstance().getPerks().stream()
+            .filter(p -> p.getLevel() == level && p.getState() == settlementState)
+            .toList();
     }
 
     @Override
@@ -759,7 +761,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     @Override
-    public LinkedHashMap<String, Object> serialize() {
+    public @NonNull LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = super.serialize();
         map.put("chief", getChiefId());
         map.put("level", getLevel());
@@ -777,7 +779,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     public void transfer(Resident newChief) {
         if (isMember(newChief)) {
             Resident oldChief = this.getChief();
-            Utils.callEvent(new LandownerChiefChangeEvent(this, this.getChief(), newChief));
+            new LandownerChiefChangeEvent(this, this.getChief(), newChief).callEvent();
             oldChief.setSettlementRank(SettlementRank.getChief().next());
             newChief.setSettlementRank(SettlementRank.getChief());
             setChief(newChief.getUUID());
@@ -793,16 +795,16 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
 
     @Override
     public void removeMember(Targetable target) {
-        if (target instanceof Resident && isMember((Resident) target)) {
-            Utils.callEvent(new SettlementLeaveEvent(this, (Resident) target));
-            residents.remove(((Resident) target).getUUID());
-            SettlementManager.getInstance().leaveSettlement((Resident) target);
+        if (target instanceof Resident resident && isMember(resident)) {
+            new SettlementLeaveEvent(this, resident).callEvent();
+            residents.remove(resident.getUUID());
+            SettlementManager.getInstance().leaveSettlement(resident);
         }
     }
 
     public void addMember(Targetable target) {
         if (target instanceof Resident resident && !isMember(resident)) {
-            Utils.callEvent(new SettlementJoinEvent(this, resident));
+            new SettlementJoinEvent(this, resident).callEvent();
             resident.setSettlement(this);
             resident.setSettlementRank(SettlementRank.getDefault());
             resident.addChannel(ChatChannel.SETTLEMENT);
@@ -893,8 +895,8 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     public boolean leaveEmpire() {
-        if (hasEmpire()) {
-            getEmpire().removeMember(this);
+        if (empire != null) {
+            empire.removeMember(this);
             return true;
         }
         return false;
@@ -904,6 +906,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return hasEmpire() && getEmpire().isCapital(this);
     }
 
+    @SuppressWarnings("unchecked")
     public static Settlement deserialize(Map<String, Object> map) {
         SettlementsPlugin.logDebug("Creating settlement from " + map);
         Settlement settlement = LandOwner.deserialize(new Settlement(), map);
