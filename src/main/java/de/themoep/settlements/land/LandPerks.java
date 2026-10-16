@@ -1,6 +1,5 @@
 package de.themoep.settlements.land;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.perk.Perk;
@@ -11,24 +10,24 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 import org.bukkit.potion.PotionEffect;
 import uk.firedev.daisylib.utils.Scheduling;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class LandPerks {
-    private static final String PERK_EFFECT_KEY = "perk_effects";
+
+    private static final Map<UUID, String> PERK_EFFECTS = new HashMap<>();
 
     public void runTimer() {
         Scheduling.runTaskTimer(() -> updateEffects(true), 1L, 160L);
@@ -62,7 +61,7 @@ public class LandPerks {
                     activeEffects.add(effect.getIdentifier());
                 }
             }
-            player.setMetadata(PERK_EFFECT_KEY, new FixedMetadataValue(SettlementsPlugin.getInstance(), String.join(",", activeEffects)));
+            PERK_EFFECTS.put(player.getUniqueId(), String.join(",", activeEffects));
         }
     }
 
@@ -194,7 +193,7 @@ public class LandPerks {
     private <T extends Perk> Collection<? extends PerkEffect> getEffects(Player p, Resident resident, OwnedLand land, LandOwner<?, ?> perkable, boolean refresh) {
         List<PerkEffect> effects = new ArrayList<>();
 
-        LandOwner landOwner = null;
+        LandOwner<?, ?> landOwner = null;
         if (land != null) {
             landOwner = land.getLandOwner();
         }
@@ -264,7 +263,7 @@ public class LandPerks {
         return effects;
     }
 
-    private boolean appliesTo(PerkEffect effect, Resident resident, LandOwner landOwner) {
+    private boolean appliesTo(PerkEffect effect, Resident resident, LandOwner<?, ?> landOwner) {
         if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALL) {
             return true;
 
@@ -301,7 +300,7 @@ public class LandPerks {
                 activeEffects.add(effect.getIdentifier());
             }
         }
-        player.setMetadata(PERK_EFFECT_KEY, new FixedMetadataValue(SettlementsPlugin.getInstance(), String.join(",", activeEffects)));
+        PERK_EFFECTS.put(player.getUniqueId(), String.join(",", activeEffects));
     }
 
     public void removeEffects(Player player, OwnedLand land, boolean refresh) {
@@ -315,19 +314,16 @@ public class LandPerks {
                 activeEffects.remove(identifier);
             }
         }
-        player.setMetadata(PERK_EFFECT_KEY, new FixedMetadataValue(SettlementsPlugin.getInstance(), String.join(",", activeEffects)));
+        PERK_EFFECTS.put(player.getUniqueId(), String.join(",", activeEffects));
     }
 
     private static Set<String> getActiveEffects(Player player) {
-        return player.getMetadata(PERK_EFFECT_KEY).stream()
-                .filter(mv -> Objects.equals(mv.getOwningPlugin(), SettlementsPlugin.getInstance()))
-                .map(MetadataValue::asString)
-                .map(s -> Arrays.asList(s.split(",")))
-                .flatMap(List::stream)
-                .collect(Collectors.toSet());
+        return Arrays.stream(PERK_EFFECTS.get(player.getUniqueId()).split(","))
+            .collect(Collectors.toSet());
     }
 
     private static String getEffectIdentifier(PotionEffect effect) {
-        return effect.getType().getName() + "|" + effect.getAmplifier() + "|" + effect.isAmbient() + "|" + effect.hasParticles();
+        return effect.getType().getKey() + "|" + effect.getAmplifier() + "|" + effect.isAmbient() + "|" + effect.hasParticles();
     }
+
 }
