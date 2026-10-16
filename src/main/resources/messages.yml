@@ -44,16 +44,12 @@ error:
   not-in-current: "&c(!) &r&7Not currently in a settlement."
   not-in-settlement: "&cTarget player {player} isn't in a settlement!"
   not-in-empire: "&c(!) &r&7Not currently in your empire."
-  unknown-npc-type: "&c(!) &r&7{input} is not a valid NPC type!"
-  unknown-npc: "&c(!) &r&7No {input} NPC in your {state}!"
   no-level: "&cNo level {level} exists!"
   no-permission: "&cNo permission."
   no-world: "&c{state} {name} has not unlocked a world."
   rules-not-accepted: "&cYou must accept the [&e{state} rules](/s rules) first!"
-  function-not-unlocked: "&cUpgrade NPC to unlock!"
   not-unlocked: "&cThe {state} does not have the {function} function unlocked yet!"
   no-channel-permission: "&cNo permission to use {channel} channel!"
-  not-a-channel: "&cChat Channel &6{name}&c is not valid channel!"
   not-enough-money: "&cThere is not enough money in your account to pay &r&6{amount}&r&c!"
   not-your-settlement: "&cThis is not your {state}!"
   no-settlement: "&cNo settlement at your location!"
@@ -110,7 +106,6 @@ error:
   destination-obstructed: "&cUnable to teleport. Target location is not safe!"
   destination-unknown: "&cUnable to teleport. Target {type} is not known!"
   not-an-outpost: "&cThe land must be an outpost claim to set the home!"
-  not-near-npc: "&cYou are not close to any {name}"
 move-cancelled:
   title: "&c&lFailed"
   subtitle: "&fDon't move while {action}ing!"
@@ -166,40 +161,6 @@ pvp-claim:
   enter: "&f[&eSettlements&f] &cPvP is enabled in this claim!"
   exit: "&f[&eSettlements&f] &cPvP is no longer enabled."
   bossbar: "&cPvP is Enabled inside of this Claim!"
-scoreboard:
-  sidebar:
-    title: "&x&0&d&e&2&e&8&lPoleis&f&lMC"
-    entries:
-      no-settlement: |-
-        &aBal &e%vault_eco_balance_formatted%
-
-        &aChat &e%settlements_player_info_activechannel%
-        &7/scoreboard
-      settlement: |-
-        &a&l{settlementstate}
-        &a(&e{settlementname}&a)
-        &aBank &e☧ {settlementbalance}
-        &aRank &e{settlementrank}
-        &aOnline &e{settlementresonlinecount}/{settlementsize}
-        
-        &aBal &e%vault_eco_balance_formatted%
-        &aChat &e%settlements_player_info_activechannel%
-        &7/scoreboard
-      empire: |-
-        &a&lEmpire
-        &a(&e{empirename}&a)
-        &aBank &e☧ {empirebalance}
-        &aRank &e{empirerank}
-        
-        &a&l{settlementstate}
-        &a(&e{settlementname}&a)
-        &aBank &e☧ {settlementbalance}
-        &aRank &e{settlementrank}
-        &aOnline &e{settlementresonlinecount}/{settlementsize}
-        
-        &aBal &e%vault_eco_balance_formatted%
-        &aChat &e%settlements_player_info_activechannel%
-        &7/scoreboard
 empire-world-generated: "&lCreated your empire world!"
 levels:
   upgrade: "&d{state}&7 was upgraded to level &d{level}"
@@ -268,15 +229,6 @@ plot-tax:
       couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c for their plot {x} {z} and is has been removed!"
 first-to-reach-level: "&6{name} &7 is the first to reach &6{state} &7level &6{level}"
 land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
-portal:
-  only-in-claim: "&cYou can only create portals in claims!"
-  created: "&aCreated portal!"
-  destroyed: "&aPortal destroyed!"
-  destroy-broadcast: "&5Portal in world &e{world}&5 at &e{x}&5/&e{y}&5/&e{z}&5 was destroyed."
-  not-registered: "&cPortal isn't known?"
-  not-allowed:
-    destroy: "&cYou are not allowed to destroy portals in your &e{state}"
-    create: "&cYou are not allowed to create portals in your &e{state}"
 events:
   started: "&6{title} &7started for {duration}"
   ended: "&6{title} &7ended! &6{state} {name}&7 came first place with a score of {amount}!"
@@ -389,8 +341,8 @@ plot:
     title: ""
     subtitle: "{name}"
   for-sale:
-    message: "&9Land is for sale for ☧ {amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
-    actionbar: "&9Land is for sale for ☧ {amount} &f{description}"
+    message: "&9Land is for sale for ${amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
+    actionbar: "&9Land is for sale for ${amount} &f{description}"
     title: ""
     subtitle: "{name}"
   for-sale-description:
@@ -420,8 +372,8 @@ embassy:
     title: ""
     subtitle: "{name}"
   for-sale:
-    message: "&9Embassy is for sale for ☧ {amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
-    actionbar: "&9Embassy is for sale for ☧ {amount} &f{description}"
+    message: "&9Embassy is for sale for ${amount}, type [&e/s plot buy](suggest_command=/s plot buy)&9 to buy it"
+    actionbar: "&9Embassy is for sale for ${amount} &f{description}"
     title: ""
     subtitle: "{name}"
   for-sale-description:
@@ -435,55 +387,6 @@ embassy:
     title: ""
     subtitle: "{name}"
 pvp-is-enabled: " - &cPvP is enabled!&7"
-chat:
-  locked: "&cChat is currently locked!"
-  nobody-nearby: "&cThere is nobody around you who could hear you!"
-  hover:
-    info: "&aName &f{name}{rank}{balance}{settlement}{empire}\n&7&oClick to message player"
-    balance: "\n&aBalance &f{balance}"
-    bonus: "\n&aBonus claims &f{bonus}"
-    settlement: "\n&a{state} &f{name}"
-    empire: "\n&aEmpire &f{name}"
-    rank: |-
-      &r &a{state} Rank &f{rank}
-      &aTitle &f{title}
-    click-to-open-url: "&9Click to open url"
-  staff: "&cStaff "
-  format:
-    name: "{displayname}"
-    title:
-      none: ""
-      settlement: "{settlementTitle}"
-      empire: "{empireTitle} {settlementTitle}{empireSymbol}"
-    private:
-      sender: "{prefixColor}\\[&a{sender} &7➦ &3{target}{prefixColor}] {color}{message}"
-      target: "{staff}{prefixColor}\\[&3{sender} &7➦ &a{target}{prefixColor}] {color}{message}"
-      name:
-        sender: "you"
-        target: "{displayname}"
-      social-spy: "&7[&6SS&7]&r {sender} &7➦ &3{target}&7: {message}"
-    channel:
-      general: "&7[&bT&7]&r {prefix}&r{suffix} &f{sender}&r &b➦ {color}{message}"
-      event: "{prefixColor}[Event] &f{sender}&r &b➦ {color}{message}"
-      local: "{prefixColor}[Local] &f{sender}&r &b➦ {color}{message}"
-      admin: "{prefixColor}[Admin] &f{sender}&r &b➦ {color}{message}"
-      staff: "{prefixColor}[Staff] &f{sender}&r &b➦ {color}{message}"
-      ccem: "{prefixColor}[CCEM] &f{sender}&r &b➦ {color}{message}"
-      help: "{prefixColor}[Help] &f{sender} &b➦ {color}{message}"
-      settlement: "{prefixColor}[S] &f{sender}&r &b➦ {color}{message}"
-      trade: "{prefixColor}[Trade] &f{sender}&r &b➦ {color}{message}"
-      ally: "{prefixColor}[SAlly] &f{sender}&r &b➦ {color}{message}"
-      empireally: "{prefixColor}[EAlly] {empire} &f{sender}&b ➦ {color}{message}"
-      empire: "{prefixColor}[E] &6{settlement} &f{sender}&r &b➦ {color}{message}"
-  nick-hilight: "&b"
-  afk: "&ePlayer is AFK and may not respond"
-  afk-staff: "&eStaff member is AFK and may not respond. Try contacting us through discord"
-  ignored: "&cYou cannot message &6{name}&c because they are ignoring you!"
-  ignoring: |-
-    &cYou cannot message &6{name}&c because you are ignoring them!
-    &6[/ignore {name}](/ignore {name})&c to un-ignore them
-  messages-disabled: "&cYou cannot message &6{name}&c because you have private messages disabled! Use [&e/msgtoggle](/msgtoggle on)&c to enable it."
-  target-messages-disabled: "&cYou cannot message &6{name}&c because he has private messages disabled!"
 names:
   online: "&aOnline"
   ago: "ago"
@@ -607,50 +510,6 @@ names:
     mobspawning: "Hostile Mobspawning"
     passivespawning: "Passive Mobspawning"
 integration:
-  chestshop:
-    not-allowed: "&cYou can only create shops inside of Claims!"
-    bought-from-shop: "&a[Shop] {buyer} bought {item} for {price} from your {state} shop at {world}/{x}/{y}/{z}."
-    out-of-stock: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is out of stock! ({buyer} tried to buy)"
-    sold-to-shop: "&a[Shop] {seller} sold {item} for {price} to your {state} shop at {world}/{x}/{y}/{z}."
-    not-enough-space: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 is full! ({seller} tried to sell)"
-    not-enough-money: "&a[Shop] {price} {item}&7 {state} shop at &r{world}/{x}/{y}/{z}&7 can't lose money as you need it to pay your upkeep! ({seller} tried to sell)"
-  citizens:
-    new-npc-available: "&7NPC &6{npc} &7is now available. Use [&e/{state} npc {type} teleport](/{state} npc {type} teleport) to set its location."
-    new-npc-unlocked: "&7NPC &6{npc} &7unlocked. Use [&e/{state} npc {type} teleport](/{state} npc {type} teleport) to set its location."
-    talk: "&e{state} {npc}: &f{message}"
-    state:
-      use:
-        residents: "&e&l(!) &r&eNPCs&7 are limited to &eresidents&7 of &e{state} {name}&7."
-        officers: "&e&l(!) &r&eNPCs&7 are limited to &eofficer only &7."
-        trusted: "&e&l(!) &r&eNPCs&7 are limited to &eallies or members of the same empire&7 of &e{state} {name}&7."
-        ally: "&e&l(!) &r&eNPCs&7 are limited to &eallies&7 of &e{state} {name}&7."
-        private: "&e&l(!) &r&eNPCs&7 are is limited to the &ePlot owner&7."
-        members: "&e&l(!) &r&eNPCs&7 are is limited to &ePlot members&7."
-        friends: "&e&l(!) &r&eNPCs&7 are is limited to &ePlot members and the owner's friends&7."
-        empire:
-          trusted: "&e&l(!) &r&eNPCs&7 are limited to &emembers&7 of &e{state} {name}&7."
-          landowner:
-            private: "&e&l(!) &r&eNPCs&7 are limited to the &eCapital of {state} {name}&7."
-        settlement:
-          landowner:
-            private: "&e&l(!) &r&eNPCs&7 are limited to &eResidents of {state} {name}&7."
-  lwc:
-    only-in-settlement: "&cYou can only lock things in a settlement claim!"
-    state:
-      use:
-        residents: "&e&l(!) &r&e{use}&7 is limited to &eresidents&7 of &e{state} {name}&7."
-        officers: "&e&l(!) &r&e{use}&7 is limited to &eofficer only &7."
-        trusted: "&e&l(!) &r&e{use}&7 is limited to &eallies or members of the same empire&7 of &e{state} {name}&7."
-        ally: "&e&l(!) &r&e{use}&7 is limited to &eallies&7 of &e{state} {name}&7."
-        private: "&e&l(!) &r&e{use}&7 is limited to the &ePlot owner&7."
-        friends: "&e&l(!) &r&e{use}&7 is limited to the &ePlot owner's friends&7."
-      build:
-        residents: "&e&l(!) &r&7Only &eresidents&7 of &e{state} {name}&7 can build here."
-        officers: "&e&l(!) &r&7Only &eofficers&7 of &e{state} {name}&7 can build here."
-        trusted: "&e&l(!) &r&7Only &eallies or members of the same empire&7 as &e{state} {name}&7 can build here."
-        ally: "&e&l(!) &r&7Only &eallies&e7 of &e{state} {name}&7 can build here."
-        private: "&e&l(!) &r&7Only the &ePlot owner&7 can build here."
-        friends: "&e&l(!) &r&7Only the &ePlot owner and their friends&7 can build here."
   placeholder-api:
     none: "-"
     bonus-outposts: " Bonus: {amount}"
@@ -675,20 +534,6 @@ integration:
       entry: "&9{place}. &r&e{name}"
     top-ten-empires:
       entry: "&9{place}. &r&e{name}"
-  plotsquared:
-    teleport:
-      success: "&a&lTeleported to plot of {state} {name}"
-      success-title:
-        title: "&2&lSuccess"
-        subtitle: "&fYou have been teleported!"
-        actionbar: ""
-      fail-title:
-        title: "&c&lFailed"
-        subtitle: "&fUnable to teleport!"
-        actionbar: ""
-    failed-to-claim: "&cFailed to automatically claim a new plot!"
-  brewery:
-    too-drunk-for-channel: "&cYou are too drunk to speak in &f{channel}&c! Please use the [Local](/localchat) or [Settlement](/settlementchat) chat!"
 protection:
   state:
     use:
@@ -721,41 +566,8 @@ protection:
       settlement:
         landowner:
           private: "&e&l(!) &r&7Only &eresidents of {state} {name}&7 can build here."
-lock:
-  only-in-claim: "&cYou can only lock things in a settlement claim!"
-  locked: "&cThis {block} is locked by {title} {name}!"
-  new-lock: "&e{block}&a is now locked!"
-  not-locked: "&a{block}&c is not locked!"
-  cant-unlock: "&cYou cannot unlock this &e{block}&c!"
-  unlocked: "&cYou unlocked this &e{block}&c!"
-  not-lockable: "&cYou cannot lock &e{block}"
-  toggled: "&7You have toggled &a{toggle}&7! Toggle it off with [&e/lock toggle](/lock toggle)&7!"
-  hoppers:
-    enabled: "&7Hoppers &acan&7 pull items from this {block}!"
-    disabled: "&7Hoppers &ccan not&7 pull items from this {block}!"
-  access:
-    granted: "&e{name}&7 can now access this locked {block}"
-    already-granted: "&e{name}&c could already access this locked {block}?"
-    revoked: "&e{name}&7 can no longer access this locked {block}"
-    already-revoked: "&e{name}&c isn't able to access {block}?"
-  info:
-    general: |-
-      &3&lOwner: &3{title} {owner}
-      &3&lHoppers: &3{hoppers}
-      &3&lAccess granted to:
-    entry: "&f{title} {name}"
-    separator: "&7, "
-  state:
-    build:
-      residents: "&e&l(!) &r&7This land is owned by &e{state} {name}&7."
-      officers: "&e&l(!) &r&7This land is in &eofficer only &7mode."
-      trusted: "&e&l(!) &r&7You are not allied to or in the same empire as &e{state} {name}&7."
-      ally: "&e&l(!) &r&7You are not allied to &e{state} {name}&7."
-      private: "&e&l(!) &r&7Only the &ePlot owner&7 can build here."
-      friends: "&e&l(!) &r&7Only the &ePlot owner's friends&7 can build here."
 unlockables:
   locked:
-    npc: "&cUpgrade NPC to unlock!"
     unlock: "&cUnlock {type} to unlock!"
     upgrade: "&c{type} lv{level} required!"
     not-on-land: "&cNot on a claim!"
@@ -766,7 +578,6 @@ unlockables:
     rank: "&cRank is too low"
     permission: "&cNo Permission"
     invite-only: "&cInvite only"
-    application-required: "&cApply at Elder"
   unlocked:
     open: "&bClick to open"
     change: "&bClick to change"
@@ -821,7 +632,7 @@ gui:
           &eCreate Settlement
 
           &fStart a new settlement, a place to build
-          Price to create: &e☧ {amount}
+          Price to create: &e${amount}
           
           {action}
         anvil:
@@ -862,7 +673,7 @@ gui:
           &fBank: &e{bank}
           &fUpkeep: &e{upkeep}
           &fJoin Fee: &e{joinfee}
-          &fDaily Tax: &e☧ {tax}
+          &fDaily Tax: &e${tax}
           &fAuction Tax: &e{auctiontax}%
           &fTax Evasion Action: &e{taxdebtaction}
           &fMissions: &e{missions}
@@ -883,7 +694,7 @@ gui:
           &fBank: &e{bank}
           &fUpkeep: &e{upkeep}
           &fJoin Fee: &e{joinfee}
-          &fDaily Tax: &e☧ {tax}
+          &fDaily Tax: &e${tax}
           &fAuction Tax: &e{auctiontax}%
           &fTax Evasion Action: &e{taxdebtaction}
           &fMissions: &e{missions}
@@ -921,12 +732,6 @@ gui:
       toggle-status:
         enabled: "&aEnabled"
         disabled: "&cDisabled"
-      npc: |-
-        &eNPC
-
-        &fManage your NPCs
-        
-        &bClick to view
       home: |-
         &e{state} Home
       plot: |-
@@ -957,7 +762,7 @@ gui:
 
           &fState: &e{state} {level}
           &fBoard: &e{description}
-          &fJoin Fee: &e☧ {joinfee}
+          &fJoin Fee: &e${joinfee}
           
           &fPopulation: &e{size}
           &bYou have been invited to join them!
@@ -1017,7 +822,7 @@ gui:
 
         &fState: &e{state} {level}
         &fBoard: &e{description}
-        &fJoin Fee: &e☧ {joinfee}
+        &fJoin Fee: &e${joinfee}
         
         &fPopulation: &e{size}
         &b{action}
@@ -1037,29 +842,6 @@ gui:
         
         &fPopulation: &e{size}
         &bClick to teleport
-  chat:
-    channel-select:
-      title: "&x&0&0&8&2&0&0&l/chat colour"
-      channel-entry: "{color}{channel}"
-    color-type-select:
-      title: "&x&0&0&8&2&0&0&lSelect the type"
-      entry: |-
-        &e{type} colour
-
-        &7Click to change
-        &7Middle click to reset
-      color-reset: "&7Reset {type} color of channel {channel} to &r{color}{color-name}"
-      back: "&cBack To Channel Selection"
-    color-select:
-      title: "&x&0&0&8&2&0&0&lSelect colour"
-      color-entry: |-
-        {color}{name}
-        &7Click to select
-      selected-color-entry: |-
-        {color}{name}
-        &7Selected!
-      color-changed: "&7Changed {type} color of channel {channel} to &r{color}{color-name}"
-      back: "&cBack To Type Selection"
   allies:
     title: "&x&0&0&8&2&0&0&lManage Allies"
     entry:
@@ -1096,7 +878,7 @@ gui:
         &f{state}: &eLevel {level}
         &fResidents: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
-        &fBank: &e☧ {bank}
+        &fBank: &e${bank}
         &fMissions: &e{missions}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
         &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}
@@ -1110,7 +892,7 @@ gui:
         &fEmpire: &eLevel {level}
         &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
-        &fBank: &e☧ {bank}
+        &fBank: &e${bank}
         &fDaily Missions: &e{dailymissions}
         &fFinished Missions: &e{missions}
         &fCapital: &e{capitalstate}{capital}
@@ -1197,7 +979,7 @@ gui:
 
       &fGive me your money!
       
-      &cUpgrade NPC to accept
+      &cUpgrade to accept
       &cdonations from players
       &coutside the {state}
       {action}
@@ -1207,7 +989,7 @@ gui:
     balance: |-
       &eBalance
       
-      &fCurrent Balance: &e☧ {balance}
+      &fCurrent Balance: &e${balance}
     storage: |-
       &eStorage Chest
 
@@ -1226,8 +1008,8 @@ gui:
       &fPrepare for upkeep to prevent
       &fyour {state} from degrading
       
-      &fLand tax: &e☧ {upkeepperclaim} per claim
-      &fUpkeep cost: &e☧ {upkeep}
+      &fLand tax: &e${upkeepperclaim} per claim
+      &fUpkeep cost: &e${upkeep}
       
       &fCan afford for: &e{afford} days
       &fTime until next Upkeep: &2{time}
@@ -1235,7 +1017,7 @@ gui:
     taxes: |-
       &eCurrent Taxes
       
-      &fResident taxes: &e☧ {tax}
+      &fResident taxes: &e${tax}
       &fAuction taxes: &e{auctiontax}%
     manage-finances: |-
       &eManage Finances
@@ -1253,7 +1035,7 @@ gui:
         &fThese taxes will be taken from their
         &fbalance every {hour} server time (UTC).
         
-        &fCurrent Tax: &e☧ {tax}
+        &fCurrent Tax: &e${tax}
         
         {action}
         
@@ -1355,12 +1137,6 @@ gui:
       &ffrom entering the {state}
       
       {action}
-    npc: |-
-      &eNPC
-
-      &fManage your NPCs
-      
-      &bClick to view
     allies: |-
       &eManage Allies
 
@@ -1387,18 +1163,6 @@ gui:
       &fto your claimed land
       
       {action}
-  npclist:
-    title: "&x&0&0&8&2&0&0&lManage your NPCs"
-    entry:
-      unlocked: |-
-        &e{name}
-        
-        &bClick to teleport
-        &bto your Location
-      locked: |-
-        &e{name}
-        
-        &cNot unlocked yet
   elder:
     title: "&x&0&0&8&2&0&0&l{type}"
     not-unlocked: |-
@@ -1409,16 +1173,16 @@ gui:
         &eApply to join!
 
         &fRequest to join the {state}
-        &fJoin Fee: &e☧ {joinfee}
-        &fTaxes: &e☧ {tax}
+        &fJoin Fee: &e${joinfee}
+        &fTaxes: &e${tax}
         
         &bClick here to request
       cancel-apply: |-
         &eYou have applied to join!
 
         &fWait until your app has been reviewed!
-        &fJoin Fee: &e☧ {joinfee}
-        &fTaxes: &e☧ {tax}
+        &fJoin Fee: &e${joinfee}
+        &fTaxes: &e${tax}
         
         &cClick to cancel your request
       invite-only: |-
@@ -1427,15 +1191,15 @@ gui:
       invited: |-
         &eYou have been invited!
 
-        &fJoin Fee: &e☧ {joinfee}
-        &fTaxes: &e☧ {tax}
+        &fJoin Fee: &e${joinfee}
+        &fTaxes: &e${tax}
         
         &bClick to join
       anyone: |-
         &eAnyone can join {state}
 
-        &fJoin Fee: &e☧ {joinfee}
-        &fTaxes: &e☧ {tax}
+        &fJoin Fee: &e${joinfee}
+        &fTaxes: &e${tax}
         
         &bClick to join &f{name}
       banished: |-
@@ -1451,7 +1215,7 @@ gui:
       &fRemove unstarted missions
       &fand get new ones!
       
-      &fCost: &e☧ {price}
+      &fCost: &e${price}
       
       {action}
     finished: "&aFinished&f "
@@ -1600,7 +1364,7 @@ gui:
       taxes: |-
         &eCurrent Taxes
         
-        &fMember taxes: &e☧ {tax}
+        &fMember taxes: &e${tax}
 
     management:
       title: "&x&0&0&8&2&0&0&lManage {state}"
@@ -1730,10 +1494,10 @@ gui:
         &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e☧ {bank}
-        &fUpkeep: &e☧ {upkeep}
-        &fJoin Fee: &e☧ {joinfee}
-        &fDaily Tax: &e☧ {tax}
+        &fBank: &e${bank}
+        &fUpkeep: &e${upkeep}
+        &fJoin Fee: &e${joinfee}
+        &fDaily Tax: &e${tax}
         &fTax Evasion: &e{taxdebtaction}
         &fDaily Missions: &e{dailymissions}
         &fFinished Missions: &e{missions}
@@ -1935,7 +1699,7 @@ gui:
       
       &fPlayer Info:
       &f➤ Rank: &6{vaultprefix}
-      &f➤ Balance: &6☧ {balance}
+      &f➤ Balance: &6${balance}
       &f➤ Mission Points: &6{missionpoints}
       &f➤ Last Login &c{lastloginduration}
     accepted:
@@ -1962,8 +1726,8 @@ gui:
       entry: |-
         &eTaxes
 
-        &fTotal Donation: &e☧ {donated}
-        &fTotal Tax: &e☧ {taxpaid}
+        &fTotal Donation: &e${donated}
+        &fTotal Tax: &e${taxpaid}
         &fTax Exemption: &a{exempted}
         
         {action}
@@ -2219,35 +1983,6 @@ gui:
       &a➤ &fAlly = &eAllies & Residents
       &a➤ &fTrusted = &eEmpire, Allies, & Residents
       &a➤ &fPublic = &eEveryone
-  portal:
-    teleport:
-      title: "&x&0&0&8&2&0&0&lSelect target"
-      portal: |-
-        &5Click to Teleport
-        &7Target: &f{world} {x}/{y}/{z}
-      previous: "Previous Page"
-      next: "Next Page"
-      back: "&cClose"
-    link:
-      title: "&x&0&0&8&2&0&0&l/portal link"
-      portal: |-
-        &5{world} {x}/{y}/{z}t
-        &cClick to link
-      previous: "Previous Page"
-      next: "Next Page"
-      back: "&cClose"
-      success: "&aLinked to Portal at &e{world} {x}/{y}/{z}"
-      error: "&cAn error occurred while linking! Please contact an admin."
-    unlink:
-      title: "&x&0&0&8&2&0&0&l/portal unlink"
-      portal: |-
-        &5{world} {x}/{y}/{z}
-        &cClick to unlink
-      previous: "Previous Page"
-      next: "Next Page"
-      back: "&cClose"
-      success: "&aUnlinked from Portal at &e{world} {x}/{y}/{z}"
-      error: "&cAn error occurred while unlinking! Please contact an admin."
   settings:
     title: "&x&0&0&8&2&0&0&lSettlement Settings"
     rename:
@@ -2272,14 +2007,6 @@ gui:
         
         {action}
       list: "&f{name}"
-    toggle-npc:
-      entry: |-
-        &eToggle NPCs
-
-        &fClick here to toggle NPCs
-        &ffor your settlement.
-        
-        &fCurrent: &e{npc-toggle}
     rules:
       entry: |-
         &e{state} rules
@@ -2317,9 +2044,9 @@ gui:
         &ffor joining!
 
         &fRemember to disclose if the
-        &famount is &c&LNOT&r &e☧ 0&r&f!
+        &famount is &c&LNOT&r &e$0&r&f!
         
-        &fCurrent Joining fee: &e☧ {joinfee}
+        &fCurrent Joining fee: &e${joinfee}
         
         {action}
       anvil:
@@ -2377,7 +2104,7 @@ gui:
     entry: |-
       &e{name}
 
-      &fBalance: &e☧ {balance}
+      &fBalance: &e${balance}
       
       &bLeft-Click to accept
       &cRight-Click to reject
@@ -2461,11 +2188,11 @@ gui:
       &fResidents: &e{size}&f/&e{maxsize}
       &fAccess: &e{access}
       &fRecruitment: &e{jointype}
-      &fBank: &e☧ {bank}
-      &fUpkeep: &e☧ {upkeep}
-      &fJoin Fee: &e☧ {joinfee}
-      &fDaily Tax: &e☧ {tax}
-      &fAuction Tax: &e☧ {tax}
+      &fBank: &e${bank}
+      &fUpkeep: &e${upkeep}
+      &fJoin Fee: &e${joinfee}
+      &fDaily Tax: &e${tax}
+      &fAuction Tax: &e${tax}
       &fTax Evasion Action: &e{taxdebtaction}
       &fMissions: &e{missions}
       &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims}
@@ -2626,7 +2353,6 @@ gui:
       farming: Farming
       other: Use other things
       shop: Use shops
-      npc: Use NPCs
     flag-line: "&a➤ &f{name}"
   use:
     title: "&x&0&0&8&2&0&0&l/s perms"
@@ -2670,8 +2396,6 @@ gui:
         upgradable: |-
           &r&fUpgrade this {type}!
           {action}
-        locked: |-
-          &cUnlock this NPC first!
       action:
         switch: |-
           &bClick to change tab
@@ -2734,57 +2458,6 @@ usage:
     previous: "<< Prev "
     next: " Next >>"
 command:
-  chat:
-    description: "Chat command"
-    joined: "&7You have joined Chat Channel &6{name}"
-    selected: "&7You have selected Chat Channel &6{name}"
-    active: "&7Active Chat Channel: &6{name}"
-    already-joined: "&7Already in Chat Channel &6{name}"
-    channel-entry:
-      active: "&e• &7[&x&5&5&c&c&f&f&lActive&7] &e{name} &3&l<<<"
-      enabled: "&e• &7[&aEnabled&7] [&e{name}](suggest_command=/chat {name})"
-      disabled: "&e• &7[&cDisabled&7] [&e{name}](suggest_command=/chat {name})"
-    "<channel>":
-      description: "Join a chat channel"
-    usage:
-      footer: "&bAvailable channels:"
-    footer: ""
-    leave:
-      description: "Disable the chat of the channel"
-      success: "&7You have left Chat Channel {name}"
-      not-joined: "&cYou were not in the Chat Channel {name}"
-    lock:
-      description: "Lock a channel"
-      muted: "&cGeneral Chat has been muted by &6{name}"
-      unmuted: "&cGeneral Chat has been un-muted by &6{name}"
-    swear:
-      description: "Toggles swearing"
-      enabled: "&7Swear Filter has been &cDisabled"
-      disabled: "&7Swear Filter has been &aEnabled"
-  ignore:
-    description: "Ignores a players chat and messages"
-    ignored: "&7Player &6{name}&7 has been &cignored&7!"
-    unignored: "&7Player &6{name}&7 has been &aun-ignored&7!"
-    list:
-      head: "&a⊱&m━━━━&r&6Ignored&a&m━━━━&a⊰"
-      entry: "&c{name}"
-      separator: "&7, "
-  message:
-    description: "Message another player"
-  msgtoggle:
-    description: "Toggle private messaging"
-    invalid-option: "&e{input}&c is not a valid toggle option!"
-    enabled: "&7Private messaging is now &aenabled&7!"
-    disabled: "&7Private messaging is now &cdisabled&7!"
-  notify:
-    description: "Toggle chat notification sound"
-    invalid-option: "&e{input}&c is not a valid toggle option!"
-    enabled: "&7Chat notification sound is now &aenabled&7!"
-    disabled: "&7Chat notification sound is now &cdisabled&7!"
-  reply:
-    description: "Replies to the last person who messaged you."
-    no-one-messaged: "&cNo one messaged you!"
-    target-is-offline: "&cThe player that messaged you is offline now!"
   resident:
     claimtransfer:
       success: "&e{name} &r&7added &6{amount}&r&7 bonus claims to the {targetstate} {target}!"
@@ -2795,8 +2468,8 @@ command:
         free: |-
           &e&l{name}
           &fSettlement: &enone
-          &fBalance: &e☧ {balance}
-          &fTax: &e☧ {tax}
+          &fBalance: &e${balance}
+          &fTax: &e${tax}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
@@ -2804,8 +2477,8 @@ command:
           &e&l{name}
           &fSettlement: &e{settlement}
           &fRank: &e{title}
-          &fBalance: &e☧ {balance}
-          &fTax: &e☧ {tax}
+          &fBalance: &e${balance}
+          &fTax: &e${tax}
           &fMissions: &e{missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
@@ -2816,8 +2489,8 @@ command:
           &fEmpire Rank: &e{empirerank}
           &fSettlement: &e{settlement}
           &fRank: &e{title}
-          &fBalance: &e☧ {balance}
-          &fTax: &e☧ {tax}
+          &fBalance: &e${balance}
+          &fTax: &e${tax}
           &fMissions: &e{missionpoints}
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
@@ -2828,12 +2501,12 @@ command:
     info:
       info: |-
         &a&m---------------
-        &6{state} tax: &e☧ {tax}
-        &6Total Plot Tax: &e☧ {plottax}
-        &6Total Tax: &e☧ {totaltax}
+        &6{state} tax: &e${tax}
+        &6Total Plot Tax: &e${plottax}
+        &6Total Tax: &e${totaltax}
         &6Plots owned: &e{plotamount}
         &a&m---------------
-        &c☧ {totaltax} is deducted from your balance every upkeep
+        &c${totaltax} is deducted from your balance every upkeep
       description: Tax information command
     description: Tax command
   friend:
@@ -2888,7 +2561,7 @@ command:
       description: Sets the build mode of a plot
     buy:
       cant-buy-embassy: "&cYou can't buy this plot as it is an embassy of your {state}!"
-      tax-warning: "&6There is plot tax of &e☧ {tax}&6, type [&e/plot buy](/plot buy) again to confirm!"
+      tax-warning: "&6There is plot tax of &e${tax}&6, type [&e/plot buy](/plot buy) again to confirm!"
       purchased: "&aSuccessfully purchased the land for {price}."
       description: Buys the chunk you are standing in
     info:
@@ -2900,8 +2573,8 @@ command:
         &9&lMembers: &r{members} &7[(Click to view)](/plot members list)
         &9&lModes: &7Hostile MobSpawning: &6{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 (from {buildsource}) | Embassy: &6{embassy}
       owner: "&a&lPlot Owner: &7{name}"
-      price: "&a&lPlot Price: &7☧ {price}"
-      tax: "&a&lPlot Tax: &7☧ {tax}"
+      price: "&a&lPlot Price: &7${price}"
+      tax: "&a&lPlot Tax: &7${tax}"
       link: "[&aLinked to &7{amount}&a other plots!](&a{x}/{z} is linked to:\n&f{linked})"
       description: Get information about the current plot
     link:
@@ -2951,14 +2624,14 @@ command:
     sale:
       current: "&7The current price of this land is: &6 {price}"
       already-owned: "&cLand is already owned"
-      success: "&a&lSUCCESS &7This land has been put on sale for &e☧ {price}&7!"
+      success: "&a&lSUCCESS &7This land has been put on sale for &e${price}&7!"
       no-longer-for-sale: "&a&lSUCCESS &7This land is no longer for sale!"
       description: Gets or sets the price of a claimed chunk
     tax:
-      current: "&7This plot's tax is &e☧ {tax}&7!"
+      current: "&7This plot's tax is &e${tax}&7!"
       description: Plot taxes
       set:
-        success: "&e&l(!) &r&7Daily tax of this plot was set to &e☧ {amount}&7!"
+        success: "&e&l(!) &r&7Daily tax of this plot was set to &e${amount}&7!"
         above-max: "&c(!) &cMax tax amount is &e{max}&c!"
         below-zero: "&c(!) &cTax amount cannot be negative!"
         already-owned: "&c(!) &cYou can only change the tax of unowned claims!"
@@ -2981,26 +2654,6 @@ command:
       all:
         description: Sets all flags to a certain state
     description: Plot Commands
-  portal:
-    link:
-      description: "Link portals"
-    unlink:
-      description: "Unlink portals"
-    admin:
-      description: "Allows administrating of portals"
-    description: Portal Commands
-  scoreboard:
-    descriptipon: "Toggle the scoreboard sidebar"
-    enabled: "&eEnabled &7the scoreboard!"
-    disabled: "&cDisabled &7the scoreboard!"
-  scoreboardadmin:
-    descriptipon: "Set the scoreboard for all players"
-    clear:
-      description: "Clear custom lines from the scoreboard for all players"
-      cleared: "Cleared custom lines from scoreboard for all players."
-    add:
-      description: "Add custom lines to the scoreboard"
-      added: "&7Added '&f{line}&7' to the scoreboard."
   settlement:
     group:
       manage-res:
@@ -3055,14 +2708,6 @@ command:
         description: "Manage Outposts"
       manage-shop:
         description: "Buy in the Shop"
-    portal:
-      link:
-        description: "Link portals"
-      unlink:
-        description: "Unlink portals"
-      admin:
-        description: "Allows administrating of portals"
-      description: Portal Commands
     active:
       head: "&a⊱&m━━━━&r&6Active Players [{page}/{maxpage}]&a&m━━━━&a⊰"
       entry: "&e• [&e&l{title} &r&e{name} - &r{activity}](&eLast login at {timestamp})"
@@ -3122,7 +2767,7 @@ command:
         description: Check the balance of the bank
       history:
         head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
-        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6☧ {amount}](&eAt {timestamp})"
+        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
         footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
         previous: "<< Prev "
         next: " Next >>"
@@ -3137,15 +2782,11 @@ command:
       description: Set who can build in your settlement
       permission:
         description: Allows changing of the settlement build setting
-    chestshop:
-      admin:
-        permission:
-          description: Allows creation of and access to settlement shops
     claim:
       cant-claim-more: "&c(!) &r&7Your settlement can only claim &e{max} chunks of land!"
       no-land-around: "&c(!) &r&7Your claim must be connected to an existing settlement claim!"
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your settlement at {x},{z}!"
-      new-upkeep: "&aYour new upkeep is now &e☧ {upkeep}&a (☧ {upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e${upkeep}&a (${upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
       home-set: "&7{state} home was set at &r&6{x}&r&7,&r&6{y}&r&7,&r&6{z}"
       radius-too-large: "&c(!) &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
@@ -3205,8 +2846,8 @@ command:
         &fResidents: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e☧ {bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e☧ {joinfee}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6Outposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMissions: &e{missions}
@@ -3221,8 +2862,8 @@ command:
         &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e☧ {bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e☧ {joinfee}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMissions: &e{missions}
@@ -3273,11 +2914,11 @@ command:
       already-in-settlement: "&c{name} is already in a {state}"
       already-has-invite: "&c{name} already has an invite from your {state}"
       fail: "&cInvite Failed. Please try again."
-      joinfee: "&7Fee to join is &e☧ {amount}!"
+      joinfee: "&7Fee to join is &e${amount}!"
       received: |-
         &e&l(!) &r&7Invite received from {state} {name}! 
         &7Click or type [&e/s join {name}](suggest_command=/s join {name}) &7to join.
-      mail: "You have been invited to join {state} {name}! Join via /s. Fee is ☧ {amount} and it has a ☧ {tax} tax!"
+      mail: "You have been invited to join {state} {name}! Join via /s. Fee is ${amount} and it has a ${tax} tax!"
       alert: "&e&l(!) &r&e{player}&7 has been invited to the settlement."
       description: Invite someone to join your settlement
     join:
@@ -3336,7 +2977,7 @@ command:
         own-land: "&r &a- &6= your land"
         enemy: "&r &c- &6= other"
         empire-land: "&r &2- &6= your Empire land"
-        for-sale: "&r &a☧  &6= for sale"
+        for-sale: "&r &a$ &6= for sale"
         player-plot: "&r &ep &6= player plot"
         linked-plot: "&r &6p &6= linked plots"
         embassy: "&r &ae &6= embassy"
@@ -3363,7 +3004,7 @@ command:
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         embassy: "Embassy Owner: &7{owner}"
-        for-sale: "For sale: &7☧ {price} &fTax: &7☧ {tax}"
+        for-sale: "For sale: &7${price} &fTax: &7${tax}"
         outpost: "Outpost: &7{name}"
         home: Home
         abandoned: |-
@@ -3377,23 +3018,14 @@ command:
       wait-for-missions: "&cYou do not have any missions from your {state} yet. Wait for the next distribution!"
       description: View missions available to your settlement
       redistribute:
-        confirm: "&eThe redistribution cost is ☧ {price}. &ePlease run this command again within 5 seconds to continue."
-        success: "&eGot {amount} new missions for ☧ {price}"
+        confirm: "&eThe redistribution cost is ${price}. &ePlease run this command again within 5 seconds to continue."
+        success: "&eGot {amount} new missions for ${price}"
         fail: "&cUnable to distribute new missions. Please complete your started ones!"
         description: Get new missions for a price
     mode:
       modes: "&cAvailable modes: {modes}"
       success: "&7Settlement mode &6{mode}&7: &6{value}"
       description: Changes settings for your settlement claims
-    npc:
-      skin:
-        success: "&aSuccessfully changed the skin of your {state} {type}"
-        description: Change an NPC's skin
-      teleport:
-        success: "&aTeleported your {state} {type} to your location"
-        requires-home: "&cCan't move &e{npc}&c here as it requires a claim connected to your home!"
-        description: Move NPCs
-      description: Manage your NPCs
     officer:
       description: Members that should have officer build access
     outpost:
@@ -3562,8 +3194,8 @@ command:
         &fResidents: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e☧ {bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e☧ {joinfee}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6Outposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMissions: &e{missions}
@@ -3578,8 +3210,8 @@ command:
         &fResidents: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e☧ {bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e☧ {joinfee}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMissions: &e{missions}
@@ -3683,7 +3315,7 @@ command:
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
       confirm: "&cPlease do [&e&l/{command}](/{command})&c in the next minute to confirm the &e&lunclaiming&c of [&e&l{amount}&c chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &cportals](&fPortals that will be removed:\n&7{portals})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
-      new-upkeep: "&aYour new upkeep is now &e☧ {upkeep}&a (☧ {upkeepperclaim} per claim in this world) [&e/e upkeep](/e upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e${upkeep}&a (${upkeepperclaim} per claim in this world) [&e/e upkeep](/e upkeep)"
       description: Unclaim land which is claimed by your settlement
       "<radius>":
         description: "Unclaims all the chunks in the stated radius (max is 5)"
@@ -3712,10 +3344,10 @@ command:
     upkeep:
       info: |-
         &a&m━━━━↠&r &bUpkeep &a&m↞━━━━
-        &x&8&7&C&E&E&B&lTotal daily upkeep cost: &a☧ {global_cost} &b(&e{global_total} claims&b)
-        &x&8&7&C&E&E&B&l  &3↪ &fKingdoms: &a☧ {overworld_cost} &b(&e{overworld_total} claims&b)
-        &x&8&7&C&E&E&B&l  &3↪ &fKingdoms_nether: &a☧ {nether_cost} &b(&e{nether_total} claims&b)
-        &x&8&7&C&E&E&B&l  &3↪ &fKingdoms_the_end: &a☧ {end_cost} &b(&e{end_total} claims&b)
+        &x&8&7&C&E&E&B&lTotal daily upkeep cost: &a${global_cost} &b(&e{global_total} claims&b)
+        &x&8&7&C&E&E&B&l  &3↪ &fKingdoms: &a${overworld_cost} &b(&e{overworld_total} claims&b)
+        &x&8&7&C&E&E&B&l  &3↪ &fKingdoms_nether: &a${nether_cost} &b(&e{nether_total} claims&b)
+        &x&8&7&C&E&E&B&l  &3↪ &fKingdoms_the_end: &a${end_cost} &b(&e{end_total} claims&b)
         &x&8&7&C&E&E&B&lDays of upkeep in bank: &6{afford} days
         &x&8&7&C&E&E&B&lTime until next Upkeep: &2{time}
       afford-infinite: "infinite"
@@ -3864,7 +3496,7 @@ command:
         description: Check the balance of the bank
       history:
         head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
-        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6☧ {amount}](&eAt {timestamp})"
+        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
         footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
         previous: "<< Prev "
         next: " Next >>"
@@ -3904,7 +3536,7 @@ command:
         &7
         &a&l               Congratulations
         &r&7        You have created a new empire!
-        &r&7  &6☧ {cost}&7 have been deducted from your {capitalstate} bank!
+        &r&7  &6${cost}&7 have been deducted from your {capitalstate} bank!
         &r&7
         &r&7   Make sure to deposit money into your [&a/e bank](/e bank)&7
         &r&7                  for the [&a/e upkeep](/e upkeep)
@@ -3915,7 +3547,7 @@ command:
       cant-claim-more: "&c(!) &r&7Your empire can only claim &e{max} chunks of land!"
       no-land-around: "&c(!) &r&7Your claim must be connected to an existing empire claim!"
       success: "&a&lSUCCESS &r&e{player} &7has claimed land for your empire at {x},{z}!"
-      new-upkeep: "&aYour new upkeep is now &e☧ {upkeep}&a (☧ {upkeepperclaim} per claim in this world) [&e/e upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e${upkeep}&a (${upkeepperclaim} per claim in this world) [&e/e upkeep](/s upkeep)"
       home-set: "&7{state} home was set at &r&6{x}&r&7,&r&6{y}&r&7,&r&6{z}"
       radius-too-large: "&c(!) &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
       description: Claim a chunk of land
@@ -3952,8 +3584,8 @@ command:
         &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e☧ {bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e{joinfee}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e{joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fDaily Missions: &e{dailymissions}
         &fFinished Missions: &e{missions}
@@ -4040,20 +3672,13 @@ command:
       footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "<< Prev "
       next: " Next >>"
-    lock:
-      admin:
-        description: "Allows administrating of locks inside the settlement's claims"
-    mail:
-      description: "Allows sending a mail to all chiefs of empire member settlements"
-      sender: "Leader {name}, Empire {empirename}"
-      sent: "&a&lSUCCESS &r&7Sent mail to {amount} chiefs of empire member settlements!"
     materials:
       description: "View the materials you need to upgrade your empire"
     missions:
       wait-for-missions: "&cYou do not have any missions from your empire yet. Wait for the next distribution!"
       description: "View missions available to your empire"
       redistribute:
-        success: "&eGot {amount} new missions for ☧ {price}"
+        success: "&eGot {amount} new missions for ${price}"
         fail: "&cUnable to distribute new missions. Please complete your started ones!"
         description: "Get new new missions for a price"
     mode:
@@ -4079,7 +3704,7 @@ command:
         own-land: "&r &a- &6= your land"
         enemy: "&r &c- &6= other"
         empire-land: "&r &2- &6= your Empire land"
-        for-sale: "&r &a☧  &6= for sale"
+        for-sale: "&r &a$ &6= for sale"
         player-plot: "&r &ep &6= player plot"
         linked-plot: "&r &6p &6= linked plots"
         embassy: "&r &ae &6= embassy"
@@ -4106,7 +3731,7 @@ command:
         own-plot: Your plot
         plot: "Plot Owner: &7{owner}"
         embassy: "Embassy Owner: &7{owner}"
-        for-sale: "For sale: &7☧ {price} &fTax: &7☧ {tax}"
+        for-sale: "For sale: &7${price} &fTax: &7${tax}"
         outpost: "Outpost: &7{name}"
         home: Home
         abandoned: |-
@@ -4117,15 +3742,6 @@ command:
       head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
       entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Members: &f{size} players\n&f{description})"
       description: "List all empire members"
-    npc:
-      skin:
-        success: "&aSuccessfully changed the skin of your {state} {type}"
-        description: "Change an NPC's skin"
-      teleport:
-        success: "&aTeleported your {state} {type} to your location"
-        requires-home: "&cCan't move &e{npc}&c here as it requires a claim connected to your home!"
-        description: "Move NPCs"
-      description: "Manage your NPCs"
     officer:
       description: "Members that should have officer build access"
     ranks:
@@ -4253,8 +3869,8 @@ command:
         &fMembers: &e{size}&f/&e{maxsize}
         &fAccess: &e{access}
         &fRecruitment: &e{jointype}
-        &fBank: &e☧ {bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e☧ {tax} | &fJoin fee: &e{joinfee}
+        &fBank: &e${bank}
+        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e{joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fDaily Missions: &e{dailymissions}
         &fFinished Missions: &e{missions}
@@ -4298,14 +3914,6 @@ command:
         description: Sets the action for when a settlement can't pay the tax
       exempt:
         description: Exempts a resident from having to pay the plot taxes in this empire
-    auctiontax:
-      current: "&7Your empire's auction tax is &e{amount}&7!"
-      description: Empire auction taxes
-      set:
-        success: "&e&l(!) &r&7Empire auction tax was set &e{amount}%&7!"
-        above-max: "&c(!) &cMax auction tax amount is &e{max}%&c!"
-        below-zero: "&c(!) &cAuction tax amount cannot be negative!"
-        description: Sets the auction tax a player needs to pay when putting up an item for auction
     title:
       description: "Set your title"
       success:
@@ -4360,7 +3968,7 @@ command:
       home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
       confirm: "&cPlease do [&e&l/{command}](/{command})&c in the next minute to confirm the &e&lunclaiming&c of [&e&l{amount}&c chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &cportals](&fPortals that will be removed:\n&7{portals})."
       success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
-      new-upkeep: "&aYour new upkeep is now &e☧ {upkeep}&a (☧ {upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
+      new-upkeep: "&aYour new upkeep is now &e${upkeep}&a (${upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
       description: Unclaim land which is claimed by your empire
       "<radius>":
         description: "Unclaims all the chunks in the stated radius (max is 5)"
@@ -4377,7 +3985,7 @@ command:
     upkeep:
       info: |-
         &a&m━━━━↠&r &bUpkeep &a&m↞━━━━
-        &x&8&7&C&E&E&B&lTotal daily upkeep cost: &a☧ {global_cost} &b(&e{global_total} claims&b)
+        &x&8&7&C&E&E&B&lTotal daily upkeep cost: &a${global_cost} &b(&e{global_total} claims&b)
         &x&8&7&C&E&E&B&lDays of upkeep in bank: &6{afford} days
         &x&8&7&C&E&E&B&lTime until next Upkeep: &2{time}
       afford-infinite: "infinite"
@@ -4402,40 +4010,6 @@ command:
       description: Set who can use stuff in your empire world
       all:
         description: Sets all flags to a certain state
-  lock:
-    description: Lock containers
-    click-to-lock: "&aClick a container in the next &e10 seconds&a to lock it!&7 Run [&e/lock help](/lock help)&7 to view possible commands!"
-    toggle:
-      description: Lock multiple containers. (10 minute timeout after last lock)
-      toggled: "&aToggled container locking!&7 Run [&e/lock toggle](/lock toggle)&7 again to toggle it off!"
-      untoggled: "&7Disabled container locking toggle!"
-    add:
-      description: Give access to a lock
-      click-to-add: "&aClick a container in the next &e10 seconds&a to add {name} to it!"
-      toggled: "&aToggled adding of {name} to containers!&7 Run [&e/lock add {target} toggle](/lock add {target} toggle)&7 again to toggle it off!"
-      untoggled: "&7Disabled adding of {name} to containers!"
-    remove:
-      description: Remove access from a lock
-      click-to-remove: "&aClick a container in the next &e10 seconds&a to remove {name} from it!"
-      toggled: "&aToggled removing of {name} from containers!&7 Run [&e/lock remove {target} toggle](/lock remove {target} toggle)&7 again to toggle it off!"
-      untoggled: "&7Disabled removing of {name} from containers!"
-    hoppers:
-      description: Toggle whether or not hoppers are allowed
-      click-to-toggle: "&aClick a container in the next &e10 seconds&a to toggle hoppers!"
-      toggled: "&aToggled lock hopper allowance!&7 Run [&e/lock hoppers toggle](/lock hoppers toggle)&7 again to toggle it off!"
-      untoggled: "&7Disabled hopper toggle!"
-    info:
-      description: Show information about a lock
-      click-for-info: "&aClick a container in the next &e10 seconds&a to get information about it!"
-      toggled: "&aToggled container info!&7 Run [&e/lock info toggle](/lock info toggle)&7 again to toggle it off!"
-      untoggled: "&7Disabled container info toggle!"
-  unlock:
-    description: Unlock containers
-    click-to-unlock: "&7Click a container to unlock it!"
-    toggle:
-      description: Unlock multiple containers. (10 minute timeout after last unlock)
-      toggled: "&aToggled container unlocking!&7 Run [&e/unlock toggle](/unlock toggle)&7 again to toggle it off!"
-      untoggled: "&7Disabled container unlocking toggle!"
   warningtoggle:
     description: Toggle the warning when building near settlements
     enabled: "&7You will now receive close building warnings for {state} {settlement} again!"
