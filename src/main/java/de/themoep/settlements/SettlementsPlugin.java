@@ -154,7 +154,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                             .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
                             .collect(Collectors.joining(", ")));
                 } else {
-                    Message.get("broadcast.settlement-abandoned").broadcast("state", newlyAbandonedSettlements.get(0).getStateTag(), "name", newlyAbandonedSettlements.get(0).getName());
+                    Message.get("broadcast.settlement-abandoned").broadcast("state", newlyAbandonedSettlements.getFirst().getStateTag(), "name", newlyAbandonedSettlements.getFirst().getName());
                 }
             }
             newlyAbandonedSettlements.clear();
@@ -165,7 +165,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                             .map(v -> Message.get("broadcast.settlements-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
                             .collect(Collectors.joining(", ")));
                 } else {
-                    Message.get("broadcast.settlement-deletion").broadcast("state", newlyDeletedSettlements.get(0).getStateTag(), "name", newlyDeletedSettlements.get(0).getName());
+                    Message.get("broadcast.settlement-deletion").broadcast("state", newlyDeletedSettlements.getFirst().getStateTag(), "name", newlyDeletedSettlements.getFirst().getName());
                 }
             }
             newlyDeletedSettlements.clear();
@@ -184,7 +184,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                             .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
                             .collect(Collectors.joining(", ")));
                 } else {
-                    Message.get("broadcast.empire-abandoned").broadcast("state", newlyAbandonedEmpires.get(0).getStateTag(), "name", newlyAbandonedEmpires.get(0).getName());
+                    Message.get("broadcast.empire-abandoned").broadcast("state", newlyAbandonedEmpires.getFirst().getStateTag(), "name", newlyAbandonedEmpires.getFirst().getName());
                 }
             }
             newlyAbandonedEmpires.clear();
@@ -195,7 +195,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                             .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
                             .collect(Collectors.joining(", ")));
                 } else {
-                    Message.get("broadcast.empire-deletion").broadcast("state", newlyDeletedEmpires.get(0).getStateTag(), "name", newlyDeletedEmpires.get(0).getName());
+                    Message.get("broadcast.empire-deletion").broadcast("state", newlyDeletedEmpires.getFirst().getStateTag(), "name", newlyDeletedEmpires.getFirst().getName());
                 }
             }
             newlyDeletedEmpires.clear();

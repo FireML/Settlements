@@ -108,9 +108,9 @@ public class UpgradeGUI extends ConfigurableGui {
             LevelInfo level = selected.getLevelInfo();
             LevelInfo nextLevel = selected.getNextLevel().orElse(null);
             if (nextLevel != null) {
-                Collection<? extends LevelPerk> perks = selected.getPerks(nextLevel.getLevel());
+                Collection<? extends LevelPerk<?>> perks = selected.getPerks(nextLevel.getLevel());
                 List<String> benefits = new ArrayList<>();
-                if (nextLevel instanceof LandownerLevel && level instanceof  LandownerLevel) {
+                if (nextLevel instanceof LandownerLevel && level instanceof LandownerLevel) {
                     if (((LandownerLevel) nextLevel).getSize() > ((LandownerLevel) level).getSize()) {
                         benefits.add(((LandownerLevel) nextLevel).getSize() + " Members");
                     }
@@ -144,7 +144,7 @@ public class UpgradeGUI extends ConfigurableGui {
                     }
                 }
                 List<String> benefitTexts = new ArrayList<>();
-                for (LevelPerk perk : perks) {
+                for (LevelPerk<?> perk : perks) {
                     if (perk.getUnlockables().isEmpty() || getMessage("description." + perk.getKey()).exists()) {
                         benefitTexts.add(getText("benefit",
                                 "name", perk.getTag(),
@@ -188,7 +188,7 @@ public class UpgradeGUI extends ConfigurableGui {
         }));
 
         gui.addElement(new DynamicGuiElement('d', who -> new StaticGuiElement('d', getIcon("deposit"), click -> {
-            if (click.getCursor() == null || click.getCursor().getType().isEmpty()) {
+            if (click.getCursor() == null || click.getCursor().isEmpty()) {
                 new DepositGUI<>(landOwner.getKey(), resident, selected).open();
             } else if (click.getType() == ClickType.LEFT && click.getCursor() != null) {
                 Map<String, Long> requirements = selected.getNextLevelRequirements();

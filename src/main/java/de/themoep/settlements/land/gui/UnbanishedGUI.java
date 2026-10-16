@@ -20,11 +20,11 @@ public class UnbanishedGUI extends SettlementsGUI {
             Targetable t = b.getTargetable();
             return new String[]{
                     "name", (t instanceof LandOwner<?, ?> ? ((LandOwner<?, ?>) t).getStateTag() + " ": "") + t.getName(),
-                    "date", Utils.DATE_FORMAT.format(b.getBanishDate()),
-                    "reason", b.getReason(),
-                    "banisher", b.getBanisherId() != Utils.ZERO_UUID ? ResidentManager.getInstance().getResidentName(b.getBanisherId()) : "[Auto]",
-                    "unbanisher", ResidentManager.getInstance().getResidentName(b.getUnbanisherId()),
-                    "unbanishdate", Utils.DATE_FORMAT.format(b.getUnbanishDate())
+                    "date", Utils.DATE_FORMAT.format(b.banishDate()),
+                    "reason", b.reason(),
+                    "banisher", b.banisherId() != Utils.ZERO_UUID ? ResidentManager.getInstance().getResidentName(b.banisherId()) : "[Auto]",
+                    "unbanisher", ResidentManager.getInstance().getResidentName(b.unbanisherId()),
+                    "unbanishdate", Utils.DATE_FORMAT.format(b.unbanishDate())
             };
         });
     }

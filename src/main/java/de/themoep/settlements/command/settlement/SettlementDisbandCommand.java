@@ -10,11 +10,12 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.config.Config;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class SettlementDisbandCommand extends SettlementSubCommand {
-    private Cache<UUID, Boolean> confirm = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+    private final Cache<UUID, Boolean> confirm = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(1)).build();
 
     public SettlementDisbandCommand(SubCommand parent) {
         super(parent, "disband [confirm]");

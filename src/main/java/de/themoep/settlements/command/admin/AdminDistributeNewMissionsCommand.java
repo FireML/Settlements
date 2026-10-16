@@ -20,7 +20,7 @@ public class AdminDistributeNewMissionsCommand extends SubCommand implements Tar
         }
 
         Targetable targetable = getTarget(sender, args[0]);
-        if (targetable instanceof MissionProvider && targetable instanceof LandOwner) {
+        if (targetable instanceof MissionProvider<?> && targetable instanceof LandOwner) {
             ((MissionProvider<?>) targetable).distributeNewMissions();
             getMessage("success").tell(sender,
                     "name", targetable.getName(),

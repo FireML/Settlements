@@ -27,9 +27,10 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
 
     @Override
     public LandOwner<?, ?> getTarget() {
-        return (LandOwner) getTargetAble(getTargetType(), getTargetId());
+        return (LandOwner<?, ?>) getTargetAble(getTargetType(), getTargetId());
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public S getSource() {
         return (S) getTargetAble(getSourceType(), getSourceId());

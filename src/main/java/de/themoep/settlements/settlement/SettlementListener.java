@@ -113,7 +113,7 @@ public class SettlementListener implements Listener {
         SimpleChunkLocation chunkLocation = new SimpleChunkLocation(location);
         OwnedLand land = LandManager.getInstance().getLand(chunkLocation);
         if (land == null) {
-            Collection<LandOwner> landOwners = LandManager.getInstance().getNearbyLandOwners(chunkLocation);
+            Collection<LandOwner<?, ?>> landOwners = LandManager.getInstance().getNearbyLandOwners(chunkLocation);
             if (Config.Claiming.Close.Building.BLOCK_OUTSIDE && landOwners.isEmpty()
                     && !Config.Claiming.Close.Building.ALLOWED_BLOCKS.contains(block)
                     && !Config.Claiming.Close.Building.ALLOWED_WORLDS.contains(location.getWorld().getName())

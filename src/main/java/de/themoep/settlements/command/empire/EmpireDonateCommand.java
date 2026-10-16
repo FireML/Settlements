@@ -45,7 +45,7 @@ public class EmpireDonateCommand extends ResidentSubCommand {
                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) donate);
                 if (r2.transactionSuccess()) {
                     empire.addToBank(donate);
-                    Levelable levelable = SettlementDepositCommand.getLevellable(empire);
+                    Levelable<?> levelable = SettlementDepositCommand.getLevellable(empire);
                     if (levelable != null) {
                         levelable.checkLevelUp(resident);
                     }

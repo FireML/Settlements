@@ -211,7 +211,7 @@ public interface LandOwnerCommand extends ConfigMessages {
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveLand(toSave);
                 if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
-                    new ChatMap(res.getPlayer(), landOwner, toSave.get(0).getMapKey());
+                    new ChatMap(res.getPlayer(), landOwner, toSave.getFirst().getMapKey());
                 }
             });
         }

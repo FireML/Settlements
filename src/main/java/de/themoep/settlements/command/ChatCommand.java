@@ -133,7 +133,7 @@ public class ChatCommand extends PlayerSubCommand {
         return false;
     }
 
-    private abstract class PermissionPlayerSubCommand extends PlayerSubCommand {
+    private abstract static class PermissionPlayerSubCommand extends PlayerSubCommand {
         public PermissionPlayerSubCommand(ChatCommand parent, String name, String permission) {
             super(parent, name);
             setPermission(permission);

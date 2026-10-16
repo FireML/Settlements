@@ -5,6 +5,8 @@ import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Utils;
 import org.apache.commons.lang3.Validate;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -12,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PerkEffect {
-    private PotionEffectType type;
+    private final PotionEffectType type;
     private int strength = 1;
     private int length = 0;
     private boolean ambient = true;
@@ -28,7 +30,11 @@ public class PerkEffect {
     }
 
     public PerkEffect(Map<String, Object> map, EffectLocation applyIn) {
-        this(PotionEffectType.getByName((String) map.get("type")));
+        NamespacedKey key = NamespacedKey.fromString(map.get("type").toString());
+        if (key == null) {
+            throw new IllegalArgumentException(map.get("type").toString() + " is not a valid potion effect type.");
+        }
+        this(Registry.POTION_EFFECT_TYPE.get(key));
         this.strength = (int) map.getOrDefault("strength", strength);
         if (this.strength <= 0) {
             this.strength = 1;
@@ -82,7 +88,7 @@ public class PerkEffect {
     }
 
     public String getIdentifier() {
-        return getType().getName() + "|" + (getStrength() - 1) + "|" + isAmbient() + "|" + hasParticles();
+        return getType().getKey() + "|" + (getStrength() - 1) + "|" + isAmbient() + "|" + hasParticles();
     }
 
     public enum EffectLocation implements NameTag {

@@ -41,9 +41,7 @@ public class ItemUtils {
     }
 
     public static void hideAllFlags(ItemStack item) {
-        item.editMeta(meta -> {
-            meta.addItemFlags(ItemFlag.values());
-        });
+        item.editMeta(meta -> meta.addItemFlags(ItemFlag.values()));
     }
 
     public static ItemStack setGlowing(ItemStack item, boolean value) {

@@ -29,7 +29,7 @@ public class EmpireMission extends Mission {
     }
 
     @Override
-    public boolean isValid(Resident resident, MissionProvider provider) {
+    public boolean isValid(Resident resident, MissionProvider<?> provider) {
         if (provider instanceof Empire) {
             Player player = resident.getPlayer();
             if (player == null) {

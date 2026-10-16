@@ -29,7 +29,6 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
@@ -44,7 +43,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -54,10 +52,10 @@ public class ChatManager implements ConfigMessages, Listener {
 
     private final Replacer notifyReplacer = new Replacer().placeholderPrefix("@").placeholderSuffix("");
 
-    private Map<UUID, UUID> lastMessage = new HashMap<>();
+    private final Map<UUID, UUID> lastMessage = new HashMap<>();
 
     private final static DecimalFormat BALANCE_FORMAT = new DecimalFormat("#,###.##");
-    private Cache<UUID, Boolean> notifyCooldowns = Caffeine.newBuilder().expireAfterAccess(Config.Chat.Notify.COOLDOWN, TimeUnit.SECONDS).build();
+    private final Cache<UUID, Boolean> notifyCooldowns = Caffeine.newBuilder().expireAfterAccess(Config.Chat.Notify.COOLDOWN, TimeUnit.SECONDS).build();
 
     private void setup() {
 

@@ -42,7 +42,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implements DatabaseSerializable, Levelable<L>, Targetable, ModeAble, FlagAble, Sortable {
+public abstract class LandOwner<R extends Rank<?, R>, L extends LandownerLevel> implements DatabaseSerializable, Levelable<L>, Targetable, ModeAble, FlagAble, Sortable<L> {
     private IdObject id = IdObject.get(null);
     private String name;
     private String description = "";
@@ -56,26 +56,26 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
     private TaxDebtAction taxDebtAction = TaxDebtAction.KICK;
     protected boolean allowAllyClaim = false;
     private boolean enableNPCs = false;
-    private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
+    private final Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private int bonusClaims = 0;
-    private Map<String, Long> vault = new HashMap<>();
-    private Map<String, PerkData> perks = new LinkedHashMap<>();
+    private final Map<String, Long> vault = new HashMap<>();
+    private final Map<String, PerkData> perks = new LinkedHashMap<>();
     private SimpleLocation home = null;
     private BuildState buildState = getDefaultBuildState();
     private LandAccess access = LandAccess.PRIVATE;
     private JoinType joinType = JoinType.INVITE_ONLY;
-    private Map<IdObject, JoinRequest<?>> joinRequests = new HashMap<>();
-    private Map<Use, BuildState> use = new EnumMap<>(Use.class);
+    private final Map<IdObject, JoinRequest<?>> joinRequests = new HashMap<>();
+    private final Map<Use, BuildState> use = new EnumMap<>(Use.class);
 
-    private Map<String, Map<String, Boolean>> ranksPermissions = new HashMap<>();
+    private final Map<String, Map<String, Boolean>> ranksPermissions = new HashMap<>();
     protected Multimap<String, String> rankTitles = MultimapBuilder.hashKeys().linkedHashSetValues().build();
     protected Map<String, String> defaultRankTitles = new HashMap<>();
 
     protected Table<String, IdObject, Ally> allies = HashBasedTable.create();
-    private Table<String, IdObject, AllyRequest> allyRequests = HashBasedTable.create();
+    private final Table<String, IdObject, AllyRequest> allyRequests = HashBasedTable.create();
 
     protected Table<String, IdObject, Banished> banished = HashBasedTable.create();
-    private List<Unbanished> unbanished = new ArrayList<>();
+    private final List<Unbanished> unbanished = new ArrayList<>();
 
     protected LandOwner() {}
 
@@ -573,7 +573,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         } else {
             return false;
         }
-        return banished.put(entry.getType(), entry.getBanishedId(), entry) == null;
+        return banished.put(entry.type(), entry.banishedId(), entry) == null;
     }
 
     public boolean removeBanished(Resident sender, Targetable target) {
@@ -934,7 +934,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         return map;
     }
 
-    public static <T extends LandOwner> T deserialize(T landOwner, Map<String, Object> map) {
+    public static <T extends LandOwner<?, ?>> T deserialize(T landOwner, Map<String, Object> map) {
         if (map == null || map.get("name") == null || map.get("buildState") == null) {
             SettlementsPlugin.getInstance().getLogging().warn("Could not deserialize LandOwner! (" + map + ")");
             return null;
@@ -947,6 +947,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         landOwner.setId(IdObject.get(map));
         landOwner.setBank(Utils.getLong(map.get("bank")));
         landOwner.setJoinFee(Utils.getLong(map.get("joinFee")));
+        //noinspection rawtypes,unchecked
         for (JoinRequest<?> request : ((Collection<JoinRequest>) map.get("joinRequests"))) {
             landOwner.addJoinRequest(request);
         }
@@ -987,7 +988,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
         landOwner.setAllowAllyClaim(Utils.getBoolean(map.get("allowAllyClaim")));
 
         for (Banished banished : ((Collection<Banished>) map.get("banished"))) {
-            landOwner.banished.put(banished.getType(), banished.getBanishedId(), banished);
+            landOwner.banished.put(banished.type(), banished.banishedId(), banished);
         }
         landOwner.getUnbanished().addAll(((Collection<Unbanished>) map.get("unbanished")));
         ((Map<String, Object>) map.get("vault")).entrySet().stream()
@@ -1018,7 +1019,7 @@ public abstract class LandOwner<R extends Rank, L extends LandownerLevel> implem
 
     @Override
     public boolean equals(Object o) {
-        return o != null && o.getClass().equals(getClass()) && ((LandOwner) o).getId().equals(getId());
+        return o != null && o.getClass().equals(getClass()) && ((LandOwner<?, ?>) o).getId().equals(getId());
     }
 
     @Override

@@ -11,7 +11,6 @@ import de.themoep.settlements.land.events.LandModeChangeEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
-import de.themoep.settlements.utils.Utils;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 

@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
-public class AllyRequest extends Invite<LandOwner, LandOwner> {
+public class AllyRequest extends Invite<LandOwner<?, ?>, LandOwner<?, ?>> {
 
     public AllyRequest(LandOwner<?, ?> target, LandOwner<?, ?> source) {
         super(target, source);

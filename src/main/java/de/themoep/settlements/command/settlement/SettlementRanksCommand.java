@@ -32,7 +32,7 @@ public class SettlementRanksCommand extends SettlementSubCommand {
                             "permission", e.getKey(),
                             "value", String.valueOf(e.getValue().orElse(false)),
                             "opposite", String.valueOf(!e.getValue().orElse(false)),
-                            "color",  String.valueOf(e.getValue().orElse(false) ? "§a" : "§c")
+                            "color", e.getValue().orElse(false) ? "§a" : "§c"
                     );
                 }
                 getMessage("footer").tell(resident, "rank", rank.getTag(resident.getSettlement()));

@@ -143,7 +143,7 @@ public class Message {
         ComponentUtils.broadcastMessage(ComponentUtils.parsePlaceholders(this.getComponent(), replacements));
     }
 
-    private static Map<String, Message> messages = new HashMap<>();
+    private static final Map<String, Message> messages = new HashMap<>();
 
     public static Message get(String key) {
         Message message = messages.get(key);

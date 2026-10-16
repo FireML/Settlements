@@ -33,15 +33,15 @@ public class AdminCooperationPointsCommand extends SubCommand implements TargetP
         }
 
         Targetable targetable = getTarget(sender, args[1]);
-        if (targetable instanceof MissionTaker) {
-            if (operation.apply((MissionTaker) targetable, amount)) {
+        if (targetable instanceof MissionTaker<?> taker) {
+            if (operation.apply(taker, amount)) {
                 getMessage("success").tell(sender,
                         "operation", operation.name().toLowerCase(),
                         "amount", String.valueOf(amount),
                         "name", targetable.getName()
                 );
-                if (targetable instanceof DatabaseSerializable) {
-                    ((DatabaseSerializable) targetable).save();
+                if (targetable instanceof DatabaseSerializable serializable) {
+                    serializable.save();
                 }
             }
         } else {
@@ -54,21 +54,21 @@ public class AdminCooperationPointsCommand extends SubCommand implements TargetP
     private enum Operation {
         ADD() {
             @Override
-            public boolean apply(MissionTaker settlement, int amount) {
+            public boolean apply(MissionTaker<?> settlement, int amount) {
                 settlement.setMissionPoints(settlement.getMissionPoints() + amount);
                 return true;
             }
         },
         SET() {
             @Override
-            public boolean apply(MissionTaker missionTaker, int amount) {
+            public boolean apply(MissionTaker<?> missionTaker, int amount) {
                 missionTaker.setMissionPoints(amount);
                 return true;
             }
         },
         REMOVE() {
             @Override
-            public boolean apply(MissionTaker missionTaker, int amount) {
+            public boolean apply(MissionTaker<?> missionTaker, int amount) {
                 if (missionTaker.getMissionPoints() >= amount) {
                     missionTaker.setMissionPoints(missionTaker.getMissionPoints() - amount);
                     return true;
@@ -77,6 +77,6 @@ public class AdminCooperationPointsCommand extends SubCommand implements TargetP
             }
         };
 
-        public abstract boolean apply(MissionTaker missionTaker, int amount);
+        public abstract boolean apply(MissionTaker<?> missionTaker, int amount);
     }
 }

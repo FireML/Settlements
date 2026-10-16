@@ -7,7 +7,7 @@ import java.util.Locale;
  * Objects that have a name entry in the message config
  */
 public interface NameTag extends ConfigKey, HumanReadable {
-    static String getTag(Enum e) {
+    static String getTag(Enum<?> e) {
         Message message = Message.get(ConfigKey.getKey(e) + ".name");
         if (!message.exists()) {
             message = Message.get("names." + e.getClass().getSimpleName().toLowerCase(Locale.ROOT).replace("$$", ".") + "." + ConfigKey.getKey(e));

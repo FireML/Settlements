@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public enum BuildState implements NameTag, Rankable {
     PRIVATE(Material.RED_WOOL, AppliesTo.LAND, AppliesTo.EMPIRE),
@@ -57,7 +56,7 @@ public enum BuildState implements NameTag, Rankable {
         if (ordinal + 1 < values.size()) {
             return values.get(ordinal + 1);
         }
-        return values.get(0);
+        return values.getFirst();
     }
 
     public BuildState previous(AppliesTo to) {
@@ -69,7 +68,7 @@ public enum BuildState implements NameTag, Rankable {
             }
             return values.get(ordinal - 1);
         }
-        return values.get(values.size() - 1);
+        return values.getLast();
     }
 
     public boolean appliesTo(AppliesTo to) {

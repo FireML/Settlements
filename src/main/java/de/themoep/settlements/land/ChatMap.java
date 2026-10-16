@@ -132,7 +132,7 @@ public class ChatMap {
 
         private boolean canClaimCoords = false;
         private boolean canUnclaimCoords = false;
-        private boolean canLinkPlot;
+        private final boolean canLinkPlot;
 
         private final Set<RowEnd> legend = EnumSet.of(RowEnd.CURRENT);
 

@@ -4,10 +4,7 @@ import de.themoep.settlements.leveling.LevelInfo;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class LandownerLevel extends LevelInfo {
     protected final long claimUpkeep;

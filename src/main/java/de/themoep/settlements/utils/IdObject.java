@@ -27,7 +27,7 @@ public class IdObject {
                 SettlementsPlugin.getInstance().getLogging().exception(e);
                 return new IdObject(null);
             }
-        if (id instanceof Map map)
+        if (id instanceof Map<?, ?> map)
             if (map.containsKey("id")) {
                 return new IdObject(map.get("id"));
             } else {
@@ -47,9 +47,10 @@ public class IdObject {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        return this == o || (o instanceof IdObject && Objects.equals(((IdObject) o).value, value));
+        }
+        return o instanceof IdObject && Objects.equals(((IdObject) o).value, value);
     }
 
     @Override

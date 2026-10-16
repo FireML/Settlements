@@ -18,24 +18,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Banished implements DatabaseSerializable, Sortable<Banished> {
-    private final String type;
-    private final IdObject banishedId;
-    private final long banishDate;
-    private final UUID senderId;
-    private final String reason;
-
-    public Banished(String type, IdObject banishedId, long creationDate, UUID senderId, String reason) {
-        this.type = type;
-        this.banishedId = banishedId;
-        this.banishDate = creationDate;
-        this.senderId = senderId;
-        this.reason = reason;
-    }
-
-    public String getType() {
-        return type;
-    }
+public record Banished(String type, IdObject banishedId, long banishDate, UUID senderId,
+                       String reason) implements DatabaseSerializable, Sortable<Banished> {
 
     @Override
     public IdObject getId() {
@@ -52,22 +36,6 @@ public class Banished implements DatabaseSerializable, Sortable<Banished> {
         throw new UnsupportedOperationException("Cannot save an individual Banish entry");
     }
 
-    public IdObject getBanishedId() {
-        return banishedId;
-    }
-
-    public long getBanishDate() {
-        return banishDate;
-    }
-
-    public UUID getSenderId() {
-        return senderId;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
     @Override
     public String name() {
         return "banished";
@@ -77,9 +45,9 @@ public class Banished implements DatabaseSerializable, Sortable<Banished> {
     public LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("id", getId().value());
-        map.put("date", getBanishDate());
-        map.put("sender", getSenderId());
-        map.put("reason", getReason());
+        map.put("date", banishDate());
+        map.put("sender", senderId());
+        map.put("reason", reason());
         return map;
     }
 
@@ -95,11 +63,11 @@ public class Banished implements DatabaseSerializable, Sortable<Banished> {
             id = IdObject.get(Integer.parseInt(banishedId[1]));
         }
         return new Banished(
-                banishedId[0],
-                id,
-                Utils.getLong(map.get("date")),
-                UUID.fromString((String) map.get("sender")),
-                (String) map.get("reason")
+            banishedId[0],
+            id,
+            Utils.getLong(map.get("date")),
+            UUID.fromString((String) map.get("sender")),
+            (String) map.get("reason")
         );
     }
 
@@ -109,29 +77,29 @@ public class Banished implements DatabaseSerializable, Sortable<Banished> {
             Targetable o = other.getTargetable();
             return t != null && o != null ? t.getName().compareToIgnoreCase(o.getName()) : 0;
         } else if (sort == Sort.DATE) {
-            return Long.compare(other.getBanishDate(), getBanishDate());
+            return Long.compare(other.banishDate(), banishDate());
         }
         return 0;
     }
 
     public Targetable getTargetable() {
         return switch (type) {
-            case "player" -> ResidentManager.getInstance().getResident((UUID) getBanishedId().value());
-            case "settlement" -> SettlementManager.getInstance().getFromId(getBanishedId());
-            case "empire" -> EmpireManager.getInstance().getEmpireFromId(getBanishedId());
+            case "player" -> ResidentManager.getInstance().getResident((UUID) banishedId().value());
+            case "settlement" -> SettlementManager.getInstance().getFromId(banishedId());
+            case "empire" -> EmpireManager.getInstance().getEmpireFromId(banishedId());
             default -> null;
         };
     }
 
     public Unbanished toUnbanish(Resident sender) {
         return new Unbanished(
-                getType(),
-                getBanishedId(),
-                getBanishDate(),
-                getSenderId(),
-                getReason(),
-                sender != null ? sender.getUUID() : Utils.ZERO_UUID,
-                System.currentTimeMillis()
+            type(),
+            banishedId(),
+            banishDate(),
+            senderId(),
+            reason(),
+            sender != null ? sender.getUUID() : Utils.ZERO_UUID,
+            System.currentTimeMillis()
         );
     }
 
@@ -149,7 +117,7 @@ public class Banished implements DatabaseSerializable, Sortable<Banished> {
     public ItemStack getIcon() {
         Targetable t = getTargetable();
         if (t instanceof Resident) {
-            return ItemUtils.getHead((UUID) getBanishedId().value(), t.getName());
+            return ItemUtils.getHead((UUID) banishedId().value(), t.getName());
         } else if (t instanceof LandOwner<?, ?> owner) {
             return ItemUtils.getHead(owner.getChiefId(), owner.getChiefId().toString());
         }
@@ -157,7 +125,7 @@ public class Banished implements DatabaseSerializable, Sortable<Banished> {
     }
 
     public enum Sort implements Sortable.Sort<Banished> {
-        DATE((b1, b2) -> Long.compare(b2.getBanishDate(), b1.getBanishDate())),
+        DATE((b1, b2) -> Long.compare(b2.banishDate(), b1.banishDate())),
         NAME((b1, b2) -> b1.getTargetable().getName().compareToIgnoreCase(b2.getTargetable().getName())),
         ;
 

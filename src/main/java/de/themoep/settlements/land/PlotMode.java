@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public enum PlotMode implements NameTag {
     pvp(Material.IRON_SWORD),

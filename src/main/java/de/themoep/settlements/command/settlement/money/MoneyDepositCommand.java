@@ -36,7 +36,7 @@ public class MoneyDepositCommand extends SettlementSubCommand {
                 if (r2.transactionSuccess()) {
                     resident.getSettlement().addToBank(deposit);
                     resident.addDonated(deposit);
-                    Levelable levelable = SettlementDepositCommand.getLevellable(resident.getSettlement());
+                    Levelable<?> levelable = SettlementDepositCommand.getLevellable(resident.getSettlement());
                     if (levelable != null) {
                         levelable.checkLevelUp(resident);
                     }

@@ -1,5 +1,3 @@
-import net.minecrell.pluginyml.paper.PaperPluginDescription
-
 plugins {
     `java-library`
     `maven-publish`

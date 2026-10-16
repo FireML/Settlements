@@ -28,7 +28,6 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,17 +40,16 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class LandManager {
     private static LandManager instance;
     private final int nearbyRadius;
-    private Table<String, String, OwnedLand> landTable = HashBasedTable.create();
-    private Multimap<String, SimpleChunkLocation> nearbyTable = MultimapBuilder.hashKeys().hashSetValues().build();
-    private Multimap<IdObject, OwnedLand> settlementLands = MultimapBuilder.hashKeys().hashSetValues().build();
-    private Multimap<IdObject, OwnedLand> empireLands = MultimapBuilder.hashKeys().hashSetValues().build();
-    private Multimap<UUID, OwnedLand> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
-    private Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Table<String, String, OwnedLand> landTable = HashBasedTable.create();
+    private final Multimap<String, SimpleChunkLocation> nearbyTable = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Multimap<IdObject, OwnedLand> settlementLands = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Multimap<IdObject, OwnedLand> empireLands = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Multimap<UUID, OwnedLand> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
 
     private LandManager() {
         nearbyRadius = Config.Claiming.Close.Building.DISTANCE;
@@ -448,7 +446,7 @@ public class LandManager {
         if (Config.Claiming.Close.Unclaim.GRACE_DAYS < 0) {
             return;
         }
-        Map<LandOwner, Integer> landUnclaims = new HashMap<>();
+        Map<LandOwner<?, ?>, Integer> landUnclaims = new HashMap<>();
         List<OwnedLand> toUnclaim = new ArrayList<>();
         List<OwnedLand> toSave = new ArrayList<>();
         for (OwnedLand land : landTable.values()) {
@@ -477,7 +475,7 @@ public class LandManager {
             }
         }
         unclaimLand(toUnclaim);
-        for (Map.Entry<LandOwner, Integer> e : landUnclaims.entrySet()) {
+        for (Map.Entry<LandOwner<? ,?>, Integer> e : landUnclaims.entrySet()) {
             Message.get("land-unclaim").tell(e.getKey().getOnlineResidents(), "amount", String.valueOf(e.getValue()));
         }
         DatabaseManager.getInstance().saveLand(toSave);
@@ -540,18 +538,18 @@ public class LandManager {
         }
     }
 
-    public Set<LandOwner> getNearbyLandOwners(Location location) {
+    public Set<LandOwner<?, ?>> getNearbyLandOwners(Location location) {
         if (nearbyRadius == 0) {
             return ImmutableSet.of();
         }
         return getNearbyLandOwners(new SimpleChunkLocation(location));
     }
 
-    public Set<LandOwner> getNearbyLandOwners(SimpleChunkLocation chunkLocation) {
+    public Set<LandOwner<?, ?>> getNearbyLandOwners(SimpleChunkLocation chunkLocation) {
         if (nearbyRadius == 0) {
             return ImmutableSet.of();
         }
-        Set<LandOwner> owners = new HashSet<>();
+        Set<LandOwner<?, ?>> owners = new HashSet<>();
         for (Iterator<SimpleChunkLocation> it = nearbyTable.get(chunkLocation.getKey()).iterator(); it.hasNext(); ) {
             SimpleChunkLocation nearbyLocation = it.next();
             OwnedLand land = getLand(nearbyLocation);

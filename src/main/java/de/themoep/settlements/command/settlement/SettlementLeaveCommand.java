@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SettlementLeaveCommand extends SettlementSubCommand {
 
-    private Cache<UUID, Long> confirm;
+    private final Cache<UUID, Long> confirm;
 
     public SettlementLeaveCommand(SubCommand parent) {
         super(parent, "leave");

@@ -11,7 +11,6 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
-import de.themoep.settlements.utils.Utils;
 
 public class ModeGUI extends ConfigurableGui {
 

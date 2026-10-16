@@ -10,11 +10,12 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Utils;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class PlotBuyCommand extends ResidentSubCommand {
-    private Cache<UUID, String> plotBuyTimeout = CacheBuilder.newBuilder().expireAfterWrite(1, TimeUnit.MINUTES).build();
+    private final Cache<UUID, String> plotBuyTimeout = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(1)).build();
 
     public PlotBuyCommand(PlotCommand parent) {
         super(parent, "buy");

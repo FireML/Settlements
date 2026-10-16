@@ -1,6 +1,5 @@
 package de.themoep.settlements.land;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.MessageUtils;
@@ -244,30 +243,32 @@ public class LandUseListener implements LandAccessChecker, Listener {
         }
 
         Player damager = null;
-        if (e.getDamager() instanceof Player) {
-            damager = (Player) e.getDamager();
-        } else if (e.getDamager() instanceof Projectile) {
-            if (((Projectile) e.getDamager()).getShooter() instanceof Player) {
-                damager = (Player) ((Projectile) e.getDamager()).getShooter();
-            } else if (((Projectile) e.getDamager()).getShooter() instanceof Mob
-                    && ((Mob) ((Projectile) e.getDamager()).getShooter()).getTarget() instanceof Player) {
-                damager = (Player) ((Mob) ((Projectile) e.getDamager()).getShooter()).getTarget();
-            } else if (e.getEntity() instanceof Mob) {
-                OwnedLand entityLand = LandManager.getInstance().getLand(e.getEntity().getLocation());
-                if (entityLand != null) {
-                    Location shooterLocation = getLocation(e);
-                    if (shooterLocation != null) {
-                        OwnedLand shooterLand = LandManager.getInstance().getLand(shooterLocation);
-                        if (shooterLand == null || !shooterLand.isOwnedBy(entityLand.getLandOwner())) {
-                            e.setCancelled(true);
+        switch (e.getDamager()) {
+            case Player player1 -> damager = player1;
+            case Projectile projectile -> {
+                if (projectile.getShooter() instanceof Player) {
+                    damager = (Player) projectile.getShooter();
+                } else if (projectile.getShooter() instanceof Mob
+                    && ((Mob) projectile.getShooter()).getTarget() instanceof Player) {
+                    damager = (Player) ((Mob) projectile.getShooter()).getTarget();
+                } else if (e.getEntity() instanceof Mob) {
+                    OwnedLand entityLand = LandManager.getInstance().getLand(e.getEntity().getLocation());
+                    if (entityLand != null) {
+                        Location shooterLocation = getLocation(e);
+                        if (shooterLocation != null) {
+                            OwnedLand shooterLand = LandManager.getInstance().getLand(shooterLocation);
+                            if (shooterLand == null || !shooterLand.isOwnedBy(entityLand.getLandOwner())) {
+                                e.setCancelled(true);
+                            }
                         }
                     }
+                } else {
+                    e.setCancelled(true);
                 }
-            } else {
-                e.setCancelled(true);
             }
-        } else if (e.getDamager() instanceof Creeper creeper && creeper.getTarget() instanceof Player player) {
-            damager = player;
+            case Creeper creeper when creeper.getTarget() instanceof Player player -> damager = player;
+            default -> {
+            }
         }
 
         if (damager != null) {
@@ -302,19 +303,21 @@ public class LandUseListener implements LandAccessChecker, Listener {
         }
 
         Player combuster = null;
-        if (e.getCombuster() instanceof Player) {
-            combuster = (Player) e.getCombuster();
-        } else if (e.getCombuster() instanceof Projectile) {
-            if (((Projectile) e.getCombuster()).getShooter() instanceof Player) {
-                combuster = (Player) ((Projectile) e.getCombuster()).getShooter();
-            } else if (((Projectile) e.getCombuster()).getShooter() instanceof Mob
-                    && ((Mob) ((Projectile) e.getCombuster()).getShooter()).getTarget() instanceof Player) {
-                combuster = (Player) ((Mob) ((Projectile) e.getCombuster()).getShooter()).getTarget();
-            } else if (isLandClaimed(e.getEntity().getLocation())) {
-                e.setCancelled(true);
+        switch (e.getCombuster()) {
+            case Player player -> combuster = player;
+            case Projectile projectile -> {
+                if (projectile.getShooter() instanceof Player) {
+                    combuster = (Player) projectile.getShooter();
+                } else if (projectile.getShooter() instanceof Mob
+                    && ((Mob) projectile.getShooter()).getTarget() instanceof Player) {
+                    combuster = (Player) ((Mob) projectile.getShooter()).getTarget();
+                } else if (isLandClaimed(e.getEntity().getLocation())) {
+                    e.setCancelled(true);
+                }
             }
-        } else if (e.getCombuster() instanceof Creeper && ((Creeper) e.getCombuster()).getTarget() instanceof Player) {
-            combuster = (Player) ((Creeper) e.getCombuster()).getTarget();
+            case Creeper creeper when creeper.getTarget() instanceof Player -> combuster = (Player) creeper.getTarget();
+            default -> {
+            }
         }
 
         if (combuster != null) {

@@ -39,7 +39,7 @@ public interface Levelable<T extends LevelInfo> extends Vaultable, NameTag {
 
     boolean checkLevelUp(Resident resident);
 
-    Collection<? extends LevelPerk> getPerks(int level);
+    Collection<? extends LevelPerk<?>> getPerks(int level);
 
     default double getNextLevelProgress() {
         Map<String, Long> requirements = getNextLevelRequirements();

@@ -7,17 +7,12 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.MessageUtils;
-import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Chunk;
 
 import java.time.Duration;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 public class OutpostUnclaimCommand extends SettlementSubCommand {
 

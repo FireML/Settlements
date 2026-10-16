@@ -18,28 +18,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
-    private final String type;
-    private final IdObject banishedId;
-    private final long banishDate;
-    private final UUID banisherId;
-    private final String reason;
-    private final UUID unbanisherId;
-    private final long unbanishDate;
-
-    public Unbanished(String type, IdObject banishedId, long creationDate, UUID senderId, String reason, UUID unbanisherId, long unbanishDate) {
-        this.type = type;
-        this.banishedId = banishedId;
-        this.banishDate = creationDate;
-        this.banisherId = senderId;
-        this.reason = reason;
-        this.unbanisherId = unbanisherId;
-        this.unbanishDate = unbanishDate;
-    }
-
-    public String getType() {
-        return type;
-    }
+public record Unbanished(String type, IdObject banishedId, long banishDate, UUID banisherId, String reason,
+                         UUID unbanisherId, long unbanishDate) implements DatabaseSerializable, Sortable<Unbanished> {
 
     @Override
     public IdObject getId() {
@@ -56,30 +36,6 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
         throw new UnsupportedOperationException("Cannot save an individual Unbanish entry");
     }
 
-    public IdObject getBanishedId() {
-        return banishedId;
-    }
-
-    public long getBanishDate() {
-        return banishDate;
-    }
-
-    public UUID getBanisherId() {
-        return banisherId;
-    }
-
-    public UUID getUnbanisherId() {
-        return unbanisherId;
-    }
-
-    public long getUnbanishDate() {
-        return unbanishDate;
-    }
-
-    public String getReason() {
-        return reason;
-    }
-
     @Override
     public String name() {
         return "unbanish";
@@ -89,11 +45,11 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
     public LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("id", getId());
-        map.put("date", getBanishDate());
-        map.put("sender", getBanisherId());
-        map.put("reason", getReason());
-        map.put("unbanisher", getUnbanisherId());
-        map.put("unbanishdate", getUnbanishDate());
+        map.put("date", banishDate());
+        map.put("sender", banisherId());
+        map.put("reason", reason());
+        map.put("unbanisher", unbanisherId());
+        map.put("unbanishdate", unbanishDate());
         return map;
     }
 
@@ -109,13 +65,13 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
             id = IdObject.get(Integer.parseInt(unbanishedId[1]));
         }
         return new Unbanished(
-                unbanishedId[0],
-                id,
-                Utils.getLong(map.get("date")),
-                UUID.fromString((String) map.get("sender")),
-                (String) map.get("reason"),
-                UUID.fromString((String) map.get("unbanisher")),
-                Utils.getLong(map.get("unbanishdate"))
+            unbanishedId[0],
+            id,
+            Utils.getLong(map.get("date")),
+            UUID.fromString((String) map.get("sender")),
+            (String) map.get("reason"),
+            UUID.fromString((String) map.get("unbanisher")),
+            Utils.getLong(map.get("unbanishdate"))
         );
     }
 
@@ -125,18 +81,18 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
             Targetable o = other.getTargetable();
             return t != null && o != null ? t.getName().compareToIgnoreCase(o.getName()) : 0;
         } else if (sort == Sort.BANISH_DATE) {
-            return Long.compare(other.getBanishDate(), getBanishDate());
+            return Long.compare(other.banishDate(), banishDate());
         } else if (sort == Sort.UNBANISH_DATE) {
-            return Long.compare(other.getBanishDate(), getBanishDate());
+            return Long.compare(other.banishDate(), banishDate());
         }
         return 0;
     }
 
     public Targetable getTargetable() {
         return switch (type) {
-            case "player" -> ResidentManager.getInstance().getResident((UUID) getBanishedId().value());
-            case "settlement" -> SettlementManager.getInstance().getFromId(getBanishedId());
-            case "empire" -> EmpireManager.getInstance().getEmpireFromId(getBanishedId());
+            case "player" -> ResidentManager.getInstance().getResident((UUID) banishedId().value());
+            case "settlement" -> SettlementManager.getInstance().getFromId(banishedId());
+            case "empire" -> EmpireManager.getInstance().getEmpireFromId(banishedId());
             default -> null;
         };
     }
@@ -155,7 +111,7 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
     public ItemStack getIcon() {
         Targetable t = getTargetable();
         if (t instanceof Resident) {
-            return ItemUtils.getHead((UUID) getBanishedId().value(), t.getName());
+            return ItemUtils.getHead((UUID) banishedId().value(), t.getName());
         } else if (t instanceof LandOwner<?, ?> owner) {
             return ItemUtils.getHead(owner.getChiefId(), owner.getChief().getName());
         }
@@ -163,8 +119,8 @@ public class Unbanished implements DatabaseSerializable, Sortable<Unbanished> {
     }
 
     public enum Sort implements Sortable.Sort<Unbanished> {
-        UNBANISH_DATE((b1, b2) -> Long.compare(b2.getUnbanishDate(), b1.getUnbanishDate())),
-        BANISH_DATE((b1, b2) -> Long.compare(b2.getBanishDate(), b1.getBanishDate())),
+        UNBANISH_DATE((b1, b2) -> Long.compare(b2.unbanishDate(), b1.unbanishDate())),
+        BANISH_DATE((b1, b2) -> Long.compare(b2.banishDate(), b1.banishDate())),
         NAME((b1, b2) -> b1.getTargetable().getName().compareToIgnoreCase(b2.getTargetable().getName())),
         ;
 

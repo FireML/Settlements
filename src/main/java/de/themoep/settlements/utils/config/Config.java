@@ -136,7 +136,7 @@ public class Config {
                 @ConfigComment("Which blocks are allowed to get built anyways.")
                 public static Set<Material> ALLOWED_BLOCKS;
 
-                private static Set<String> ALLOWED_BLOCKS_DEFAULT = ImmutableSet.of(
+                private static final Set<String> ALLOWED_BLOCKS_DEFAULT = ImmutableSet.of(
                         "*shulker_box"
                 );
 
@@ -445,7 +445,7 @@ public class Config {
         @ConfigComment("Blocks that can be locked")
         public static Set<Material> BLOCKS;
 
-        private static Set<String> BLOCKS_DEFAULT = ImmutableSet.of(
+        private static final Set<String> BLOCKS_DEFAULT = ImmutableSet.of(
                 "chest",
                 "trapped_chest",
                 "dispenser",

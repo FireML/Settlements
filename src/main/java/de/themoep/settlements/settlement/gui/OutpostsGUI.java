@@ -14,8 +14,6 @@ import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.world.NamedLocation;
 
-import java.util.stream.Collectors;
-
 public class OutpostsGUI extends ConfigurableGui {
 
     public OutpostsGUI(Resident resident, Settlement settlement) {

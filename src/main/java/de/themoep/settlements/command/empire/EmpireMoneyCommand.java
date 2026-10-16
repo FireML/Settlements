@@ -44,7 +44,7 @@ public class EmpireMoneyCommand extends EmpireSubCommand {
                         EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                         if (r2.transactionSuccess()) {
                             resident.getSettlement().getEmpire().addToBank(deposit);
-                            Levelable levelable = SettlementDepositCommand.getLevellable(resident.getSettlement().getEmpire());
+                            Levelable<?> levelable = SettlementDepositCommand.getLevellable(resident.getSettlement().getEmpire());
                             if (levelable != null) {
                                 levelable.checkLevelUp(resident);
                             }

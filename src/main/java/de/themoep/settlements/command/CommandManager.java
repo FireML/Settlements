@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class CommandManager implements TabExecutor {
     private static CommandManager instance;
-    private Map<String, SubCommand> commandMap = new LinkedHashMap<>();
+    private final Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
     private void setup() {
         registerCommand(new AdminCommand(), false);

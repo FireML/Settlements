@@ -9,11 +9,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class EmpireRank extends Rank<Empire, EmpireRank> implements Next<EmpireRank>, Rankable {
 
-    private List<String> titles;
+    private final List<String> titles;
 
     public EmpireRank(String name, ConfigurationSection config) {
         super(name, config);

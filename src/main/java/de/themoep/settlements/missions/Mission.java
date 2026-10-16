@@ -116,7 +116,7 @@ public abstract class Mission implements NameTag {
 
     public abstract void finish(Resident resident);
 
-    public abstract boolean isValid(Resident resident, MissionProvider provider);
+    public abstract boolean isValid(Resident resident, MissionProvider<?> provider);
 
     public enum Type implements NameTag {
         TURN_IN,

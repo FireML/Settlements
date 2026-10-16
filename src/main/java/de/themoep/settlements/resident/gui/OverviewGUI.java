@@ -1,6 +1,5 @@
 package de.themoep.settlements.resident.gui;
 
-import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.settlement.SettlementHomeCommand;

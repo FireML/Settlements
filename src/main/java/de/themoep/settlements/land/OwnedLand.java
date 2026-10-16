@@ -44,17 +44,17 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     private IdObject id = IdObject.get(null);
     private LandOwner<?, ?> landOwner;
     private UUID plotOwner = null;
-    private Set<UUID> plotMembers = new HashSet<>();
+    private final Set<UUID> plotMembers = new HashSet<>();
     private int unclaimIn = 0;
     private int price = 0;
     private boolean forSale = false;
     private int tax = 0;
-    private Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
+    private final Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private String outpost = null;
     private String name = "";
     private String description = "";
     private BuildState buildState = null;
-    private EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
+    private final EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
     private UUID link;
 
     public OwnedLand(LandOwner<?, ?> landOwner, SimpleChunkLocation location) {

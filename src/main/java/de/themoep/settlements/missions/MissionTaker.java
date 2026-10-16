@@ -21,4 +21,9 @@ public interface MissionTaker<M extends Mission> {
     default boolean hasMission(M mission) {
         return getMissionData(mission.getId()) != null;
     }
+
+    default int distributeNewMissions() {
+        return getMissionProvider().distributeNewMissions();
+    }
+
 }

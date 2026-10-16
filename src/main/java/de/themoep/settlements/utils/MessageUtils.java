@@ -1,6 +1,5 @@
 package de.themoep.settlements.utils;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.LandOwner;
 import de.themoep.settlements.resident.Resident;
 import net.kyori.adventure.text.Component;

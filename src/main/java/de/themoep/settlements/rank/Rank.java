@@ -23,7 +23,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class Rank<L extends LandOwner, R extends Rankable> implements NameTag, Comparable<R>, Next<R>, Rankable {
+public abstract class Rank<L extends LandOwner<?, ?>, R extends Rankable> implements NameTag, Comparable<R>, Next<R>, Rankable {
 
     private final String name;
 
@@ -104,9 +104,9 @@ public abstract class Rank<L extends LandOwner, R extends Rankable> implements N
         return getInheritedRank().getInheritedPermissionValue(permission);
     }
 
-    public abstract Rank getInheritedRank();
+    public abstract Rank<?, ?> getInheritedRank();
 
-    public abstract Collection<? extends Rank> getInheritedRanks();
+    public abstract Collection<? extends Rank<?, ?>> getInheritedRanks();
 
     public String getInherits() {
         return inherits;
@@ -116,11 +116,11 @@ public abstract class Rank<L extends LandOwner, R extends Rankable> implements N
         this.inherits = inherits;
     }
 
-    public abstract Rank getParentRank();
+    public abstract Rank<?, ?> getParentRank();
 
-    public Collection<Rank> getParentRanks() {
-        List<Rank> ranks = new ArrayList<>();
-        Rank rank = this;
+    public Collection<Rank<?, ?>> getParentRanks() {
+        List<Rank<?, ?>> ranks = new ArrayList<>();
+        Rank<?, ?> rank = this;
         while (rank.getParent() != null) {
             ranks.add(rank.getParentRank());
             rank = rank.getParentRank();

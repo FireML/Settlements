@@ -15,7 +15,6 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.world.SimpleChunkLocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -218,7 +217,7 @@ public abstract class DatabaseManager {
         landOwner.save();
     }
 
-    public void save(Collection<LandOwner> landOwners) {
+    public void save(Collection<LandOwner<?, ?>> landOwners) {
         List<Settlement> settlements = new ArrayList<>();
         List<Empire> empires = new ArrayList<>();
         for (LandOwner<?, ?> landOwner : landOwners) {

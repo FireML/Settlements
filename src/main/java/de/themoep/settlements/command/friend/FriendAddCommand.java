@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.friend;
 
-import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;

@@ -16,11 +16,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
+import java.time.Duration;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 public class SettlementMapCommand extends ResidentSubCommand implements Listener {
-    private Cache<UUID, Boolean> autoMap = CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
+    private final Cache<UUID, Boolean> autoMap = CacheBuilder.newBuilder().expireAfterAccess(Duration.ofMinutes(5)).build();
 
     public SettlementMapCommand(SubCommand parent) {
         super(parent, "map [auto]");

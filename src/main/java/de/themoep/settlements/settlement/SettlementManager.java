@@ -52,13 +52,13 @@ import java.util.concurrent.TimeUnit;
 
 public class SettlementManager {
     private static SettlementManager instance;
-    private Map<String, Settlement> settlements = new ConcurrentHashMap<>();
-    private Map<IdObject, Settlement> settlementIDs = new ConcurrentHashMap<>();
-    private Map<UUID, Settlement> settlementUuids = new ConcurrentHashMap<>();
+    private final Map<String, Settlement> settlements = new ConcurrentHashMap<>();
+    private final Map<IdObject, Settlement> settlementIDs = new ConcurrentHashMap<>();
+    private final Map<UUID, Settlement> settlementUuids = new ConcurrentHashMap<>();
 
-    private Map<SettlementState, List<SettlementLevel>> levels = new HashMap<>();
+    private final Map<SettlementState, List<SettlementLevel>> levels = new HashMap<>();
 
-    private Map<String, SettlementMission> missions = new HashMap<>();
+    private final Map<String, SettlementMission> missions = new HashMap<>();
 
     private Map<String, SettlementPerk> perks;
     private Map<String, SettlementPerk> perkTags;

@@ -17,7 +17,7 @@ public interface ConfigKey {
         return name().toLowerCase(Locale.ROOT).replace('_', '-');
     }
 
-    static String getKey(Enum e) {
+    static String getKey(Enum<?> e) {
         return e.name().toLowerCase(Locale.ROOT).replace('_', '-');
     }
 

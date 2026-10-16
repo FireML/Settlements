@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 public class ConfigManager {
     private static ConfigManager instance;
 
-    private Map<String, ConfigParser> parsers = new HashMap<>();
+    private final Map<String, ConfigParser> parsers = new HashMap<>();
     private static final ConfigParser DEFAULT_PARSER = (TypelessConfigParser) object -> {
         if (object instanceof ConfigurationSection) {
             Map<String, List<String>> map = new HashMap<>();
@@ -55,6 +55,7 @@ public class ConfigManager {
         }
     };
     private static final ConfigParser ENUM_PARSER = new ConfigParser() {
+        @SuppressWarnings({"unchecked", "rawtypes"})
         @Override
         public <T> Object toJava(Class<T> type, Object object) {
             if (object instanceof String && type.isEnum()) {
@@ -65,8 +66,8 @@ public class ConfigManager {
 
         @Override
         public Object toYaml(Object object) {
-            if (object instanceof Enum) {
-                return ((Enum) object).name().toLowerCase(Locale.ROOT);
+            if (object instanceof Enum<?> enumInst) {
+                return enumInst.name().toLowerCase(Locale.ROOT);
             }
             return object;
         }
@@ -100,10 +101,10 @@ public class ConfigManager {
         registerParser("StringSet", new TypelessConfigParser() {
             @Override
             public Object toJava(Object object) {
-                if (object instanceof Collection collection
+                if (object instanceof Collection<?> collection
                         && !collection.isEmpty()
                         && collection.iterator().next() instanceof String) {
-                    return new LinkedHashSet<>((Collection<String>) object);
+                    return new LinkedHashSet<>(collection);
                 }
                 return new LinkedHashSet<String>();
             }
@@ -119,7 +120,7 @@ public class ConfigManager {
             @Override
             public Object toJava(Object object) {
                 EnumSet<Material> set = EnumSet.noneOf(Material.class);
-                if (object instanceof Collection collection) {
+                if (object instanceof Collection<?> collection) {
                     for (Object o : collection) {
                         if (o instanceof Material material) {
                             set.add(material);
@@ -151,7 +152,7 @@ public class ConfigManager {
 
             @Override
             public Object toYaml(Object object) {
-                if (object instanceof Collection collection) {
+                if (object instanceof Collection<?> collection) {
                     return (collection.stream().map(Objects::toString).collect(Collectors.toList()));
                 }
                 return object;

@@ -28,8 +28,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WaterMob;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import uk.firedev.daisylib.builders.TitleBuilder;
 import uk.firedev.daisylib.utils.Scheduling;
 
@@ -511,58 +509,48 @@ public class Utils {
     }
 
     public static long getLong(Object o) {
-        if (o == null) {
-            return 0;
-        } else if (o instanceof Long) {
-            return (Long) o;
-        } else if (o instanceof Number) {
-            return ((Number) o).longValue();
-        }
-        return Long.parseLong(String.valueOf(o));
+        return switch (o) {
+            case null -> 0;
+            case Long l -> l;
+            case Number number -> number.longValue();
+            default -> Long.parseLong(String.valueOf(o));
+        };
     }
 
     public static int getInt(Object o) {
-        if (o == null) {
-            return 0;
-        } else if (o instanceof Integer) {
-            return (Integer) o;
-        } else if (o instanceof Number) {
-            return ((Number) o).intValue();
-        }
-        return Integer.parseInt(String.valueOf(o));
+        return switch (o) {
+            case null -> 0;
+            case Integer i -> i;
+            case Number number -> number.intValue();
+            default -> Integer.parseInt(String.valueOf(o));
+        };
     }
 
     public static double getDouble(Object o) {
-        if (o == null) {
-            return 0;
-        } else if (o instanceof Double) {
-            return (Double) o;
-        } else if (o instanceof Number) {
-            return ((Number) o).doubleValue();
-        }
-        return Double.parseDouble(String.valueOf(o));
+        return switch (o) {
+            case null -> 0;
+            case Double v -> v;
+            case Number number -> number.doubleValue();
+            default -> Double.parseDouble(String.valueOf(o));
+        };
     }
 
     public static float getFloat(Object o) {
-        if (o == null) {
-            return 0;
-        } else if (o instanceof Float) {
-            return (Float) o;
-        } else if (o instanceof Number) {
-            return ((Number) o).floatValue();
-        }
-        return Float.parseFloat(String.valueOf(o));
+        return switch (o) {
+            case null -> 0;
+            case Float v -> v;
+            case Number number -> number.floatValue();
+            default -> Float.parseFloat(String.valueOf(o));
+        };
     }
 
     public static boolean getBoolean(Object o) {
-        if (o == null) {
-            return false;
-        } else if (o instanceof Boolean) {
-            return (boolean) o;
-        } else if (o instanceof Number) {
-            return ((Number) o).longValue() != 0;
-        }
-        return Boolean.parseBoolean(String.valueOf(o));
+        return switch (o) {
+            case null -> false;
+            case Boolean b -> (boolean) o;
+            case Number number -> number.longValue() != 0;
+            default -> Boolean.parseBoolean(String.valueOf(o));
+        };
     }
 
     public static String getPlayerName(UUID playerId) {

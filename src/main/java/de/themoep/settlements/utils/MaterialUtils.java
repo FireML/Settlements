@@ -177,8 +177,8 @@ public class MaterialUtils {
     }
 
     private static class FarmingRule {
-        private Set<Material> onTop = EnumSet.noneOf(Material.class);
-        private Set<Material> inside = EnumSet.noneOf(Material.class);
+        private final Set<Material> onTop = EnumSet.noneOf(Material.class);
+        private final Set<Material> inside = EnumSet.noneOf(Material.class);
 
         public FarmingRule(Material... onTop) {
             Collections.addAll(this.onTop, onTop);

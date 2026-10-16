@@ -27,7 +27,6 @@ import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.world.SimpleChunkLocation;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -1023,7 +1022,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         return Collections.emptyList();
     }
 
-    private Collection<JoinRequest> getJoinRequests(Connection conn, String type, int id) {
+    private Collection<JoinRequest<?>> getJoinRequests(Connection conn, String type, int id) {
         Utils.catchSync();
         String sql = "SELECT *" +
                 " FROM " + tablePrefix + "invites" +
@@ -1033,12 +1032,10 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             sta.setString(2, type);
             sta.setInt(3, id);
             ResultSet rs = sta.executeQuery();
-            List<JoinRequest> requests = new ArrayList<>();
+            List<JoinRequest<?>> requests = new ArrayList<>();
             while (rs.next()) {
                 JoinRequest<?> request = JoinRequest.deserialize(toMap(rs));
-                if (request != null) {
-                    requests.add(request);
-                }
+                requests.add(request);
             }
             return requests;
         } catch (SQLException e) {
@@ -1224,8 +1221,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             if (value instanceof ConfigurationSerializable serializable) {
                 value = serializable.serialize();
             }
-            if (value instanceof Map && mapValueColumns.length == 0) {
-                if (((Map) value).keySet().iterator().next() instanceof String) {
+            if (value instanceof Map<?, ?> map && mapValueColumns.length == 0) {
+                if ((map.keySet().iterator().next() instanceof String) {
                     for (String column : getValues(conn, (Map<String, ?>) value, mapKey).keySet()) {
                         if (mapValue.isEmpty()) {
                             columns.add(column);
@@ -1515,7 +1512,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
         private ScheduledTask task = null;
         private final Map<IdObject, T> queue = new ConcurrentHashMap<>();
-        private Runnable saving = () -> {
+        private final Runnable saving = () -> {
             Utils.catchSync();
             synchronized (queue) {
                 forceSave = false;
@@ -1551,8 +1548,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 }
             }
         };
-        private int maxSize;
-        private int saveWait;
+        private final int maxSize;
+        private final int saveWait;
         private boolean forceSave = false;
 
         public SaveQueue(String type, SqlDatabaseManager db, int maxSize, int saveWait, BiConsumer<Connection, T> handleSave) {

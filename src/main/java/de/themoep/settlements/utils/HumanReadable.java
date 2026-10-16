@@ -7,7 +7,7 @@ public interface HumanReadable {
         return humanizedName(name());
     }
 
-    static String humanizedName(Enum e) {
+    static String humanizedName(Enum<?> e) {
         return humanizedName(e.name());
     }
 

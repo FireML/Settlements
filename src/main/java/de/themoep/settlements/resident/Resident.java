@@ -46,6 +46,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.Date;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -66,7 +67,7 @@ import java.util.stream.Collectors;
 
 public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, MissionTaker<SettlementMission>, Sortable<Resident> {
     private IdObject id = IdObject.get(null);
-    private UUID uuid;
+    private final UUID uuid;
     private String name;
     private SettlementRank rank = SettlementRank.getDefault();
     private EmpireRank empireRank = EmpireRank.getDefault();
@@ -74,15 +75,15 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private String empireTitle = null;
     private Settlement settlement = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
-    private Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
-    private Table<ChatChannel, ChatColorType, TextColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
-    private Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
-    private Map<UUID, Friend> friends = new ConcurrentHashMap<>();
-    private Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
+    private final Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
+    private final Table<ChatChannel, ChatColorType, TextColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
+    private final Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
+    private final Map<UUID, Friend> friends = new ConcurrentHashMap<>();
+    private final Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
     private boolean swear = true;
     private boolean socialSpy = false;
     private long missionPoints = 0;
-    private Map<String, MissionData> missionData = new LinkedHashMap<>();
+    private final Map<String, MissionData> missionData = new LinkedHashMap<>();
     private int bonusClaims = 0;
     private long lastLogin = 0;
     private long settlementJoin;
@@ -97,8 +98,8 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private boolean hasEmpireFlight = false;
     private boolean hasMessagesEnabled = true;
     private boolean notifyEnabled = true;
-    private Cache<IdObject, Boolean> closeBuildingNotificationToggles = CacheBuilder.newBuilder()
-            .expireAfterWrite(Config.Claiming.Close.Building.TOGGLE_TIME, TimeUnit.MINUTES)
+    private final Cache<IdObject, Boolean> closeBuildingNotificationToggles = CacheBuilder.newBuilder()
+            .expireAfterWrite(Duration.ofMinutes(Config.Claiming.Close.Building.TOGGLE_TIME))
             .build();
 
     public Resident(UUID uuid, String name) {

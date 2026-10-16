@@ -90,7 +90,7 @@ public class ExecuteMoveUtil implements Listener {
         return instance;
     }
 
-    private abstract class ActionRunnable extends BukkitRunnable {
+    private abstract static class ActionRunnable extends BukkitRunnable {
         private final String action;
 
         public ActionRunnable(String action) {

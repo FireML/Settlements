@@ -13,8 +13,6 @@ import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 
-import java.util.stream.Collectors;
-
 public class SettlementJoinCommand extends ResidentSubCommand {
     public SettlementJoinCommand(SubCommand parent) {
         super(parent, "join <name>");

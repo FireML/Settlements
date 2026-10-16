@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 public class SignGui {
     private static boolean registered = false;
-    private static Map<Block, SignGui> signs = new HashMap<>();
+    private static final Map<Block, SignGui> signs = new HashMap<>();
 
     private final Consumer<String[]> inputConsumer;
 

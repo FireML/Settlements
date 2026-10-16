@@ -27,7 +27,7 @@ public class SettlementMission extends Mission {
     }
 
     @Override
-    public boolean isValid(Resident resident, MissionProvider provider) {
+    public boolean isValid(Resident resident, MissionProvider<?> provider) {
         if (provider instanceof Settlement) {
             if (!onlyOnSettlementClaim()) {
                 return true;

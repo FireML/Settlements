@@ -49,6 +49,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,7 +76,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     private int level;
     private IdObject capital;
     private String symbol = "";
-    private Set<IdObject> members = new LinkedHashSet<>();
+    private final Set<IdObject> members = new LinkedHashSet<>();
     private boolean inRegen = false;
     private long lastRename = 0;
     private String worldName;
@@ -429,8 +430,8 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
         empire.setSymbol((String) map.get("symbol"));
         empire.setLevel((Integer) map.get("level"));
         empire.setFinishedMissions(Utils.getLong(map.get("finishedMissions")));
-        if (map.get("members") != null && map.get("members") instanceof Collection) {
-            for (Object memberId : (Collection) map.get("members")) {
+        if (map.get("members") != null && map.get("members") instanceof Collection<?> members) {
+            for (Object memberId : members) {
                 empire.members.add(IdObject.get(memberId));
             }
         }
@@ -439,7 +440,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public int compareTo(Empire e) {
+    public int compareTo(@NonNull Empire e) {
         if (isAbandoned()) {
             return -1;
         }
@@ -488,7 +489,7 @@ public class Empire extends LandOwner<EmpireRank, EmpireLevel> implements Compar
     }
 
     @Override
-    public Collection<? extends LevelPerk> getPerks(int level) {
+    public Collection<? extends LevelPerk<?>> getPerks(int level) {
         return EmpireManager.getInstance().getPerks().stream().filter(p -> p.getLevel() == level).toList();
     }
 
