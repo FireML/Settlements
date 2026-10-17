@@ -2,7 +2,7 @@ package de.themoep.settlements.settlement.gui;
 
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.command.CommandManager;
+import de.themoep.settlements.commandold.CommandManager;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;

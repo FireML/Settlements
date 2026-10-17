@@ -1,9 +1,9 @@
 package de.themoep.settlements.resident.gui;
 
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.command.CommandManager;
-import de.themoep.settlements.command.settlement.SettlementHomeCommand;
-import de.themoep.settlements.command.settlement.SettlementRulesCommand;
+import de.themoep.settlements.commandold.CommandManager;
+import de.themoep.settlements.commandold.settlement.SettlementHomeCommand;
+import de.themoep.settlements.commandold.settlement.SettlementRulesCommand;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.gui.plot.SettingsGUI;

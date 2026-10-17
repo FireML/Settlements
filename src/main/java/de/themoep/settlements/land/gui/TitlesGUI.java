@@ -7,7 +7,7 @@ import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.command.settlement.SettlementTitlesCommand;
+import de.themoep.settlements.commandold.settlement.SettlementTitlesCommand;
 
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
@@ -16,7 +16,6 @@ import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.StringUtils;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.utils.config.Config;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;

@@ -1,0 +1,25 @@
+package de.themoep.settlements.commandold.plot;
+
+import de.themoep.settlements.land.LandManager;
+import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.utils.StringUtils;
+
+public class PlotNameCommand extends PlotSubCommand {
+    public PlotNameCommand(PlotCommand parent) {
+        super(parent, "name <text>", "setname");
+    }
+
+    @Override
+    public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
+        String name = StringUtils.parseColors(String.join(" ", args));
+        if (StringUtils.stripColors(name).length() > 16) {
+            getError("too-long").tell(res, "input", name, "amount", "16");
+            return true;
+        }
+        land.setName(name);
+        LandManager.getInstance().syncAndSave(land);
+        getMessage("success").tell(res, "description", land.getName(), "name", land.getName());
+        return true;
+    }
+}

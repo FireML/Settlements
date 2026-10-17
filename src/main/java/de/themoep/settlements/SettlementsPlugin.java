@@ -2,8 +2,8 @@ package de.themoep.settlements;
 
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
-import de.themoep.settlements.command.CommandManager;
-import de.themoep.settlements.command.TownyCommand;
+import de.themoep.settlements.commandold.CommandManager;
+import de.themoep.settlements.commandold.TownyCommand;
 import de.themoep.settlements.customevents.CustomEventManager;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.integration.IntegrationManager;
