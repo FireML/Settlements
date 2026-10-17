@@ -59,7 +59,7 @@ public class SettlementCommand extends SubCommand {
         registerCommand(outpostCommand);
         registerCommand(new OutpostTeleportCommand(outpostCommand));
         registerCommand(new SettlementPerksCommand(this));
-        registerCommand(new PlotCommand(this));
+        registerCommand(new PlotCommand());
         registerCommand(new SettlementRanksCommand(this));
         registerCommand(new SettlementRenameCommand(this));
         registerCommand(new SettlementResCommand(this));

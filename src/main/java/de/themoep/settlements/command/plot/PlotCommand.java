@@ -2,12 +2,11 @@ package de.themoep.settlements.command.plot;
 
 import de.themoep.settlements.command.HelpCommand;
 import de.themoep.settlements.command.ResidentSubCommand;
-import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.resident.Resident;
 
 public class PlotCommand extends ResidentSubCommand {
-    public PlotCommand(SubCommand parent) {
-        super(parent, "plot <options>");
+    public PlotCommand() {
+        super(null, "plot <options>");
         setHelpCommand(new HelpCommand(this));
         registerCommand(new PlotSaleCommand(this));
         registerCommand(new PlotUnsaleCommand(this));

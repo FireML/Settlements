@@ -68,19 +68,8 @@ bukkit {
     paperPluginLoader = "de.themoep.settlements.LibraryLoader"
 
     commands {
-        register("portal") {
-            description = "Portal Commands."
-            aliases = listOf("netherportal")
-        }
-
-        register("lock") {
-            description = "Lock Commands."
-            aliases = listOf("protection", "secure")
-        }
-
-        register("unlock") {
-            description = "Unlock a container."
-            aliases = listOf("unprotection", "unsecure")
+        register("plot") {
+            description = "Manage Plots."
         }
 
         register("settlement") {
@@ -105,14 +94,6 @@ bukkit {
         register("friend") {
             description = "Friending command"
             aliases = listOf("friends", "f")
-        }
-
-        register("scoreboard") {
-            description = "Scoreboard command"
-        }
-
-        register("scoreboardadmin") {
-            description = "Scoreboard admin command"
         }
 
         register("warningtoggle") {

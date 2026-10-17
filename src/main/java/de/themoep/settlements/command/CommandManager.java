@@ -30,7 +30,7 @@ public class CommandManager implements TabExecutor {
     }
 
     private void registerCommands() {
-        registerCommand(new PlotCommand(null));
+        registerCommand(new PlotCommand());
         registerCommand(new SettlementCommand());
         registerCommand(new ResidentCommand());
         registerCommand(new FriendCommand());
