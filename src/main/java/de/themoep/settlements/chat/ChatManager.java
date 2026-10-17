@@ -15,6 +15,7 @@ public class ChatManager {
 
     public void load() {
         ChatChannelRegistry.getInstance().register(new SettlementChat());
+        ChatChannelRegistry.getInstance().register(new AllyChat());
     }
 
 }

@@ -1,0 +1,18 @@
+id: ally
+enabled: true
+display: <gold>Ally
+format: "<gold>[Ally] <white>{name} ➻ {message}</white>"
+
+commands:
+  - allychat
+  - ally
+  - ac
+  - ca
+
+ping:
+  enable: true
+  cooldown: 10
+  sound:
+    sound: entity.experience_orb.pickup
+    volume: 3
+    pitch: 1
