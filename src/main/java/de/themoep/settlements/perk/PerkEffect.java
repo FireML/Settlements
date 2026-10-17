@@ -1,5 +1,6 @@
 package de.themoep.settlements.perk;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.NameTag;
@@ -9,6 +10,8 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,17 +27,20 @@ public class PerkEffect {
     private EffectLocation applyIn;
     private EffectInfluenced applyTo = EffectInfluenced.MEMBERS;
 
-    public PerkEffect(PotionEffectType type) {
-        Validate.notNull(type, "Unknown type!");
+    public PerkEffect(@Nullable PotionEffectType type) {
         this.type = type;
     }
 
     public PerkEffect(Map<String, Object> map, EffectLocation applyIn) {
         NamespacedKey key = NamespacedKey.fromString(map.get("type").toString());
         if (key == null) {
-            throw new IllegalArgumentException(map.get("type").toString() + " is not a valid potion effect type.");
+            throw new IllegalArgumentException(map.get("type").toString() + " is not a valid namespaced key.");
         }
-        this(Registry.POTION_EFFECT_TYPE.get(key));
+        PotionEffectType type = Registry.POTION_EFFECT_TYPE.get(key);
+        if (type == null) {
+            SettlementsPlugin.getInstance().getLogging().warn(key + " is not a valid potion effect type.");
+        }
+        this(type);
         this.strength = (int) map.getOrDefault("strength", strength);
         if (this.strength <= 0) {
             this.strength = 1;
@@ -83,8 +89,11 @@ public class PerkEffect {
         return applyTo;
     }
 
-    public PotionEffect getPotionEffect() {
-        return new PotionEffect(getType(), isPermanent() ? 1200 : getLength() * 20, getStrength() - 1, isAmbient(), hasParticles(), hasIcon());
+    public @Nullable PotionEffect getPotionEffect() {
+        if (type == null) {
+            return null;
+        }
+        return new PotionEffect(type, isPermanent() ? 1200 : getLength() * 20, getStrength() - 1, isAmbient(), hasParticles(), hasIcon());
     }
 
     public String getIdentifier() {

@@ -48,9 +48,8 @@ public class ConfigAccessor {
         this.plugin = plugin;
         this.fileName = fileName;
         File dataFolder = plugin.getDataFolder();
-        if (dataFolder == null)
-            throw new IllegalStateException();
-        this.configFile = new File(plugin.getDataFolder(), fileName);
+        dataFolder.mkdirs();
+        this.configFile = new File(dataFolder, fileName);
         this.defaults = getDefaults();
         saveDefaultConfig();
         reloadConfig();

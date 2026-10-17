@@ -87,7 +87,7 @@ public class SettlementLevel {
     }
 
     public SettlementLevel getPrevious() {
-        return (SettlementLevel) getPrevious();
+        return previous;
     }
 
     public int getLevel() {

@@ -309,45 +309,6 @@ public enum MySqlTable {
             + "UNIQUE (claimId, memberId)"
             + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
 
-    PORTALS("CREATE TABLE IF NOT EXISTS {tablePrefix}portals ("
-            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-            + "world VARCHAR(255),"
-            + "x INTEGER,"
-            + "y INTEGER,"
-            + "z INTEGER,"
-            + "UNIQUE(world, y, x, z),"
-            + "direction CHAR(1)" // direction the portal is pointing: N,E,S,W
-            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
-
-    PORTAL_LINKS("CREATE TABLE IF NOT EXISTS {tablePrefix}portal_links ("
-            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-            + "sourceId INTEGER, INDEX (sourceId),"
-            + "FOREIGN KEY (sourceId) REFERENCES {tablePrefix}portals(id) ON DELETE CASCADE,"
-            + "targetId INTEGER,"
-            + "FOREIGN KEY (targetId) REFERENCES {tablePrefix}portals(id) ON DELETE CASCADE,"
-            + "UNIQUE(sourceId, targetId)"
-            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
-
-    LOCKS("CREATE TABLE IF NOT EXISTS {tablePrefix}locks ("
-            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-            + "world VARCHAR(255),INDEX(world),"
-            + "x INTEGER,INDEX(x),"
-            + "y INTEGER,INDEX(y),"
-            + "z INTEGER,INDEX(z),"
-            + "UNIQUE(world, y, x, z),"
-            + "ownerId INTEGER,"
-            + "FOREIGN KEY (ownerId) REFERENCES {tablePrefix}residents(id) ON DELETE SET NULL,"
-            + "`block` VARCHAR(255) NOT NULL,"
-            + "allowHoppers BOOLEAN NOT NULL"
-            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
-
-    LOCK_ALLOWED("CREATE TABLE IF NOT EXISTS {tablePrefix}lock_allowed ("
-            + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
-            + "lockId INTEGER, INDEX (lockId),"
-            + "FOREIGN KEY (lockId) REFERENCES {tablePrefix}locks(id) ON DELETE CASCADE,"
-            + "allowed VARCHAR(320)"
-            + ") DEFAULT CHARACTER SET=utf8 AUTO_INCREMENT=1;"),
-
     LOGS("CREATE TABLE IF NOT EXISTS {tablePrefix}logs ("
             + "id INTEGER PRIMARY KEY AUTO_INCREMENT,"
             + "settlementId INTEGER, INDEX(settlementId),"

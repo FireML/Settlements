@@ -168,14 +168,10 @@ public class ConfigManager {
         settlementLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementLevelConf.yml");
         settlementMissionsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementMissions.yml");
         mapConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "mapConf.yml");
-        npcConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "npcConf.yml");
-        npcLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "npcLevelConf.yml");
         settlementPerksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementPerksConf.yml");
         settlementRanksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementRanks.yml");
         eventsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "events.yml");
         useFlagsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "useflags.yml");
-        toggleableCurses = new CursesFilter(new ConfigAccessor(SettlementsPlugin.getInstance(), "curses.yml").getConfig());
-        forcedCurses = new CursesFilter(new ConfigAccessor(SettlementsPlugin.getInstance(), "cursesForced.yml").getConfig());
         lastUpkeepConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "lastUpkeep.yml");
         guisConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "guis.yml");
         if (Config.Chat.CHAT_ONLY) {

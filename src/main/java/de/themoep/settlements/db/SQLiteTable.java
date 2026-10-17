@@ -37,7 +37,7 @@ public enum SQLiteTable {
             + "homeLoc_yaw FLOAT,"
             + "homeLoc_pitch FLOAT,"
             + "enableNPCs BOOLEAN NOT NULL,"
-            + "FOREIGN KEY (chiefId) REFERENCES {tablePrefix}residents(id) ON DELETE RESTRICT,"
+            + "FOREIGN KEY (chiefId) REFERENCES {tablePrefix}residents(id) ON DELETE RESTRICT"
             + ");"
             + "CREATE UNIQUE INDEX settlements_names ON {tablePrefix}settlements (name);"),
 
@@ -88,29 +88,6 @@ public enum SQLiteTable {
             + "UNIQUE (settlementId, perk)"
             + ");"
             + "CREATE INDEX settlement_perks_id ON {tablePrefix}settlement_perks (settlementId);"),
-
-    SETTLEMENT_NPCS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_npcs ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "settlementId INTEGER,"
-            + "type VARCHAR(255) NOT NULL,"
-            + "npcId INTEGER NOT NULL,"
-            + "level INTEGER NOT NULL,"
-            + "npcSkinName VARCHAR(255) NOT NULL,"
-            + "enabled BOOLEAN NOT NULL,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
-            + "UNIQUE (settlementId, type)"
-            + ");"
-            + "CREATE INDEX settlement_npcs_id ON {tablePrefix}settlement_npcs (settlementId);"),
-
-    SETTLEMENT_NPC_VAULTS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_npc_vaults ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "npcId INTEGER,"
-            + "content VARCHAR(255) NOT NULL,"
-            + "amount BIGINT,"
-            + "FOREIGN KEY (npcId) REFERENCES {tablePrefix}settlement_npcs(id) ON DELETE CASCADE,"
-            + "UNIQUE (npcId, content)"
-            + ");"
-            + "CREATE INDEX settlement_npc_id ON {tablePrefix}settlement_npc_vaults (npcId);"),
 
     SETTLEMENT_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_uses ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -337,51 +314,6 @@ public enum SQLiteTable {
             + "UNIQUE (claimId, memberId)"
             + ");"
             + "CREATE INDEX claim_members_id ON {tablePrefix}claim_members (claimId);"),
-
-    PORTALS("CREATE TABLE IF NOT EXISTS {tablePrefix}portals ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "world VARCHAR(255),"
-            + "x INTEGER,"
-            + "y INTEGER,"
-            + "z INTEGER,"
-            + "direction CHAR(1)," // direction the portal is pointing: N,E,S,W
-            + "UNIQUE(world, y, x, z)"
-            + ");"),
-
-    PORTAL_LINKS("CREATE TABLE IF NOT EXISTS {tablePrefix}portal_links ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "sourceId INTEGER,"
-            + "targetId INTEGER,"
-            + "FOREIGN KEY (sourceId) REFERENCES {tablePrefix}portals(id) ON DELETE CASCADE,"
-            + "FOREIGN KEY (targetId) REFERENCES {tablePrefix}portals(id) ON DELETE CASCADE,"
-            + "UNIQUE(sourceId, targetId)"
-            + ");"
-            + "CREATE INDEX portal_links_id ON {tablePrefix}portal_links (sourceId);"),
-
-    LOCKS("CREATE TABLE IF NOT EXISTS {tablePrefix}locks ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "world VARCHAR(255),"
-            + "x INTEGER,"
-            + "y INTEGER,"
-            + "z INTEGER,"
-            + "ownerId INTEGER,"
-            + "`block` VARCHAR(255) NOT NULL,"
-            + "allowHoppers BOOLEAN NOT NULL,"
-            + "FOREIGN KEY (ownerId) REFERENCES {tablePrefix}residents(id) ON DELETE SET NULL,"
-            + "UNIQUE(world, y, x, z)"
-            + ");"
-            + "CREATE INDEX locks_x ON {tablePrefix}locks (x);"
-            + "CREATE INDEX locks_y ON {tablePrefix}locks (y);"
-            + "CREATE INDEX locks_z ON {tablePrefix}locks (z);"
-            + "CREATE INDEX locks_world ON {tablePrefix}locks (world);"),
-
-    LOCK_ALLOWED("CREATE TABLE IF NOT EXISTS {tablePrefix}lock_allowed ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "lockId INTEGER,"
-            + "allowed VARCHAR(320),"
-            + "FOREIGN KEY (lockId) REFERENCES {tablePrefix}locks(id) ON DELETE CASCADE"
-            + ");"
-            + "CREATE INDEX lock_allowed_id ON {tablePrefix}lock_allowed (lockId);"),
 
     LOGS("CREATE TABLE IF NOT EXISTS {tablePrefix}logs ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"

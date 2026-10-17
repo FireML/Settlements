@@ -1,5 +1,6 @@
 package de.themoep.settlements.land;
 
+import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkEffect;
 import de.themoep.settlements.rank.SettlementRank;
@@ -9,6 +10,7 @@ import de.themoep.settlements.settlement.Settlement;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import uk.firedev.daisylib.utils.Scheduling;
 
 import java.util.ArrayList;
@@ -54,6 +56,11 @@ public class LandPerks {
             }
 
             for (PerkEffect effect : applicableEffects) {
+                PotionEffect potionEffect = effect.getPotionEffect();
+                if (potionEffect == null) {
+                    SettlementsPlugin.getInstance().getLogging().warn("PerkEffect " + effect.getIdentifier() + " does not have a valid PotionEffect.");
+                    continue;
+                }
                 player.addPotionEffect(effect.getPotionEffect());
                 if (effect.isPermanent()) {
                     activeEffects.add(effect.getIdentifier());
@@ -119,10 +126,14 @@ public class LandPerks {
         Map<PotionEffect, PerkEffect> potionEffects = new LinkedHashMap<>();
 
         for (PerkEffect effect : effects) {
-            PerkEffect perkEffect = potionEffects.get(effect.getPotionEffect());
+            PotionEffect potionEffect = effect.getPotionEffect();
+            if (potionEffect == null) {
+                continue;
+            }
+            PerkEffect perkEffect = potionEffects.get(potionEffect);
             if (perkEffect == null || perkEffect.getStrength() < effect.getStrength()
                     || (perkEffect.getStrength() == effect.getStrength() && !perkEffect.isPermanent() && (perkEffect.getLength() < effect.getLength() || effect.isPermanent()))) {
-                potionEffects.put(effect.getPotionEffect(), effect);
+                potionEffects.put(potionEffect, effect);
             }
         }
 
@@ -217,7 +228,12 @@ public class LandPerks {
         }
         Set<String> activeEffects = getActiveEffects(player);
         for (PerkEffect effect : effects) {
-            player.addPotionEffect(effect.getPotionEffect());
+            PotionEffect potionEffect = effect.getPotionEffect();
+            if (potionEffect == null) {
+                SettlementsPlugin.getInstance().getLogging().warn("PerkEffect " + effect.getIdentifier() + " does not have a valid PotionEffect.");
+                continue;
+            }
+            player.addPotionEffect(potionEffect);
             if (effect.isPermanent()) {
                 activeEffects.add(effect.getIdentifier());
             }
