@@ -13,7 +13,7 @@ public class PlotNameCommand extends PlotSubCommand {
 
     @Override
     public boolean run(Resident res, OwnedLand land, String base, String alias, String... args) {
-        String name = StringUtils.parseColors(Utils.filterAllCurses(String.join(" ", args)));
+        String name = StringUtils.parseColors(String.join(" ", args));
         if (StringUtils.stripColors(name).length() > 16) {
             getError("too-long").tell(res, "input", name, "amount", "16");
             return true;

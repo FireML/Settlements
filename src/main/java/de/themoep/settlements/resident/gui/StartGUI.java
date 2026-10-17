@@ -71,7 +71,7 @@ public class StartGUI extends ConfigurableGui {
                                 return null;
                             }
                             String name = stateSnapshot.getText();
-                            name = Utils.filterAllCurses(name.trim());
+                            name = name.trim();
                             if (name.toLowerCase().contains("claims")) {
                                 return List.of(
                                         AnvilGUI.ResponseAction.replaceInputText(getErrorText("invalid-characters", "input", name))

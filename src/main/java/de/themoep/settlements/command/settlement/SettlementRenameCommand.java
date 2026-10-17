@@ -19,7 +19,7 @@ public class SettlementRenameCommand extends SettlementSubCommand {
         if (args.length == 0) {
             return false;
         }
-        String name = Utils.filterAllCurses(String.join(" ", args).trim());
+        String name = String.join(" ", args).trim();
         if (name.toLowerCase().contains("claims")) {
             getError("invalid-characters").tell(res, "input", name);
         } else if (SettlementManager.getInstance().getFromName(name) != null) {

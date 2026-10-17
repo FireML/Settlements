@@ -461,11 +461,6 @@ public class Utils {
         return r;
     }
 
-    @Deprecated(forRemoval = true)
-    public static String filterAllCurses(String message) {
-        return message;
-    }
-
     public static long getLong(Object o) {
         return switch (o) {
             case null -> 0;

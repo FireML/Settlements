@@ -43,7 +43,7 @@ public class SettingsGUI extends ConfigurableGui {
                             Player player = stateSnapshot.getPlayer();
                             String text = stateSnapshot.getText();
                             if (landOwner.hasPermission(resident, "rename")) {
-                                String name = Utils.filterAllCurses(text.trim());
+                                String name = text.trim();
                                 if (name.toLowerCase().contains("claims")) {
                                     getError("invalid-characters").tell(player, "input", name);
                                     return List.of(
@@ -255,7 +255,7 @@ public class SettingsGUI extends ConfigurableGui {
                             String text = stateSnapshot.getText();
                             if (landOwner.hasPermission(resident, "setdescription")) {
                                 String description = text.trim();
-                                landOwner.setDescription(Utils.filterAllCurses(description));
+                                landOwner.setDescription(description);
                                 if (!text.isEmpty()) {
                                     Message.get("command." + landOwner.getKey() + ".setdescription.success").tell(player,
                                             "state", landOwner.getStateTag(),

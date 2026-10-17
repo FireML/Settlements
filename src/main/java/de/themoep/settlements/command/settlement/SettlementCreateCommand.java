@@ -28,7 +28,7 @@ public class SettlementCreateCommand extends ResidentSubCommand {
         if (args.length < 1) {
             return false;
         }
-        String name = Utils.filterAllCurses(String.join(" ", args).trim());
+        String name = String.join(" ", args).trim();
         if (Config.Claiming.DISABLED_WORLDS.contains(resident.getPlayer().getLocation().getWorld().getName())) {
             getError("world-not-claimable").tell(resident);
         } else if (name.toLowerCase().contains("claims")) {

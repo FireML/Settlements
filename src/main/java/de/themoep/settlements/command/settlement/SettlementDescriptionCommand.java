@@ -12,7 +12,7 @@ public class SettlementDescriptionCommand extends SettlementSubCommand {
 
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
-        res.getSettlement().setDescription(Utils.filterAllCurses(String.join(" ", args)));
+        res.getSettlement().setDescription(String.join(" ", args));
         DatabaseManager.getInstance().saveSettlement(res.getSettlement());
         getMessage("success").tell(res,
                 "state", res.getSettlement().getState().getTag(),
