@@ -53,8 +53,6 @@ public abstract class DatabaseManager {
         saveSettlement(settlement);
     }
 
-    public abstract void saveSettlementMissionData(Collection<Settlement> settlements);
-
     public abstract void saveMissionData(Resident resident);
 
     public abstract void saveResidentMissionData(Collection<Resident> residents);

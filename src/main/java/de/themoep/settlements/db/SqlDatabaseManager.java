@@ -67,7 +67,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     private SaveQueue<Consumer<Connection>> logQueue;
     private SaveQueue<Settlement> settlementQueue;
-    private SaveQueue<Settlement> settlementMissionDataQueue;
     private SaveQueue<Resident> residentQueue;
     private SaveQueue<Resident> residentMissionDataQueue;
     private SaveQueue<OwnedLand> landQueue;
@@ -150,14 +149,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             settlementQueue.add(settlement.getId(), settlement);
         }
         settlementQueue.finishAdding();
-    }
-
-    @Override
-    public void saveSettlementMissionData(Collection<Settlement> settlements) {
-        for (Settlement settlement : settlements) {
-            settlementMissionDataQueue.add(settlement.getId(), settlement);
-        }
-        settlementMissionDataQueue.finishAdding();
     }
 
     @Override
@@ -666,7 +657,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     public void disable() {
         residentMissionDataQueue.forceSave();
         settlementQueue.forceSave();
-        settlementMissionDataQueue.forceSave();
         residentQueue.forceSave();
         landQueue.forceSave();
         try {

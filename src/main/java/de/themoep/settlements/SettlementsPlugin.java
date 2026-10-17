@@ -75,7 +75,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             DatabaseManager.getInstance().saveResidentMissionData(ResidentManager.getInstance().getCachedResidents());
             logging.info("Saving all settlement data...");
             DatabaseManager.getInstance().saveSettlements(SettlementManager.getInstance().getSettlements());
-            DatabaseManager.getInstance().saveSettlementMissionData(SettlementManager.getInstance().getSettlements());
             logging.info("Saving all land data...");
             DatabaseManager.getInstance().saveLand(LandManager.getInstance().getAllLand());
         }
