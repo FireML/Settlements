@@ -198,12 +198,6 @@ plot-tax:
       couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c for their plot {x} {z} and is has been removed!"
 first-to-reach-level: "&6{name} &7 is the first to reach &6{state} &7level &6{level}"
 land-unclaim: "&e{amount}&7 chunks were automatically unclaimed!"
-events:
-  started: "&6{title} &7started for {duration}"
-  ended: "&6{title} &7ended! &6{state} {name}&7 came first place with a score of {amount}!"
-  stats: "&7Your {state} was #{place} with {amount}"
-  reward-info: "&7Claim your rewards with [/s rewards](/s rewards)"
-  first: "&6{state} {name}&7 took &6first&7 place in &6{title}&7 with {amount}!"
 village:
   enter:
     message: "&f[&eVillage&f] &7Entering &a{name}{pvp}"
@@ -2416,15 +2410,6 @@ command:
       donated: "&e{name} &r&7donated &6{amount}&r&7 to your settlement bank!"
       success: "&7Donated &6{amount}&r&7 to the bank of &e{state} {name}&7!"
       description: Donate money to a certain settlement
-    events:
-      top:
-        no-event: "&cThere is currently no event running!"
-        no-one-participating: "&cThere is currently no one participating in the event {event}!"
-        head: "&a⊱&m━━━━&r&6Top {amount} Settlements&a&m━━━━&a⊰"
-        entry: "&e• {place}. [&e&l{state} {name} &r&7- &e{amount}](&8{chieftitle}: &f{chief}\n&8Residents: &f{size} players\n&f{description})"
-        footer: "&a⊱&m━━━━&r&6Event: {event}&a&m━━━━&a⊰"
-        description: Show top 3 settlements in the current event
-      description: Settlement events commands
     here:
       general: |-
         &e&l{name}
@@ -2673,11 +2658,6 @@ command:
       offline: "&c"
       entry: "{online}{name}"
       description: lists all residents
-    rewards:
-      no-rewards: |-
-        &cYour {settlementstate} does not have any rewards that can be claimed!
-        &7Event rewards can only be claimed until the next event starts (or the server restarts)
-      description: Claim event rewards
     setaccess:
       success: "&7Access changed to &6{access}"
       access:

@@ -6,7 +6,6 @@ import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.TownyCommand;
 import de.themoep.settlements.customevents.CustomEventManager;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.integration.IntegrationManager;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.LandBlockListener;
@@ -229,9 +228,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         SettlementManager.getInstance().postLoad();
         LandManager.load();
         InviteManager.load();
-        if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
-            EventManager.load();
-        }
         return true;
     }
 

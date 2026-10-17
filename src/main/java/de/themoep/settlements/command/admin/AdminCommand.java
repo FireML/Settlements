@@ -21,9 +21,6 @@ public class AdminCommand extends SubCommand {
         this.registerCommand(new AdminUpkeepCommand(this));
         this.registerCommand(new AdminMissionCommand(this));
         this.registerCommand(new AdminCooperationPointsCommand(this));
-        if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
-            this.registerCommand(new AdminEventsCommand(this));
-        }
         this.registerCommand(new AdminJoinCommand(this));
         this.registerCommand(new AdminLevelCommand(this));
     }

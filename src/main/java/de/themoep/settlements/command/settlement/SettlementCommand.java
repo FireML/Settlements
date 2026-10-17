@@ -35,10 +35,6 @@ public class SettlementCommand extends SubCommand {
         registerCommand(new SettlementDisbandCommand(this));
         registerCommand(new SettlementDiscordCommand(this));
         registerCommand(new SettlementDonateCommand(this));
-        if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
-            registerCommand(new SettlementEventsCommand(this));
-            registerCommand(new SettlementRewardsCommand(this));
-        }
         registerCommand(new SettlementHereCommand(this));
         registerCommand(new SettlementHistoryCommand(this, LogType.ALL));
         registerCommand(new SettlementHomeCommand(this));

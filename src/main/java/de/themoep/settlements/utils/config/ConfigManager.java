@@ -1,7 +1,6 @@
 package de.themoep.settlements.utils.config;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.Message;
@@ -36,7 +35,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ConfigManager {
-    private static ConfigManager instance;
+    private static final ConfigManager instance = new ConfigManager();
 
     private final Map<String, ConfigParser> parsers = new HashMap<>();
     private static final ConfigParser DEFAULT_PARSER = (TypelessConfigParser) object -> {
@@ -78,7 +77,6 @@ public class ConfigManager {
     private ConfigAccessor settlementMissionsConf;
     private ConfigAccessor mapConf;
     private ConfigAccessor settlementPerksConf;
-    private ConfigAccessor eventsConf;
     private ConfigAccessor useFlagsConf;
     private ConfigAccessor lastUpkeepConf;
 
@@ -165,7 +163,6 @@ public class ConfigManager {
         mapConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "mapConf.yml");
         settlementPerksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementPerksConf.yml");
         settlementRanksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementRanks.yml");
-        eventsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "events.yml");
         useFlagsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "useflags.yml");
         lastUpkeepConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "lastUpkeep.yml");
         guisConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "guis.yml");
@@ -175,9 +172,6 @@ public class ConfigManager {
             Message.clearCache();
             SettlementsPlugin.getInstance().getLandModeListener().reload();
             updateBossBar();
-            if (getEventsConf().getConfig().getBoolean("enabled")) {
-                EventManager.getInstance().loadConfig();
-            }
         }
     }
 
@@ -466,10 +460,6 @@ public class ConfigManager {
         return settlementRanksConf;
     }
 
-    public ConfigAccessor getEventsConf() {
-        return eventsConf;
-    }
-
     public ConfigAccessor getUseFlagsConf() {
         return useFlagsConf;
     }
@@ -487,10 +477,7 @@ public class ConfigManager {
     }
 
     public static void load() {
-        if (instance == null) {
-            instance = new ConfigManager();
-            instance.setup();
-        }
+        instance.setup();
     }
 
     /**

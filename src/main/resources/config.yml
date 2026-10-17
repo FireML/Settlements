@@ -60,7 +60,6 @@ claiming:
   - Resource_the_end
   - Spawn
   - Events
-  - Mapart
   # Distance in chunks that have to be between claims of non-allied landowners
   enemy-distance: 4
   # Maximum radius in chunks which can be (un)claimed with the radius (un)claiming commands
