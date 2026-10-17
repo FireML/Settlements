@@ -29,7 +29,6 @@ dependencies {
     bukkitLibrary("com.github.ben-manes.caffeine:caffeine:3.1.8")
     bukkitLibrary("com.zaxxer:HikariCP:5.1.0")
 
-    implementation("uk.firedev:DaisyLib:4.3-SNAPSHOT")
     implementation("de.themoep:inventorygui:1.6.7-SNAPSHOT")
     bukkitLibrary("de.themoep:minedown-adventure:1.7.6-SNAPSHOT")
     bukkitLibrary("net.wesjd:anvilgui:1.10.13-SNAPSHOT")
@@ -40,6 +39,10 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.5")
 
     compileOnly("net.luckperms:api:5.5")
+
+    // Custom Things
+    implementation("uk.firedev:DaisyLib:4.3-SNAPSHOT")
+    compileOnly("uk.firedev:ChatChannels:1.2-SNAPSHOT")
 }
 
 group = "uk.firedev"
@@ -56,7 +59,8 @@ bukkit {
 
     depend = listOf(
         "Vault",
-        "LuckPerms"
+        "LuckPerms",
+        "ChatChannels"
     )
 
     generateLibrariesJson = true
@@ -101,70 +105,6 @@ bukkit {
 
         register("tax") {
             description = "Shows tax information."
-        }
-
-        register("chat") {
-            description = "Chat Channel Commands."
-            aliases = listOf("c")
-        }
-
-        register("localchat") {
-            description = "Local chat"
-            aliases = listOf("local", "lc", "cl")
-        }
-
-        register("tradechat") {
-            description = "Trade chat"
-            aliases = listOf("trade", "tc", "ct")
-        }
-
-        register("generalchat") {
-            description = "General chat"
-            aliases = listOf("general", "gc", "g", "cg")
-        }
-
-        register("helpchat") {
-            description = "Help chat"
-        }
-
-        register("eventchat") {
-            description = "Event chat"
-            aliases = listOf("event", "evc")
-        }
-
-        register("settlementchat") {
-            description = "Settlement chat"
-            aliases = listOf("villagechat", "sc", "vc", "cs", "cv")
-        }
-
-        register("allychat") {
-            description = "Ally chat"
-            aliases = listOf("ally", "ac", "ca")
-        }
-
-        register("empirechat") {
-            description = "Empire chat"
-            aliases = listOf("ec", "ce")
-        }
-
-        register("empireallychat") {
-            description = "Empire ally chat"
-            aliases = listOf("eally", "eac", "alliance", "cea")
-        }
-
-        register("adminchat") {
-            description = "Admin chat"
-            aliases = listOf("admin", "adc", "cad")
-        }
-
-        register("staffchat") {
-            description = "Staff chat"
-            aliases = listOf("staff", "stc", "cst")
-        }
-
-        register("ccemchat") {
-            description = "CCEM Chat"
-            aliases = listOf("content", "cc", "ccem")
         }
 
         register("friend") {
