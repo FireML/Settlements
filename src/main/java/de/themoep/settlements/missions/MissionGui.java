@@ -5,11 +5,12 @@ import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
 
 public class MissionGui extends ConfigurableGui {
 
-    public MissionGui(Resident resident, MissionProvider<?> provider, MissionTaker<?> taker) {
+    public MissionGui(Resident resident, Settlement provider, Resident taker) {
         super(resident, provider.name() + ".missions");
 
         gui.addElement(new StaticGuiElement('i', getIcon("info"), getText("info",

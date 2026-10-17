@@ -1,7 +1,6 @@
 package de.themoep.settlements.utils.config;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -78,13 +77,10 @@ public class ConfigManager {
     private ConfigAccessor data;
     private ConfigAccessor settlementLevelConf;
     private ConfigAccessor settlementMissionsConf;
-    private ConfigAccessor empireLevelConf;
-    private ConfigAccessor empireMissionsConf;
     private ConfigAccessor mapConf;
     private ConfigAccessor npcConf;
     private ConfigAccessor npcLevelConf;
     private ConfigAccessor settlementPerksConf;
-    private ConfigAccessor empirePerksConf;
     private ConfigAccessor eventsConf;
     private ConfigAccessor useFlagsConf;
     private CursesFilter toggleableCurses;
@@ -92,7 +88,6 @@ public class ConfigManager {
     private ConfigAccessor lastUpkeepConf;
 
     private ConfigAccessor settlementRanksConf;
-    private ConfigAccessor empireRanksConf;
 
     private ConfigAccessor guisConf;
     private BossBar pvpBossBar;
@@ -172,16 +167,11 @@ public class ConfigManager {
         commands = new ConfigAccessor(SettlementsPlugin.getInstance(), "commands.yml");
         settlementLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementLevelConf.yml");
         settlementMissionsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementMissions.yml");
-        empireLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "empireLevelConf.yml");
-        convertEmpireLevels();
-        empireMissionsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "empireMissions.yml");
         mapConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "mapConf.yml");
         npcConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "npcConf.yml");
         npcLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "npcLevelConf.yml");
         settlementPerksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementPerksConf.yml");
-        empirePerksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "empirePerksConf.yml");
         settlementRanksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementRanks.yml");
-        empireRanksConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "empireRanks.yml");
         eventsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "events.yml");
         useFlagsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "useflags.yml");
         toggleableCurses = new CursesFilter(new ConfigAccessor(SettlementsPlugin.getInstance(), "curses.yml").getConfig());
@@ -189,10 +179,8 @@ public class ConfigManager {
         lastUpkeepConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "lastUpkeep.yml");
         guisConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "guis.yml");
         if (Config.Chat.CHAT_ONLY) {
-            Config.Lock.ENABLED = false;
             Config.Portal.ENABLED = false;
         } else if (SettlementsPlugin.getInstance().isRunning()) {
-            EmpireManager.getInstance().loadConfig();
             SettlementManager.getInstance().loadConfig();
             UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
@@ -200,27 +188,6 @@ public class ConfigManager {
             updateBossBar();
             if (getEventsConf().getConfig().getBoolean("enabled")) {
                 EventManager.getInstance().loadConfig();
-            }
-        }
-    }
-
-    private void convertEmpireLevels() {
-        long upkeepCost = getConfig().getLong("empire.upkeep.cost", getConfig().getLong("upkeep.empire", -1));
-        long worldRadius = getConfig().getLong("empire.world.radius", getConfig().getLong("empires-world.border-radius", -1));
-        if (upkeepCost > -1 || worldRadius > -1) {
-            if (upkeepCost > -1) {
-                SettlementsPlugin.getInstance().getLogging().warn("Found that empire upkeep cost was set to " + upkeepCost + " in the config.yml. Setting that into empireLevelConf.yml. Remove the value to allow modification of the per-level value!");
-            }
-            if (worldRadius > -1) {
-                SettlementsPlugin.getInstance().getLogging().warn("Found that empire world radius was set to " + worldRadius + " in the config.yml. Setting that into empireLevelConf.yml. Remove the value to allow modification of the per-level value!");
-            }
-            for (int i = 1; i <= 10; i++) {
-                if (upkeepCost > -1 && upkeepCost != getEmpireLevelConfig().getLong("levels.level-" + i + ".upkeep")) {
-                    getEmpireLevelConfig().set("levels.level-" + i + ".upkeep", upkeepCost);
-                }
-                if (worldRadius > -1 && worldRadius + (i - 1) * 35 != getEmpireLevelConfig().getInt("levels.level-" + i + ".world-radius")) {
-                    getEmpireLevelConfig().set("levels.level-" + i + ".world-radius", worldRadius + (i - 1) * 35);
-                }
             }
         }
     }
@@ -494,14 +461,6 @@ public class ConfigManager {
         return settlementLevelConf.getConfig();
     }
 
-    public FileConfiguration getEmpireLevelConfig() {
-        return empireLevelConf.getConfig();
-    }
-
-    public FileConfiguration getEmpireMissionsConfig() {
-        return empireMissionsConf.getConfig();
-    }
-
     public FileConfiguration getSettlementMissionsConfig() {
         return settlementMissionsConf.getConfig();
     }
@@ -522,16 +481,8 @@ public class ConfigManager {
         return settlementPerksConf.getConfig();
     }
 
-    public FileConfiguration getEmpirePerksConfig() {
-        return empirePerksConf.getConfig();
-    }
-
     public ConfigAccessor getSettlementRanksConf() {
         return settlementRanksConf;
-    }
-
-    public ConfigAccessor getEmpireRanksConf() {
-        return empireRanksConf;
     }
 
     public ConfigAccessor getEventsConf() {

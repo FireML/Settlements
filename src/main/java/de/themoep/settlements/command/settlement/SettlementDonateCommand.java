@@ -4,7 +4,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.ResidentSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.leveling.Levelable;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -33,10 +32,6 @@ public class SettlementDonateCommand extends ResidentSubCommand {
             getError("settlement-doesnt-exist").tell(player, "name", name);
             return false;
         }
-        if (!settlement.hasUnlocked("command.donate") && Config.Citizens.UNLOCK_DEPENDENCY) {
-            Message.get("gui.unlockables.locked.npc").tell(resident);
-            return true;
-        }
         try {
             long donate = Long.parseLong(args[args.length - 1]);
             if (donate <= 0) {
@@ -46,12 +41,9 @@ public class SettlementDonateCommand extends ResidentSubCommand {
                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(player, (double) donate);
                 if (r2.transactionSuccess()) {
                     settlement.addToBank(donate);
-                    Levelable<?> levelable = SettlementDepositCommand.getLevellable(settlement);
-                    if (levelable != null) {
-                        levelable.checkLevelUp(resident);
-                    }
+                    settlement.checkLevelUp(resident);
                     DatabaseManager.getInstance().saveSettlement(settlement);
-                    Utils.runAsync(() -> DatabaseManager.getInstance().log(null, settlement, resident, "donate", "cash", donate));
+                    Utils.runAsync(() -> DatabaseManager.getInstance().log(settlement, resident, "donate", "cash", donate));
                     if (!settlement.isMember(resident)) {
                         getMessage("success").tell(resident,
                                 "amount", Utils.CURRENCY_FORMAT.format(donate),

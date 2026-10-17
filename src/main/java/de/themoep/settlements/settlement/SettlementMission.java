@@ -3,7 +3,6 @@ package de.themoep.settlements.settlement;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.missions.Mission;
-import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.resident.Resident;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -27,8 +26,8 @@ public class SettlementMission extends Mission {
     }
 
     @Override
-    public boolean isValid(Resident resident, MissionProvider<?> provider) {
-        if (provider instanceof Settlement) {
+    public boolean isValid(Resident resident, Settlement provider) {
+        if (provider != null) {
             if (!onlyOnSettlementClaim()) {
                 return true;
             }
@@ -37,7 +36,7 @@ public class SettlementMission extends Mission {
                 return false;
             }
             OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
-            return land != null && land.isOwnedBy((Settlement) provider);
+            return land != null && land.isOwnedBy(provider);
         }
         return false;
     }

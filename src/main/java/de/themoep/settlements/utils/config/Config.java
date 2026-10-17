@@ -24,7 +24,7 @@ public class Config {
     public static int ENTRIES_PER_PAGE = 10;
 
     @ConfigEntry(old = {"players-in-show"})
-    @ConfigComment("How many players should show up in settlement/empire member lists")
+    @ConfigComment("How many players should show up in settlement member lists")
     public static int PLAYERS_IN_INFO = 40;
 
     @ConfigComment("Max lengths of the rules")
@@ -244,145 +244,6 @@ public class Config {
         }
     }
 
-    public static class Empire {
-        @ConfigEntry(old = {"claimtransfer-to-empire"})
-        @ConfigComment("Whether or not a player can transfer their bought claims to an empire")
-        public static boolean CLAIM_TRANSFER = true;
-
-        @ConfigEntry(old = {"empire-creation-cost"})
-        @ConfigComment("How much a settlement must pay to create an empire")
-        public static long CREATION_COST = 0;
-
-        @ConfigEntry(old = {"empire-start-balance"})
-        @ConfigComment("How much money an empire starts with")
-        public static long START_BALANCE = 0;
-
-        @ConfigEntry(old = {"empire-max-tax"})
-        @ConfigComment("Maximum value that an empire's tax can be set to. Set to -1 to disable maximum")
-        public static long MAX_TAX = -1;
-
-        @ConfigComment("Maximum value that an empire's auction tax can be set to. Set to -1 to disable maximum")
-        public static double MAX_AUCTION_TAX = 30;
-
-        @ConfigEntry(old = {"max-empire-size"})
-        @ConfigComment("Maximum size an empire can have (0 disables the size check)")
-        public static int MAX_SIZE = 0;
-
-        @ConfigEntry(old = {"empires-world.cooldown"})
-        @ConfigComment("The cooldown in seconds after renaming an empire")
-        public static int RENAME_COOLDOWN = 30;
-
-        @ConfigEntry(old = {"titles-per-rank"})
-        @ConfigComment("How many different titles can be configured for a rank")
-        public static int TITLES_PER_RANK = 10;
-
-        public static class Leveling {
-            @ConfigComment("The amount of levels an Empire can reach")
-            public static int MAX_LEVEL = 5;
-        }
-
-        @ConfigComment("The maximum length of the empire names")
-        public static int NAME_LENGTH = 20;
-
-        @ConfigComment("What regex empire names need to match")
-        public static String NAME_VALIDATION = "[\\w-]+";
-
-        public static class Missions {
-            @ConfigComment("Whether or not empire missions should be given to empire member settlements")
-            public static boolean ENABLED = false;
-
-            @ConfigComment("Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?")
-            public static boolean DISTRIBUTE_ON_JOIN = true;
-
-            @ConfigComment("Should additional missions be distributed when leveling up or do they need to wait until the upkeep?")
-            public static boolean DISTRIBUTE_ON_LEVELUP = true;
-
-            @ConfigComment("Allow distribution of duplicate missions?")
-            public static boolean DUPLICATE_MISSIONS = false;
-
-            @ConfigComment("Should missions that are not started yet be removed and replaced by new missions on reset?")
-            public static boolean REMOVE_NOT_STARTED_MISSIONS = true;
-
-            @ConfigComment("Should already started missions be removed and replaced by new missions on reset?")
-            public static boolean REMOVE_STARTED_MISSIONS = false;
-
-            @ConfigComment("Should finished missions be reset? If those are not reset then the settlement needs to wait for the empire to upgrade to get more!")
-            public static boolean REMOVE_FINISHED_MISSIONS = true;
-
-            @ConfigComment("Amount to pay from an empire's bank to distribute new missions. (Set to -1 to disable this functionality)")
-            public static long REDISTRIBUTE_PRICE = 1000;
-
-            @ConfigComment("Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.")
-            public static long PLACE_CACHE_TIME = 60;
-        }
-
-        public static class Claiming {
-            @ConfigComment("Is claiming for empires outside their world enabled?")
-            public static boolean ENABLED = true;
-            
-            @ConfigEntry(old = {"disabled-claiming-worlds"}, parser = "StringSet")
-            @ConfigComment("Worlds in which claiming of Empire chunks are disabled")
-            public static Set<String> DISABLED_WORLDS = new HashSet<>();
-        }
-
-        public static class World {
-            @ConfigEntry(old = {"empires-world.enabled"})
-            @ConfigComment("Whether each empire should get their own world automatically generated")
-            public static boolean ENABLED = true;
-
-            @ConfigEntry(old = {"empires-world.prefix"}, reload = false)
-            @ConfigComment("The prefix of all empire worlds. WARNING: Changing this with existing worlds will break them!")
-            public static String PREFIX = "";
-
-            @ConfigEntry(old = {"empires-world.suffix"}, reload = false)
-            @ConfigComment("The suffix of all empire worlds. WARNING: Changing this with existing worlds will break them!")
-            public static String SUFFIX = "_Domain";
-
-            @ConfigEntry(reload = false)
-            @ConfigComment("Whether or not worlds should be renamed on empire rename. Might cause issues with some plugins.")
-            public static boolean RENAME = true;
-
-            @ConfigEntry(old = {"empires-world.environment"})
-            @ConfigComment("The environment of the world. Can be normal, nether or the_end")
-            public static Environment ENVIRONMENT = Environment.NORMAL;
-
-            @ConfigEntry(old = {"empires-world.type"})
-            @ConfigComment("The type of the world. Can be normal, flat, large_biomes or amplified")
-            public static WorldType TYPE = WorldType.NORMAL;
-
-            @ConfigEntry(old = {"empires-world.generator"})
-            @ConfigComment("The name of the generator to use for the empire worlds. Set to empty to not use one")
-            public static String GENERATOR = "";
-
-            @ConfigEntry(old = {"empires-world.generator-settings"})
-            @ConfigComment("The settings for the defined generator")
-            public static String GENERATOR_SETTINGS = "";
-
-            @ConfigEntry(old = {"empires-world.seed"})
-            @ConfigComment("The seed to be used for the generator. Set to empty to use a random one for each world.")
-            public static String SEED = "";
-
-            @ConfigEntry(old = {"empires-world.structures"})
-            @ConfigComment("Whether or not to generate structures")
-            public static boolean STRUCTURES = false;
-
-            @ConfigEntry(old = {"empires-world.regen-duration"})
-            @ConfigComment("Amount of seconds an empire can regenerate their world after empire generation to find one they like\n" +
-                    "Set to -1 to allow infinite regeneration")
-            public static int REGEN_DURATION = 3600;
-        }
-
-        public static class Upkeep {
-            @ConfigEntry(old = {"abandon-time.empire"})
-            @ConfigComment("The amount of minutes that an empire will stay abandoned after not being able to pay their upkeep\n" +
-                    "Abandoned empires can be raided and fully accessed")
-            public static long ABANDON_TIME = 1440;
-
-            @ConfigComment("Should the capital settlement be excempted from paying their own upkeep?")
-            public static boolean EXEMPT_CAPITAL = false;
-        }
-    }
-
     public static class Plot {
         @ConfigEntry(old = {"plot-max-tax"})
         @ConfigComment("Maximum value that a plot's tax can be set to. Set to -1 to disable maximum")
@@ -403,72 +264,18 @@ public class Config {
         public static class Unclaimed {}
 
         @ConfigComment("Modes in unclaimable worlds")
-        public static class Unclaimeable {}
+        public static class Unclaimable {}
 
         @ConfigComment("Override modes in specific worlds")
         public static class Worlds {}
 
-        @ConfigComment("Modes in abandoned settlements/empires")
+        @ConfigComment("Modes in abandoned settlements")
         public static class Abandoned {
             @ConfigComment("Village-level Settlements")
             public static class Village {}
 
             @ConfigComment("Kingdom-level Settlements")
             public static class Kingdom {}
-
-            @ConfigComment("Abandoned Empire worlds")
-            public static class Empire {}
-        }
-    }
-
-    public static class Lock {
-        @ConfigEntry(reload = false)
-        @ConfigComment("Enable or disable the inbuilt locking")
-        public static boolean ENABLED = true;
-
-        @ConfigEntry(old = "only-lock-in-settlement")
-        @ConfigComment("Whether or not locks are only allowed in settlement claims and empire worlds")
-        public static boolean ONLY_IN_CLAIM = true;
-
-        @ConfigEntry(old = {"alternative-hopper-protection"})
-        @ConfigComment(
-                "This checks if a block is protected by checking on hopper place\n" +
-                " rather than using the InventoryMoveItemEvent stealing of items"
-        )
-        public static boolean ALTERNATIVE_HOPPER_PROTECTION = true;
-
-        @ConfigEntry(old = {"lock-load-queue-ticks"})
-        @ConfigComment("Amount in ticks after which the chunk queue will be processed to load the locks in it")
-        public static int LOAD_QUEUE_TICKS = 20;
-
-        @ConfigEntry(old = {"lockable"}, parser = "MaterialSet")
-        @ConfigComment("Blocks that can be locked")
-        public static Set<Material> BLOCKS;
-
-        private static final Set<String> BLOCKS_DEFAULT = ImmutableSet.of(
-                "chest",
-                "trapped_chest",
-                "dispenser",
-                "dropper",
-                "furnace",
-                "*shulker_box",
-                "*_door",
-                "*_trapdoor",
-                "*_fence_gate",
-                "*_button",
-                "lever",
-                "note_block",
-                "jukebox"
-        );
-
-        public static class Unclaim {
-            @ConfigEntry(old = {"remove-locks-on-unclaim"})
-            @ConfigComment("Remove all locks in a chunk when it gets unclaimed")
-            public static boolean REMOVE = true;
-
-            @ConfigEntry(old = {"remove-locked-blocks"})
-            @ConfigComment("Also remove the blocks when the locks get removed on unclaim")
-            public static boolean REMOVE_BLOCK = false;
         }
     }
 
@@ -496,8 +303,8 @@ public class Config {
     public static class Teleport {
         @ConfigEntry(old = {"spawn-command"})
         @ConfigComment("""
-                The command to run to teleport the player to spawn via the GUI,
-                when a player is kicked from a settlement's claim or when an Empire world is made private/removed
+                The command to run to teleport the player to spawn via the GUI
+                or when a player is kicked from a settlement's claim
                 If not set it will teleport to the world spawn of the default world""")
         public static String SPAWN_COMMAND = "";
 
@@ -510,8 +317,6 @@ public class Config {
             public static int VILLAGE = 3;
             @ConfigEntry(old = {"teleport-delay.kingdom"})
             public static int KINGDOM = 3;
-            @ConfigEntry(old = {"teleport-delay.empire"})
-            public static int EMPIRE = 3;
 
             public static int PLOTSQUARED = 3;
         }
@@ -525,8 +330,6 @@ public class Config {
             public static int VILLAGE = 3;
             @ConfigEntry(old = {"teleport-cooldown.kingdom"})
             public static int KINGDOM = 3;
-            @ConfigEntry(old = {"teleport-cooldown.empire"})
-            public static int EMPIRE = 3;
         }
     }
 
@@ -557,8 +360,6 @@ public class Config {
             public static String SETTLEMENT = "yellow";
             public static String TRADE = "light_purple";
             public static String ALLY = "aqua";
-            public static String EMPIREALLY = "aqua";
-            public static String EMPIRE = "aqua";
             public static String PRIVATE_SENT = "aqua";
             public static String PRIVATE_RECEIVED = "aqua";
         }
@@ -575,8 +376,6 @@ public class Config {
             public static String SETTLEMENT = "aqua";
             public static String TRADE = "light_purple";
             public static String ALLY = "gold";
-            public static String EMPIREALLY = "gold";
-            public static String EMPIRE = "aqua";
             public static String PRIVATE_SENT = "dark_gray";
             public static String PRIVATE_RECEIVED = "dark_gray";
         }
@@ -626,62 +425,5 @@ public class Config {
                 public static boolean PRIVATE = true;
             }
         }
-    }
-
-    public static class Titles {
-        @ConfigComment("Whether or not to block curses inside player-set settlement/empire titles")
-        public static boolean BLOCK_CURSES = true;
-    }
-
-    public static class Chestshop {
-        @ConfigComment("Whether or not it is allowed for a settlement's/empire's shop to be sold to if the owner goes below their next upkeep")
-        public static boolean ALLOW_SELLING_BELOW_UPKEEP = false;
-
-        @ConfigEntry(old = {"chestshop.notification-cooldown"})
-        @ConfigComment("The seconds between shop transaction notifications")
-        public static int NOTIFICATION_COOLDOWN = 5;
-    }
-
-    public static class Brewery {
-        @ConfigComment("Players with a drunkeness above that value can no longer write in the channel")
-        public static class BlockChannels {
-            public static int LOCAL = 9001;
-            public static int TRADE = 1;
-            public static int EVENT = 1;
-            public static int GENERAL = 1;
-            public static int SETTLEMENT = 9001;
-            public static int EMPIRE = 1;
-            public static int ALLY = 1;
-            public static int EMPIREALLY = 1;
-            public static int ADMIN = 9001;
-            public static int STAFF = 9001;
-        }
-    }
-
-    public static class PlotSquared {
-        @ConfigComment("The world which the area for purchased plots is in.\n" +
-                "Leave empty to use the first available area globally. (E.g. if you only have one)")
-        public static String PLOT_WORLD = "";
-
-        @ConfigComment("The id of the plot area which purchased plots are added to.\n" +
-                "Leave empty to use the first available one in the world/globally")
-        public static String PLOT_AREA_ID = "";
-    }
-
-    public static class Citizens {
-        @ConfigComment("The range in blocks in which NPCs will talk with players")
-        public static int TALK_RANGE = 3;
-
-        @ConfigComment("The delay in seconds between messages")
-        public static long TALK_DELAY = 10;
-
-        @ConfigComment("Repeat messages while inside range")
-        public static boolean REPEAT_MESSAGES = false;
-
-        @ConfigComment("Attempt to force respawn NPCs on startup if they are missing (e.g. for Villagers)")
-        public static boolean FORCE_RESPAWN_NPCS = false;
-
-        @ConfigComment("Are the NPCs needed to be unlocked run certain Settlements related commands?")
-        public static boolean UNLOCK_DEPENDENCY = false;
     }
 }

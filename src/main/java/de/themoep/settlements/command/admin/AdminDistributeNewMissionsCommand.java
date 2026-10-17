@@ -2,14 +2,14 @@ package de.themoep.settlements.command.admin;
 
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.common.TargetParser;
-import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.missions.MissionProvider;
+
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.Targetable;
 import org.bukkit.command.CommandSender;
 
 public class AdminDistributeNewMissionsCommand extends SubCommand implements TargetParser {
     public AdminDistributeNewMissionsCommand(SubCommand parent) {
-        super(parent, "distributenewmissions <s:settlement|e:empire>", "newmissions");
+        super(parent, "distributenewmissions <s:settlement>", "newmissions");
         setPermission("settlements.admin.command.distributenewmissions");
     }
 
@@ -20,11 +20,11 @@ public class AdminDistributeNewMissionsCommand extends SubCommand implements Tar
         }
 
         Targetable targetable = getTarget(sender, args[0]);
-        if (targetable instanceof MissionProvider<?> && targetable instanceof LandOwner) {
-            ((MissionProvider<?>) targetable).distributeNewMissions();
+        if (targetable instanceof Settlement settlement) {
+            settlement.distributeNewMissions();
             getMessage("success").tell(sender,
                     "name", targetable.getName(),
-                    "state", ((LandOwner<?, ?>) targetable).getStateTag()
+                    "state", settlement.getStateTag()
             );
             return true;
         }

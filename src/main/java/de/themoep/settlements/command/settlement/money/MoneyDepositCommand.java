@@ -5,8 +5,9 @@ import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.settlement.SettlementDepositCommand;
 import de.themoep.settlements.command.settlement.SettlementSubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.leveling.Levelable;
+
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -18,11 +19,6 @@ public class MoneyDepositCommand extends SettlementSubCommand {
 
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
-        if (!resident.getSettlement().hasUnlocked("command.bank") && Config.Citizens.UNLOCK_DEPENDENCY) {
-            resident.tell(getUnlockText(resident.getSettlement(), "command.bank"));
-            return true;
-        }
-
         if (args.length < 1) {
             return false;
         }
@@ -34,16 +30,14 @@ public class MoneyDepositCommand extends SettlementSubCommand {
             if (SettlementsPlugin.getInstance().getEconomy().getBalance(resident.getPlayer()) >= deposit) {
                 EconomyResponse r2 = SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(resident.getPlayer(), (double) deposit);
                 if (r2.transactionSuccess()) {
-                    resident.getSettlement().addToBank(deposit);
+                    Settlement settlement = resident.getSettlement();
+                    settlement.addToBank(deposit);
                     resident.addDonated(deposit);
-                    Levelable<?> levelable = SettlementDepositCommand.getLevellable(resident.getSettlement());
-                    if (levelable != null) {
-                        levelable.checkLevelUp(resident);
-                    }
-                    resident.getSettlement().save();
+                    settlement.checkLevelUp(resident);
+                    settlement.save();
                     resident.save();
-                    DatabaseManager.getInstance().logDeposit(resident.getSettlement(), resident, deposit);
-                    getMessage("deposited").tell(resident.getSettlement().getOnlineResidents(),
+                    DatabaseManager.getInstance().logDeposit(settlement, resident, deposit);
+                    getMessage("deposited").tell(settlement.getOnlineResidents(),
                             "rank", resident.getSettlementRank().getTag(resident.getSettlement()),
                             "title", resident.getSettlementTitle(),
                             "displaytitle", resident.getDisplayTitle(),

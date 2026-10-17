@@ -8,10 +8,10 @@ import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.settlement.SettlementTitlesCommand;
-import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.leveling.LevelInfo;
-import de.themoep.settlements.rank.Rank;
+
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.StringUtils;
@@ -26,11 +26,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Rank<L, R>> extends SettlementsGUI {
+public class TitlesGUI extends SettlementsGUI {
     private final Resident resident;
     private final InventoryGui gui;
 
-    public TitlesGUI(@NonNull String type, Resident resident, L landOwner, R rank) {
+    public TitlesGUI(@NonNull String type, Resident resident, Settlement landOwner, SettlementRank rank) {
         super(type + ".titles");
         this.resident = resident;
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
@@ -89,7 +89,7 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                                 "title", title,
                                                 "rank", rank.getTag(landOwner)
                                         );
-                                        new TitlesGUI<>(type, resident, landOwner, rank).open();
+                                        new TitlesGUI(type, resident, landOwner, rank).open();
                                     }
                                     return true;
                                 }
@@ -117,7 +117,7 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                         "rank", rank.getTag(landOwner),
                                         "state", landOwner.getStateTag()
                                 ))
-                                .onClose(player -> Utils.runLater(() -> new TitlesGUI<>(type, resident, landOwner, rank).open(), 1))
+                                .onClose(player -> Utils.runLater(() -> new TitlesGUI(type, resident, landOwner, rank).open(), 1))
                                 .onClick((slot, stateSnapshot) -> {
                                     if (slot != AnvilGUI.Slot.OUTPUT) {
                                         return null;
@@ -142,10 +142,6 @@ public class TitlesGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Ra
                                     } else if (!SettlementTitlesCommand.TITLE_PATTERN.matcher(text).matches()) {
                                         return List.of(
                                                 AnvilGUI.ResponseAction.replaceInputText(getError("invalid-characters").getReplacedText("input", text))
-                                        );
-                                    } else if (Config.Titles.BLOCK_CURSES && Utils.containsAnyCurses(text)) {
-                                        return List.of(
-                                                AnvilGUI.ResponseAction.replaceInputText(getError("prohibited-words").getReplacedText("input", text))
                                         );
                                     } else if (landOwner.addTitle(rank, text)) {
                                         Message.get("command." + type + ".titles.add.success").tell(resident, "title", text, "rank", rank.getTag(landOwner));

@@ -4,15 +4,16 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.land.LandAccess;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class AccessGUI extends ConfigurableGui {
 
-    public AccessGUI(Resident resident, @NonNull String type, LandOwner<?, ?> landOwner) {
+    public AccessGUI(Resident resident, @NonNull String type, Settlement landOwner) {
         super(resident, type + ".access");
 
         GuiElementGroup group = createGroup('a');

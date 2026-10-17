@@ -1,9 +1,8 @@
 package de.themoep.settlements.settlement;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.rank.SettlementRank;
@@ -40,12 +39,12 @@ public class SettlementListener implements Listener {
         TaxDebtAction plotDebtAction = TaxDebtAction.NONE;
         for (OwnedLand land : LandManager.getInstance().getOwnedPlot(res.getUUID())) {
             if (!res.hasSettlement()
-                    || !land.getLandOwner().isMember(res)
-                    || (!res.hasPermission(land.getLandOwner().getKey() + ".tax.exempt")
-                            && !land.getLandOwner().isChief(res.getSettlement()))) {
+                    || !land.getSettlement().isMember(res)
+                    || (!res.hasPermission(land.getSettlement().getKey() + ".tax.exempt")
+                            && !land.getSettlement().isChief(res.getSettlement()))) {
                 plotTaxes += land.getTax();
-                if (land.getLandOwner().getTaxDebtAction().ordinal() > plotDebtAction.ordinal()) {
-                    plotDebtAction = land.getLandOwner().getTaxDebtAction();
+                if (land.getSettlement().getTaxDebtAction().ordinal() > plotDebtAction.ordinal()) {
+                    plotDebtAction = land.getSettlement().getTaxDebtAction();
                 }
             }
         }
@@ -60,19 +59,6 @@ public class SettlementListener implements Listener {
             long upkeep = res.getSettlement().getUpkeep() - res.getSettlement().getTaxIncome();
             if (!res.getSettlement().has(upkeep)) {
                 Message.get("upkeep.alert.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(upkeep));
-            }
-            if (res.hasEmpire()) {
-                Empire empire = res.getSettlement().getEmpire();
-                long empireTax = empire.getTax();
-                if (!empire.isCapital(res.getSettlement()) && !res.getSettlement().has(empireTax + upkeep)) {
-                    Message.get("empire-tax.debt-action." + empire.getTaxDebtAction().getKey() + ".cant-pay").tell(event.getPlayer(), "amount", String.valueOf(empireTax));
-                }
-                if (res.getSettlementRank().atLeast(SettlementRank.getChief())) {
-                    long empireUpkeep = empire.getUpkeep() - empire.getTaxIncome();
-                    if (!empire.has(empireUpkeep)) {
-                        Message.get("upkeep.empire-alert.cant-pay").tell(event.getPlayer(), "amount", String.valueOf(empireUpkeep));
-                    }
-                }
             }
         }
     }
@@ -113,7 +99,7 @@ public class SettlementListener implements Listener {
         SimpleChunkLocation chunkLocation = new SimpleChunkLocation(location);
         OwnedLand land = LandManager.getInstance().getLand(chunkLocation);
         if (land == null) {
-            Collection<LandOwner<?, ?>> landOwners = LandManager.getInstance().getNearbyLandOwners(chunkLocation);
+            Collection<Settlement> landOwners = LandManager.getInstance().getNearbyLandOwners(chunkLocation);
             if (Config.Claiming.Close.Building.BLOCK_OUTSIDE && landOwners.isEmpty()
                     && !Config.Claiming.Close.Building.ALLOWED_BLOCKS.contains(block)
                     && !Config.Claiming.Close.Building.ALLOWED_WORLDS.contains(location.getWorld().getName())
@@ -125,7 +111,7 @@ public class SettlementListener implements Listener {
 
             Resident resident = ResidentManager.getInstance().getResident(player);
             Message notification = Message.get("close-claim.settlement-warning." + type);
-            for (LandOwner<?, ?> landOwner : landOwners) {
+            for (Settlement landOwner : landOwners) {
                 if (landOwner == null) {
                     continue;
                 }

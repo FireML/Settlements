@@ -4,8 +4,9 @@ import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class ManageFinancesGUI extends ConfigurableGui {
 
-    public ManageFinancesGUI(Resident resident, LandOwner<?, ?> landOwner) {
+    public ManageFinancesGUI(Resident resident, Settlement landOwner) {
         super(resident, landOwner.getDbName() + ".manage-finances");
 
         gui.addElement(new StaticGuiElement('t', getIcon("tax"), click -> {

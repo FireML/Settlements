@@ -2,7 +2,7 @@ package de.themoep.settlements.command.admin;
 
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
+import de.themoep.settlements.land.events.SettlementChiefChangeEvent;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -45,7 +45,7 @@ public class AdminRankCommand extends SubCommand {
                 Settlement settlement = tRes.getSettlement();
                 if (r.isChief()) {
                     Resident res = tRes.getSettlement().getChief();
-                    new LandownerChiefChangeEvent(settlement, res, tRes).callEvent();
+                    new SettlementChiefChangeEvent(settlement, res, tRes).callEvent();
                     res.setSettlementRank(tRes.getSettlementRank());
                     tRes.setSettlementRank(r);
                     settlement.setChief(tRes.getUUID());

@@ -4,24 +4,25 @@ import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.AllyRequest;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.gui.AlliesGUI;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 
 public interface AllyCommand extends LandOwnerCommand {
 
-    default boolean listAllies(Resident resident, LandOwner<?, ?> landOwner) {
-        if (landOwner.hasUnlocked("allies")) {
-            new AlliesGUI(resident, landOwner).open();
+    default boolean listAllies(Resident resident, Settlement settlement) {
+        if (settlement.hasUnlocked("allies")) {
+            new AlliesGUI(resident, settlement).open();
         } else {
-            resident.tell(getUnlockText(landOwner, "allies"));
+            resident.tell(getUnlockText(settlement, "allies"));
         }
         return true;
     }
 
-    default boolean addAlly(Resident resident, LandOwner<?, ?> source, String[] args) {
+    default boolean addAlly(Resident resident, Settlement source, String[] args) {
         if (!source.hasUnlocked("allies")) {
             resident.tell(getUnlockText(source, "allies"));
             return true;
@@ -30,7 +31,7 @@ public interface AllyCommand extends LandOwnerCommand {
         if (args.length < 1) {
             return false;
         }
-        LandOwner<?, ?> target = getTarget(resident, args[0]);
+        Settlement target = getTarget(resident, args[0]);
         if (target == null) {
             return true;
         }
@@ -63,11 +64,11 @@ public interface AllyCommand extends LandOwnerCommand {
         return true;
     }
 
-    default boolean removeAlly(Resident resident, LandOwner<?, ?> source, String[] args) {
+    default boolean removeAlly(Resident resident, Settlement source, String[] args) {
         if (args.length < 1) {
             return false;
         }
-        LandOwner<?, ?> target = getTarget(resident, args[0]);
+        Settlement target = getTarget(resident, args[0]);
         if (target == null) {
             return true;
         }
@@ -88,12 +89,12 @@ public interface AllyCommand extends LandOwnerCommand {
             if (sourceAlly != null) {
                 Utils.runAsync(() -> DatabaseManager.getInstance().delete(source, sourceAlly));
             } else {
-                DatabaseManager.getInstance().save(source);
+                source.save();
             }
             if (targetAlly != null) {
                 Utils.runAsync(() -> DatabaseManager.getInstance().delete(target, targetAlly));
             } else {
-                DatabaseManager.getInstance().save(target);
+                target.save();
             }
             getMessage("success").tell(target, "name", source.getName(), "state", source.getStateTag());
             getMessage("success").tell(source, "name", target.getName(), "state", target.getStateTag());

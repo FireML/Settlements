@@ -61,7 +61,7 @@ public class SettlementRanksCommand extends SettlementSubCommand {
                         return true;
                     }
                     permission = "settlement.group." + group;
-                } else if (!permission.startsWith("settlement.") && !permission.startsWith("empire.")) {
+                } else if (!permission.startsWith("settlement.")) {
                     if (SettlementRank.getPermGroup(permission) == null) {
                         permission = "settlement." + permission;
                     } else {
@@ -120,7 +120,7 @@ public class SettlementRanksCommand extends SettlementSubCommand {
                     return false;
                 }
                 String permission = args[1].toLowerCase();
-                if (!permission.startsWith("settlement.") && !permission.startsWith("empire.")) {
+                if (!permission.startsWith("settlement.")) {
                     permission = "settlement." + permission;
                 }
 
@@ -162,7 +162,7 @@ public class SettlementRanksCommand extends SettlementSubCommand {
     @Override
     public boolean run(Resident resident, String base, String alias, String... args) {
         if (args.length == 0) {
-            new RankPermsGUI<>("settlement", resident, resident.getSettlement()).open();
+            new RankPermsGUI("settlement", resident, resident.getSettlement()).open();
             return true;
         }
 

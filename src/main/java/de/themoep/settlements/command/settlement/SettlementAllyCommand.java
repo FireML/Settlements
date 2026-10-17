@@ -6,7 +6,7 @@ import de.themoep.settlements.resident.Resident;
 
 public class SettlementAllyCommand extends SettlementSubCommand implements AllyCommand {
     public SettlementAllyCommand(SubCommand parent) {
-        super(parent, "ally s:<settlement>|e:<empire>");
+        super(parent, "ally s:<settlement>");
     }
 
     @Override

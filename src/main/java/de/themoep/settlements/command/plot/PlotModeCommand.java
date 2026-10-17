@@ -72,8 +72,8 @@ public class PlotModeCommand extends PlotSubCommand {
                     land.unsetMode(m);
                     getMessage("unset").tell(res,
                             "mode", m.getTag(),
-                            "value", String.valueOf(land.getLandOwner().getMode(m)),
-                            "parent", land.getLandOwner().getStateTag()
+                            "value", String.valueOf(land.getSettlement().getMode(m)),
+                            "parent", land.getSettlement().getStateTag()
                     );
                 } else {
                     return false;

@@ -3,12 +3,11 @@ package de.themoep.settlements.land.gui;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
+import de.themoep.settlements.settlement.gui.PerksGUI;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.SignGui;
@@ -27,7 +26,7 @@ import java.util.stream.Collectors;
 
 public class SettingsGUI extends ConfigurableGui {
 
-    public SettingsGUI(Resident resident, LandOwner<?, ?> landOwner) {
+    public SettingsGUI(Resident resident, Settlement landOwner) {
         super(resident, "settlement.settings");
 
         gui.addElement(new StaticGuiElement('n', getIcon("rename"), click -> {
@@ -50,25 +49,15 @@ public class SettingsGUI extends ConfigurableGui {
                                     return List.of(
                                             AnvilGUI.ResponseAction.replaceInputText(getError("invalid-characters").getReplacedText("input", name))
                                     );
-                                } else if (landOwner instanceof Settlement && SettlementManager.getInstance().getFromName(name) != null) {
+                                } else if (SettlementManager.getInstance().getFromName(name) != null) {
                                     getError("settlement-exists").tell(player, "input", name);
                                     return List.of(
                                             AnvilGUI.ResponseAction.replaceInputText(getError("settlement-exists").getReplacedText("name", name))
                                     );
-                                } else if (landOwner instanceof Settlement && name.length() > Config.Settlement.NAME_LENGTH) {
+                                } else if (name.length() > Config.Settlement.NAME_LENGTH) {
                                     getError("too-long").tell(player, "input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH));
                                     return List.of(
                                             AnvilGUI.ResponseAction.replaceInputText(getError("too-long").getReplacedText("input", name, "amount", String.valueOf(Config.Settlement.NAME_LENGTH)))
-                                    );
-                                } else if (landOwner instanceof Empire && EmpireManager.getInstance().getEmpireFromName(name) != null) {
-                                    getError("empire-exists").tell(player, "input", name);
-                                    return List.of(
-                                            AnvilGUI.ResponseAction.replaceInputText(getError("empire-exists").getReplacedText("name", name))
-                                    );
-                                } else if (landOwner instanceof Empire && name.length() > Config.Empire.NAME_LENGTH) {
-                                    getError("too-long").tell(player, "input", name, "amount", String.valueOf(Config.Empire.NAME_LENGTH));
-                                    return List.of(
-                                            AnvilGUI.ResponseAction.replaceInputText(getError("too-long").getReplacedText("input", name, "amount", String.valueOf(Config.Empire.NAME_LENGTH)))
                                     );
                                 } else if (!landOwner.isValidName(name)) {
                                     getError("invalid-characters").tell(player, "input", name);
@@ -103,11 +92,7 @@ public class SettingsGUI extends ConfigurableGui {
 
         gui.addElement(new StaticGuiElement('p', getIcon("perks"), click -> {
             if (landOwner.hasPermission(resident, "perks")) {
-                if (landOwner instanceof Settlement) {
-                    new de.themoep.settlements.settlement.gui.PerksGUI(resident).open();
-                } else if (landOwner instanceof Empire) {
-                    new de.themoep.settlements.empire.gui.PerksGUI(resident).open();
-                }
+                new PerksGUI(resident).open();
             }
             return true;
         }, getText("perks.entry",
@@ -316,7 +301,7 @@ public class SettingsGUI extends ConfigurableGui {
         }, getText("recruitment",
                 "jointype", landOwner.getJoinType().getTag(),
                 "state", landOwner.getStateTag(),
-                "action", (landOwner.hasUnlocked("recruitment") || !Config.Citizens.UNLOCK_DEPENDENCY) ? landOwner.hasPermission(resident, "recruitment") ? getText("unlockables.unlocked.change") : getText("no-permission") : getUnlockText(landOwner, "recruitment")
+                "action", landOwner.hasPermission(resident, "recruitment") ? getText("unlockables.unlocked.change") : getText("no-permission")
         )));
 
         gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));

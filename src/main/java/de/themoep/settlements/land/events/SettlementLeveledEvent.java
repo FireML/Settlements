@@ -1,8 +1,7 @@
 package de.themoep.settlements.land.events;
 
-import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.land.LandownerLevel;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -10,17 +9,18 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Called after a landowner achieved a new level
  */
-public class LandownerLeveledEvent extends Event {
+public class SettlementLeveledEvent extends Event {
     private final static HandlerList handlerList = new HandlerList();
-    private final LandOwner<?, ? extends LandownerLevel> leveled;
+    private final Settlement leveled;
 
     private final Resident resident;
 
-    public LandownerLeveledEvent(@NotNull LandOwner<?, ? extends LandownerLevel> leveled, @NotNull Resident resident) {
+    public SettlementLeveledEvent(@NotNull Settlement leveled, @NotNull Resident resident) {
         this.leveled = leveled;
         this.resident = resident;
     }
-    public @NotNull LandOwner<?, ? extends LandownerLevel> getLeveled() {
+
+    public @NotNull Settlement getSettlement() {
         return leveled;
     }
 

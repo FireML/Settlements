@@ -1,10 +1,10 @@
 package de.themoep.settlements.land;
 
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
@@ -15,9 +15,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
-public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends Invite<LandOwner<?, ?>, S> {
+public class JoinRequest<S extends Targetable & DatabaseSerializable> extends Invite<Settlement, S> {
 
-    public JoinRequest(LandOwner<?, ?> target, S source) {
+    public JoinRequest(Settlement target, S source) {
         super(target, source);
     }
 
@@ -26,8 +26,8 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
     }
 
     @Override
-    public LandOwner<?, ?> getTarget() {
-        return (LandOwner<?, ?>) getTargetAble(getTargetType(), getTargetId());
+    public Settlement getTarget() {
+        return (Settlement) getTargetAble(getTargetType(), getTargetId());
     }
 
     @SuppressWarnings("unchecked")
@@ -39,7 +39,6 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
     private Targetable getTargetAble(String type, IdObject id) {
         return switch (type) {
             case "settlement" -> SettlementManager.getInstance().getFromId(id);
-            case "empire" -> EmpireManager.getInstance().getEmpireFromId(id);
             case "resident" -> ResidentManager.getInstance().getResident(id);
             default -> null;
         };
@@ -59,14 +58,14 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
 
         long time = (long) map.get("time");
 
-        return new JoinRequest(targetType, targetId, sourceType, sourceId, time);
+        return new JoinRequest<>(targetType, targetId, sourceType, sourceId, time);
     }
 
 
     @Override
     public String[] getReplacements(ConfigMessages configMessages, String... initial) {
         S source = getSource();
-        if (source instanceof LandOwner<?, ?> owner) {
+        if (source instanceof Settlement owner) {
             return owner.getReplacements(configMessages, initial);
         } else if (source instanceof Resident res) {
             return res.getReplacements(initial);
@@ -77,7 +76,7 @@ public class JoinRequest<S extends Targetable & DatabaseSerializable>  extends I
     @Override
     public ItemStack getIcon() {
         S source = getSource();
-        if (source instanceof LandOwner<?, ?> owner) {
+        if (source instanceof Settlement owner) {
             return owner.getIcon();
         } else if (source instanceof Resident res) {
             return ItemUtils.getHead(res.getUUID(), source.getName());

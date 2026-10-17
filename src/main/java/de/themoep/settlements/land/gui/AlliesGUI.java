@@ -10,8 +10,9 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.AllyRequest;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.ListGui;
 import de.themoep.settlements.utils.Utils;
@@ -26,8 +27,8 @@ public class AlliesGUI extends SettlementsGUI {
     private final Resident resident;
     private Ally.Sort sort = Ally.Sort.ALLY_DATE;
 
-    public AlliesGUI(Resident resident, LandOwner<?, ?> landOwner) {
-        super(landOwner.getKey() + ".allies");
+    public AlliesGUI(Resident resident, Settlement settlement) {
+        super(settlement.getKey() + ".allies");
         this.resident = resident;
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
         gui.setCloseAction(close -> false);
@@ -36,17 +37,17 @@ public class AlliesGUI extends SettlementsGUI {
 
         DynamicGuiElement sortedGroup = new DynamicGuiElement('a', who -> {
             GuiElementGroup group = new GuiElementGroup('a');
-            landOwner.getAllies().stream()
-                    .filter(a -> a.getLandOwner() != null)
+            settlement.getAllies().stream()
+                    .filter(a -> a.getSettlement() != null)
                     .sorted((a1, a2) -> a1.compareTo(sort, a2))
                     .forEach(a -> group.addElement(
-                            new StaticGuiElement('a', ItemUtils.getHead(a.getLandOwner().getChief().getUUID(), resident.getName()), click -> {
+                            new StaticGuiElement('a', ItemUtils.getHead(a.getSettlement().getChief().getUUID(), resident.getName()), click -> {
 
-                                if (landOwner.hasPermission(resident, "manageally")) {
-                                    new AllyGUI(landOwner, resident, a).open();
+                                if (settlement.hasPermission(resident, "manageally")) {
+                                    new AllyGUI(settlement, resident, a).open();
                                 }
                                 return true;
-                            }, getText("entry." + a.getType(), a.getLandOwner().getReplacements(this, "allydate", Utils.DATE_FORMAT.format(a.getCreationDate()))))
+                            }, getText("entry." + a.getType(), a.getSettlement().getReplacements(this, "allydate", Utils.DATE_FORMAT.format(a.getCreationDate()))))
                     ));
             return group;
         });
@@ -65,13 +66,13 @@ public class AlliesGUI extends SettlementsGUI {
             return true;
         }, "sort"));
 
-        Collection<AllyRequest> requests = landOwner.getAllyRequests();
-        if (landOwner.hasPermission(resident, "manageally")) {
+        Collection<AllyRequest> requests = settlement.getAllyRequests();
+        if (settlement.hasPermission(resident, "manageally")) {
             gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("requests"), !requests.isEmpty()), click -> {
-                new ListGui<>(resident, "general.requests", () -> new ArrayList<>(landOwner.getAllyRequests()), (c, request) -> {
+                new ListGui<>(resident, "general.requests", () -> new ArrayList<>(settlement.getAllyRequests()), (c, request) -> {
                     // accept request
-                    if (landOwner.hasPermission(resident, "manageally") && request instanceof AllyRequest) {
-                        AllyRequest currentRequest = landOwner.removeAllyRequest(((AllyRequest) request));
+                    if (settlement.hasPermission(resident, "manageally") && request instanceof AllyRequest) {
+                        AllyRequest currentRequest = settlement.removeAllyRequest(((AllyRequest) request));
                         if (currentRequest == null) {
                             // No request sent?
                             c.getGui().draw();
@@ -79,18 +80,18 @@ public class AlliesGUI extends SettlementsGUI {
                         }
                         c.getGui().close();
                         Utils.runAsync(() -> {
-                            LandOwner<?, ?> sender = ((AllyRequest) request).getSource();
+                            Settlement sender = ((AllyRequest) request).getSource();
                             DatabaseManager.getInstance().delete(request);
-                            AllyRequest reverseRequest = sender.removeAllyRequest(landOwner);
+                            AllyRequest reverseRequest = sender.removeAllyRequest(settlement);
                             if (reverseRequest != null) {
                                 DatabaseManager.getInstance().delete(reverseRequest);
                             }
                             Utils.runSync(() -> {
-                                sender.addAlly(landOwner).save();
-                                landOwner.addAlly(sender).save();
+                                sender.addAlly(settlement).save();
+                                settlement.addAlly(sender).save();
                                 getMessage("success").tell(resident, "name", sender.getName());
-                                getMessage("now-allied-to").tell(sender, "name", landOwner.getName(), "state", landOwner.getStateTag());
-                                getMessage("now-allied-to").tell(landOwner, "name", sender.getName(), "state", sender.getStateTag());
+                                getMessage("now-allied-to").tell(sender, "name", settlement.getName(), "state", settlement.getStateTag());
+                                getMessage("now-allied-to").tell(settlement, "name", sender.getName(), "state", sender.getStateTag());
                             });
                         });
                     }

@@ -1,14 +1,12 @@
 package de.themoep.settlements.land;
 
-import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Next;
+import org.jspecify.annotations.NonNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,7 +35,7 @@ public class Ally implements DatabaseSerializable {
 
     @Override
     public void save() {
-        DatabaseManager.getInstance().save(getLandOwner());
+        getSettlement().save();
     }
 
     public String getType() {
@@ -49,12 +47,8 @@ public class Ally implements DatabaseSerializable {
         return id;
     }
 
-    public LandOwner<?, ?> getLandOwner() {
-        return switch (type) {
-            case "settlement" -> SettlementManager.getInstance().getFromId(id);
-            case "empire" -> EmpireManager.getInstance().getEmpireFromId(id);
-            default -> null;
-        };
+    public Settlement getSettlement() {
+        return type == null ? null : SettlementManager.getInstance().getFromId(id);
     }
 
     public long getCreationDate() {
@@ -75,7 +69,7 @@ public class Ally implements DatabaseSerializable {
     }
 
     @Override
-    public LinkedHashMap<String, Object> serialize() {
+    public @NonNull LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
         map.put("id", getId());
         map.put("created", getCreationDate());
@@ -95,8 +89,8 @@ public class Ally implements DatabaseSerializable {
                 (Boolean) map.get("nearbyClaim"));
     }
 
-    public Ally removeAlly(LandOwner<?, ?> landOwner) {
-        LandOwner<?, ?> ally = getLandOwner();
+    public Ally removeAlly(Settlement landOwner) {
+        Settlement ally = getSettlement();
         if (ally != null) {
             return ally.removeAlly(landOwner);
         }
@@ -105,27 +99,24 @@ public class Ally implements DatabaseSerializable {
 
     public int compareTo(Sort sort, Ally other) {
         if (getType().equals(other.getType())) {
-            LandOwner<?, ?> t = getLandOwner();
-            LandOwner<?, ?> o = other.getLandOwner();
+            Settlement t = getSettlement();
+            Settlement o = other.getSettlement();
 
             if (sort == Sort.LEVEL) {
-                if (t instanceof Empire empire1 && o instanceof Empire empire2) {
-                    return empire1.compareTo(empire2);
-                } else if (t instanceof Settlement settlement1 && o instanceof Settlement settlement2) {
+                if (t instanceof Settlement settlement1 && o instanceof Settlement settlement2) {
                     return (settlement1).compareTo(settlement2);
                 } else if (o == null) {
                     return 1;
-                } else if (t == null) {
+                } else {
                     return -1;
                 }
-                return getType().equals("empire") ? 1 : -1;
             } else if (sort == Sort.NAME) {
                 return t != null && o != null ? t.getName().compareToIgnoreCase(o.getName()) : 0;
             } else if (sort == Sort.ALLY_DATE) {
                 return Long.compare(other.getCreationDate(), getCreationDate());
             }
         }
-        return getType().equals("empire") ? 1 : -1;
+        return -1;
     }
 
     public enum Sort implements NameTag, Next<Sort> {

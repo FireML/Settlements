@@ -86,7 +86,7 @@ public class ResidentGUI extends ConfigurableGui {
 
         gui.addElement(new DynamicGuiElement('t', who -> new StaticGuiElement('t', getIcon("settitle"), click -> {
             if (resident.getSettlement().hasPermission(sender, "settitle") && sender.getSettlementRank().above(resident.getSettlementRank())) {
-                new TitleGUI<>("settlement", sender, resident, resident.getSettlement()).open();
+                new TitleGUI("settlement", sender, resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("settitle",
@@ -96,7 +96,7 @@ public class ResidentGUI extends ConfigurableGui {
 
         gui.addElement(new DynamicGuiElement('r', who -> new StaticGuiElement('r', getIcon("rank"), click -> {
             if (resident.getSettlement().hasPermission(sender, "setrank") && sender.getSettlementRank().above(resident.getSettlementRank())) {
-                new RankSelectGUI<>("settlement.setrank", sender, resident, resident.getSettlement(), rank -> {
+                new RankSelectGUI("settlement.setrank", sender, resident, resident.getSettlement(), rank -> {
                     resident.setSettlementRank(rank);
                     resident.save();
                     InventoryGui.goBack(click.getWhoClicked());

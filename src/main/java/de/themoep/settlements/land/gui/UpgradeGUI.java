@@ -4,13 +4,10 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.empire.EmpireLevel;
-import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.land.LandownerLevel;
-import de.themoep.settlements.leveling.LevelInfo;
-import de.themoep.settlements.leveling.Levelable;
-import de.themoep.settlements.perk.LevelPerk;
+
+import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementLevel;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.HumanReadable;
@@ -29,48 +26,24 @@ import java.util.Map;
 
 public class UpgradeGUI extends ConfigurableGui {
 
-    private Levelable<? extends LevelInfo> selected = null;
+    private Settlement selected;
 
-    public UpgradeGUI(Resident resident, LandOwner<?, ? extends LandownerLevel> landOwner) {
+    public UpgradeGUI(Resident resident, Settlement landOwner) {
         super(resident, landOwner.getKey() + ".upgrade", "state", landOwner.getStateTag());
-
-        List<Levelable<? extends LevelInfo>> levelables = new ArrayList<>();
-        levelables.add(landOwner);
-
-        for (Levelable<? extends LevelInfo> levelable : levelables) {
-            if (!levelable.isMaxLevel()) {
-                selected = levelable;
-                break;
-            }
-        }
-
-        if (selected == null) {
-            this.gui = null;
-            Message.get("command.settlement.upgrade.not-possible").tell(resident, "reason", Message.get("command.settlement.upgrade.max-level-reached").getText());
-            return;
-        }
+        selected = landOwner;
 
         GuiElementGroup navBar = new GuiElementGroup('l');
 
-        for (Levelable<?> levelable : levelables) {
-            navBar.addElement(new DynamicGuiElement('l', who -> new StaticGuiElement('l',
-                    ItemUtils.setGlowing(getIcon(levelable), levelable == selected),
-                    click -> {
-                        if (levelable.getLevel() > 0 && selected != levelable && !levelable.isMaxLevel()) {
-                            selected = levelable;
-                            click.getGui().draw();
-                        }
-                        return true;
-                    }, getText("navigation.entry",
-                                "description", getText("navigation.description." + (levelable.isMaxLevel() ? "upgraded" : levelable.getLevel() > 0 ? "upgradable" : "locked"),
-                                        "action", getText("navigation.action." + (levelable == selected ? "current" : "switch"))),
-                                "name", levelable instanceof LandOwner
-                                        ? ((LandOwner<?, ?>) levelable).getStateTag() + " " + ((LandOwner<?, ?>) levelable).getName()
-                                        : levelable.getTag(),
-                                "type", levelable.getTag(),
-                                "level", String.valueOf(levelable.getLevel())
-            ))));
-        }
+        navBar.addElement(new DynamicGuiElement('l', who -> new StaticGuiElement('l',
+            ItemUtils.setGlowing(getIcon(selected), true),
+            _ -> true,
+            getText("navigation.entry",
+            "description", getText("navigation.description." + (selected.isMaxLevel() ? "upgraded" : selected.getLevel() > 0 ? "upgradable" : "locked"),
+                "action", getText("navigation.action." + (selected == selected ? "current" : "switch"))),
+            "name", selected.getStateTag() + " " + selected.getName(),
+            "type", selected.getTag(),
+            "level", String.valueOf(selected.getLevel())
+        ))));
 
         gui.addElement(navBar);
 
@@ -93,10 +66,10 @@ public class UpgradeGUI extends ConfigurableGui {
                     boolean hasReached = selected.has(entry.getKey(), entry.getValue());
 
                     reqGroup.addElement(new StaticGuiElement('r', ItemUtils.setGlowing(icon, hasReached), getText("requirement." + (hasReached ? "reached" : "left"),
-                            "name", HumanReadable.humanizedName(entry.getKey()),
-                            "required", String.valueOf(entry.getValue()),
-                            "progress", String.valueOf(selected.getAmount(entry.getKey())),
-                            "amount", String.valueOf(entry.getValue() - selected.getAmount(entry.getKey()))
+                        "name", HumanReadable.humanizedName(entry.getKey()),
+                        "required", String.valueOf(entry.getValue()),
+                        "progress", String.valueOf(selected.getAmount(entry.getKey())),
+                        "amount", String.valueOf(entry.getValue() - selected.getAmount(entry.getKey()))
                     )));
                 }
             }
@@ -105,83 +78,68 @@ public class UpgradeGUI extends ConfigurableGui {
         }));
 
         gui.addElement(new DynamicGuiElement('i', who -> {
-            LevelInfo level = selected.getLevelInfo();
-            LevelInfo nextLevel = selected.getNextLevel().orElse(null);
+            SettlementLevel level = selected.getLevelInfo();
+            SettlementLevel nextLevel = selected.getNextLevel().orElse(null);
             if (nextLevel != null) {
-                Collection<? extends LevelPerk<?>> perks = selected.getPerks(nextLevel.getLevel());
+                Collection<? extends SettlementPerk> perks = selected.getPerks(nextLevel.getLevel());
                 List<String> benefits = new ArrayList<>();
-                if (nextLevel instanceof LandownerLevel && level instanceof LandownerLevel) {
-                    if (((LandownerLevel) nextLevel).getSize() > ((LandownerLevel) level).getSize()) {
-                        benefits.add(((LandownerLevel) nextLevel).getSize() + " Members");
-                    }
-                    if (((LandownerLevel) nextLevel).getMissions() > ((LandownerLevel) level).getMissions()) {
-                        benefits.add(((LandownerLevel) nextLevel).getMissions() + " Missions");
-                    }
-                    if (((LandownerLevel) nextLevel).getChunks() > ((LandownerLevel) level).getChunks()) {
-                        benefits.add(((LandownerLevel) nextLevel).getChunks() + " Claims");
-                    }
-                    if (((LandownerLevel) nextLevel).getClaimUpkeep(who.getWorld().getName()) > ((LandownerLevel) level).getClaimUpkeep(who.getWorld().getName())) {
-                        benefits.add(((LandownerLevel) nextLevel).getClaimUpkeep(who.getWorld().getName()) + " Claim Upkeep");
-                    }
-                    if (nextLevel instanceof SettlementLevel && level instanceof SettlementLevel) {
-                        if (((SettlementLevel) nextLevel).getExtraMissions() > ((SettlementLevel) level).getExtraMissions()) {
-                            benefits.add(((SettlementLevel) nextLevel).getExtraMissions() + " Extra Missions");
-                        }
-                        if (((SettlementLevel) nextLevel).getOutposts() > ((SettlementLevel) level).getOutposts()) {
-                            benefits.add(((SettlementLevel) nextLevel).getOutposts() + " Outposts");
-                        }
-                    }
-                    if (nextLevel instanceof EmpireLevel && level instanceof EmpireLevel) {
-                        if (((EmpireLevel) nextLevel).getWorldRadius() > ((EmpireLevel) level).getWorldRadius()) {
-                            benefits.add(((EmpireLevel) nextLevel).getWorldRadius() + " World Radius");
-                        }
-                        if (((EmpireLevel) nextLevel).getUpkeep() > ((EmpireLevel) level).getUpkeep()) {
-                            benefits.add(((EmpireLevel) nextLevel).getUpkeep() + " Upkeep");
-                        }
-                        if (((EmpireLevel) nextLevel).getUpkeepReduction() > ((EmpireLevel) level).getUpkeepReduction()) {
-                            benefits.add(((EmpireLevel) nextLevel).getUpkeepReduction() + " Upkeep Reduction");
-                        }
-                    }
+                if (nextLevel.getSize() > level.getSize()) {
+                    benefits.add(nextLevel.getSize() + " Members");
+                }
+                if (nextLevel.getMissions() > level.getMissions()) {
+                    benefits.add(nextLevel.getMissions() + " Missions");
+                }
+                if (nextLevel.getChunks() > level.getChunks()) {
+                    benefits.add(nextLevel.getChunks() + " Claims");
+                }
+                if (nextLevel.getClaimUpkeep(who.getWorld().getName()) > level.getClaimUpkeep(who.getWorld().getName())) {
+                    benefits.add(nextLevel.getClaimUpkeep(who.getWorld().getName()) + " Claim Upkeep");
+                }
+                if (nextLevel.getExtraMissions() > level.getExtraMissions()) {
+                    benefits.add(nextLevel.getExtraMissions() + " Extra Missions");
+                }
+                if (nextLevel.getOutposts() > level.getOutposts()) {
+                    benefits.add(nextLevel.getOutposts() + " Outposts");
                 }
                 List<String> benefitTexts = new ArrayList<>();
-                for (LevelPerk<?> perk : perks) {
+                for (SettlementPerk perk : perks) {
                     if (perk.getUnlockables().isEmpty() || getMessage("description." + perk.getKey()).exists()) {
                         benefitTexts.add(getText("benefit",
-                                "name", perk.getTag(),
-                                "description", getText("description." + perk.getKey())));
+                            "name", perk.getTag(),
+                            "description", getText("description." + perk.getKey())));
                     } else {
                         for (String unlockable : perk.getUnlockables()) {
                             benefitTexts.add(getText("benefit",
-                                    "name", HumanReadable.humanizedName(unlockable),
-                                    "description", HumanReadable.humanizedName(unlockable)));
+                                "name", HumanReadable.humanizedName(unlockable),
+                                "description", HumanReadable.humanizedName(unlockable)));
                         }
                     }
                 }
                 for (String benefit : benefits) {
                     benefitTexts.add(getText("benefit",
-                            "name", benefit,
-                            "description", benefit
+                        "name", benefit,
+                        "description", benefit
                     ));
                 }
                 return new StaticGuiElement('i', getIcon(selected), getText("info",
-                        "name", selected.getTag(),
-                        "benefits", String.join("\n", benefitTexts)
+                    "name", selected.getTag(),
+                    "benefits", String.join("\n", benefitTexts)
                 ));
             }
             return null;
         }));
 
         gui.addElement(new DynamicGuiElement('p', who -> {
-            LevelInfo nextLevel = selected.getNextLevel().orElse(null);
+            SettlementLevel nextLevel = selected.getNextLevel().orElse(null);
             if (nextLevel != null) {
                 double progress = selected.getNextLevelProgress();
                 return new StaticGuiElement('p', getIcon("progress"), getText("progress",
-                        "progress", String.valueOf(((int) progress * 1000) / 10d),
-                        "progressbar", getText("progress-bar.finished",
-                                "bars", String.join("", Collections.nCopies((int) Math.floor(progress * 50), "|"))) +
-                                getText("progress-bar.unfinished",
-                                        "bars", String.join("", Collections.nCopies((int) Math.ceil((1 - progress) * 50), "|")))
-                        )
+                    "progress", String.valueOf(((int) progress * 1000) / 10d),
+                    "progressbar", getText("progress-bar.finished",
+                        "bars", String.join("", Collections.nCopies((int) Math.floor(progress * 50), "|"))) +
+                        getText("progress-bar.unfinished",
+                            "bars", String.join("", Collections.nCopies((int) Math.ceil((1 - progress) * 50), "|")))
+                )
                 );
             }
             return null;
@@ -189,7 +147,7 @@ public class UpgradeGUI extends ConfigurableGui {
 
         gui.addElement(new DynamicGuiElement('d', who -> new StaticGuiElement('d', getIcon("deposit"), click -> {
             if (click.getCursor() == null || click.getCursor().isEmpty()) {
-                new DepositGUI<>(landOwner.getKey(), resident, selected).open();
+                new DepositGUI(landOwner.getKey(), resident, selected).open();
             } else if (click.getType() == ClickType.LEFT && click.getCursor() != null) {
                 Map<String, Long> requirements = selected.getNextLevelRequirements();
                 ItemStack cursor = click.getCursor();

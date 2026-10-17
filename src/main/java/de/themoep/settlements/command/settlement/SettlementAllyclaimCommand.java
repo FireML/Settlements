@@ -29,7 +29,7 @@ public class SettlementAllyclaimCommand extends SettlementSubCommand {
         resident.getSettlement().setAllowAllyClaim(value);
         if (!value) {
             for (Ally ally : resident.getSettlement().getAllies()) {
-                LandManager.getInstance().checkClaimDistance(resident.getSettlement(), ally.getLandOwner());
+                LandManager.getInstance().checkClaimDistance(resident.getSettlement(), ally.getSettlement());
             }
         }
         DatabaseManager.getInstance().saveSettlement(resident.getSettlement());

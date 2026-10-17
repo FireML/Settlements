@@ -1,6 +1,7 @@
 package de.themoep.settlements.perk;
 
-import de.themoep.settlements.land.LandOwner;
+
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigKey;
 import de.themoep.settlements.utils.NameTag;
 import org.bukkit.Material;
@@ -155,16 +156,16 @@ public class Perk implements NameTag {
         return !actions.isEmpty();
     }
 
-    public void toggleActions(Player player, LandOwner<?, ?> landOwner, boolean enable) {
+    public void toggleActions(Player player, Settlement settlement, boolean enable) {
         for (Action action : actions.values()) {
-            action.onToggle(player, landOwner, enable);
+            action.onToggle(player, settlement, enable);
         }
     }
 
-    public List<String> getActionStates(LandOwner<?, ?> landOwner) {
+    public List<String> getActionStates(Settlement settlement) {
         List<String> states = new ArrayList<>();
         for (Action action : actions.values()) {
-            String state = action.getState(landOwner);
+            String state = action.getState(settlement);
             if (state != null) {
                 states.add(action.getKey() + "." + state);
             }
@@ -178,13 +179,13 @@ public class Perk implements NameTag {
 
     public interface ActionExecutor {
 
-        void onToggle(Player player, LandOwner<?, ?> landOwner, boolean enable);
+        void onToggle(Player player, Settlement settlement, boolean enable);
 
     }
 
     public interface StateQuery {
 
-        String getState(LandOwner<?, ?> landOwner);
+        String getState(Settlement settlement);
 
     }
 
@@ -200,16 +201,16 @@ public class Perk implements NameTag {
         }
 
         @Override
-        public void onToggle(Player player, LandOwner<?, ?> landOwner, boolean enable) {
+        public void onToggle(Player player, Settlement settlement, boolean enable) {
             if (actionExecutor != null) {
-                actionExecutor.onToggle(player, landOwner, enable);
+                actionExecutor.onToggle(player, settlement, enable);
             }
         }
 
         @Override
-        public String getState(LandOwner<?, ?> landOwner) {
+        public String getState(Settlement settlement) {
             if (stateQuery != null) {
-                return stateQuery.getState(landOwner);
+                return stateQuery.getState(settlement);
             }
             return null;
         }

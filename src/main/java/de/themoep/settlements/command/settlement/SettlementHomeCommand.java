@@ -38,8 +38,7 @@ public class SettlementHomeCommand extends ResidentSubCommand {
 
         if (!resident.getPlayer().isOp() && !resident.hasPermission("settlements.bypass.teleport") && !settlement.isMember(resident)
                 && (settlement.getAccess() == LandAccess.PRIVATE
-                || (settlement.getAccess() == LandAccess.ALLY && !settlement.isAlly(resident))
-                || (settlement.getAccess() == LandAccess.TRUSTED && !settlement.isTrusted(resident)))) {
+                || (settlement.getAccess() == LandAccess.ALLY && !settlement.isAlly(resident)))) {
             getMessage("no-access").tell(resident, "state", settlement.getStateTag());
             return true;
         }

@@ -3,8 +3,6 @@ package de.themoep.settlements.settlement;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.BuildState;
 import de.themoep.settlements.land.LandAccess;
@@ -12,14 +10,13 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.Use;
-import de.themoep.settlements.land.events.LandownerAbandonedEvent;
-import de.themoep.settlements.land.events.LandownerCreatedEvent;
-import de.themoep.settlements.land.events.LandownerDisbandEvent;
-import de.themoep.settlements.land.events.LandownerLeveledEvent;
+import de.themoep.settlements.land.events.SettlementAbandonedEvent;
+import de.themoep.settlements.land.events.SettlementCreatedEvent;
+import de.themoep.settlements.land.events.SettlementDisbandEvent;
+import de.themoep.settlements.land.events.SettlementLeveledEvent;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.perk.SettlementPerk;
-import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -186,13 +183,13 @@ public class SettlementManager {
                 SettlementsPlugin.getInstance().getLogging().warn("Error while saving " + settlement.getName() + " to the database! No ID was returned.");
                 chief.tell(StringUtils.parseColors("&cError while saving " + settlement.getName() + " to the database! No ID was returned."));
             }
-            Utils.runSync(() -> new LandownerCreatedEvent(settlement, chief).callEvent());
+            Utils.runSync(() -> new SettlementCreatedEvent(settlement, chief).callEvent());
         });
     }
 
     public Settlement getAt(Location location) {
         OwnedLand ownedLand = LandManager.getInstance().getLand(location);
-        return ownedLand != null && ownedLand.getLandOwner() instanceof Settlement ? (Settlement) ownedLand.getLandOwner() : null;
+        return ownedLand != null && ownedLand.getSettlement() instanceof Settlement ? (Settlement) ownedLand.getSettlement() : null;
     }
 
     public Settlement getFromId(IdObject id) {
@@ -225,13 +222,10 @@ public class SettlementManager {
     }
 
     public void delete(Settlement settlement) {
-        new LandownerDisbandEvent(settlement).callEvent();
+        new SettlementDisbandEvent(settlement).callEvent();
         settlements.remove(settlement.getName().replace(' ', '_').toLowerCase());
         settlementIDs.remove(settlement.getId());
         settlementUuids.remove(settlement.getUUID());
-        if (settlement.hasEmpire()) {
-            settlement.getEmpire().getMemberIds().remove(settlement.getId());
-        }
         SettlementsPlugin.getInstance().addNewlyDeleted(settlement);
 
         List<Resident> residents = settlement.getResidents();
@@ -249,9 +243,6 @@ public class SettlementManager {
     }
 
     public void abandon(Settlement settlement) {
-        if (settlement.hasEmpire()) {
-            settlement.getEmpire().getMemberIds().remove(settlement.getId());
-        }
         SettlementsPlugin.getInstance().addNewlyAbandoned(settlement);
 
         List<Resident> residents = settlement.getResidents();
@@ -314,7 +305,7 @@ public class SettlementManager {
 
         settlement.setCreated(System.currentTimeMillis());
 
-        new LandownerAbandonedEvent(settlement).callEvent();
+        new SettlementAbandonedEvent(settlement).callEvent();
 
         DatabaseManager.getInstance().saveSettlement(settlement);
         DatabaseManager.getInstance().saveAllies(allies);
@@ -343,26 +334,17 @@ public class SettlementManager {
         }
         removeResidentFromSettlement(resident);
         resident.removeChannel(ChatChannel.SETTLEMENT);
-        resident.removeChannel(ChatChannel.EMPIRE);
         resident.setTaxExempted(false);
         resident.setTaxPaid(0);
         resident.setDonated(0);
         resident.getMissionData().clear();
         DatabaseManager.getInstance().saveMissionData(resident);
-        Player player = resident.getPlayer();
-        if (player != null) {
-            Empire empire = EmpireManager.getInstance().getEmpireFromWorld(player.getWorld());
-            if (empire != null && !empire.canAccess(player)) {
-                Utils.teleportToSpawn(player);
-            }
-        }
         DatabaseManager.getInstance().saveResident(resident);
     }
 
     private void removeResidentFromSettlement(Resident resident) {
         resident.setSettlement(null);
         resident.setSettlementRank(SettlementRank.getDefault());
-        resident.setEmpireRank(EmpireRank.getDefault());
     }
 
     /**
@@ -406,7 +388,7 @@ public class SettlementManager {
             Message.get("levels.perk-unlocked").tell(settlement, "perk", "Flight in Disabled Worlds");
         }
 
-        new LandownerLeveledEvent(settlement, res).callEvent();
+        new SettlementLeveledEvent(settlement, res).callEvent();
         settlement.save();
         return true;
     }

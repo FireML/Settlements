@@ -11,14 +11,11 @@ import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.TaxDebtAction;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.missions.MissionData;
-import de.themoep.settlements.missions.MissionProvider;
-import de.themoep.settlements.missions.MissionTaker;
-import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.PermissionGroup;
 import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.rank.SettlementRank;
@@ -61,23 +58,19 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, MissionTaker<SettlementMission>, Sortable<Resident> {
+public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, Sortable<Resident> {
     private IdObject id = IdObject.get(null);
     private final UUID uuid;
     private String name;
     private SettlementRank rank = SettlementRank.getDefault();
-    private EmpireRank empireRank = EmpireRank.getDefault();
     private String settlementTitle = null;
-    private String empireTitle = null;
     private Settlement settlement = null;
     private ChatChannel activeChannel = ChatChannel.GENERAL;
     private final Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
     private final Table<ChatChannel, ChatColorType, TextColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
-    private final Set<UUID> ignore = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Map<UUID, Friend> friends = new ConcurrentHashMap<>();
     private final Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
     private boolean swear = true;
@@ -95,7 +88,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     // Temporary, per session settings:
     private boolean resourcePack = false;
     private boolean showSidebar = true;
-    private boolean hasEmpireFlight = false;
     private boolean hasMessagesEnabled = true;
     private boolean notifyEnabled = true;
     private final Cache<IdObject, Boolean> closeBuildingNotificationToggles = CacheBuilder.newBuilder()
@@ -157,16 +149,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         Optional<Boolean> settlementValue = getSettlement().getEffectivePermissionValue(getSettlementRank(), rankPerm);
         if (settlementValue.isPresent()) {
             return settlementValue.get();
-        }
-
-        if (rankPerm.startsWith("empire.") && getSettlement().hasEmpire()) {
-            Optional<Boolean> empireValue = getSettlement().getEmpire().getEffectivePermissionValue(getEmpireRank(), rankPerm);
-            if (empireValue.isPresent()) {
-                return empireValue.get();
-            }
-            if (EmpireRank.getLeader().getInheritedPermissionValue(rankPerm).isPresent()) {
-                return false;
-            }
         }
         if (hasSettlement()) {
             return getSettlement().getEffectivePermissionValue(getSettlement().getHighestRank(), rankPerm).isEmpty();
@@ -288,17 +270,14 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return channelColors.remove(channel, type);
     }
 
-    @Override
     public MissionData getMissionData(String missionId) {
         return missionData.get(missionId.toLowerCase(Locale.ROOT));
     }
 
-    @Override
     public Collection<MissionData> getMissionData() {
         return missionData.values();
     }
 
-    @Override
     public int getExtraMissions() {
         return 0;
     }
@@ -319,8 +298,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         this.missionPoints = missionPoints;
     }
 
-    @Override
-    public MissionProvider<SettlementMission> getMissionProvider() {
+    public Settlement getMissionProvider() {
         return getSettlement();
     }
 
@@ -354,7 +332,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
             setSettlementJoin(System.currentTimeMillis());
         } else {
             setSettlementRank(SettlementRank.getDefault());
-            setEmpireRank(EmpireRank.getDefault());
             setSettlementJoin(-1);
             setSettlementTitle(null);
         }
@@ -376,31 +353,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         if (this.rank == rank) {
             return;
         }
-        SettlementRank prev = getSettlementRank();
         this.rank = rank;
-        if (hasEmpire() && getSettlement().getEmpire().isCapital(getSettlement())) {
-            if (rank == SettlementRank.getChief()) {
-                setEmpireRank(EmpireRank.getLeader());
-            } else if (prev == SettlementRank.getChief()) {
-                setEmpireRank(EmpireRank.getLeader().next());
-            }
-        }
     }
 
     public SettlementRank getSettlementRank() {
         return rank;
-    }
-
-    public EmpireRank getEmpireRank() {
-        return empireRank;
-    }
-
-    public void setEmpireRank(EmpireRank rank) {
-        empireRank = rank;
-    }
-
-    public boolean hasEmpire() {
-        return hasSettlement() && getSettlement().hasEmpire();
     }
 
     public String getSettlementTitle() {
@@ -412,23 +369,8 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
                 : "";
     }
 
-    public String getEmpireTitle() {
-        return hasEmpire()
-                ? (empireTitle != null
-                        ? (getSettlement().getEmpire().getTitle(getEmpireRank(), empireTitle) != null
-                                ? empireTitle : getEmpireRank().getTag(getSettlement().getEmpire()))
-                        : getEmpireRank().getTag(getSettlement().getEmpire()))
-                : "";
-    }
-
     public String getDisplayTitle() {
-        if (hasEmpire()) {
-             return Message.get("chat.format.title.empire").getReplacedText(
-                "empireTitle", getEmpireTitle(),
-                "empireSymbol", getSettlement().getEmpire().getSymbol(),
-                "settlementTitle", getSettlementTitle()
-             );
-        } else if (hasSettlement()) {
+        if (hasSettlement()) {
             return Message.get("chat.format.title.settlement").getReplacedText(
                     "settlementTitle", getSettlementTitle()
             );
@@ -443,19 +385,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
             this.settlementTitle = getSettlementRank().getTag(getSettlement());
         } else if (getSettlement().getTitle(getSettlementRank(), title) != null) {
             this.settlementTitle = getSettlement().getTitle(getSettlementRank(), title);
-        } else {
-            return false;
-        }
-        return true;
-    }
-
-    public boolean setEmpireTitle(String title) {
-        if (!hasEmpire()) {
-            this.empireTitle = null;
-        } else if (title == null) {
-            this.empireTitle = getEmpireRank().getTag(getSettlement().getEmpire());
-        } else if (getSettlement().getEmpire().getTitle(getEmpireRank(), title) != null) {
-            this.empireTitle = getSettlement().getEmpire().getTitle(getEmpireRank(), title);
         } else {
             return false;
         }
@@ -485,9 +414,9 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         long tax = 0;
         for (OwnedLand land : LandManager.getInstance().getOwnedPlot(getUUID())) {
             if (!hasSettlement()
-                    || !land.getLandOwner().isMember(this)
-                    || (!hasPermission(land.getLandOwner().getKey() + ".tax.exempt")
-                    && !land.getLandOwner().isChief(getSettlement()))) {
+                    || !land.getSettlement().isMember(this)
+                    || (!hasPermission(land.getSettlement().getKey() + ".tax.exempt")
+                    && !land.getSettlement().isChief(getSettlement()))) {
                 tax += land.getTax();
             }
         }
@@ -496,7 +425,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     @Override
     public List<Resident> getOnlineResidents() {
-        return getPlayer() == null ? Collections.EMPTY_LIST : Collections.singletonList(this);
+        return getPlayer() == null ? new ArrayList<>() : Collections.singletonList(this);
     }
 
     @Override
@@ -621,8 +550,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public boolean hasUnlocked(String unlock) {
-        return hasSettlement() && getSettlement().hasUnlocked(unlock)
-                || hasEmpire() && getSettlement().getEmpire().hasUnlocked(unlock);
+        return hasSettlement() && getSettlement().hasUnlocked(unlock);
     }
 
     @Override
@@ -638,6 +566,14 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     @Override
     public ItemStack getIcon() {
         return ItemUtils.getHead(uuid, name);
+    }
+
+    public boolean hasMission(SettlementMission mission) {
+        return getMissionData(mission.getId()) != null;
+    }
+
+    public int distributeNewMissions() {
+        return getMissionProvider().distributeNewMissions();
     }
 
     public enum Sort implements Sortable.Sort<Resident> {
@@ -665,14 +601,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     public enum Placeholder {
         name(Resident::getName),
         title(r -> r.hasSettlement() ? r.getDisplayTitle() : "none"),
-        empire(r -> r.hasEmpire() ? r.getSettlement().getEmpire().getName() : "none"),
-        empirerank(r -> r.hasEmpire() ? r.getEmpireRank().getTag() : "none"),
         settlement(r -> r.hasSettlement() ? r.getSettlement().getName() : "none"),
         settlementstate(r -> r.hasSettlement() ? r.getSettlement().getStateTag() : ""),
         rank(r -> r.hasSettlement() ? r.getSettlementRank().getTag(r.getSettlement()) : "none"),
         settlementrank(r -> r.hasSettlement() ? r.getSettlementRank().getTag(r.getSettlement()) : "none"),
         settlementtitle(r -> r.hasSettlement() ? r.getSettlementTitle() : "none"),
-        empiretitle(r -> r.hasEmpire() ? r.getEmpireTitle() : "none"),
         balance(r -> Utils.CURRENCY_FORMAT.format(r.getBalance())),
         tax(r -> Utils.CURRENCY_FORMAT.format(r.getTax())),
         bonus(r -> Utils.CURRENCY_FORMAT.format(r.getBonusClaims())),
@@ -735,8 +668,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         map.put("settlementJoin", getSettlementJoin());
         map.put("rank", getSettlementRank().name());
         map.put("title", settlementTitle);
-        map.put("empireTitle", empireTitle);
-        map.put("empirerank", getEmpireRank().name());
         map.put("lastLogin", getLastLogin());
         map.put("taxExempted", isTaxExempted());
         map.put("taxDebtAction", getTaxDebtAction().name());
@@ -776,18 +707,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         } catch (IllegalArgumentException e) {
             SettlementsPlugin.getInstance().getLogging().warn("Invalid settlement rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("rank"));
         }
-        try {
-            resident.setEmpireRank(EmpireRank.valueOf((String) map.get("empirerank")));
-        } catch (IllegalArgumentException e) {
-            SettlementsPlugin.getInstance().getLogging().warn("Invalid empire rank for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("empirerank"));
-        }
         if (map.get("settlementName") != null) {
             resident.setSettlement(SettlementManager.getInstance().getFromName((String) map.get("settlementName")));
         } else {
             resident.setSettlement(SettlementManager.getInstance().getFromId(IdObject.get(map.get("settlementId"))));
         }
         resident.setSettlementTitle((String) map.get("title"));
-        resident.setEmpireTitle((String) map.get("empireTitle"));
         resident.setSettlementJoin(Utils.getLong(map.get("settlementJoin")));
         resident.setLastLogin(Utils.getLong(map.get("lastLogin")));
         if (map.containsKey("taxExempted")) {
@@ -882,23 +807,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     public boolean hasAllies() {
-        return hasSettlement() && getSettlement().hasAllies() || (hasEmpire() && getSettlement().getEmpire().hasAllies());
-    }
-
-    public boolean hasEmpireFlight() {
-        return hasEmpireFlight;
-    }
-
-    public void setHasEmpireFlight(boolean hasEmpireFlight) {
-        this.hasEmpireFlight = hasEmpireFlight;
-    }
-
-    public boolean hasMessagesEnabled() {
-        return hasMessagesEnabled;
-    }
-
-    public void setHasMessagesEnabled(boolean hasMessagesEnabled) {
-        this.hasMessagesEnabled = hasMessagesEnabled;
+        return hasSettlement() && getSettlement().hasAllies();
     }
 
     public boolean isNotifyEnabled() {
@@ -909,10 +818,8 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         this.notifyEnabled = notifyEnabled;
     }
 
-    public boolean isReceivingCloseBuildingNotification(LandOwner<?, ?> landOwner) {
-        return landOwner instanceof Settlement
-                && !landOwner.equals(getSettlement())
-                && closeBuildingNotificationToggles.getIfPresent(landOwner.getId()) == null;
+    public boolean isReceivingCloseBuildingNotification(Settlement settlement) {
+        return !settlement.equals(getSettlement()) && closeBuildingNotificationToggles.getIfPresent(settlement.getId()) == null;
     }
 
     /**

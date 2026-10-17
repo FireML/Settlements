@@ -23,7 +23,7 @@ public class PlotInfoCommand extends ResidentSubCommand {
             return true;
         }
         res.tell(getMessage("general").toString(), land.getReplacements());
-        if (!land.getLandOwner().isAbandoned()) {
+        if (!land.getSettlement().isAbandoned()) {
             if (land.isPlot()) {
                 Utils.runAsync(() -> res.tell(getMessage("owner").getText(), "name", ResidentManager.getInstance().getResident(land.getPlotOwner()).getName()));
             } else if (land.isForSale() &&

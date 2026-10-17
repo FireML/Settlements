@@ -8,7 +8,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.land.JoinRequest;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.gui.AlliesGUI;
 import de.themoep.settlements.land.gui.BanishedGUI;
 import de.themoep.settlements.land.gui.BuildGUI;
@@ -35,7 +35,7 @@ public class ManagementGUI extends SettlementsGUI {
     public ManagementGUI(Resident resident) {
         super("settlement.management");
         this.resident = resident;
-        LandOwner<?, ?> landOwner = resident.getSettlement();
+        Settlement landOwner = resident.getSettlement();
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
                 "name", landOwner.getName(),
                 "state", landOwner.getStateTag()
@@ -57,7 +57,7 @@ public class ManagementGUI extends SettlementsGUI {
 
         Collection<Invite<?, ?>> requests = getRequests(resident);
         gui.addElement(new StaticGuiElement('e', ItemUtils.setGlowing(getIcon("recruitment"), !requests.isEmpty()), click -> {
-            if ((landOwner.hasUnlocked("recruitment") || !Config.Citizens.UNLOCK_DEPENDENCY) && landOwner.hasPermission(resident, "recruitment")) {
+            if (landOwner.hasPermission(resident, "recruitment")) {
                 new ListGui<>(resident, landOwner.getKey() + ".requests", true, () -> requests, (c, request) -> {
                     // accept invite
                     if (request instanceof JoinRequest<?> joinRequest) {
@@ -79,11 +79,9 @@ public class ManagementGUI extends SettlementsGUI {
             return true;
         }, getText("recruitment",
                 "amount", String.valueOf(requests),
-                "action", (landOwner.hasUnlocked("recruitment") || !Config.Citizens.UNLOCK_DEPENDENCY)
-                        ? landOwner.hasPermission(resident, "recruitment")
+                "action", landOwner.hasPermission(resident, "recruitment")
                                 ? getText("unlockables.unlocked.browse")
-                                : getText("unlockables.locked.permission")
-                        : getUnlockText(landOwner, "recruitment"),
+                                : getText("unlockables.locked.permission"),
                 "state", landOwner.getStateTag()
         )));
 
@@ -98,18 +96,18 @@ public class ManagementGUI extends SettlementsGUI {
         )));
 
         gui.addElement(new StaticGuiElement('a', getIcon("allies"), click -> {
-            if ((landOwner.hasUnlocked("allies") || !Config.Citizens.UNLOCK_DEPENDENCY) && landOwner.hasPermission(resident, "allies")) {
+            if (landOwner.hasPermission(resident, "allies")) {
                 new AlliesGUI(resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("allies",
                 "state", landOwner.getStateTag(),
-                "action", (landOwner.hasUnlocked("allies") || !Config.Citizens.UNLOCK_DEPENDENCY) ? landOwner.hasPermission(resident, "allies") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission") : getUnlockText(landOwner, "allies")
+                "action", landOwner.hasPermission(resident, "allies") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission")
         )));
 
         gui.addElement(new StaticGuiElement('t', getIcon("ranks"), click -> {
             if (landOwner.hasPermission(resident, "ranks")) {
-                new RankPermsGUI<>(landOwner.getKey(), resident, resident.getSettlement()).open();
+                new RankPermsGUI(landOwner.getKey(), resident, resident.getSettlement()).open();
             }
             return true;
         }, getText("ranks",

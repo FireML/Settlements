@@ -1,7 +1,8 @@
 package de.themoep.settlements.utils;
 
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -62,13 +63,13 @@ public class MessageUtils {
         return b ? "Yes" : "No";
     }
 
-    public static void notify(LandOwner<?, ?> sender, List<Resident> residents, Message message, String... replacements) {
+    public static void notify(Settlement sender, List<Resident> residents, Message message, String... replacements) {
         for (Resident resident : residents) {
             notify(sender, resident, message, replacements);
         }
     }
 
-    public static void notify(LandOwner<?, ?> sender, Resident resident, Message message, String... replacements) {
+    public static void notify(Settlement sender, Resident resident, Message message, String... replacements) {
         if (resident.getPlayer() != null) {
             message.tell(resident, replacements);
         }

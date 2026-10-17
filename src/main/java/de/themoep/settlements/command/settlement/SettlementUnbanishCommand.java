@@ -7,7 +7,7 @@ import de.themoep.settlements.resident.Resident;
 public class SettlementUnbanishCommand extends SettlementSubCommand implements BanishCommand {
 
     public SettlementUnbanishCommand(SubCommand parent) {
-        super(parent, "unbanish <player>|s:<settlement>|e:<empire>");
+        super(parent, "unbanish <player>|s:<settlement>");
     }
 
     @Override

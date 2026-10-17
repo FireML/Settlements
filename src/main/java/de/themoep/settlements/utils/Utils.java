@@ -3,13 +3,9 @@ package de.themoep.settlements.utils;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
-import de.themoep.settlements.db.InviteCache;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
@@ -83,8 +79,7 @@ public class Utils {
     }
 
     public static boolean isWorldClaimable(World world) {
-        return !Config.Claiming.DISABLED_WORLDS.contains(world.getName())
-                || EmpireManager.getInstance().getEmpireFromWorld(world) != null;
+        return !Config.Claiming.DISABLED_WORLDS.contains(world.getName());
     }
 
     public static int getTeleportDelay(String type) {
@@ -122,30 +117,6 @@ public class Utils {
 
     public static boolean getPlotMode(PlotMode mode, String type) {
         return ConfigManager.getInstance().getConfig().getBoolean("modes." + type + "." + mode.getKey(), mode.getDefault());
-    }
-
-    public static boolean settlementHasInvite(Settlement settlement, Empire joinEmpire) {
-        return InviteCache.getPendingEmpireInvites().containsKey(settlement.getId()) && InviteCache.getPendingEmpireInvites().get(settlement.getId()).contains(joinEmpire.getId());
-    }
-
-    public static int getMaxDrunkeness(ChatChannel channel) {
-        return ConfigManager.getInstance().getConfig().getInt("brewery.block-channels." + channel.getKey(), 9001);
-    }
-
-    public static void addDisabledWorld(World world) {
-        Collection<String> temp = Config.Claiming.DISABLED_WORLDS;
-        if (!temp.contains(world.getName())) {
-            temp.add(world.getName());
-            ConfigManager.getInstance().savePluginConfig();
-        }
-    }
-
-    public static void removeDisabledWorld(World world) {
-        Collection<String> temp = Config.Claiming.DISABLED_WORLDS;
-        if (temp.contains(world.getName())) {
-            temp.remove(world.getName());
-            ConfigManager.getInstance().savePluginConfig();
-        }
     }
 
     /**

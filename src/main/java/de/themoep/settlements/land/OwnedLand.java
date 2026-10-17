@@ -3,8 +3,8 @@ package de.themoep.settlements.land;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.events.LandModeChangeEvent;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 
 public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializable, ModeAble, FlagAble {
     private IdObject id = IdObject.get(null);
-    private LandOwner<?, ?> landOwner;
+    private Settlement landOwner;
     private UUID plotOwner = null;
     private final Set<UUID> plotMembers = new HashSet<>();
     private int unclaimIn = 0;
@@ -57,7 +57,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     private final EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
     private UUID link;
 
-    public OwnedLand(LandOwner<?, ?> landOwner, SimpleChunkLocation location) {
+    public OwnedLand(Settlement landOwner, SimpleChunkLocation location) {
         super(location.getWorld(), location.getX(), location.getZ());
         this.landOwner = landOwner;
     }
@@ -107,7 +107,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     @Override
     public boolean acceptsState(BuildState state) {
-        return FlagAble.super.acceptsState(state) && (isPlot() || getLandOwner().acceptsState(state));
+        return FlagAble.super.acceptsState(state) && (isPlot() || getSettlement().acceptsState(state));
     }
 
     @Override
@@ -117,7 +117,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     @Override
     public FlagAble getParent() {
-        return getLandOwner();
+        return getSettlement();
     }
 
     @Override
@@ -168,20 +168,22 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return outpost;
     }
 
-    public LandOwner<?, ?> getLandOwner() {
+    public Settlement getSettlement() {
         return landOwner;
     }
 
-    public void setLandOwner(LandOwner<?, ?> landOwner) {
-        this.landOwner = landOwner;
+    public void setSettlement(Settlement settlement) {
+        this.landOwner = settlement;
     }
 
-    public boolean isOwnedBy(LandOwner<?, ?> landOwner) {
-        return getLandOwner() != null && getLandOwner().equals(landOwner);
+    public boolean isOwnedBy(Settlement settlement) {
+        Settlement owner = getSettlement();
+        return owner != null && owner.equals(settlement);
     }
 
     public boolean isOwnedBy(Resident resident) {
-        return getLandOwner() != null && getLandOwner().isMember(resident);
+        Settlement owner = getSettlement();
+        return owner != null && owner.isMember(resident);
     }
 
     public String getWorldName() {
@@ -286,7 +288,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     @Override
     public boolean getMode(PlotMode mode) {
-        return getModes().getOrDefault(mode, getLandOwner().getMode(mode));
+        return getModes().getOrDefault(mode, getSettlement().getMode(mode));
     }
 
     @Override
@@ -410,9 +412,9 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     @Override
     public LinkedHashMap<String, Object> serialize() {
         LinkedHashMap<String, Object> map = new LinkedHashMap<>();
-        map.put("landOwner", getLandOwner().getName());
-        map.put("landOwnerType", getLandOwner().getDbName());
-        map.put("landOwnerId", !getLandOwner().getId().isNull() ? getLandOwner().getId().value() : -1);
+        map.put("landOwner", getSettlement().getName());
+        map.put("landOwnerType", getSettlement().getDbName());
+        map.put("landOwnerId", !getSettlement().getId().isNull() ? getSettlement().getId().value() : -1);
         map.put("x", getX());
         map.put("z", getZ());
         map.put("world", getWorldName());
@@ -437,23 +439,15 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
             return null;
         }
         SimpleChunkLocation location = new SimpleChunkLocation((String) map.get("world"), (Integer) map.get("x"), (Integer) map.get("z"));
-        LandOwner<?, ?> landOwner = EmpireManager.getInstance().getEmpireFromWorld(location.getWorld());
-        if (landOwner == null) {
-            switch ((String) map.get("landOwnerType")) {
-                case "settlement" -> landOwner = map.get("landOwner") != null
-                        ? SettlementManager.getInstance().getFromName((String) map.get("landOwner"))
-                        : SettlementManager.getInstance().getFromId(IdObject.get(map.get("landOwnerId")));
-                case "empire" -> landOwner = map.get("landOwner") != null
-                        ? EmpireManager.getInstance().getEmpireFromName((String) map.get("landOwner"))
-                        : EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("landOwnerId")));
-            }
-        }
-        if (landOwner == null) {
+        Settlement settlement = map.get("landOwner") != null
+            ? SettlementManager.getInstance().getFromName((String) map.get("landOwner"))
+            : SettlementManager.getInstance().getFromId(IdObject.get(map.get("landOwnerId")));
+        if (settlement == null) {
             SettlementsPlugin.getInstance().getLogging().warn("Could not find owner for OwnedLand! Removing it from database... (" + map + ")");
             DatabaseManager.getInstance().deleteLand(IdObject.get(map));
             return null;
         }
-        OwnedLand land = new OwnedLand(landOwner, location);
+        OwnedLand land = new OwnedLand(settlement, location);
         land.setId(IdObject.get(map));
         land.setUnclaimIn((Integer) map.get("unclaimIn"));
         String plotOwnerStr = (String) map.get("owner");
@@ -488,11 +482,9 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
                 land.setUseState(u, Utils.parseEnum(BuildState.class, (String) uses.get(u.name()), useFlag.getDefault(land.getBuildState())));
             }
         }
-        if (land.getLandOwner() instanceof Settlement settlement) {
-            for (NamedLocation o : settlement.getOutpostHomes().values()) {
-                if (land.contains(o)) {
-                    land.setOutpost(o.getName());
-                }
+        for (NamedLocation o : settlement.getOutpostHomes().values()) {
+            if (land.contains(o)) {
+                land.setOutpost(o.getName());
             }
         }
         if (map.containsKey("plotMembers")) {
@@ -502,7 +494,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public boolean syncLinked(OwnedLand land) {
-        if (this == land || !isOwnedBy(land.getLandOwner()) || !isPlotOwner(land.getPlotOwner()) || !isLinked(land)) {
+        if (this == land || !isOwnedBy(land.getSettlement()) || !isPlotOwner(land.getPlotOwner()) || !isLinked(land)) {
             return false;
         }
         boolean r = false;
@@ -538,7 +530,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public boolean containsHome() {
-        return getLandOwner() != null && contains(getLandOwner().getHome());
+        return getSettlement() != null && contains(getSettlement().getHome());
     }
 
     public String[] getReplacements() {
@@ -561,11 +553,11 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public enum Placeholder {
-        state(l -> l.getLandOwner().getStateTag()),
+        state(l -> l.getSettlement().getStateTag()),
         name(OwnedLand::getName),
         description(OwnedLand::getDescription),
         members(l -> String.valueOf(l.getPlotMembers().size())),
-        landowner(l -> l.getLandOwner().getName()),
+        landowner(l -> l.getSettlement().getName()),
         plotowner(l -> l.isPlot() && l.getPlotOwner() != null ? ResidentManager.getInstance().getResidentName(l.getPlotOwner()) : ""),
         hostilespawning(l -> String.valueOf(l.getMode(PlotMode.mobSpawning))),
         passivespawning(l -> String.valueOf(l.getMode(PlotMode.passiveSpawning))),
@@ -573,10 +565,10 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         explosions(l -> String.valueOf(l.getMode(PlotMode.explosions))),
         pvp(l -> String.valueOf(l.getMode(PlotMode.pvp))),
         buff(l -> String.valueOf(l.getMode(PlotMode.buff))),
-        build(l -> l.getBuildState() != null && (l.isPlot() || l.getBuildState().appliesTo(BuildState.AppliesTo.get(l.getLandOwner())))
-                ? l.getBuildState().getTag() : l.getLandOwner().getBuildState().getTag()),
-        buildsource(l -> l.getBuildState() != null && (l.isPlot() || l.getBuildState().appliesTo(BuildState.AppliesTo.get(l.getLandOwner())))
-                ? Message.get("names.plot").getText() : l.getLandOwner().getStateTag()),
+        build(l -> l.getBuildState() != null && (l.isPlot() || l.getBuildState().appliesTo(BuildState.AppliesTo.get(l.getSettlement())))
+                ? l.getBuildState().getTag() : l.getSettlement().getBuildState().getTag()),
+        buildsource(l -> l.getBuildState() != null && (l.isPlot() || l.getBuildState().appliesTo(BuildState.AppliesTo.get(l.getSettlement())))
+                ? Message.get("names.plot").getText() : l.getSettlement().getStateTag()),
         embassy(l -> String.valueOf(l.isEmbassy())),
         x(l -> String.valueOf(l.getX())),
         z(l -> String.valueOf(l.getZ())),
@@ -603,7 +595,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     }
 
     public boolean canAdmin(Resident resident) {
-        return getLandOwner().canAdminPlots(resident);
+        return getSettlement().canAdminPlots(resident);
     }
 
     public ConfigMessages getMapKey() {
@@ -615,7 +607,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
             @Override
             public String name() {
-                return getLandOwner() != null ? getLandOwner().getKey() + ".map" : "settlement.map";
+                return getSettlement() != null ? getSettlement().getKey() + ".map" : "settlement.map";
             }
         };
     }

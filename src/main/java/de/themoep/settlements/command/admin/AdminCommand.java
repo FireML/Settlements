@@ -15,23 +15,18 @@ public class AdminCommand extends SubCommand {
         this.registerCommand(new AdminSocialSpyCommand(this));
         this.registerCommand(new AdminReloadCommand(this));
         this.registerCommand(new AdminConvertConfigCommand(this));
-        if (!Config.Chat.CHAT_ONLY) {
-            this.registerCommand(new AdminBonusCommand(this));
-            this.registerCommand(new AdminWorldCommand(this));
-            this.registerCommand(new AdminRankCommand(this));
-            this.registerCommand(new AdminEmpireLevelCommand(this));
-            this.registerCommand(new AdminEmpireRankCommand(this));
-            this.registerCommand(new AdminDistributeMissionCommand(this));
-            this.registerCommand(new AdminDistributeNewMissionsCommand(this));
-            this.registerCommand(new AdminUpkeepCommand(this));
-            this.registerCommand(new AdminMissionCommand(this));
-            this.registerCommand(new AdminCooperationPointsCommand(this));
-            if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
-                this.registerCommand(new AdminEventsCommand(this));
-            }
-            this.registerCommand(new AdminJoinCommand(this));
-            this.registerCommand(new AdminLevelCommand(this));
+        this.registerCommand(new AdminBonusCommand(this));
+        this.registerCommand(new AdminRankCommand(this));
+        this.registerCommand(new AdminDistributeMissionCommand(this));
+        this.registerCommand(new AdminDistributeNewMissionsCommand(this));
+        this.registerCommand(new AdminUpkeepCommand(this));
+        this.registerCommand(new AdminMissionCommand(this));
+        this.registerCommand(new AdminCooperationPointsCommand(this));
+        if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
+            this.registerCommand(new AdminEventsCommand(this));
         }
+        this.registerCommand(new AdminJoinCommand(this));
+        this.registerCommand(new AdminLevelCommand(this));
     }
 
     @Override

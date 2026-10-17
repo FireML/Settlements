@@ -1,7 +1,8 @@
 package de.themoep.settlements.land.events;
 
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.OwnedLand;
+import de.themoep.settlements.settlement.Settlement;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
@@ -17,8 +18,8 @@ public class LandUnclaimEvent extends Event {
         this.land = land;
     }
 
-    public LandOwner<?, ?> getLandOwner() {
-        return land.getLandOwner();
+    public Settlement getSettlement() {
+        return land.getSettlement();
     }
 
     public OwnedLand getLand() {

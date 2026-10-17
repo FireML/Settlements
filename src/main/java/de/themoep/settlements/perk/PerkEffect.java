@@ -95,18 +95,14 @@ public class PerkEffect {
         PLOT,
         PLOT_FRIENDS,
         OWN_SETTLEMENT,
-        TRUSTED_SETTLEMENT,
         ALLIED_SETTLEMENT,
-        ENEMY_SETTLEMENT,
         UNCLAIMED,
-        EMPIRE_WORLD,
         EVERYWHERE
     }
 
     public record EffectInfluenced(String name) implements NameTag {
         private static final Map<String, EffectInfluenced> byName = new HashMap<>();
 
-        public static final EffectInfluenced TRUSTED = new EffectInfluenced("trusted");
         public static final EffectInfluenced ALLIES = new EffectInfluenced("allies");
         public static final EffectInfluenced ENEMIES = new EffectInfluenced("enemies");
         public static final EffectInfluenced MEMBERS = new EffectInfluenced("members");

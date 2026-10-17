@@ -35,10 +35,10 @@ public class PlotBuildCommand extends PlotSubCommand {
         } else if (land.isPlot() && "reset".equalsIgnoreCase(args[0])) {
             land.setBuildState(null);
             LandManager.getInstance().saveLand(land);
-            getMessage("reset").tell(res, "parent", land.getLandOwner().getStateTag(), "state", land.getLandOwner().getBuildState().getTag());
+            getMessage("reset").tell(res, "parent", land.getSettlement().getStateTag(), "state", land.getSettlement().getBuildState().getTag());
         } else {
             try {
-                BuildState newState = BuildState.valueOf(args[0].toUpperCase(), land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()));
+                BuildState newState = BuildState.valueOf(args[0].toUpperCase(), land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getSettlement()));
                 land.setBuildState(newState);
                 LandManager.getInstance().saveLand(land);
                 getMessage("success").tell(res, "state", newState.getTag(), "type", land.getBuildTag());
@@ -50,12 +50,12 @@ public class PlotBuildCommand extends PlotSubCommand {
                             "aliases", "",
                             "path", base + " " + alias + " reset",
                             "description", getMessage("states.reset").getReplacedText(
-                                    "parent", land.getLandOwner().getStateTag(),
-                                    "state", land.getLandOwner().getBuildState().getTag()
+                                    "parent", land.getSettlement().getStateTag(),
+                                    "state", land.getSettlement().getBuildState().getTag()
                             )
                     );
                 }
-                for (BuildState state : BuildState.values(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()))) {
+                for (BuildState state : BuildState.values(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getSettlement()))) {
                     Message.get("usage.entry").tell(res,
                             "usage", getUsage(base).replace("<state>", state.name().toLowerCase()),
                             "aliases", "",

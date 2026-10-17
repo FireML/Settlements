@@ -7,7 +7,7 @@ debug: false
   
 # Amount of entries that should be shown per page in chat e.g. for command help messages
 entries-per-page: 10
-# How many players should show up in settlement/empire member lists
+# How many players should show up in settlement member lists
 players-in-info: 40
 # Max lengths of the rules
 # In characters
@@ -165,98 +165,6 @@ settlement:
     # The amount of days that a settlement can exist at level 1 before falling
     # Set to -1 if you don't want to delete them at all
     inactive-time: 7
-
-empire:
-  # Whether or not a player can transfer their bought claims to an empire
-  claim-transfer: false
-  # How much a settlement must pay to create an empire
-  creation-cost: 2000000
-  # How much money an empire starts with
-  start-balance: 10000
-  # Maximum value that an empire's tax can be set to. Set to -1 to disable maximum
-  max-tax: 100000
-  # Maximum value that an empire's auction tax can be set to. Set to -1 to disable maximum
-  max-auction-tax: 30
-  # Maximum size an empire can have (0 disables the size check)
-  max-size: 30
-  # The cooldown in seconds after renaming an empire
-  rename-cooldown: 30
-  # How many different titles can be configured for a rank
-  titles-per-rank: 10
-  # The maximum length of the empire names
-  name-length: 20
-  # What regex empire names need to match
-  name-validation: "[\\w-]+"
-  
-  leveling:
-    # The amount of levels an Empire can reach
-    max-level: 6
-  
-  missions:
-    # Whether or not empire missions should be given to empire member settlements
-    enabled: true
-    # Should newly joined settlements be granted missions instantly or do they need to wait until the upkeep?
-    distribute-on-join: true
-    # Should additional missions be distributed when leveling up or do they need to wait until the upkeep?
-    distribute-on-levelup: true
-    # Allow distribution of duplicate missions?
-    duplicate-missions: false
-    # Should missions that are not started yet be removed and replaced by new missions on reset?
-    remove-not-started-missions: true
-    # Should already started missions be removed and replaced by new missions on reset?
-    remove-started-missions: false
-    # Should finished missions be reset? If those are not reset then the settlement needs to wait for the empire to upgrade to get more!
-    remove-finished-missions: true
-    # Amount to pay from an empire's bank to distribute new missions. (Set to -1 to disable this functionality)
-    redistribute-price: 5000
-    # Time in minutes for which block placements should be cached so that break mission abuse isn't possible using (recent) player placed blocks.
-    place-cache-time: 60
-
-  claiming:
-    # Is claiming for empires outside their world enabled?
-    enabled: false
-    # Worlds in which claiming of empire chunks are disabled
-    disabled-worlds:
-    - Spawn
-    - Resource
-    - Resource_the_end
-    - Resource_nether
-    - Events
-
-  world:
-    # Whether each empire should get their own world automatically generated
-    enabled: true
-    # The prefix of all empire worlds. WARNING: Changing this with existing worlds will break them!
-    prefix: ''
-    # The suffix of all empire worlds. WARNING: Changing this with existing worlds will break them!
-    suffix: _Domain
-    # Whether or not worlds should be renamed on empire rename. Might cause issues with some plugins.
-    rename: true
-    # The environment of the world. Can be normal, nether or the_end
-    environment: normal
-    # The type of the world. Can be normal, flat, large_biomes or amplified
-    type: normal
-    # The name of the generator to use for the empire worlds. Set to empty to not use one
-    generator: ''
-    # The settings for the defined generator
-    generator-settings: ''
-    # The seed to be used for the generator. Set to empty to use a random one for each world.
-    seed: ''
-    # Whether or not to generate structures
-    structures: false
-    # The radius that an empire world will have by default
-    border-radius: 500
-    # Amount of seconds an empire can regenerate their world after empire generation to find one they like
-    # Set to -1 to allow infinite regeneration
-    regen-duration: 3600
-  
-  upkeep:
-    # The amount of minutes that an empire will stay abandoned after not being able to pay their upkeep
-    # Abandoned empires can be raided and fully accessed
-    abandon-time: 1440
-    
-    # Should the capital settlement be exempt from paying their own upkeep?
-    exempt-capital: false
     
 plot:
   # Maximum value that a plot's tax can be set to. Set to -1 to disable maximum
@@ -290,7 +198,7 @@ modes:
       explosions: false
     world_end:
       explosions: false
-  # Modes in abandoned settlements/empires
+  # Modes in abandoned settlements
   abandoned:
     # Village-level Settlements
     village:
@@ -306,65 +214,10 @@ modes:
       pvp: true
       mobspawning: true
       passivespawning: true
-    # Abandoned Empire worlds
-    empire:
-      firespread: false
-      explosion: false
-      pvp: true
-      mobspawning: true
-      passivespawning: true
-
-lock:
-  # Enable or disable the inbuilt locking
-  enabled: true
-  # Whether or not locks are only allowed in settlement claims and empire worlds
-  only-in-claim: true
-  # This checks if a block is protected by checking on hopper place
-  #  rather than using the InventoryMoveItemEvent stealing of items
-  alternative-hopper-protection: true
-  # Amount in ticks after which the chunk queue will be processed to load the locks in it
-  load-queue-ticks: 20
-  # Blocks that can be locked
-  blocks:
-  - chest
-  - trapped_chest
-  - dispenser
-  - dropper
-  - furnace
-  - smoker
-  - blast_furnace
-  - '*shulker_box'
-  - '*_door'
-  - '*_trapdoor'
-  - '*_fence_gate'
-  - '*_button'
-  - lever
-  - note_block
-  - jukebox
-  - barrel
-  unclaim:
-    # Remove all locks in a chunk when it gets unclaimed
-    remove: true
-    # Also remove the blocks when the locks get removed on unclaim
-    remove-block: false
-    
-portal:
-  # Enable or disable the inbuilt portal handling
-  enabled: true
-  # Whether unlinked portals should teleport to the nether like normal
-  allow-nether-teleport: false
-  # Only allow portals to be created and used inside of claims.
-  # Linking of portals will still be restricted to claimed land only!
-  only-inside-claims: true
-  # Whether portals in unclaimable worlds should just work like Vanilla nether portals
-  # If set to true but only-inside-claims is true too then players will not be able to manually link to portals in unclaimable worlds
-  # If set to false then players will not be able to create portals in unclaimable worlds if only-inside-claims is true.
-  # If set to false and only-inside-claims is false then portals will just work like normal nether portals in unclaimable worlds
-  ignore-unclaimable-worlds: false
   
 teleport:
-  # The command to run to teleport the player to spawn via the GUI,
-  # when a player is kicked from a settlement's claim or when an Empire world is made private/removed
+  # The command to run to teleport the player to spawn via the GUI or
+  # when a player is kicked from a settlement's claim
   # If not set it will teleport to the world spawn of the default world
   spawn-command: ""
   
@@ -374,7 +227,6 @@ teleport:
     outpost: 3
     village: 3
     kingdom: 3
-    empire: 3
     plotsquared: 3
   
   # Seconds to wait after allowing a teleport again if user has the kingdoms.bypass.teleport-delay permission
@@ -383,7 +235,6 @@ teleport:
     outpost: 3
     village: 3
     kingdom: 3
-    empire: 3
     plotsquared: 3
     
 chat:
@@ -409,8 +260,6 @@ chat:
     settlement: yellow
     trade: light_purple
     ally: aqua
-    empireally: aqua
-    empire: aqua
     private-sent: aqua
     private-received: aqua
   
@@ -426,8 +275,6 @@ chat:
     settlement: aqua
     trade: light_purple
     ally: gold
-    empireally: gold
-    empire: aqua
     private-sent: dark_gray
     private-received: dark_gray
   
@@ -465,47 +312,3 @@ chat:
       channel: true
       # Replace placeholders in the private message format
       private: true
-
-titles:
-  # Whether or not to block curses inside player-set settlement/empire titles
-  block-curses: true
-
-chestshop:
-  # Whether or not it is allowed for a settlement's/empire's shop to be sold to if the owner goes below their next upkeep
-  allow-selling-below-upkeep: false
-  # The seconds between shop transaction notifications
-  notification-cooldown: 5
-  
-brewery:
-  # Players with a drunkenness above that value can no longer write in the channel
-  block-channels:
-    local: 9001
-    trade: 1
-    event: 1
-    general: 1
-    settlement: 9001
-    empire: 9001
-    ally: 1
-    empireally: 1
-    admin: 9001
-    staff: 9001
-    
-plotsquared:
-  # The world which the area for purchased plots is in
-  # Leave empty to use the first available area globally. (E.g. if you only have one)
-  plot-world: ""
-  # The id of the plot area which purchased plots are added to
-  # Leave empty to use the first available one in the world/globally
-  plot-area-id: ""
-  
-citizens:
-  # The range in blocks in which NPCs will talk with players
-  talk-range: 0
-  # The delay in seconds between messages
-  talk-delay: 84600
-  # Repeat messages while inside range
-  repeat-messages: false
-  # Attempt to force respawn NPCs on startup if they are missing (e.g. for Villagers)
-  force-respawn-npcs: false
-  # Are the NPCs needed to be unlocked run certain Settlements related commands?
-  unlock-dependency: false

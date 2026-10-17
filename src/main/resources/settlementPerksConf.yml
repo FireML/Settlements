@@ -56,7 +56,6 @@ haste-level-1:
         # each rank above the specified like resident, recruiter, builder, elder, chief - applied for the specific rank
         # members - all members of the settlement (default)
         # allies - applies to all allies
-        # trusted - applies to all members of the same empire
         # enemies - applies to all enemies
         # free - applies to everyone without a settlement
         # all - applies to everyone
@@ -237,8 +236,6 @@ temporary-bad-omen-level-2:
       cash: 8000
     repeating:
       cash: 8000
-  unlockables:
-  - empire.create
 # Kingdom level 6
 speed-level-1:
   icon: netherite_boots

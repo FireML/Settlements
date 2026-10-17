@@ -24,21 +24,18 @@ public class SettlementShowCommand extends SubCommand {
                 MessageUtils.tell(sender, getError("not-in-settlement").getComponent());
                 return false;
             }
-            getMessage(settlement.hasEmpire() ? "empire" : settlement.isAbandoned() ? "abandoned" : "general")
-                    .tell(sender, settlement.getReplacements(this));
+            getMessage(settlement.isAbandoned() ? "abandoned" : "general").tell(sender, settlement.getReplacements(this));
         } else if (args.length == 1) {
             String name = String.join(" ", args);
             Settlement settlement = SettlementManager.getInstance().getFromName(name);
             if (settlement != null) {
-                getMessage(settlement.hasEmpire() ? "empire" : settlement.isAbandoned() ? "abandoned" : "general")
-                        .tell(sender, settlement.getReplacements(this));
+                getMessage(settlement.isAbandoned() ? "abandoned" : "general").tell(sender, settlement.getReplacements(this));
                 return true;
             }
             Utils.runAsync(() -> {
                 Resident target = ResidentManager.getInstance().getResident(name);
                 if (target != null && target.hasSettlement()) {
-                    getMessage(target.hasEmpire() ? "empire" : target.getSettlement().isAbandoned() ? "abandoned" : "general")
-                            .tell(sender, target.getSettlement().getReplacements(this));
+                    getMessage(target.getSettlement().isAbandoned() ? "abandoned" : "general").tell(sender, target.getSettlement().getReplacements(this));
                 } else {
                     getError("settlement-doesnt-exist").tell(sender, "name", name);
                 }

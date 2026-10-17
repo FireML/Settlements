@@ -2,7 +2,6 @@ package de.themoep.settlements.command;
 
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.command.admin.AdminCommand;
-import de.themoep.settlements.command.empire.EmpireCommand;
 import de.themoep.settlements.command.friend.FriendCommand;
 import de.themoep.settlements.command.plot.PlotCommand;
 import de.themoep.settlements.command.resident.ResidentCommand;
@@ -33,7 +32,6 @@ public class CommandManager implements TabExecutor {
     private void registerCommands() {
         registerCommand(new PlotCommand(null));
         registerCommand(new SettlementCommand());
-        registerCommand(new EmpireCommand());
         registerCommand(new ResidentCommand());
         registerCommand(new FriendCommand());
         registerCommand(new TaxCommand());

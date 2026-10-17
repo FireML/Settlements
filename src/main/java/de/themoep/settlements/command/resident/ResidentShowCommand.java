@@ -32,7 +32,7 @@ public class ResidentShowCommand extends SubCommand {
                 target = ResidentManager.getInstance().getResident((Player) sender);
             }
 
-            getMessage("info." + (target.hasSettlement() ? target.hasEmpire() ? "in-empire" : "in-settlement" : "free")).tell(sender,
+            getMessage("info." + (target.hasSettlement() ? "in-settlement" : "free")).tell(sender,
                     target.getReplacements()
             );
         });

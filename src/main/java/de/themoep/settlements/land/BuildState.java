@@ -12,13 +12,12 @@ import java.util.List;
 import java.util.Set;
 
 public enum BuildState implements NameTag, Rankable {
-    PRIVATE(Material.RED_WOOL, AppliesTo.LAND, AppliesTo.EMPIRE),
+    PRIVATE(Material.RED_WOOL, AppliesTo.LAND),
     MEMBERS(Material.PINK_WOOL, AppliesTo.LAND),
     FRIENDS(Material.ORANGE_WOOL, AppliesTo.LAND),
     OFFICERS(Material.LIGHT_BLUE_WOOL),
     RESIDENTS(Material.YELLOW_WOOL, AppliesTo.LAND, AppliesTo.SETTLEMENT),
     ALLY(Material.CYAN_WOOL),
-    TRUSTED(Material.BLUE_WOOL),
     PUBLIC(Material.WHITE_WOOL);
 
     private final Material icon;
@@ -77,8 +76,7 @@ public enum BuildState implements NameTag, Rankable {
 
     public enum AppliesTo {
         LAND,
-        SETTLEMENT,
-        EMPIRE;
+        SETTLEMENT;
 
         public static AppliesTo get(Object o) {
             if (o instanceof FlagAble flagAble) {

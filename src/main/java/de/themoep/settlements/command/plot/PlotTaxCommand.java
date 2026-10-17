@@ -36,7 +36,7 @@ public class PlotTaxCommand extends PlotSubCommand {
                     }
                     land.setTax(amount);
                     getMessage("success").tell(resident,
-                            "state", land.getLandOwner().getStateTag(),
+                            "state", land.getSettlement().getStateTag(),
                             "amount", String.valueOf(amount)
                     );
                     Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(land));

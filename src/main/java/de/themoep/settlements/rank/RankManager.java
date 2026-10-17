@@ -20,13 +20,6 @@ import java.util.function.Function;
 public class RankManager {
     private static RankManager instance;
 
-    private Map<String, EmpireRank> empireRanks;
-    private EmpireRank empireLeaderRank = null;
-    private EmpireRank empireDefaultRank = null;
-    private static final String empireGroupPrefix = "empire.group.";
-    private Map<String, PermissionGroup> empirePermGroups;
-    private Collection<String> empireToggleablePerms;
-
     private Map<String, SettlementRank> settlementRanks;
     private Map<String, SettlementRank> settlementRanksByTitle;
 
@@ -37,9 +30,8 @@ public class RankManager {
     private Collection<String> settlementToggleablePerms;
 
     private void setup() {
-        loadEmpireRanks();
         loadSettlementRanks();
-        SettlementsPlugin.logDebug("Loaded RankManager with " + settlementRanks.size() + " settlement ranks and " + empireRanks.size() + " empire ranks");
+        SettlementsPlugin.logDebug("Loaded RankManager with " + settlementRanks.size() + " settlement ranks");
     }
 
     private void loadSettlementRanks() {
@@ -95,51 +87,6 @@ public class RankManager {
         }
     }
 
-    private void loadEmpireRanks() {
-        Configuration config = ConfigManager.getInstance().getEmpireRanksConf().getConfig();
-        empirePermGroups = new LinkedHashMap<>();
-        ConfigurationSection groups = config.getConfigurationSection("perm-groups");
-        for (String groupName : groups.getKeys(false)) {
-            try {
-                empirePermGroups.put(groupName.toLowerCase(), new PermissionGroup(groups.getConfigurationSection(groupName)));
-            } catch (InvalidConfigurationException e) {
-                SettlementsPlugin.getInstance().getLogging().error("Error while loading " + groupName + " empire group! " + e.getMessage());
-            }
-        }
-
-        empireRanks = new LinkedHashMap<>();
-        ConfigurationSection ranks = config.getConfigurationSection("ranks");
-        for (String rankName : ranks.getKeys(false)) {
-            empireRanks.put(rankName.toLowerCase(), new EmpireRank(rankName, ranks.getConfigurationSection(rankName)));
-        }
-        EmpireRank lastRank = null;
-        for (EmpireRank rank : empireRanks.values()) {
-            if (empireLeaderRank == null) {
-                empireLeaderRank = rank;
-            }
-            if (lastRank != null) {
-                rank.setParent(lastRank.name());
-                rank.setOrdinal(lastRank.ordinal() + 1);
-            } else {
-                rank.setOrdinal(0);
-            }
-            lastRank = rank;
-        }
-        empireDefaultRank = lastRank;
-
-        empireToggleablePerms = new LinkedHashSet<>();
-        for (String permission : config.getStringList("toggleable-permissions")) {
-            if (empireLeaderRank.getPermissionValue(permission)) {
-                empireToggleablePerms.add(permission);
-            } else {
-                SettlementsPlugin.getInstance().getLogging().warn("Cannot make empire permission '" + permission + "' toggleable as leader rank doesn't have it!");
-            }
-        }
-        if (empireToggleablePerms.isEmpty()) {
-            empireToggleablePerms.addAll(getEmpireLeaderRank().getInheritedPermissions());
-        }
-    }
-
     public static RankManager getInstance() {
         return instance;
     }
@@ -155,24 +102,8 @@ public class RankManager {
         return settlementRanks.values();
     }
 
-    public Collection<EmpireRank> getEmpireRanks() {
-        return empireRanks.values();
-    }
-
     public SettlementRank getSettlementRank(String name) {
         return name != null ? settlementRanks.getOrDefault(name.toLowerCase(), settlementRanksByTitle.get(name.toLowerCase())) : null;
-    }
-
-    public EmpireRank getEmpireRank(String name) {
-        return name != null ? empireRanks.get(name.toLowerCase()) : null;
-    }
-
-    public EmpireRank getEmpireLeaderRank() {
-        return empireLeaderRank;
-    }
-
-    public EmpireRank getEmpireDefaultRank() {
-        return empireDefaultRank;
     }
 
     public SettlementRank getSettlementChiefRank() {
@@ -181,18 +112,6 @@ public class RankManager {
 
     public SettlementRank getSettlementDefaultRank() {
         return settlementDefaultRank;
-    }
-
-    boolean isToggleableEmpirePerm(String permission) {
-        return getEmpireToggleablePerms().contains(permission.toLowerCase(Locale.ROOT));
-    }
-
-    public Collection<PermissionGroup> getEmpirePermGroups() {
-        return empirePermGroups.values();
-    }
-
-    PermissionGroup getEmpirePermGroup(String group) {
-        return empirePermGroups.get(group.toLowerCase());
     }
 
     boolean isToggleableSettlementPerm(String permission) {
@@ -208,7 +127,7 @@ public class RankManager {
     }
 
     /**
-     * Get a group by its ID string suffixed by either settlements.group. or empire.group.
+     * Get a group by its ID string suffixed by settlements.group.
      * @param id    The group ID string
      * @return The group or null if no group exists
      * @throws IllegalArgumentException Thrown if the id string has an invalid suffix
@@ -217,14 +136,7 @@ public class RankManager {
         if (id.startsWith(settlementGroupPrefix)) {
             return getSettlementPermGroup(id.substring(settlementGroupPrefix.length()));
         }
-        if (id.startsWith(empireGroupPrefix)) {
-            return getEmpirePermGroup(id.substring(empireGroupPrefix.length()));
-        }
         throw new IllegalArgumentException(id + " is not a valid group specification");
-    }
-
-    public Collection<String> getEmpireToggleablePerms() {
-        return empireToggleablePerms;
     }
 
     public Collection<String> getSettlementToggleablePerms() {
@@ -233,7 +145,7 @@ public class RankManager {
 
     /**
      * Apply a method to all permissions in a group
-     * @param groupId   The group id suffixed by either settlements.group. or empire.group.
+     * @param groupId   The group id suffixed by settlements.group.
      * @param handler   What Boolean function to apply
      * @return An optional with either the result of the handler or empty if the group couldn't be found
      * @throws IllegalStateException Thrown if the group doesn't have any permissions
@@ -257,7 +169,7 @@ public class RankManager {
 
     /**
      * Apply a function to the first permission of a group
-     * @param groupId   The group id suffixed by either settlements.group. or empire.group.
+     * @param groupId   The group id suffixed by settlements.group.
      * @param handler   What Boolean function to apply
      * @return An optional with either the result of the handler or empty if the group couldn't be found
      * @throws IllegalStateException Thrown if the group doesn't have any permissions

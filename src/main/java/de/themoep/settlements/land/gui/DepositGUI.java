@@ -5,8 +5,9 @@ import de.themoep.inventorygui.InventoryGui;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.leveling.Levelable;
+
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.HumanReadable;
 import de.themoep.settlements.utils.Utils;
@@ -20,7 +21,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends SettlementsGUI {
+public class DepositGUI extends SettlementsGUI {
 
     private final static int SIZE = 54;
 
@@ -36,12 +37,12 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
     private final InventoryGui gui;
     private final Inventory inv;
     private final Resident resident;
-    private final L levelable;
+    private final Settlement settlement;
 
-    public DepositGUI(String namespace, Resident player, L levelable) {
+    public DepositGUI(String namespace, Resident player, Settlement settlement) {
         super(namespace + ".deposit");
         this.resident = player;
-        this.levelable = levelable;
+        this.settlement = settlement;
 
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
 
@@ -51,13 +52,13 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
 
         gui.setCloseAction(close -> {
             ItemStack[] contents = inv.getContents();
-            if (contents == null || contents.length == 0 || close.getPlayer() != resident.getPlayer()) {
+            if (contents.length == 0 || close.getPlayer() != resident.getPlayer()) {
                 return true;
             }
 
             deposit(contents, resident);
             inv.clear();
-            levelable.checkLevelUp(resident);
+            settlement.checkLevelUp(resident);
             return true;
         });
     }
@@ -69,13 +70,13 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
     private void deposit(ItemStack[] contents, Resident resident) {
         Map<Material, Long> fail = new HashMap<>();
         Player player = resident.getPlayer();
-        if (!levelable.isMaxLevel()) {
-            Map<String, Long> nextLevelReqs = levelable.getNextLevelRequirements();
+        if (!settlement.isMaxLevel()) {
+            Map<String, Long> nextLevelReqs = settlement.getNextLevelRequirements();
             Map<String, Long> total = new HashMap<>();
             Map<String, Long> deposited = new HashMap<>();
 
             for (String type : nextLevelReqs.keySet()) {
-                total.put(type, levelable.getAmount(type));
+                total.put(type, settlement.getAmount(type));
             }
 
             for (ItemStack item : contents) {
@@ -109,12 +110,12 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
                 }
             }
             if (!deposited.isEmpty()) {
-                for (Resident onlineResident : levelable.getOnlineResidents()) {
+                for (Resident onlineResident : settlement.getOnlineResidents()) {
                     onlineResident.tell(buildSuccessDepositMessage(resident, player, deposited));
                 }
-                levelable.add(deposited);
-                levelable.save();
-                levelable.logDeposit(resident, deposited);
+                settlement.add(deposited);
+                settlement.save();
+                settlement.logDeposit(resident, deposited);
             }
             if (!fail.isEmpty()) {
                 player.sendMessage(ComponentUtils.parseComponent(buildFailDepositMessage(resident, fail, "")));
@@ -143,7 +144,7 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
         message.append(getMessage("fail-deposit").getReplacedText("reason", reason));
         for (Map.Entry<Material, Long> entry : fail.entrySet()) {
             message.append(getMessage("list-entry").getReplacedText(
-                    "state", levelable.getTag(),
+                    "state", settlement.getTag(),
                     "amount", String.valueOf(entry.getValue()),
                     "icon", "",
                     "material", HumanReadable.humanizedName(entry.getKey().name())
@@ -156,7 +157,7 @@ public class DepositGUI<L extends Levelable<?> & DatabaseSerializable> extends S
         StringBuilder message = new StringBuilder();
         message.append(getMessage("success-deposit").getReplacedText(
                 "player", ComponentUtils.toString(p.displayName()),
-                "state", levelable.getTag()
+                "state", settlement.getTag()
         ));
         for (Map.Entry<String, Long> entry : deposited.entrySet()) {
             message.append(getMessage("list-entry").getReplacedText(

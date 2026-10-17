@@ -6,15 +6,12 @@ import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.TownyCommand;
 import de.themoep.settlements.customevents.CustomEventManager;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireListener;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.LandBlockListener;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.LandModeListener;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.LandPerks;
 import de.themoep.settlements.land.LandUseListener;
 import de.themoep.settlements.land.UseFlagManager;
@@ -62,8 +59,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     private final List<Settlement> newlyAbandonedSettlements = new ArrayList<>();
     private final List<Settlement> newlyDeletedSettlements = new ArrayList<>();
-    private final List<Empire> newlyAbandonedEmpires = new ArrayList<>();
-    private final List<Empire> newlyDeletedEmpires = new ArrayList<>();
 
     @Override
     public void onDisable() {
@@ -81,8 +76,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             logging.info("Saving all settlement data...");
             DatabaseManager.getInstance().saveSettlements(SettlementManager.getInstance().getSettlements());
             DatabaseManager.getInstance().saveSettlementMissionData(SettlementManager.getInstance().getSettlements());
-            logging.info("Saving all empire data...");
-            DatabaseManager.getInstance().saveEmpires(EmpireManager.getInstance().getEmpires());
             logging.info("Saving all land data...");
             DatabaseManager.getInstance().saveLand(LandManager.getInstance().getAllLand());
         }
@@ -116,15 +109,12 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             registerListener(new CustomEventManager());
             registerListener(new BanishListener());
             registerListener(new SettlementListener());
-            registerListener(new EmpireListener());
-            if (Config.Settlement.Missions.ENABLED || Config.Empire.Missions.ENABLED) {
+            if (Config.Settlement.Missions.ENABLED) {
                 registerListener(new MissionListener());
             }
             registerListener(landModeListener = new LandModeListener());
             registerListener(new LandBlockListener());
             registerListener(new LandUseListener());
-
-            EmpireManager.getInstance().loadEmpireWorlds();
 
             this.upkeep();
 
@@ -169,37 +159,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
                 }
             }
             newlyDeletedSettlements.clear();
-
-            logging.info("Handling empire taxes and upkeep...");
-            newlyAbandonedEmpires.clear();
-            newlyDeletedEmpires.clear();
-
-            for (Empire empire : EmpireManager.getInstance().getEmpires()) {
-                empire.doUpkeep();
-            }
-
-            if (!newlyAbandonedEmpires.isEmpty()) {
-                if (newlyAbandonedEmpires.size() > 1) {
-                    Message.get("broadcast.empires-abandoned").broadcast("empires", newlyAbandonedEmpires.stream()
-                            .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
-                            .collect(Collectors.joining(", ")));
-                } else {
-                    Message.get("broadcast.empire-abandoned").broadcast("state", newlyAbandonedEmpires.getFirst().getStateTag(), "name", newlyAbandonedEmpires.getFirst().getName());
-                }
-            }
-            newlyAbandonedEmpires.clear();
-
-            if (!newlyDeletedEmpires.isEmpty()) {
-                if (newlyDeletedEmpires.size() > 1) {
-                    Message.get("broadcast.empires-deletion").broadcast("empires", newlyDeletedEmpires.stream()
-                            .map(v -> Message.get("broadcast.empires-tag").getReplacedText("state", v.getStateTag(), "name", v.getName()))
-                            .collect(Collectors.joining(", ")));
-                } else {
-                    Message.get("broadcast.empire-deletion").broadcast("state", newlyDeletedEmpires.getFirst().getStateTag(), "name", newlyDeletedEmpires.getFirst().getName());
-                }
-            }
-            newlyDeletedEmpires.clear();
-
             logging.info("UPKEEP FINISHED!");
         };
 
@@ -215,20 +174,12 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         scheduleUpkeep(runnable);
     }
 
-    public void addNewlyAbandoned(LandOwner<?, ?> landOwner) {
-        if (landOwner instanceof Settlement settlement) {
-            newlyAbandonedSettlements.add(settlement);
-        } else if (landOwner instanceof Empire empire) {
-            newlyAbandonedEmpires.add(empire);
-        }
+    public void addNewlyAbandoned(Settlement settlement) {
+        newlyAbandonedSettlements.add(settlement);
     }
 
-    public void addNewlyDeleted(LandOwner<?, ?> landOwner) {
-        if (landOwner instanceof Settlement settlement) {
-            newlyDeletedSettlements.add(settlement);
-        } else if (landOwner instanceof Empire empire) {
-            newlyDeletedEmpires.add(empire);
-        }
+    public void addNewlyDeleted(Settlement settlement) {
+        newlyDeletedSettlements.add(settlement);
     }
 
     private void scheduleUpkeep(Runnable runnable) {
@@ -271,12 +222,10 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         }
         CommandManager.load();
         UseFlagManager.load();
-        EmpireManager.load();
         SettlementManager.load();
         RankManager.load();
         ResidentManager.load();
-        // Post load actions after residents, settlements and empires are accessible
-        EmpireManager.getInstance().postLoad();
+        // Post load actions after residents and settlements are accessible
         SettlementManager.getInstance().postLoad();
         if (!Config.Chat.CHAT_ONLY) {
             LandManager.load();

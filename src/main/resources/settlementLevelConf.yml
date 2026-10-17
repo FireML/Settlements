@@ -11,8 +11,6 @@ village:
     outposts: 0
     # The amount of settlement missions available to residents per day
     missions: 1
-    # Extra empire missions
-    extra-missions: 1
     # Max amount of residents
     # Default value if not included: -1 = only limited by max size in config.yml
     size: 2
@@ -34,8 +32,6 @@ village:
     outposts: 1
     # The amount of settlement missions available to residents per day
     missions: 2
-    # Extra empire missions
-    extra-missions: 1
     # Max amount of residents
     # Default value if not included: -1 = only limited by max size in config.yml
     size: 5

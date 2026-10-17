@@ -3,7 +3,7 @@ package de.themoep.settlements.command.admin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.common.TargetParser;
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.missions.MissionTaker;
+import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.Targetable;
 import org.bukkit.command.CommandSender;
 
@@ -33,19 +33,15 @@ public class AdminCooperationPointsCommand extends SubCommand implements TargetP
         }
 
         Targetable targetable = getTarget(sender, args[1]);
-        if (targetable instanceof MissionTaker<?> taker) {
+        if (targetable instanceof Resident taker) {
             if (operation.apply(taker, amount)) {
                 getMessage("success").tell(sender,
                         "operation", operation.name().toLowerCase(),
                         "amount", String.valueOf(amount),
                         "name", targetable.getName()
                 );
-                if (targetable instanceof DatabaseSerializable serializable) {
-                    serializable.save();
-                }
+                taker.save();
             }
-        } else {
-            getError("empire-doesnt-exist").tell(sender, "name", args[1]);
         }
 
         return true;
@@ -54,29 +50,29 @@ public class AdminCooperationPointsCommand extends SubCommand implements TargetP
     private enum Operation {
         ADD() {
             @Override
-            public boolean apply(MissionTaker<?> settlement, int amount) {
-                settlement.setMissionPoints(settlement.getMissionPoints() + amount);
+            public boolean apply(Resident resident, int amount) {
+                resident.setMissionPoints(resident.getMissionPoints() + amount);
                 return true;
             }
         },
         SET() {
             @Override
-            public boolean apply(MissionTaker<?> missionTaker, int amount) {
-                missionTaker.setMissionPoints(amount);
+            public boolean apply(Resident resident, int amount) {
+                resident.setMissionPoints(amount);
                 return true;
             }
         },
         REMOVE() {
             @Override
-            public boolean apply(MissionTaker<?> missionTaker, int amount) {
-                if (missionTaker.getMissionPoints() >= amount) {
-                    missionTaker.setMissionPoints(missionTaker.getMissionPoints() - amount);
+            public boolean apply(Resident resident, int amount) {
+                if (resident.getMissionPoints() >= amount) {
+                    resident.setMissionPoints(resident.getMissionPoints() - amount);
                     return true;
                 }
                 return false;
             }
         };
 
-        public abstract boolean apply(MissionTaker<?> missionTaker, int amount);
+        public abstract boolean apply(Resident resident, int amount);
     }
 }

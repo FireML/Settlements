@@ -46,12 +46,12 @@ public class ModeGUI extends PlotGUI {
                     if (m.appliesTo(PlotMode.AppliesTo.LAND_OWNER)) {
                         if (land.hasMode(m)) {
                             description.add(getText("entry.click-to-unset",
-                                    "parent", land.getLandOwner().getStateTag(),
-                                    "value", yesOrNo(land.getLandOwner().getMode(m))
+                                    "parent", land.getSettlement().getStateTag(),
+                                    "value", yesOrNo(land.getSettlement().getMode(m))
                             ));
                         } else {
                             description.add(getText("entry.parent",
-                                    "parent", land.getLandOwner().getStateTag()
+                                    "parent", land.getSettlement().getStateTag()
                             ));
                         }
                     }
@@ -76,8 +76,8 @@ public class ModeGUI extends PlotGUI {
                                             if (currentLand.unsetMode(m) || currentLand.hasLink()) {
                                                 Message.get("command.plot.mode.unset").tell(resident,
                                                         "mode", m.getTag(),
-                                                        "value", yesOrNo(currentLand.getLandOwner().getMode(m)),
-                                                        "parent", currentLand.getLandOwner().getStateTag()
+                                                        "value", yesOrNo(currentLand.getSettlement().getMode(m)),
+                                                        "parent", currentLand.getSettlement().getStateTag()
                                                 );
                                             } else {
                                                 return true;

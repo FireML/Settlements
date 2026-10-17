@@ -1,5 +1,6 @@
 package de.themoep.settlements.land;
 
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.MessageUtils;
@@ -93,7 +94,7 @@ public class LandBlockListener implements LandAccessChecker, Listener {
                 OwnedLand land = LandManager.getInstance().getLand(e.getBlock().getLocation());
                 if (land != null) {
                     OwnedLand originLand = LandManager.getInstance().getLand(projsource.getBlock().getLocation());
-                    if (originLand == null || !land.isOwnedBy(originLand.getLandOwner())) {
+                    if (originLand == null || !land.isOwnedBy(originLand.getSettlement())) {
                         e.setCancelled(true);
                     }
                 }
@@ -251,18 +252,18 @@ public class LandBlockListener implements LandAccessChecker, Listener {
     }
 
     private boolean checkChunks(Collection<SimpleChunkLocation> chunks) {
-        LandOwner<?, ?> landOwner = null;
+        Settlement landOwner = null;
         UUID plotOwner = null;
         List<SimpleChunkLocation> chunkList = new ArrayList<>(chunks);
         Collections.reverse(chunkList);
         for (SimpleChunkLocation chunk : chunkList) {
             OwnedLand land = LandManager.getInstance().getLand(chunk);
             if (land != null) {
-                if (land.getLandOwner().getBuildState().above(BuildState.PUBLIC)) {
-                    if (landOwner != null && !land.getLandOwner().equals(landOwner)) {
+                if (land.getSettlement().getBuildState().above(BuildState.PUBLIC)) {
+                    if (landOwner != null && !land.getSettlement().equals(landOwner)) {
                         return true;
                     }
-                    landOwner = land.getLandOwner();
+                    landOwner = land.getSettlement();
                 }
                 if (land.isPlot()) {
                     if (land.getBuildState() != null && land.getBuildState().above(BuildState.PUBLIC)) {

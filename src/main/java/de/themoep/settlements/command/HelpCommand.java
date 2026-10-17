@@ -1,6 +1,5 @@
 package de.themoep.settlements.command;
 
-import de.themoep.settlements.rank.EmpireRank;
 import de.themoep.settlements.rank.PermissionGroup;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.utils.ComponentUtils;
@@ -261,11 +260,6 @@ public class HelpCommand extends SubCommand {
     private String getPermGroup(SubCommand subCommand) {
         String shortPermission = subCommand.getPermission().substring(PERMISSION_PREFIX.length());
         for (PermissionGroup permGroup : SettlementRank.getPermGroups()) {
-            if (permGroup.getPermissions().contains(shortPermission)) {
-                return permGroup.getName();
-            }
-        }
-        for (PermissionGroup permGroup : EmpireRank.getPermGroups()) {
             if (permGroup.getPermissions().contains(shortPermission)) {
                 return permGroup.getName();
             }

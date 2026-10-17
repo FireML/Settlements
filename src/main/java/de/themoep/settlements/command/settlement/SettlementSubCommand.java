@@ -17,10 +17,6 @@ public abstract class SettlementSubCommand extends ResidentPermsSubCommand {
             getError("settlement-required").tell(resident);
             return false;
         }
-        if (!resident.getSettlement().hasUnlocked(getPermission()) && Config.Citizens.UNLOCK_DEPENDENCY) {
-            resident.tell(getUnlockText(resident.getSettlement(), getPermission()));
-            return false;
-        }
         if (resident.getSettlement().useGuestRank()
                 && resident.getSettlementRank() == resident.getSettlement().getDefaultRank()
                 && !resident.getSettlement().getEffectivePermissionValue(resident.getSettlementRank(), getPermission().substring("settlements.command.".length())).orElse(false)) {

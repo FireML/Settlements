@@ -3,8 +3,6 @@ package de.themoep.settlements.db;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.chat.ChatColorType;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.land.Ally;
@@ -12,7 +10,7 @@ import de.themoep.settlements.land.AllyRequest;
 import de.themoep.settlements.land.Banished;
 import de.themoep.settlements.land.JoinRequest;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.Unbanished;
@@ -70,7 +68,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private SaveQueue<Consumer<Connection>> logQueue;
     private SaveQueue<Settlement> settlementQueue;
     private SaveQueue<Settlement> settlementMissionDataQueue;
-    private SaveQueue<Empire> empireQueue;
     private SaveQueue<Resident> residentQueue;
     private SaveQueue<Resident> residentMissionDataQueue;
     private SaveQueue<OwnedLand> landQueue;
@@ -87,9 +84,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
         logQueue = new SaveQueue<>("log", this, queueSize, queueWait, (conn, consumer) -> consumer.accept(conn));
         settlementQueue = new SaveQueue<>("settlement", this, queueSize, queueWait, this::saveSettlement);
-        settlementMissionDataQueue = new SaveQueue<>("settlement mission data", this, missionQueueSize, missionQueueWait * 20, this::saveSettlementMissionData);
         residentMissionDataQueue = new SaveQueue<>("resident mission data", this, missionQueueSize, missionQueueWait * 20, this::saveResidentMissionData);
-        empireQueue = new SaveQueue<>("empire", this, queueSize, queueWait, this::saveEmpire);
         residentQueue = new SaveQueue<>("resident", this, queueSize, queueWait, this::saveResident);
         landQueue = new SaveQueue<>("land", this, queueSize, queueWait, this::saveLand);
         inviteQueue = new SaveQueue<>("invite", this, queueSize, queueWait, this::saveInvite);
@@ -112,75 +107,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     protected abstract void executeDataMapUpdate(Connection conn, String tableName, String keyColumn, int keyId, String mapKey, Map<String, ?> values, Set<String> columns, String... mapValueColumns) throws SQLException;
 
     // Implement DatabaseManager methods
-
-    @Override
-    public void addNewEmpire(Empire empire) {
-        Utils.catchSync();
-        Connection conn = getConnection();
-        try {
-            saveEmpire(conn, empire);
-        } finally {
-            close(conn);
-        }
-    }
-
-    @Override
-    public void saveEmpire(Empire empire) {
-        empireQueue.add(empire.getId(), empire);
-        empireQueue.finishAdding();
-    }
-
-    @Override
-    public void saveEmpires(Collection<Empire> empires) {
-        for (Empire empire : empires) {
-            empireQueue.add(empire.getId(), empire);
-        }
-        empireQueue.finishAdding();
-    }
-
-    private void saveEmpire(Connection conn, Empire empire) {
-        Utils.catchSync();
-        try {
-            if (!save(conn, empire, "members", "permissions", "npcs", "allyRequests", "joinRequests").isNull() && empire.getId() != null && !empire.getId().isNull()) {
-                updateDataMap(conn, "empire_vaults", "empireId", (Integer) empire.getId().value(), "content", "amount", empire.getVault());
-                updateDataMap(conn, "empire_uses", "empireId", (Integer) empire.getId().value(), "type", "state",
-                        empire.getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
-                updateDataMap(conn, "empire_perks", "empireId", (Integer) empire.getId().value(), "perk", "",
-                        empire.getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
-                updateDataMap(conn, "empire_permissions", "empireId", (Integer) empire.getId().value(), "rank", "permission", empire.getRanksPermissions(), "value");
-                updateDataMap(conn, "empire_titles", "empireId", (Integer) empire.getId().value(), "rank", "title", empire.getRankTitles());
-                updateDataMap(conn, "empire_defaulttitles", "empireId", (Integer) empire.getId().value(), "rank", "title", empire.getDefaultRankTitles());
-            }
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while saving empire " + empire.getName() + " to database!", e);
-        }
-    }
-
-    @Override
-    public void deleteEmpire(Empire empire) {
-        Utils.catchSync();
-        empireQueue.remove(empire.getId(), empire);
-        Connection conn = getConnection();
-        if (empire.getId() != null && !empire.getId().isNull()) {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE id=?")) {
-                sta.setInt(1, (Integer) empire.getId().value());
-                sta.executeUpdate();
-            } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete empire " + empire.getId().value() + "/" + empire.getName() + " from database!", e);
-            } finally {
-                close(conn);
-            }
-        } else {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "empires WHERE name = ? LIMIT 1")) {
-                sta.setString(1, empire.getName());
-                sta.executeUpdate();
-            } catch (SQLException e) {
-                plugin.getLogger().log(Level.SEVERE, "Error while trying to delete empire " + empire.getId().value() + "/" + empire.getName() + " from database!", e);
-            } finally {
-                close(conn);
-            }
-        }
-    }
 
     @Override
     public void addNewSettlement(Settlement settlement) {
@@ -227,26 +153,11 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void saveMissionData(Settlement settlement) {
-        settlementMissionDataQueue.add(settlement.getId(), settlement);
-        settlementMissionDataQueue.finishAdding();
-    }
-
-    @Override
     public void saveSettlementMissionData(Collection<Settlement> settlements) {
         for (Settlement settlement : settlements) {
             settlementMissionDataQueue.add(settlement.getId(), settlement);
         }
         settlementMissionDataQueue.finishAdding();
-    }
-
-    public void saveSettlementMissionData(Connection conn, Settlement settlement) {
-        Utils.catchSync();
-        try {
-            updateDataMap(conn, "settlement_missiondata", "settlementId", (Integer) settlement.getId().value(), "mission", "type", settlement.getMissionDataMap(), "progress");
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while saving mission data for settlement " + settlement.getName() + " to database!", e);
-        }
     }
 
     @Override
@@ -299,7 +210,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void delete(LandOwner<?, ?> landOwner, Ally ally) {
+    public void delete(Settlement landOwner, Ally ally) {
         Utils.catchSync();
         Connection conn = getConnection();
         if (ally.getId() != null && !ally.getId().isNull()) {
@@ -400,7 +311,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void unclaimLand(LandOwner<?, ?> landOwner) {
+    public void unclaimLand(Settlement landOwner) {
         Utils.catchSync();
         if (landOwner.getId().value() == null) {
             plugin.getLogger().log(Level.SEVERE, "Error while trying to delete claims of " + landOwner.getDbName() + " " + landOwner.getName() + " from database! It has no ID?");
@@ -566,28 +477,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public Collection<Empire> getAllEmpires() {
-        Utils.catchSync();
-        String sql = "SELECT * FROM " + tablePrefix + "empires;";
-        Connection conn = getConnection();
-        try (ResultSet rs = conn.createStatement().executeQuery(sql)) {
-            List<Empire> empires = new ArrayList<>();
-            while (rs.next()) {
-                Empire empire = createEmpire(conn, rs);
-                if (empire != null) {
-                    empires.add(empire);
-                }
-            }
-            return empires;
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Error while trying to get all empires from database!", e);
-        } finally {
-            close(conn);
-        }
-        return Collections.emptyList();
-    }
-
-    @Override
     public Resident getResident(int id) {
         String sql = "SELECT * FROM " + tablePrefix + "residents WHERE id=?";
         Connection conn = getConnection();
@@ -704,32 +593,32 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public void log(Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values) {
-        if (values.isEmpty()
-                || (settlement != null && (settlement.getId() == null || settlement.getId().isNull()))
-                || (empire != null && (empire.getId() == null || empire.getId().isNull()))) {
+    public void log(Settlement settlement, Resident resident, String action, Map<String, Long> values) {
+        if (values.isEmpty()) {
+            return;
+        }
+        if (settlement != null && (settlement.getId() == null || settlement.getId().isNull())) {
             return;
         }
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        logQueue.add(IdObject.get(timestamp.getTime()), conn -> log(conn, timestamp, empire, settlement, resident, action, values));
+        logQueue.add(IdObject.get(timestamp.getTime()), conn -> log(conn, timestamp, settlement, resident, action, values));
     }
 
-    private void log(Connection conn, Timestamp timestamp, Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values) {
+    private void log(Connection conn, Timestamp timestamp, Settlement settlement, Resident resident, String action, Map<String, Long> values) {
         try (PreparedStatement sta = conn.prepareStatement("INSERT INTO " + tablePrefix + "logs " +
-                     "(`empireId`, `settlementId`, `residentId`, `action`, `type`, `amount`, `timestamp`) " +
-                     "VALUES (?, ?, ?, ?, ?, ?, ?);"
+                     "(`settlementId`, `residentId`, `action`, `type`, `amount`, `timestamp`) " +
+                     "VALUES (?, ?, ?, ?, ?, ?);"
              )
         ) {
             for (Map.Entry<String, Long> value : values.entrySet()) {
                 if (value.getValue() != 0) {
-                    sta.setInt(1, empire != null ? (Integer) empire.getId().value() : -1);
-                    sta.setInt(2, settlement != null ? (Integer) settlement.getId().value() : -1);
-                    sta.setInt(3, resident != null && (resident.getId() != null && !resident.getId().isNull()) ? (Integer) resident.getId().value() : -1);
-                    sta.setString(4, action.toLowerCase());
-                    sta.setString(5, value.getKey().toLowerCase());
-                    sta.setLong(6, value.getValue());
-                    sta.setTimestamp(7, timestamp);
+                    sta.setInt(1, settlement != null ? (Integer) settlement.getId().value() : -1);
+                    sta.setInt(2, resident != null && (resident.getId() != null && !resident.getId().isNull()) ? (Integer) resident.getId().value() : -1);
+                    sta.setString(3, action.toLowerCase());
+                    sta.setString(4, value.getKey().toLowerCase());
+                    sta.setLong(5, value.getValue());
+                    sta.setTimestamp(6, timestamp);
                     sta.addBatch();
                 }
             }
@@ -742,11 +631,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public int getLogPageCount(Settlement settlement, Resident resident, LogType type) {
         return getLogPageCount("settlementId", settlement.getId(), resident, type);
-    }
-
-    @Override
-    public int getLogPageCount(Empire empire, Resident resident, LogType type) {
-        return getLogPageCount("empireId", empire.getId(), resident, type);
     }
 
     private int getLogPageCount(String column, IdObject id, Resident resident, LogType type) {
@@ -783,7 +667,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         residentMissionDataQueue.forceSave();
         settlementQueue.forceSave();
         settlementMissionDataQueue.forceSave();
-        empireQueue.forceSave();
         residentQueue.forceSave();
         landQueue.forceSave();
         try {
@@ -794,14 +677,14 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     @Override
-    public List<String[]> getLog(LandOwner<?, ?> landOwner, Resident resident, int page, LogType type) {
+    public List<String[]> getLog(Settlement landOwner, Resident resident, int page, LogType type) {
         String column = landOwner.getDbName() + "Id";
         List<String[]> log = new ArrayList<>();
         if (landOwner.getId() == null || landOwner.getId().isNull() || page < 1) {
             return log;
         }
         int start = (page-1) * Config.ENTRIES_PER_PAGE;
-        String sql = "SELECT l.empireId, l.settlementId, l.action, l.type, l.amount, l.timestamp, r.name AS playerName, r.uuid AS playerId, r.rank AS playerRank, r.title AS playerTitle " +
+        String sql = "SELECT l.settlementId, l.action, l.type, l.amount, l.timestamp, r.name AS playerName, r.uuid AS playerId, r.rank AS playerRank, r.title AS playerTitle " +
                 "FROM " + tablePrefix + "logs AS l " +
                 "LEFT JOIN " + tablePrefix + "residents AS r ON l.residentId = r.id " +
                 "WHERE l." + column + "=?";
@@ -835,11 +718,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 if (settlementId > -1) {
                     settlement = SettlementManager.getInstance().getFromId(IdObject.get(settlementId));
                 }
-                Empire empire = null;
-                int empireId = rs.getInt("empireId");
-                if (empireId > -1) {
-                    empire = EmpireManager.getInstance().getEmpireFromId(IdObject.get(empireId));
-                }
 
                 String title = hasPlayer ? rs.getString("playerTitle") : "";
                 if (title == null) {
@@ -848,7 +726,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 log.add(new String[] {
                         "settlement", settlement != null ? settlement.getName() : settlementId > -1 ? "id:" + settlementId : "",
                         "settlementstate", settlement != null ? settlement.getState().getTag() : settlementId > -1 ? "Unknown" : "",
-                        "empire", empire != null ? empire.getName() : empireId > -1 ? "id:" + empireId : "",
                         "name", hasPlayer ? rs.getString("playerName") : "",
                         "uuid", hasPlayer ? rs.getString("playerId") : "",
                         "rank", hasPlayer ? rank.getTag(settlement) : "",
@@ -869,60 +746,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     // ------ Creation methods ----- //
-
-    private Empire createEmpire(Connection conn, ResultSet rs) throws SQLException {
-        int id = rs.getInt("id");
-        Map<String, Object> map = toMap(rs);
-
-        PreparedStatement rSta = conn.prepareStatement("SELECT id FROM " + tablePrefix + "settlements WHERE empireId = ?;");
-        rSta.setInt(1, id);
-        ResultSet rRs = rSta.executeQuery();
-        Collection<Integer> members = new ArrayList<>();
-        while (rRs.next()) {
-            members.add(rRs.getInt("id"));
-        }
-        map.put("members", members);
-
-        map.put("joinRequests", getJoinRequests(conn, "empire", id));
-        map.put("allies", selectDeserializableList(conn, "empire", id, "allies", Ally.class));
-        map.put("allyRequests", getAllyRequests(conn, "empire", id));
-        map.put("banished", selectDeserializableList(conn, "empire", id, "banished", Banished.class));
-        map.put("unbanished", selectDeserializableList(conn, "empire", id, "unbanished", Unbanished.class));
-
-        map.put("uses", selectMap(conn, "empire_uses", "empireId", id, "type", "state", String.class));
-        map.put("vault", selectMap(conn, "empire_vaults", "empireId", id, "content", "amount", Long.class));
-        map.put("defaulttitles", selectMap(conn, "empire_defaulttitles", "empireId", id, "rank", "title", String.class));
-
-        PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_perks WHERE empireId = ?;");
-        pSta.setInt(1, id);
-        ResultSet pRs = pSta.executeQuery();
-        Map<String, Map<String, Object>> unlockedPerks = new LinkedHashMap<>();
-        while (pRs.next()) {
-            unlockedPerks.put(pRs.getString("perk").toLowerCase(), toMap(pRs));
-        }
-        map.put("perks", unlockedPerks);
-
-        PreparedStatement rpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_permissions WHERE empireId = ?;");
-        rpSta.setInt(1, id);
-        ResultSet rpRs = rpSta.executeQuery();
-        Map<String, Map<String, Boolean>> rankPermissions = new LinkedHashMap<>();
-        while (rpRs.next()) {
-            rankPermissions.computeIfAbsent(rpRs.getString("rank").toLowerCase(), k -> new LinkedHashMap<>())
-                    .put(rpRs.getString("permission"), rpRs.getBoolean("value"));
-        }
-        map.put("permissions", rankPermissions);
-
-        PreparedStatement tpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "empire_titles WHERE empireId = ?;");
-        tpSta.setInt(1, id);
-        ResultSet tpRs = tpSta.executeQuery();
-        Map<String, Collection<String>> rankTitles = new LinkedHashMap<>();
-        while (tpRs.next()) {
-            rankTitles.computeIfAbsent(tpRs.getString("rank").toLowerCase(), k -> new LinkedHashSet<>()).add(tpRs.getString("title"));
-        }
-        map.put("titles", rankTitles);
-
-        return Empire.deserialize(map);
-    }
 
     private Settlement createSettlement(Connection conn, ResultSet rs) throws SQLException {
         int id = rs.getInt("id");
@@ -1222,7 +1045,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 value = serializable.serialize();
             }
             if (value instanceof Map<?, ?> map && mapValueColumns.length == 0) {
-                if ((map.keySet().iterator().next() instanceof String) {
+                if ((map.keySet().iterator().next() instanceof String)) {
                     for (String column : getValues(conn, (Map<String, ?>) value, mapKey).keySet()) {
                         if (mapValue.isEmpty()) {
                             columns.add(column);

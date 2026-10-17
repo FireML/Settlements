@@ -27,8 +27,8 @@ public class PlotBuyCommand extends ResidentSubCommand {
         if (land == null) {
             getError("not-a-claim").tell(res);
         } else if (!(land.isEmbassy() || land.isOwnedBy(res))) {
-            getError("not-your-settlement").tell(res, "state", land.getLandOwner().getStateTag());
-        } else if (!land.isForSale() || land.getLandOwner().isAbandoned()) {
+            getError("not-your-settlement").tell(res, "state", land.getSettlement().getStateTag());
+        } else if (!land.isForSale() || land.getSettlement().isAbandoned()) {
             getError("not-for-sale").tell(res);
         } else {
             if (land.isEmbassy() && land.isOwnedBy(res)) {
@@ -50,8 +50,8 @@ public class PlotBuyCommand extends ResidentSubCommand {
                     return true;
                 }
                 SettlementsPlugin.getInstance().getEconomy().withdrawPlayer(res.getPlayer(), land.getPrice());
-                land.getLandOwner().setBank(land.getLandOwner().getBank() + land.getPrice());
-                Utils.runAsync(() -> DatabaseManager.getInstance().save(land.getLandOwner()));
+                land.getSettlement().setBank(land.getSettlement().getBank() + land.getPrice());
+                Utils.runAsync(() -> land.getSettlement().save());
             }
             land.setForSale(false);
             getMessage("purchased").tell(res, "price", String.valueOf(land.getPrice()));

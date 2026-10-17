@@ -1,8 +1,8 @@
 package de.themoep.settlements.utils;
 
-import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.perk.LevelPerk;
 import de.themoep.settlements.perk.Perk;
+import de.themoep.settlements.perk.SettlementPerk;
+import de.themoep.settlements.settlement.Settlement;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,26 +16,26 @@ public interface ConfigMessages extends ConfigKey {
         return StringUtils.parseColors(getMessage(key).getReplacedText(replacements));
     }
 
-    default String getUnlockText(LandOwner<?, ?> landOwner, String unlockable) {
+    default String getUnlockText(Settlement settlement, String unlockable) {
         unlockable = unlockable.toLowerCase(Locale.ROOT);
         if (unlockable.startsWith("settlements.")) {
             unlockable = unlockable.substring("settlements.".length());
         }
-        if (unlockable.contains(landOwner.getKey() + ".")) {
-            unlockable = unlockable.replace(landOwner.getKey() + ".", "");
+        if (unlockable.contains(settlement.getKey() + ".")) {
+            unlockable = unlockable.replace(settlement.getKey() + ".", "");
         }
-        for (Perk perk : landOwner.getAvailablePerks()) {
+        for (SettlementPerk perk : settlement.getAvailablePerks()) {
             if (perk.getUnlockables().contains(unlockable)) {
-                if (perk instanceof LevelPerk && ((LevelPerk<?>) perk).getLevel() > 1) {
+                if (perk.getLevel() > 1) {
                     return getText("unlockables.locked.upgrade",
                             "type", perk.getTag(),
-                            "level", String.valueOf(((LevelPerk<?>) perk).getLevel())
+                            "level", String.valueOf(perk.getLevel())
                     );
                 }
                 return getText("unlockables.locked.unlock", "type", perk.getTag());
             }
         }
-        return getText("unlockables.locked.level", "state", landOwner.getStateTag());
+        return getText("unlockables.locked.level", "state", settlement.getStateTag());
     }
 
     default Message getMessage(String key) {

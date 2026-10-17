@@ -1,8 +1,9 @@
 package de.themoep.settlements.banish;
 
+import de.themoep.settlements.settlement.Settlement;
 import uk.firedev.daisylib.events.move.PlayerMoveChunkEvent;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.events.LandPreClaimEvent;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.MessageUtils;
@@ -91,20 +92,20 @@ public class BanishListener implements Listener {
         }
     }
 
-    private void sendInfo(Player p, LandOwner<?, ?> landOwner, String type) {
+    private void sendInfo(Player p, Settlement settlement, String type) {
         String[] replacements = new String[] {
-                "state", landOwner.getStateTag(),
-                "name", landOwner.getName()
+                "state", settlement.getStateTag(),
+                "name", settlement.getName()
         };
         MessageUtils.tellAdvanced(p, "banished." + type, replacements);
     }
 
-    private void sendInfo(UUID u, LandOwner<?, ?> landOwner, String type) {
+    private void sendInfo(UUID u, Settlement settlement, String type) {
         Player player = Bukkit.getPlayer(u);
         if (player == null) {
             return;
         }
-        sendInfo(player, landOwner, type);
+        sendInfo(player, settlement, type);
     }
 
 }

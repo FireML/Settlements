@@ -35,7 +35,7 @@ public class PlotPermsCommand extends PlotSubCommand {
                             land.unsetUseState(u);
                         }
                         LandManager.getInstance().syncAndSave(land);
-                        getMessage("unset-all").tell(res, "parent", land.getLandOwner().getStateTag());
+                        getMessage("unset-all").tell(res, "parent", land.getSettlement().getStateTag());
                     } else {
                         getMessage("states").tell(res, "states", BuildState.values(BuildState.AppliesTo.LAND).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
                         return false;
@@ -72,7 +72,7 @@ public class PlotPermsCommand extends PlotSubCommand {
             UseFlag use = UseFlagManager.getInstance().get(args[0]);
             if (use != null) {
                 try {
-                    BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner()));
+                    BuildState state = BuildState.valueOf(Arrays.stream(args).skip(1).collect(Collectors.joining("_")).toUpperCase(), land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getSettlement()));
                     land.setUseState(use, state);
                     LandManager.getInstance().syncAndSave(land);
                     getMessage("success").tell(res, "flag", use.name(), "state", state.getTag());
@@ -80,14 +80,14 @@ public class PlotPermsCommand extends PlotSubCommand {
                     if ("reset".equalsIgnoreCase(args[1]) || "unset".equalsIgnoreCase(args[1]) || "parent".equalsIgnoreCase(args[1])) {
                         land.unsetUseState(use);
                         LandManager.getInstance().syncAndSave(land);
-                        getMessage("unset-all").tell(res, "parent", land.getLandOwner().getStateTag());
+                        getMessage("unset-all").tell(res, "parent", land.getSettlement().getStateTag());
                     } else {
                         getMessage("flags").tell(res, "flags", UseFlagManager.getInstance().getUseFlags().stream().map(u -> u.name().toLowerCase()).collect(Collectors.joining(", ")));
                         return false;
                     }
                 }
             } else {
-                res.tell(getMessage("states").getText(), "states", BuildState.values(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getLandOwner())).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
+                res.tell(getMessage("states").getText(), "states", BuildState.values(land.isPlot() ? BuildState.AppliesTo.LAND : BuildState.AppliesTo.get(land.getSettlement())).stream().map(NameTag::humanizedName).collect(Collectors.joining(", ")));
                 return false;
             }
         }

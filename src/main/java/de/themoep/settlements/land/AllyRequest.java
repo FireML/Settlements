@@ -1,8 +1,8 @@
 package de.themoep.settlements.land;
 
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
@@ -11,9 +11,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
-public class AllyRequest extends Invite<LandOwner<?, ?>, LandOwner<?, ?>> {
+public class AllyRequest extends Invite<Settlement, Settlement> {
 
-    public AllyRequest(LandOwner<?, ?> target, LandOwner<?, ?> source) {
+    public AllyRequest(Settlement target, Settlement source) {
         super(target, source);
     }
 
@@ -22,21 +22,17 @@ public class AllyRequest extends Invite<LandOwner<?, ?>, LandOwner<?, ?>> {
     }
 
     @Override
-    public LandOwner<?, ?> getTarget() {
-        return getLandOwner(getTargetType(), getTargetId());
+    public Settlement getTarget() {
+        return getSettlement(getTargetType(), getTargetId());
     }
 
     @Override
-    public LandOwner<?, ?> getSource() {
-        return getLandOwner(getSourceType(), getSourceId());
+    public Settlement getSource() {
+        return getSettlement(getSourceType(), getSourceId());
     }
 
-    private LandOwner<?, ?> getLandOwner(String type, IdObject id) {
-        return switch (type) {
-            case "settlement" -> SettlementManager.getInstance().getFromId(id);
-            case "empire" -> EmpireManager.getInstance().getEmpireFromId(id);
-            default -> null;
-        };
+    private Settlement getSettlement(String type, IdObject id) {
+        return "settlements".equals(type) ? SettlementManager.getInstance().getFromId(id) : null;
     }
 
     @Override

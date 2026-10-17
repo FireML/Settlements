@@ -68,7 +68,7 @@ public class OutpostClaimCommand extends SettlementSubCommand {
                     }
                 }
             } else {
-                resident.tell(getError("cant-claim-here").getText(), "owner", land.getLandOwner().getName());
+                resident.tell(getError("cant-claim-here").getText(), "owner", land.getSettlement().getName());
             }
         } else {
             for (SimpleChunkLocation chunk : WorldUtils.getChunksAround(resident.getPlayer(), Config.Claiming.ENEMY_DISTANCE)) {
@@ -77,10 +77,10 @@ public class OutpostClaimCommand extends SettlementSubCommand {
                     continue;
                 }
                 if (!checkLand.isOwnedBy(resident.getSettlement()) && (
-                        !checkLand.getLandOwner().isAlly(resident.getSettlement()) || (
-                                !(checkLand.getLandOwner() instanceof Settlement settlement)
+                        !checkLand.getSettlement().isAlly(resident.getSettlement()) || (
+                                !(checkLand.getSettlement() instanceof Settlement settlement)
                                         || !settlement.isAllowAllyClaim()))) {
-                    resident.tell(getError("claim-too-close").getText(), "owner", checkLand.getLandOwner().getName());
+                    resident.tell(getError("claim-too-close").getText(), "owner", checkLand.getSettlement().getName());
                     return true;
                 }
             }

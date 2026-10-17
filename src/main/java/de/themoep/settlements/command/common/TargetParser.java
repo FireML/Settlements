@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.common;
 
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.SettlementManager;
@@ -16,17 +15,7 @@ public interface TargetParser extends ConfigMessages {
 
     default Targetable getTarget(CommandSender sender, String input) {
         Targetable target;
-        if (input.startsWith("empire:") || input.startsWith("e:")) {
-            String name = input.split(":")[1];
-            target = EmpireManager.getInstance().getEmpireFromName(name);
-            if (target == null) {
-                target = EmpireManager.getInstance().getEmpireFromName(name.replace('_', ' '));
-                if (target == null) {
-                    getError("empire-doesnt-exist").tell(sender, "name", name);
-                    return null;
-                }
-            }
-        } else if (input.startsWith("settlement:") || input.startsWith("s:")) {
+        if (input.startsWith("settlement:") || input.startsWith("s:")) {
             String name = input.split(":")[1];
             target = SettlementManager.getInstance().getFromName(name);
             if (target == null) {

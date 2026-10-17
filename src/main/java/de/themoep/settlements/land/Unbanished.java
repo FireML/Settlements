@@ -1,9 +1,9 @@
 package de.themoep.settlements.land;
 
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
@@ -92,7 +92,6 @@ public record Unbanished(String type, IdObject banishedId, long banishDate, UUID
         return switch (type) {
             case "player" -> ResidentManager.getInstance().getResident((UUID) banishedId().value());
             case "settlement" -> SettlementManager.getInstance().getFromId(banishedId());
-            case "empire" -> EmpireManager.getInstance().getEmpireFromId(banishedId());
             default -> null;
         };
     }
@@ -112,7 +111,7 @@ public record Unbanished(String type, IdObject banishedId, long banishDate, UUID
         Targetable t = getTargetable();
         if (t instanceof Resident) {
             return ItemUtils.getHead((UUID) banishedId().value(), t.getName());
-        } else if (t instanceof LandOwner<?, ?> owner) {
+        } else if (t instanceof Settlement owner) {
             return ItemUtils.getHead(owner.getChiefId(), owner.getChief().getName());
         }
         return null;

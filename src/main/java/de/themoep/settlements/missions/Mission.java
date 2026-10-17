@@ -1,7 +1,7 @@
 package de.themoep.settlements.missions;
 
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.MaterialUtils;
@@ -50,9 +50,6 @@ public abstract class Mission implements NameTag {
         String[] split = dbId.split(":", 2);
         if (split.length != 2) {
             return null;
-        }
-        if ("empiremission".equalsIgnoreCase(split[0])) {
-            return EmpireManager.getInstance().getMission(split[1]);
         }
         if ("settlementmission".equalsIgnoreCase(split[0])) {
             return SettlementManager.getInstance().getMission(split[1]);
@@ -116,7 +113,7 @@ public abstract class Mission implements NameTag {
 
     public abstract void finish(Resident resident);
 
-    public abstract boolean isValid(Resident resident, MissionProvider<?> provider);
+    public abstract boolean isValid(Resident resident, Settlement provider);
 
     public enum Type implements NameTag {
         TURN_IN,
@@ -126,7 +123,7 @@ public abstract class Mission implements NameTag {
         KILL
     }
 
-    public static String[] getReplacements(ConfigMessages messages, MissionProvider<?> provider, MissionTaker<?> taker) {
+    public static String[] getReplacements(ConfigMessages messages, Settlement provider, Resident taker) {
         return new String[] {
                 "amount", String.valueOf(taker.getMissionData().size()),
                 "missions", taker.getMissionData().stream()

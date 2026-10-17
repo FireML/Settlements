@@ -39,11 +39,9 @@ start-guide:
       Please do not hesitate to ask questions and have fun!
 error:
   missing-settlement-id: "&cInternal error. Settlement ID is null?"
-  missing-empire-id: "&cInternal error. Empire ID is null?"
   not-a-number: "&c(!) &r&c{input} is not a valid number!"
   not-in-current: "&c(!) &r&7Not currently in a settlement."
   not-in-settlement: "&cTarget player {player} isn't in a settlement!"
-  not-in-empire: "&c(!) &r&7Not currently in your empire."
   no-level: "&cNo level {level} exists!"
   no-permission: "&cNo permission."
   no-world: "&c{state} {name} has not unlocked a world."
@@ -56,12 +54,7 @@ error:
   invalid-rank: "&c(!) &r&c{rank} &7is not a valid rank!"
   invalid-group: "&c(!) &r&c{group} &7is not a valid group!"
   settlement-exists: "&7A settlement with the name &6{name}&7 already exists!"
-  empire-exists: "&7An empire with the name &6{name}&7 already exists!"
   settlement-doesnt-exist: "&cThere is no settlement with the name &6{name}&c found!"
-  empire-doesnt-exist: "&cThere is no empire with the name &6{name}&c found!"
-  ambiguous-target: |-
-    &6{name}&c can both refer to a Settlement or Empire!
-    Use the prefixes &6e:&c or &6s:&c in front of the name to specify whether you mean the Settlement or Empire!
   invalid-characters: "&c{input} contains invalid characters!"
   prohibited-words: "&e{input}&c contains prohibited words!"
   too-long: "&c{input} is too long, only {amount} characters are allowed!"
@@ -83,14 +76,10 @@ error:
     &cUse [&f/s outpost list](/s outpost list) to view all outposts!
   rank-required: "&cYou need the rank &r&6{rank} or higher&r&c!"
   settlement-required: "&cYou can only do this after you've joined a settlement!"
-  empire-required: "&cYou can only do this after you've joined an empire!"
   free-required: "&cYou can only do this if you're not part of a settlement!"
   cant-admin-plots: "&cYou can't manage this plot!"
-  no-empire-required: "&cYou can only do this if you're not part of an empire!"
   only-player: "&cMust be ran by player."
   unknown-perk: "&cNo unlock with the name &f{perk}&c available!"
-  not-in-empire-world: "&cYou are not in your Empire's world!"
-  cant-in-empire-world: "&cYou can't do that in your Empire's world!"
   not-unlocked-yet: "&cThis feature only unlocked with {state} level {level}!"
   level-required: "&cYou must be in a {state} level {level}!"
   no-allies: "&cYou have no allies!"
@@ -152,16 +141,10 @@ broadcast:
   settlement-abandoned: "&e{state} &f{name}&c has been abandoned! You have 2 hours to raid it"
   settlements-abandoned: "&e{settlements}&c have been abandoned! You have 2 hours to raid them"
   settlements-tag: "&e{state} &f{name}&e"
-  empire-deletion: "&cEmpire &e{name}&c has fallen!"
-  empires-deletion: "&cEmpires &f{empires}&c have fallen!"
-  empire-abandoned: "&cEmpire &f{name}&c has been abandoned! You have 24 hours to raid it!"
-  empires-abandoned: "&cEmpires &f{empires} have been abandoned! You have 24 hours to raid it!"
-  empires-tag: "{name}"
 pvp-claim:
   enter: "&f[&eSettlements&f] &cPvP is enabled in this claim!"
   exit: "&f[&eSettlements&f] &cPvP is no longer enabled."
   bossbar: "&cPvP is Enabled inside of this Claim!"
-empire-world-generated: "&lCreated your empire world!"
 levels:
   upgrade: "&d{state}&7 was upgraded to level &d{level}"
   perks: |-
@@ -190,11 +173,6 @@ upkeep:
     abandoned: "&a&l(!) &7Your settlement has been &cabandoned&7 because it was &cunable&7 to pay its upkeep!"
     charged: "&a&l(!) &7Your settlement has been charged &6{charged}&7 for upkeep!"
     cant-pay: "&a&l(!) &cYour settlement is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
-  empire-alert:
-    deleted: "&a&l(!) &7Your empire has been &cdeleted&7 because it was &cunable&7 to pay its upkeep!"
-    abandoned: "&a&l(!) &7Your empire is in the &cabandoned&7 state for the next 24 hours because it was &cunable&7 to pay its upkeep!"
-    charged: "&a&l(!) &7Your empire has been charged &6{charged}&7 for upkeep!"
-    cant-pay: "&a&l(!) &cYour empire is &6unable&c to pay the next upkeep it will cost &6{amount}&c! Deposit money to avoid deletion!"
 eviction:
   letter:
     sender: "{state} {name} {chieftitle} {chiefname}"
@@ -209,15 +187,6 @@ tax:
     kick:
       cant-pay: "&cYou can't pay the tax of &e{amount}&c and will be removed tomorrow if you still can't pay it!"
       couldnt-pay: "&e{player}&c was not able to pay the tax of &e{amount}&c and has been removed from the {state} {name}!"
-empire-tax:
-  removed: "&eRemoved &c{amount}&e of tax from your {state}'s bank!"
-  debt-action:
-    none:
-      cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows empire tax of &6{amount}&7! You should earn some money!"
-      couldnt-pay: "&e{state} {settlement}&c was not able to pay the tax of &e{amount}&c!"
-    kick:
-      cant-pay: "&a&lALERT &7Your settlement is &cunable&7 to pay tomorrows empire tax of &6{amount}&7 and will be kicked tomorrow if it still can't pay it!"
-      couldnt-pay: "&e{state} {settlement}&c was not able to pay the tax of &e{amount}&c and has been banished from the empire!"
 plot-tax:
   removed: "&eRemoved &c{amount}&e of tax for your {state} {name} plot ({x}/{z}) from your account!"
   debt-action:
@@ -297,33 +266,6 @@ kingdom:
     recruiter: Greeter
     resident: Resident
     guest: Guest
-empire:
-  enter:
-    message: "&f[&eEmpire&f] &7Entering &a{name}{pvp}"
-    actionbar: ""
-    title: ""
-    subtitle: ""
-  enter-abandoned:
-    message: "&f[&eEmpire&f] &7Entering &cabandoned {name}{pvp}"
-    actionbar: ""
-    title: ""
-    subtitle: ""
-  leave:
-    message: "&f[&eEmpire&f] &7Leaving &a{name}"
-    actionbar: ""
-    title: ""
-    subtitle: ""
-  leave-abandoned:
-    message: "&f[&eEmpire&f] &7Leaving &cabandoned {name}{pvp}"
-    actionbar: ""
-    title: ""
-    subtitle: ""
-  rank:
-    leader: Leader
-    assistant: Assistant
-    senator: Senator
-    recruiter: Recruiter
-    member: Member
 plot:
   linked:
     message: ""
@@ -397,10 +339,6 @@ names:
       break: "Break"
       harvest: "Harvest"
       kill: "Kill"
-  empiremission:
-    stones: "500 Stones"
-    dirt: "1000 Dirt"
-    wheat: "5000 Wheat"
   plot: Plot
   buildstate:
     varied: "Varied"
@@ -479,24 +417,6 @@ names:
     nightvision: Nightvision Buff
     extra-claims: 10 Extra Claims
     extra-outpost: 1 Extra Outpost
-  empireperk:
-    resistance1: Resistance 1 Buff
-    resistance2: Resistance 2 Buff
-    strength1: Strength 1 Buff
-    strength2: Strength 2 Buff
-    regen1: Regen 1 Buff
-    regen2: Regen 2 Buff
-    speed1: Speed 1 Buff
-    speed2: Speed 2 Buff
-    haste1: Haste 1 Buff
-    haste2: Haste 2 Buff
-    nightvision: Nightvision Buff
-    extra-claims: 20 Extra Claims to all Members
-    extra-radius: 50 Block World Radius
-    flying: Flying in Empire World
-    time-control: Set time in Empire World
-    keep-inv: Keep Inventory on Death in Empire World
-    keep-exp: Keep Experience on Death in Empire World
   perkeffect:
     effectlocation:
       plot: For owner in plot
@@ -517,7 +437,6 @@ integration:
     relation-color:
       friendly: "&green&"
       allied: "&blue&"
-      empire: "&yellow&"
       other: "&white&"
     residents:
       rank: "&6{rank}:&r {residents}"
@@ -532,37 +451,25 @@ integration:
       entry: "&9{place}. &r&e{name}"
     top-ten-kingdoms:
       entry: "&9{place}. &r&e{name}"
-    top-ten-empires:
-      entry: "&9{place}. &r&e{name}"
 protection:
   state:
     use:
       residents: "&e&l(!) &r&e{use}&7 is limited to &eresidents&7 of &e{state} {name}&7."
       officers: "&e&l(!) &r&e{use}&7 is limited to &eofficer only &7."
-      trusted: "&e&l(!) &r&e{use}&7 is limited to &eallies or members of the same empire&7 of &e{state} {name}&7."
       ally: "&e&l(!) &r&e{use}&7 is limited to &eallies&7 of &e{state} {name}&7."
       private: "&e&l(!) &r&e{use}&7 is limited to the &ePlot owner&7."
       members: "&e&l(!) &r&e{use}&7 is limited to &ePlot members&7."
       friends: "&e&l(!) &r&e{use}&7 is limited to &ePlot members and the owner's friends&7."
-      empire:
-        trusted: "&e&l(!) &r&e{use}&7 is limited to &emembers&7 of &e{state} {name}&7."
-        landowner:
-          private: "&e&l(!) &r&e{use}&7 is limited to the &eCapital of {state} {name}&7."
       settlement:
         landowner:
           private: "&e&l(!) &r&e{use}&7 is limited to &eResidents of {state} {name}&7."
     build:
       residents: "&e&l(!) &r&7Only &eresidents&7 of &e{state} {name}&7 can build here."
       officers: "&e&l(!) &r&7Only &eofficers&7 of &e{state} {name}&7 can build here."
-      trusted: "&e&l(!) &r&7Only &eallies or members of the same empire&7 as &e{state} {name}&7 can build here."
       ally: "&e&l(!) &r&7Only &eallies&e7 of &e{state} {name}&7 can build here."
       private: "&e&l(!) &r&7Only the &ePlot owner&7 can build here."
       members: "&e&l(!) &r&7Only the &ePlot owner and members of the plot&7 can build here."
       friends: "&e&l(!) &r&7Only the &ePlot owner, their friends and member so the plot&7 can build here."
-      empire:
-        trusted: "&e&l(!) &r&7Only &members of {state} {name}&7 can build here."
-        landowner:
-          private: "&e&l(!) &r&7Only the &eCapital of {state} {name}&7 can build here."
       settlement:
         landowner:
           private: "&e&l(!) &r&7Only &eresidents of {state} {name}&7 can build here."
@@ -661,48 +568,26 @@ gui:
       back: Close
     overview:
       title: "&x&0&0&8&2&0&0&l{state} Information"
-      settlement:
-        no-empire: |-
-          &e{name}
-          &fBoard: &e{description}
-          &fState: &e{state}
-          &fLevel: &e{level}
-          &fResidents: &e{size}&f/&e{maxsize}
-          &fPrivacy: &e{access}
-          &fRecruitment: &e{jointype}
-          &fBank: &e{bank}
-          &fUpkeep: &e{upkeep}
-          &fJoin Fee: &e{joinfee}
-          &fDaily Tax: &e${tax}
-          &fAuction Tax: &e{auctiontax}%
-          &fTax Evasion Action: &e{taxdebtaction}
-          &fMissions: &e{missions}
-          &fLand: &e{land}&f/&e{maxland}{bonusclaims}
-          &fOutposts: &e{outposts}&f/&e{maxoutposts}
-          &f{chieftitle}: &e{chiefonline}{chief}
-          &fResidents:
-          &7{residents}
-        empire: |-
-          &e{name}
-          &fBoard: &e{description}
-          &fState: &e{state}
-          &fLevel: &e{level}
-          &fResidents: &e{size}&f/&e{maxsize}
-          &fEmpire: &e{empire}
-          &fPrivacy: &e{access}
-          &fRecruitment: &e{jointype}
-          &fBank: &e{bank}
-          &fUpkeep: &e{upkeep}
-          &fJoin Fee: &e{joinfee}
-          &fDaily Tax: &e${tax}
-          &fAuction Tax: &e{auctiontax}%
-          &fTax Evasion Action: &e{taxdebtaction}
-          &fMissions: &e{missions}
-          &fLand: &e{land}&f/&e{maxland}{bonusclaims}
-          &fOutposts: &e{outposts}&f/&e{maxoutposts}
-          &f{chieftitle}: &e{chiefonline}{chief}
-          &fResidents:
-          &7{residents}
+      settlement: |-
+        &e{name}
+        &fBoard: &e{description}
+        &fState: &e{state}
+        &fLevel: &e{level}
+        &fResidents: &e{size}&f/&e{maxsize}
+        &fPrivacy: &e{access}
+        &fRecruitment: &e{jointype}
+        &fBank: &e{bank}
+        &fUpkeep: &e{upkeep}
+        &fJoin Fee: &e{joinfee}
+        &fDaily Tax: &e${tax}
+        &fAuction Tax: &e{auctiontax}%
+        &fTax Evasion Action: &e{taxdebtaction}
+        &fMissions: &e{missions}
+        &fLand: &e{land}&f/&e{maxland}{bonusclaims}
+        &fOutposts: &e{outposts}&f/&e{maxoutposts}
+        &f{chieftitle}: &e{chiefonline}{chief}
+        &fResidents:
+        &7{residents}
       residents:
         rank: "&e&l{rank}:&r {residents}"
         separator: "&7, "
@@ -852,16 +737,6 @@ gui:
         &fState: {state} Level {level}
         &fPopulation: {size} Residents
         &fLand: {land} claimed
-        &fEmpire: {empire}
-        
-        &bClick for more options
-      empire: |-
-        &e{name}
-        
-        &fAlliance Date: {allydate}
-        &fState: {state} Level {level}
-        &fCapital: {capitalstate} {capital}
-        &fMembers: {size} Settlements
         
         &bClick for more options
     sort: |-
@@ -885,21 +760,6 @@ gui:
         &f{chieftitle}: &r&7{chief}
         &fResidents:
         &f{residents}
-      empire: |-
-        &e{name}
-        &fBoard: &e{description}
-        &fSymbol: &e{symbol}
-        &fEmpire: &eLevel {level}
-        &fMembers: &e{size}&f/&e{maxsize}
-        &fAccess: &e{access}
-        &fBank: &e${bank}
-        &fDaily Missions: &e{dailymissions}
-        &fFinished Missions: &e{missions}
-        &fCapital: &e{capitalstate}{capital}
-        &f{chiefempiretitle}: &r&7{chiefsettlementtitle} {chiefonline}{chief}
-        &f{specialresidents}
-        &fMembers:
-        &f{members}
       special-residents:
         rank: "&e&l{rank}:&r {residents}"
         separator: "&7, "
@@ -947,18 +807,12 @@ gui:
 
       &3&nSet who can teleport to your ''/s home''&r
       &fPublic - Everyone
-      &fTrusted - Residents, Empire, Allies
+      &fTrusted - Residents, Allies
       &fAllies - Residents and Allies
       &fResidents - Residents only
     access:
       public: |-
         &7Everyone can teleport to home
-      trusted: |-
-        &7Can teleport to {state} home:
-
-        &7- Allies
-        &7- Empire Members
-        &7- Residents
       ally: |-
         &7Can teleport to {state} home:
 
@@ -1219,7 +1073,6 @@ gui:
       
       {action}
     finished: "&aFinished&f "
-    only-in-empire: "&7In {name} Domain:&f "
     only-on-claim: "&7On {state} claim:&f "
     mission-entry: "&f- &e{title}"
     wait-for-missions: |-
@@ -1243,12 +1096,6 @@ gui:
         
         &7- Everyone
         &7to {type}
-      trusted: |-
-        &7Allows:
-
-        &7- {state} Residents
-        &7- Empire Members
-        &7to {type}.
       ally: |-
         &7Allows
 
@@ -1289,7 +1136,6 @@ gui:
       kill: "&eKill mobs"
       harvest: "&eHarvest materials"
     finished: "&aFinished &e"
-    only-in-empire: "&7Only in {name} Domain&e "
     only-on-claim: "&7Only on {state} claim&e "
     mission-entry: "&f{action} &e{title}"
     requirement:
@@ -1312,232 +1158,6 @@ gui:
         true: "&a&lYes"
         false: "&c&lNo"
     back: "&cBack To Settings"
-  empire:
-    access:
-      title: "&x&0&0&8&2&0&0&lSet Empire Access"
-      access:
-        open: |-
-          &7Everyone can teleport to home
-          &7Allows anyone to join without invitation
-        public: |-
-          &7Everyone can teleport to home
-          &7Requires an invite to join the {state}
-        ally: |-
-          &7Can teleport to {state} home:
-          &7- Allies
-          &7- Residents of all members
-        trusted: |-
-          &7Can teleport to {state} home:
-          &7- Residents of all members
-        private: |-
-          &7Can teleport to {state} home:
-          &7- Residents of the capital
-    build:
-      title: "&x&0&0&8&2&0&0&lManage {type}"
-      individual-state: "&7Plot {type} is set to &a&l{state}&7 but overridden!"
-      inherited-state: "&e&l{type} state &a&l{state}&e&l is default!"
-      build:
-        public: |-
-          &7Allows everyone to {type}
-        ally: |-
-          &7Allows:
-
-          &7- Members
-          &7- Allies
-          &7to {type}
-        officers: |-
-          &7Allows:
-          
-          &7- senators
-          &7to {type}
-        trusted: |-
-          &7Allows:
-
-          &7- All members
-          &7to {type}
-        private: |-
-          &7Allows:
-
-          &7- Only capital residents
-          &7to {type}
-    bank:
-      taxes: |-
-        &eCurrent Taxes
-        
-        &fMember taxes: &e${tax}
-
-    management:
-      title: "&x&0&0&8&2&0&0&lManage {state}"
-      memberlist: |-
-        &eView Members
-
-        &fInformation about the members
-        
-        {action}
-    perks:
-      actions:
-        weather:
-          clear: |-
-            &ePermanent Clear Weather.
-            &bClick to set to rain!
-          rain: |-
-            &ePermanent Rain.
-            &bClick to set to thunder storm!
-          thunder: |-
-            &ePermanent Thunder Storm.
-            &bClick to set to normal weather cycle!
-          normal: |-
-            &eNormal Weather cycle.
-            &bClick to set to permanent clear weather!
-        time:
-          morning: |-
-            &eMorning
-            &bClick to set to day (12:00)!
-          day: |-
-            &eDay
-            &bClick to set to dusk (18:00)!
-          dusk: |-
-            &eDusk
-            &bClick to set to night (24:00)!
-          night: |-
-            &eNight
-            &bClick to set to morning (6:00)!
-    settings:
-      title: "&x&0&0&8&2&0&0&lEmpire Settings"
-      home: |-
-        &e{state} Home
-        
-        &eClick to teleport
-        
-        &a➤ /e home
-      sethome: |-
-        &e{state} Home
-        
-        &bClick to teleport
-        &bShift-Click to set new /e home
-        
-        &a➤ /e home
-        &a➤ /e sethome
-
-      build: |-
-        &eBuild
-
-        &fSet who can build in
-        &fthe empire
-        
-        &fCurrent Settings: &e{build}
-        &bClick to change settings
-      access: |-
-        &eAccess
-
-        &fSet who can use your &e/e home
-        &fSet who can join the {state}
-        
-        &fCurrent Settings: &e{access}
-        
-        &bClick to change settings
-      perms: |-
-        &ePermissions
-
-        &fSet different usage rights
-        &fin your {state}
-        
-        &bClick to change settings
-      mode: |-
-        &eMode
-
-        &fToggle settings including
-        &fexplosions, mob spawning,
-        &fPvP and more!
-        
-        &bClick to change settings
-      ranks: |-
-        &eRanks
-
-        &fSet your {state}'s
-        &fpermissions by rank
-        
-        &bClick to change settings
-      perks: |-
-        &ePerks
-
-        &7Toggle your {state} perks
-        
-        &bClick to change settings
-      shop: |-
-        &eShop
-
-        &fUnlock new {state} perks
-        
-        &bClick to open shop
-      titles: |-
-        &eTitle
-
-        &fSet your {state} title
-        
-        &fYour Title: &e{title}
-        
-        {change}
-      titles-edit: |-
-        &eTitle
-
-        &fSet your {state} title
-        
-        &fYour Title: &e{title}
-        
-        &bClick to set title and edit titles
-      entry: |-
-        &e{name}
-        &fBoard: &e{description}
-        &fSymbol: &e{symbol}
-        &fEmpire: &eLevel {level}
-        &fMembers: &e{size}&f/&e{maxsize}
-        &fAccess: &e{access}
-        &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
-        &fUpkeep: &e${upkeep}
-        &fJoin Fee: &e${joinfee}
-        &fDaily Tax: &e${tax}
-        &fTax Evasion: &e{taxdebtaction}
-        &fDaily Missions: &e{dailymissions}
-        &fFinished Missions: &e{missions}
-        &fBonusclaims: &e{bonusclaims}
-        &fCapital: &e{capitalstate}{capital}
-        &f{chiefempiretitle}: &r&7{chiefsettlementtitle} {chiefonline}{chief}
-        &f{specialresidents}
-        &fMembers:
-        &f{members}
-      special-residents:
-        rank: "&e&l{rank}:&r {residents}"
-        separator: "&7, "
-        online: "&a"
-        offline: "&c"
-        entry: "&f{online}{name}"
-      members:
-        state: "&e{state}s:&r {members}"
-        entry: "&7{name}"
-        separator: "&8, "
-      states: |-
-        &eAccess Groups
-
-        &fAvailable settings:
-
-        &a➤ &fPrivate = &eCapital Residents
-        &a➤ &fOfficers = &eSenators & Assistant
-        &a➤ &fAlly = &eAllies & Member Residents
-        &a➤ &fTrusted = &eMember Residents
-        &a➤ &fPublic = &eEveryone
-    world:
-      title: "&x&0&0&8&2&0&0&lEmpire World"
-      world: |-
-        &eTeleport to World
-        
-        {action}
-      setworldspawn: |-
-        &bShift-Click to set world
-        &bspawn to your location
-      no-world: |-
-        &cWorld not unlocked yet!
   rank-perms:
     title: "&x&0&0&8&2&0&0&lRank Permissions"
     previous: "&7Previous page"
@@ -1835,12 +1455,6 @@ gui:
       build:
         public: |-
           &7Allows everyone to {type}
-        trusted: |-
-          &7Allows:
-
-          &7- {state} Residents
-          &7- Empire Members
-          &7to {type}
         ally: |-
           &7Allows:
 
@@ -1981,7 +1595,6 @@ gui:
       &a➤ &fOfficers = &e{state} Officers
       &a➤ &fResidents = &e{state} Residents
       &a➤ &fAlly = &eAllies & Residents
-      &a➤ &fTrusted = &eEmpire, Allies, & Residents
       &a➤ &fPublic = &eEveryone
   settings:
     title: "&x&0&0&8&2&0&0&lSettlement Settings"
@@ -2071,7 +1684,6 @@ gui:
 
       &d&nSet access to your '/s home'
       &fPublic - Everyone
-      &fTrusted - Residents, Empire, Allies
       &fAllies - Residents and Allies
       &fResidents - Residents only
       
@@ -2274,23 +1886,14 @@ gui:
   shop:
     title: "&x&0&0&8&2&0&0&lPerks Shop"
     entry:
-      settlement:
-        no-empire: |-
-          &e{name}
-          &fState: &e{state}
-          &fLevel: &e{level}
-          &fBank: &e{bank}
-          &fMissions: &e{missions}
-          &fLand: &e{land}&f/&e{maxland}{bonusclaims}
-          &fOutposts: &e{outposts}&f/&e{maxoutposts}
-        empire: |-
-          &e{name}
-          &fState: &e{state}
-          &fLevel: &e{level}
-          &fBank: &e{bank}
-          &fMissions: &e{missions}
-          &fLand: &e{land}&f/&e{maxland}{bonusclaims}
-          &fOutposts: &e{outposts}&f/&e{maxoutposts}
+      settlement: |-
+        &e{name}
+        &fState: &e{state}
+        &fLevel: &e{level}
+        &fBank: &e{bank}
+        &fMissions: &e{missions}
+        &fLand: &e{land}&f/&e{maxland}{bonusclaims}
+        &fOutposts: &e{outposts}&f/&e{maxoutposts}
       locked: |-
         &e{name}
 
@@ -2380,7 +1983,6 @@ gui:
     &a➤ &fResidents = &eResidents
     &a➤ &fOfficers = &eElder & Assistant
     &a➤ &fAlly = &eAllies & Residents
-    &a➤ &fTrusted = &eEmpire, Allies, & Residents
     &a➤ &fPublic = &eEveryone
   upgrade:
     title: "&x&0&0&8&2&0&0&lQuarter Master"
@@ -2483,18 +2085,6 @@ command:
           &fBonus claims: &e{bonus}
           &fJoin Date: &e{joindate}
           &fLast Login: &e{lastlogin}
-        in-empire: |-
-          &e&l{name}
-          &fEmpire: &e{empire}
-          &fEmpire Rank: &e{empirerank}
-          &fSettlement: &e{settlement}
-          &fRank: &e{title}
-          &fBalance: &e${balance}
-          &fTax: &e${tax}
-          &fMissions: &e{missionpoints}
-          &fBonus claims: &e{bonus}
-          &fJoin Date: &e{joindate}
-          &fLast Login: &e{lastlogin}
       description: Shows you information about a resident
     description: Resident management commands
   tax:
@@ -2555,7 +2145,6 @@ command:
         officers: only officers are allowed to build in claimed land
         public: allows everyone to build in your claimed land
         ally: allows your allies to build in your claimed land
-        trusted: allows your allies and fellow empire members to build
         private: allows you to build in your claimed land
         friends: allows your friends to build in your claimed land
       description: Sets the build mode of a plot
@@ -2729,7 +2318,7 @@ command:
       invite: "&r&6{state} {name} &r&7wants to ally!"
       accept-info: "[&6/s ally {name}](/s ally {name}) &r&7to ally them!"
       request-send: "&7Ally request sent to &r&6{name}"
-      description: Ally another settlement or empire
+      description: Ally another settlement
     allyclaim:
       enabled: "&7Allies &a&lcan now claim&7 close to your settlement!"
       disabled: "&7Allies can &cno longer&7 claim close to your settlement! Claims that are too close will be unclaimed in {grace} days."
@@ -2812,8 +2401,6 @@ command:
       success: "&aSet description of {state} to &r{description}"
       description: Set the description of a settlement
     disband:
-      capital-cant-disband: "&c(!) &r&7You cannot disband your {state} as long as it is the capital of an empire!"
-      wait-longer: "&c(!) &r&7You cannot disband your {state} yet as you just disbanded your empire! Wait a bit longer!"
       confirm: "&cPlease do [&e&l/{command}](/{command})&c to confirm the &r&e&ldisbanding&r&c of your settlement."
       success: "&e&l(!) &r&7Your {title} has deleted your {state}."
       description: Disbands the current settlement
@@ -2855,22 +2442,6 @@ command:
         &fPerks: &r&7{perks}
         &e{chieftitle}: &r&7{chiefonline}{chief}
         {residents}
-      empire: |-
-        &e&l{name}
-        &fBoard: &e{description}
-        &f{state}: &eLevel {level}
-        &fMembers: &e{size}&f/&e{maxsize}
-        &fAccess: &e{access}
-        &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
-        &fTax Evasion: &e{taxdebtaction}
-        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &fMissions: &e{missions}
-        &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &fPerks: &r&7{perks}
-        &e{chieftitle}: &r&7{chiefonline}{chief}
-        {residents}
       abandoned: |-
         &e&l{name}
         &cABANDONED!!!&r&c Falls in {abandonedcountdown}
@@ -2895,7 +2466,7 @@ command:
       footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
       previous: "<< Prev "
       next: " Next >>"
-      description: Shows the empire's bank history
+      description: Shows the settlement's bank history
     home:
       own-no-home: "&cYour settlement doesn't have a home. Is there a claim? Ask your {chief} to claim and/or set a home!"
       no-home: "&cThat {state} doesn't have a home!"
@@ -2976,14 +2547,12 @@ command:
       explanations:
         own-land: "&r &a- &6= your land"
         enemy: "&r &c- &6= other"
-        empire-land: "&r &2- &6= your Empire land"
         for-sale: "&r &a$ &6= for sale"
         player-plot: "&r &ep &6= player plot"
         linked-plot: "&r &6p &6= linked plots"
         embassy: "&r &ae &6= embassy"
         home: "&r &aH &6= home"
         outpost: "&r &eo &6= outpost"
-        empire: "&r &3- &6= empire member"
         ally: "&r &b- &6= ally"
         unclaimed: "&r &7- &6= unclaimed"
         current: "&r &7+ &6= current"
@@ -3113,7 +2682,6 @@ command:
       success: "&7Access changed to &6{access}"
       access:
         public: Everyone can teleport to home
-        trusted: Allows allies and empire members to teleport to home
         ally: Allows allies to teleport to home
         private: Allows only members to teleport to home
       description: Sets the access level for the settlement
@@ -3144,7 +2712,7 @@ command:
       cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
       success: "&e&l(!) &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
       rank:
-        assistant: Allows active,disband,transfer,rename,lock and plot admin,empire leave
+        assistant: Allows active,disband,transfer,rename,lock and plot admin
         elder: Allows mode,claiming,invite,bank,plot,setrank
         builder: Allows resident to build on elder and builder only mode
         recruiter: Allows resident to invite players
@@ -3198,22 +2766,6 @@ command:
         &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
         &fTax Evasion: &e{taxdebtaction}
         &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &6Outposts: &r&7{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
-        &fMissions: &e{missions}
-        &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
-        &fPerks: &r&7{perks}
-        &e{chieftitle}: &r&7{chiefonline}{chief}
-        &e{residents}
-      empire: |-
-        &e&l{name}
-        &fBoard: &e{description}
-        &f{state}: &eLevel {level}
-        &fResidents: &e{size}&f/&e{maxsize}
-        &fAccess: &e{access}
-        &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e${joinfee}
-        &fTax Evasion: &e{taxdebtaction}
-        &fLand: &e{land}&r&e/&r&7{maxland}{bonusclaims} | &fOutposts: &e{outposts}&r&e/&r&7{maxoutposts}{bonusoutposts}
         &fMissions: &e{missions}
         &fMode: &r&7PvP: &r&e{pvp}&r&7 | Hostile Mobspawning: &r&e{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | Firespread: &r&e{firespread}&r&7 | Explosions: &r&e{explosions}&r&7 | Buff : &r&e{buff}&r&7
         &fPerks: &r&7{perks}
@@ -3381,17 +2933,17 @@ command:
       description: Add/set/remove finished Mission Points of Settlements/Residents
       success: "&aSUCCESS: {operation} {amount} to {name}"
     mission:
-      description: Add/set/remove finished mission count of settlements/empires
+      description: Add/set/remove finished mission count of settlements
       success: "&aSUCCESS: {operation} {amount} to {name}"
     distributemission:
       description: Distribute new missions to a settlement/resident
       success: "&aSUCCESS: {name} now has {amount} missions"
       none-distributed: "&cUnable to give {name} new missions. Does the level have missions?"
     distributenewmissions:
-      description: Distribute new missions to all empire/settlement members
+      description: Distribute new missions to all settlement members
       success: "&aSUCCESS: Distributed new missions to all {state} {name} members"
     upkeep:
-      description: Trigger the entire upkeep process for an empire or settlement
+      description: Trigger the entire upkeep process for a settlement
       success: "&aSUCCESS: Ran upkeep for {state} {name}"
     world:
       description: World admin commands
@@ -3412,605 +2964,3 @@ command:
     reload:
       description: Reload some plugin functionality
       success: "&aConfigs reloaded. Some values might require a restart for them to take effect!"
-  empire:
-    description: Commands for empire management
-    group:
-      manage-member:
-        description: |-
-          &9Manage Members
-
-          &9- Send kick notices
-          &9- Set ranks
-          &9- Set titles
-          &9- Set tax evasion
-      manage-allies:
-        description: |-
-          &9Manage Allies
-
-          &9- Set nearby Claim
-      admin-allies:
-        description: |-
-          &9Administrative Allies
-
-          &9- Create new ally
-          &9- Break an ally
-      manage-ranks:
-        description: "Manage Ranks"
-      manage-settings:
-        description: "Manage Settings"
-      manage-notes:
-        description: |-
-          &9Manage Minor Settings
-
-          &9- Change Home Location
-          &9- Change rules
-          &9- Set Discord Link
-      manage-bank:
-        description: |-
-          &9Manage Bank
-
-          &9- Set Taxes
-      use-bank:
-        description: |-
-          &9Use Bank
-
-          &9- Use Storage
-          &9- See History
-      use-outpost:
-        description: "Use Outpost Teleports"
-      manage-outpost:
-        description: "Manage Outposts"
-      manage-shop:
-        description: "Buy in the Shop"
-    allies:
-      head: "&a⊱&m━━━━&r&6Allies&a&m━━━━&a⊰"
-      entry: "&a{state} {name}"
-      separator: "&7, "
-      description: lists all your allies
-    ally:
-      cant-ally-yourself: "&cYou can't ally yourself!"
-      already-allied: "&cYou are already allied to {state} &6{name}"
-      now-allied-to: "&7You are now allied to {state} &6{name}"
-      invite: "&r&6{state} {name} &r&7wants to ally!"
-      accept-info: "[&6/e ally {name}](/e ally {name}) &r&7to ally them!"
-      request-send: "&7Ally request sent to &r&6{name}"
-      description: Ally another settlement or empire
-    allyclaim:
-      enabled: "&7Allies &a&lcan now claim&7 close to your empire!"
-      disabled: "&7Allies can &cno longer&7 claim close to your empire! Claims that are too close will be unclaimed in {grace} days."
-      description: Allows toggling of close claims of other empire
-    balance:
-      balance: "&2&lEmpire Balance: &r&7{amount}"
-      description: Check the balance of the bank
-    bank:
-      withdraw:
-        not-enough-money: "&cNot enough money in the bank to withdraw &r&6{amount}&r&c!"
-        withdrawn: "&e&l{title} &r&e{name} &r&7withdrew &6{amount}&r&7 from the bank!"
-        description: Withdraw money from the bank
-      deposit:
-        deposited: "&e&l{title} &r&e{name} &r&7deposited &6{amount}&r&7 into the bank!"
-        description: Deposit money into the bank
-      description: Commands to interact with the settlement bank
-      balance:
-        balance: "&2&lEmpire Balance: &r&7{amount}"
-        description: Check the balance of the bank
-      history:
-        head: "&a⊱&m━━━━&r&6Bank History [{page}/{maxpage}]&a&m━━━━&a⊰"
-        entry: "&e• [&e&l{title} &r&e{name} - &r&7{action} - &6${amount}](&eAt {timestamp})"
-        footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
-        previous: "<< Prev "
-        next: " Next >>"
-        description: Show the bank's history
-    banish:
-      cant-banish-yourself: "&cYou can't banish yourself!"
-      cant-banish-leader: "&cYou can't banish the leader!"
-      cant-banish-capital: "&cYou can't banish the capital!"
-      cant-banish: "&cYou can't banish &f{title} &f{name}!"
-      already-banished: "&c{type} &f{name}&c is already banished!"
-      banished: "&7{type} &6{name}&7 has been &cbanished &7from your empire world!"
-      description: Add an entry to the banish list
-    banished:
-      head: "&a⊱&m━━━━&r&6Banished&a&m━━━━&a⊰"
-      entry: "&c{title} &c{name}"
-      separator: "&7, "
-      description: List all banished entries
-    unbanish:
-      not-banished: "&f{name}&c is not banished?"
-      unbanished: "&6{target}&7 is no longer &cbanished &7from your empire world!"
-      description: Remove an entry from the banish list
-    build:
-      success: "&aSet {type} state of {flagable} to {state}"
-      states:
-        private: only residents of members can build in empire world
-        public: allows everyone to build in empire world
-        ally: allows member allies to build in empire world
-      description: Set who can build in your empire world
-      permission:
-        description: Allows changing of the empire world build setting
-    chestshop:
-      admin:
-        permission:
-          description: Allows creation of and access to empire shops
-    create:
-      success: |-
-        &7
-        &a&l               Congratulations
-        &r&7        You have created a new empire!
-        &r&7  &6${cost}&7 have been deducted from your {capitalstate} bank!
-        &r&7
-        &r&7   Make sure to deposit money into your [&a/e bank](/e bank)&7
-        &r&7                  for the [&a/e upkeep](/e upkeep)
-        &7
-      broadcast: "&e{player} has made a empire called {name}!"
-      description: Create a new empire.
-    claim:
-      cant-claim-more: "&c(!) &r&7Your empire can only claim &e{max} chunks of land!"
-      no-land-around: "&c(!) &r&7Your claim must be connected to an existing empire claim!"
-      success: "&a&lSUCCESS &r&e{player} &7has claimed land for your empire at {x},{z}!"
-      new-upkeep: "&aYour new upkeep is now &e${upkeep}&a (${upkeepperclaim} per claim in this world) [&e/e upkeep](/s upkeep)"
-      home-set: "&7{state} home was set at &r&6{x}&r&7,&r&6{y}&r&7,&r&6{z}"
-      radius-too-large: "&c(!) &r&7Can't use an radius of {radius} for claiming as the maximum is {max}!"
-      description: Claim a chunk of land
-      "<radius>":
-        description: "Claims all the chunks in the stated radius (max is 5)"
-      radius:
-        description: "Claims all the chunks in the stated radius (max is 5)"
-      coords:
-        description: "Claims a chunk at specific coordinates"
-    setdescription:
-      success: "&aSet description of your empire to &r{description}"
-      description: Set the description of an empire
-    disband:
-      confirm: "&cPlease do [&e&l/{command}](/{command})&c to confirm the &r&e&ldisbanding&r&c of your empire."
-      success: "&e&l(!) &r&7Your {chieftitle} {chief} has deleted your Empire."
-      description: Disbands the current empire
-    discord:
-      current: "&eEmpire Discord: [&b{discordlink}](open_url={{discordlink})"
-      none: "&cNo Empire Discord setup."
-      setup: "&7Use [&e/e discord set](suggest_command=/s discord set ) to set it!"
-      set:
-        success: "&7Set {state} Discord invite to [&b{discordlink}](open_url={{discordlink})"
-        removed: "&7Removed {state} Discord invite. Old link: [&b{discordlink}](open_url={{discordlink})"
-        description: Allows setting of the discord link
-    donate:
-      donated: "&e{name} &r&7donated &6{amount}&r&7 to your empire bank!"
-      success: "&7Donated &6{amount}&r&7 to the bank of &eEmpire {name}&7!"
-      description: Donate money to a certain empire
-    here:
-      general: |-
-        &e&l{name}
-        &fBoard: &e{description}
-        &fEmpire: &eLevel {level} | &a&lSymbol &e{symbol}
-        &fMembers: &e{size}&f/&e{maxsize}
-        &fAccess: &e{access}
-        &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e{joinfee}
-        &fTax Evasion: &e{taxdebtaction}
-        &fDaily Missions: &e{dailymissions}
-        &fFinished Missions: &e{missions}
-        &fBonus Claims: &e{bonus} | &fBonus Outposts: &e{bonusoutposts}
-        &fMode: &ePvP: &r&e{pvp}&e | Hostile Mobspawning: &r&e{hostilespawning}&e | Passive Mobspawning: &r&e{passivespawning}&e | Firespread: &r&e{firespread}&e | Explosions: &r&e{explosions}&e | Buff : &r&e{buff}&e
-        &fPerks: &e{perks}
-        &fCapital &e{capitalstate} {capital}
-        &f{chiefempiretitle}: &e{chiefsettlementtitle} {chiefonline}{chief}
-        {specialresidents}
-        &e&lMembers:
-        &r&7{members}
-      abandoned: |-
-        &e&l{name}
-        &cABANDONED!!!&r&c Falls in {abandonedcountdown}
-        &fBoard: &e{description}
-        &fState: &eEmpire | &fSymbol &r&7{symbol}
-        &fAccess: &e{access}
-      not-in-empire: "&cYou are not currently in an empire world!"
-      description: "Show which empire world you are in"
-      special-residents:
-        rank: "&e&l{rank}:&r {residents}"
-        separator: "&7, "
-        online: "&a"
-        offline: "&c"
-        entry: "&f{online}{name}"
-      members:
-        state: "&e{state}:&r {members}"
-        entry: "&7{name}"
-        separator: "&8, "
-    home:
-      own-no-home: "&cYour empire doesn't have a home ask your {chief} to set one!"
-      no-home: "&cThe empire doesn't have a home !"
-      success: "&a&lTeleported to home of {state} {name}"
-      success-title:
-        title: "&2&lSuccess"
-        subtitle: "&fYou have been teleported!"
-        actionbar: ""
-      fail-title:
-        title: "&c&lFailed"
-        subtitle: "&fUnable to teleport!"
-        actionbar: ""
-      no-access: "&cYou don't have access to teleport to the home of that empire!"
-      description: "Teleport to an empire's home"
-    invite:
-      already-in-empire: "&c{name} is already in an Empire"
-      joinfee: "&7Fee to join is &e{amount}!"
-      received: "&e&l(!) &r&7Invite received from Empire {name}! Click or type [&e/e join {name}](suggest_command=/e join {name}) &7to join."
-      alert: "&e&l(!) &r&e{name}&7 has been invited to the empire."
-      description: "Invite someone to join your empire"
-    join:
-      not-enough-money: "&c(!) &r&7Your {state} does not have enough money to pay the join fee of {amount}!"
-      money-paid: "&7Paid &e{amount}&7 to join!"
-      no-invite: "&c(!) &r&7Your {state} does not have an invite for this empire."
-      success: "&a&lSUCCESS &r&7Your {state} has joined Empire {name}."
-      new-member: "&e&l(!) &r&e{state} {name}&7 has joined the empire!"
-      is-full: "&e&l(!) &r&7The Empire {name} is full."
-      description: "Join an empire"
-    kick:
-      cant-kick-yourself: "&cYou cannot kick your own settlement!"
-      cant-kick-capital: "&cYou cannot kick the capital&c!"
-      not-in-current: "&c{name} is not in your Empire!"
-      kicked-alert: "&a&l(!) &r&e{state} {name}&7 has been kicked from the empire."
-      description: "Kick a player from your empire"
-    leave:
-      cant-leave-own: "&c(!) &r&7You cannot leave your own empire. You must delete it."
-      confirm: "&eConfirm that you want to leave by running the command again in the next &c{time} seconds&e!"
-      success: "&a&lSUCCESS &r&7Your {state} has left the empire  {empire}."
-      alert: "&e&l(!) &r&e{state} {name}&7 has left the empire."
-      description: "Leave your current empire"
-    list:
-      description: "List empire"
-      head: "&a⊱&m━━━━&r&6Empires [{page}/{maxpage}]&a&m━━━━&a⊰"
-      entry: "&e• {place}. [&r&e{name} &r&7{access}](&8Capital: &f{capitalstate}{capital}\n&8Leader: &f{chieftitle} {chief}\n&8Members: &f{size} members\n&8Recruitment: {jointype}\n&f{description})"
-      entry-abandoned: "&e• {place}. [&r&cABANDONED!!! {name}](&cABANDONED!!!\n&cFalls in {abandonedcountdown})"
-      entry-hover:
-        - "{#87ceeb}Capital: &f{capitalstate}{capital}"
-        - "{#87ceeb}Leader: &f{chieftitle} {chief}"
-        - "{#87ceeb}Members: &f{size} Members"
-        - "{#87ceeb}Recruitment: &f{jointype}"
-        - ""
-        - "&f{description}"
-        - ""
-        - "&aClick to see more!"
-      footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
-      previous: "<< Prev "
-      next: " Next >>"
-    materials:
-      description: "View the materials you need to upgrade your empire"
-    missions:
-      wait-for-missions: "&cYou do not have any missions from your empire yet. Wait for the next distribution!"
-      description: "View missions available to your empire"
-      redistribute:
-        success: "&eGot {amount} new missions for ${price}"
-        fail: "&cUnable to distribute new missions. Please complete your started ones!"
-        description: "Get new new missions for a price"
-    mode:
-      modes: "&cAvailable modes: {modes}"
-      success: "&7Empire mode &6{mode}&7 set to &6{value}"
-      description: "Changes settings for your empire world"
-    rename:
-      success: "&7Empire has been renamed to &6{name}"
-      rename-in-progress: "&c(!) &r&7Renaming of empire is already in progress!"
-      rename-on-cooldown: "&c(!) &r&7You have to wait at least {cooldown} seconds between each rename!"
-      cant-rename: "&c(!) &r&7Can't rename empire! Please contact an admin!"
-      description: "Renames the current empire to something else"
-    regen:
-      success: "&7Empire world has been regenerated!"
-      not-possible: "&cRegenerating an empire world is not possible."
-      in-progress: "&c(!) &r&7Regeneration of empire world is already in progress!"
-      no-longer-possible: "&c(!) &r&7You can only regenerate the world in the first {duration} minutes after creation!"
-      cant-regen: "&c(!) &r&7Can't regenerate empire! Please contact an admin!"
-      description: "Regenerates the empire empire world"
-    map:
-      head: "&a⊱&m━━━━━━━━━━━━━━━&r&6Empire Map&a&m━━━━━━━━━━━━━━&a⊰"
-      explanations:
-        own-land: "&r &a- &6= your land"
-        enemy: "&r &c- &6= other"
-        empire-land: "&r &2- &6= your Empire land"
-        for-sale: "&r &a$ &6= for sale"
-        player-plot: "&r &ep &6= player plot"
-        linked-plot: "&r &6p &6= linked plots"
-        embassy: "&r &ae &6= embassy"
-        home: "&r &aH &6= home"
-        outpost: "&r &eo &6= outpost"
-        empire: "&r &3- &6= empire member"
-        ally: "&r &b- &6= ally"
-        unclaimed: "&r &7- &6= unclaimed"
-        current: "&r &7+ &6= current"
-      not-for-sale: "Not for sale"
-      hover:
-        info: "&7{state} &f{name}"
-        click-to-claim: |-
-          &bClick to claim &f{x}&9/&f{z}
-          &bfor your Empire
-        click-to-unclaim: "&bClick to unclaim &f{x}&9/&f{z}"
-        linked: "&7Linked to &f{linked}&7 other plots. (ID: {linkgroup})"
-        click-to-link: |-
-          &bClick to link &f{x}&9/&f{z}
-          &bto your current plot
-        click-to-unlink: |-
-          &bClick to unlink &f{x}&9/&f{z}
-          &bfrom your current plot
-        own-plot: Your plot
-        plot: "Plot Owner: &7{owner}"
-        embassy: "Embassy Owner: &7{owner}"
-        for-sale: "For sale: &7${price} &fTax: &7${tax}"
-        outpost: "Outpost: &7{name}"
-        home: Home
-        abandoned: |-
-          &cABANDONED!!!
-          &c Falls in {countdown}
-      description: "Shows you a map of the surrounding chunks"
-    memberlist:
-      head: "&a⊱&m━━━━&r&6Members&a&m━━━━&a⊰"
-      entry: "&e• [&e&l{state} &r&e{name} &r&7{access}](&8{chieftitle}: &f{chief}\n&8Members: &f{size} players\n&f{description})"
-      description: "List all empire members"
-    officer:
-      description: "Members that should have officer build access"
-    ranks:
-      description: "Manage rank permissions"
-      permission:
-        name: "Manage ranks"
-      show:
-        description: "Show all permissions that a certain rank has"
-        head: "&a⊱&m━━━━&r&6{rank} Perms&r&8&l--------"
-        entry: "&e• &f[{color}{permission}](hover={{color}{value}\n&9Click to set {opposite}} run_command=/s perms set {rank} {permission} {opposite})"
-        footer: "&a⊱&m━━━━&r&6/s perms&a&m━━━━&a⊰" # TODO: Pagination
-      set:
-        description: "Set the permissions of a rank"
-        cant-edit-perms-permission: "&cYou can't edit the perms managing permission from the chief rank!"
-        cant-edit-permission: "&cYou can't edit the permission &e{permission}&c as you don't have it yourself!"
-        success: "&aSet permission &e{permission}&a to &e{value}&a for rank &a{rank}&a!"
-      unset:
-        description: "Unset the permissions of a rank"
-        success: "&aUnset permission &e{permission}&a for rank &a{rank}&a! Is now &a{value}!"
-        success-all: "&aUnset all permissions for rank &a{rank}&a!"
-      reset:
-        description: "Reset all permissions to the default values"
-    perks:
-      toggle:
-        active: "&6{perk} &7has been &a&lactivated"
-        deactived: "&6{perk} &7has been &cdeactivated"
-        not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
-        no-effects: "&cPerk &f{perk} &chas no effects that can be toggled!"
-        description: "Toggle perks"
-        permission:
-          description: "Allows toggling of perks"
-      description: "Manage unlocked perks"
-      permission:
-        description: "Allows viewing of perks"
-    plot:
-      admin:
-        description: "Allows administrating of empire plots"
-        permission:
-          name: Plot Manager
-    shop:
-      description: Purchase perks
-      unlock:
-        success: "&6{perk} &7has been unlocked!"
-        level-too-low: "&cCan't unlock &f{perk}&c! It requires a level {level} {state}!"
-        not-possible: "&f{perk} &ccan't be unlocked! {reason}"
-        missing-items: "&cMissing Items:"
-        already-unlocked: "&cPerk &f{perk} &cis already unlocked"
-        entry: "&6{amount} &e{material}"
-        description: Unlock perks
-        permission:
-          description: Buy perks in the shop
-      repeat:
-        success: "&6{perk} &7has been repeated!"
-        level-too-low: "&cCan't repeat &f{perk}&c! It requires a level {level} {state}!"
-        not-possible: "&f{perk} &ccan't be repeated! {reason}"
-        missing-items: "&cMissing Items:"
-        entry: "&6{amount} &e{material}"
-        not-unlocked: "&cPerk &f{perk} &cis not unlocked!"
-        already-repeated: "&cPerk &f{perk} &cis already been repeated {amount} times!"
-        description: Repeat perks
-        permission:
-          description: Buy perks again in the shop
-    setaccess:
-      success: "&7Access changed to &6{access}"
-      access:
-        open: Allows everyone to join without an invitation
-        public: Everyone can teleport to home but requires invitation to join
-        ally: Allows allies to teleport to home
-        trusted: Allows empire members to teleport to home
-        private: Allows only capital members to teleport to home
-      description: Sets the access level for the empire
-    recruitment:
-      success: "&7Recruitment changed to &6{jointype}"
-      jointype:
-        invite: Invitation is required to join
-        anyone: Allows everyone to join without an invitation
-        apply: Application is required to join
-      description: Sets the recruitment type for the settlement
-    settings:
-      description: Show settings GUI
-    sethome:
-      success: "&7Leader &f{title} {name} &r&7 has set the empire home at &r&6{x}&r&7,&r&6{y}&r&7,&r&6{z}"
-      description: Sets the home for the empire
-    setworldspawn:
-      success: "&7Leader &f{title} {name} &r&7 has set the spawn of the empire world at &r&6{x}&r&7,&r&6{y}&r&7,&r&6{z}"
-      description: Sets the spawn of the empire world
-    joinfee:
-      description: Get and set the fee a settlement needs to pay to join
-      current: "&7Your empire's join fee is &e{amount}&7!"
-      set:
-        success: "&e&l(!) &r&7Empire join fee was set &e{amount}&7!"
-        description: Sets the fee a settlement needs to pay to join
-    senators:
-      description: Show all empire senators
-      head: "&a⊱&m━━━━&r&6Senators&a&m━━━━&a⊰"
-      separator: "&7, "
-      online: "&a"
-      offline: "&c"
-      entry: "&e• [&7{title} &r{online}{name}](&8{state} &f{settlement})"
-    setrank:
-      invalid-rank: "&c(!) &r&c{rank} &7is not a valid rank!"
-      cant-set-chief: "&cPlease use &6&c/{base} transfer <player>&r&c to transfer ownership of the empire"
-      cant-set-higher: "&cYou cannot set the rank of &6{rank} or higher&c!"
-      success: "&e&l(!) &r&e{title} {setter} &7set &e{target}s &7rank to &e{rank}&7!"
-      rank:
-        assistant: Allows disband, transfer, rename, perks, lock admin
-        senator: Allows changing description, allies, plots, modes and settings
-        recruiter: Allows inviting and kicking
-        member: Default rank for members of this empire
-      rank-usage:
-        head: |-
-          &a⊱&m━━━━&r&6{name} Commands&a&m━━━━&a⊰
-          [&b{usage}](hover=&9Click to add it to your input suggest_command={{usage})
-        entry: "&e• [&e{rank}](hover=&9Click to add it to your input suggest_command={{usage}) &7- {description}"
-        footer: "&aNote: Officers = {officerranks}"
-      description: Sets the rank of an empire resident
-    setsymbol:
-      description: "Set your empire's symbol"
-      success: "&bSet empire symbol to &e{symbol}"
-    show:
-      general: |-
-        &e&l{name}
-        &fBoard: &e{description}
-        &fEmpire: &eLevel {level} | &a&lSymbol &e{symbol}
-        &fMembers: &e{size}&f/&e{maxsize}
-        &fAccess: &e{access}
-        &fRecruitment: &e{jointype}
-        &fBank: &e${bank}
-        &fUpkeep: &e{upkeep} | &fDaily tax: &e${tax} | &fJoin fee: &e{joinfee}
-        &fTax Evasion: &e{taxdebtaction}
-        &fDaily Missions: &e{dailymissions}
-        &fFinished Missions: &e{missions}
-        &fBonus Claims: &e{bonus} | &fBonus Outposts: &e{bonusoutposts}
-        &fMode: &ePvP: &r&e{pvp}&e | Hostile Mobspawning: &r&e{hostilespawning}&e | Passive Mobspawning: &r&e{passivespawning}&e | Firespread: &r&e{firespread}&e | Explosions: &r&e{explosions}&e | Buff : &r&e{buff}&e
-        &fPerks: &e{perks}
-        &fCapital &e{capitalstate} {capital}
-        &f{chiefempiretitle}: &e{chiefsettlementtitle} {chiefonline}{chief}
-        {specialresidents}
-        &e&lMembers:
-        &r&7{members}
-      special-residents:
-        rank: "&e&l{rank}:&r {residents}"
-        separator: "&7, "
-        online: "&a"
-        offline: "&c"
-        entry: "&f{online}{name}"
-      members:
-        state: "&e{state}:&r {members}"
-        entry: "&7{name}"
-        separator: "&8, "
-      abandoned: |-
-        &e&l{name}
-        &cABANDONED!!!&r&c Falls in {abandonedcountdown}
-        &fBoard: &e{description}
-        &fState: &eEmpire | &fSymbol &r&7{symbol}
-        &fAccess: &e{access}
-      bonus-claims: " Bonus: {amount}"
-      description: Shows information on an empire
-    tax:
-      current: "&7Your empire's tax is &e{amount}&7!"
-      description: Empire taxes
-      set:
-        success: "&e&l(!) &r&7Daily empire tax was set &e{amount}&7!"
-        above-max: "&c(!) &cMax tax amount is &e{max}&c!"
-        below-zero: "&c(!) &cTax amount cannot be negative!"
-        description: Sets the tax a settlement needs to pay each day he is in the empire
-      action:
-        success: "&e&lALERT &r&7Tax debt action was set to &e{action}&7!"
-        already-set: "&cThe action is already set to &e{action}&c!"
-        description: Sets the action for when a settlement can't pay the tax
-      exempt:
-        description: Exempts a resident from having to pay the plot taxes in this empire
-    title:
-      description: "Set your title"
-      success:
-        default: "&7Title of &e{name}&7 set to &e{title}&7!"
-      invalid-title: "&c{title} is not a title available to you!"
-      usage:
-        entry: "&e• [&e{usage}](suggest_command={{usage})"
-    titles:
-      description: "Manage empire titles"
-      list:
-        description: "List all available titles"
-        head: "&a⊱&m━━━━&r&6Empire Titles&a&m━━━━&a⊰"
-        rank: "&6{rank}:&r {titles}"
-        separator: "&7, "
-        entry: "&7{title}"
-        default-entry: "&7[{title}]"
-        footer: "&7Use &e/s titles add|remove&7 to edit titles!"
-      add:
-        description: "Add new titles"
-        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
-        too-many: "&cThe rank &e{rank}&c already has the maximum amount of titles ({max}) set!"
-        too-long: "&e{input}&c is too long! Titles have to be shorter than 16 characters!"
-        invalid-characters: "&e{input}&c contains invalid characters. Only letters, numbers, minus and underscores are allowed!"
-        prohibited-words: "&e{input}&c contains prohibited words!"
-        success: "&e{title}&7 was added to rank &e{rank}"
-        already-exists: "&e{rank}&c already has a title with the name &e{input}&c defined!"
-      set:
-        description: "Set the rank's default title"
-        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
-        too-many: "&cThe rank &e{rank}&c already has the maximum amount of titles ({max}) set!"
-        too-long: "&e{input}&c is too long! Titles have to be shorter than 16 characters!"
-        invalid-characters: "&e{input}&c contains invalid characters. Only letters, numbers, minus and underscores are allowed!"
-        prohibited-words: "&e{input}&c contains prohibited words!"
-        success: "&e{title}&7 was set as the default title of rank &e{rank}"
-        success-new: "&7Added title &e{title}&7 and set as the default of rank &e{rank}"
-      remove:
-        description: "Remove titles"
-        cant-edit-higher: "&cYou cannot edit titles of ranks above your own!"
-        success: "&e{title}&7 was removed from rank &e{rank}"
-        doesnt-exist: "&e{rank}&c has no title with the name &e{input}&c defined!"
-    transfer:
-      success: "&e&l(!) &r&e{setter} &7set &e{target}s &7rank to &e{rank}&7!"
-      already-capital: "&cYour settlement is already the capital."
-      max-level-kingdom-required: "&cThe settlement needs to be a Kingdom with level 10 to be the capital of an empire!"
-      description: Transfers leadership of your empire
-    unally:
-      cant-unally-yourself: "&cYou can't un-ally yourself!"
-      not-allied: "&cYou are not allied to {state} &r&6{name}"
-      success: "&7Ally &6{name} &7removed!"
-      description: Remove an ally
-    unclaim:
-      home: "&cThis land is your home, you have to move it with &7/{base} sethome&c before unclaiming this land."
-      confirm: "&cPlease do [&e&l/{command}](/{command})&c in the next minute to confirm the &e&lunclaiming&c of [&e&l{amount}&c chunks](&fChunks that will be unclaimed:\n&7{claims}) and [&5{portal-amount} &cportals](&fPortals that will be removed:\n&7{portals})."
-      success: "&a&lSUCCESS &r&e{player} &7has unclaimed land at &f{x}-{z}!"
-      new-upkeep: "&aYour new upkeep is now &e${upkeep}&a (${upkeepperclaim} per claim in this world) [&e/s upkeep](/s upkeep)"
-      description: Unclaim land which is claimed by your empire
-      "<radius>":
-        description: "Unclaims all the chunks in the stated radius (max is 5)"
-      radius:
-        description: "Unclaims all the chunks in the stated radius (max is 5)"
-      coords:
-        description: "Unclaims a chunk at specific coordinates"
-    upgrade:
-      not-possible: "&cThe empire cannot be leveled up! {reason}"
-      max-level-reached: "&r&cMax Level Reached."
-      missing-items: "&cMissing Items:"
-      entry: "&6{amount} &e{material}"
-      description: Manually trigger an empire upgrade
-    upkeep:
-      info: |-
-        &a&m━━━━↠&r &bUpkeep &a&m↞━━━━
-        &x&8&7&C&E&E&B&lTotal daily upkeep cost: &a${global_cost} &b(&e{global_total} claims&b)
-        &x&8&7&C&E&E&B&lDays of upkeep in bank: &6{afford} days
-        &x&8&7&C&E&E&B&lTime until next Upkeep: &2{time}
-      afford-infinite: "infinite"
-      description: Show empire upkeep information
-    world:
-      success: "&a&lTeleported to world of {state} {name}"
-      success-title:
-        title: "&2&lSuccess"
-        subtitle: "&fYou have been teleported!"
-        actionbar: ""
-      fail-title:
-        title: "&c&lFailed"
-        subtitle: "&fUnable to teleport!"
-        actionbar: ""
-      no-access: "&cYou don't have access to teleport to the world of that empire!"
-      description: Teleport to an empire's world
-    perms:
-      flags: "&cAvailable flags: {flags}"
-      states: "&cAvailable states: {states}"
-      success: "&7State of &6{flag} &7set to &6{state}"
-      success-all: "&7Set all flags to &6{state}"
-      description: Set who can use stuff in your empire world
-      all:
-        description: Sets all flags to a certain state
-  warningtoggle:
-    description: Toggle the warning when building near settlements
-    enabled: "&7You will now receive close building warnings for {state} {settlement} again!"
-    disabled: "&6For the next {time} minutes you will not receive close building warnings for {state} {settlement}!"

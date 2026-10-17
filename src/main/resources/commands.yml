@@ -36,7 +36,7 @@ help-order:
     - s active
     - s ally
     - s allyclaim
-    - s banish <player>|s:<settlement>|e:<empire>
+    - s banish <player>|s:<settlement>
     - s build
     - s claim
     - s disband
@@ -57,7 +57,7 @@ help-order:
     - s tax set
     - s titles
     - s unally
-    - s unbanish <player>|s:<settlement>|e:<empire>
+    - s unbanish <player>|s:<settlement>
     - s unclaim
     - s perms
     outpost:
@@ -75,82 +75,14 @@ help-order:
     - s tax set
     - s joinfee set
     banish:
-    - s banish <player>|s:<settlement>|e:<empire>
-    - s unbanish <player>|s:<settlement>|e:<empire>
+    - s banish <player>|s:<settlement>
+    - s unbanish <player>|s:<settlement>
     - s banished
     ally:
     - s ally
     - s unally
     - s allies
     - s allyclaim
-  empire:
-    general:
-    - e allies
-    - e balance
-    - e bank
-    - e banished
-    - e create
-    - e upgrade
-    - e donate
-    - e here
-    - e home
-    - e join
-    - e joinfee
-    - e list
-    - e memberlist
-    - e rules
-    - e show
-    - e tax
-    - e upkeep
-    - e chat
-    - e lock
-    - e unlock
-    - # Plot
-    - e plot
-    # Officer/Settings
-    - e access
-    - e ally
-    - e banish <player>|s:<settlement>|e:<empire>
-    - e build
-    - e disband
-    - e invite
-    - e joinfee set
-    - e kick
-    - e kicknotice
-    - e leave
-    - e mail
-    - e mode
-    - e perks
-    - e perms
-    - e regen
-    - e rename
-    - e setdescription
-    - e sethome
-    - e setrank
-    - e settings
-    - e setsymbol
-    - e shop
-    - e tax set
-    - e transfer
-    - e unally
-    - e unbanish <player>|s:<settlement>|e:<empire>
-    - e perms
-    bank:
-    - e bank balance
-    - e bank deposit
-    - e bank withdraw
-    - e tax
-    - e tax set
-    - e joinfee set
-    banish:
-    - e banish <player>|s:<settlement>|e:<empire>
-    - e unbanish <player>|s:<settlement>|e:<empire>
-    - e banished
-    ally:
-    - e ally
-    - e unally
-    - e allies
-    - e allyclaim
   plot:
   - build
   - buy
@@ -173,10 +105,8 @@ help-order:
   - hoppers
   - add <player> [toggle]
   - add s:<settlement> [toggle]
-  - add e:<empire> [toggle]
   - remove <player> [toggle]
   - remove s:<settlement> [toggle]
-  - remove e:<empire> [toggle]
   friend:
   - list
   - add

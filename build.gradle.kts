@@ -88,14 +88,9 @@ bukkit {
             aliases = listOf("s", "village", "kingdom", "k", "v")
         }
 
-        register("empire") {
-            description = "Empire Commands."
-            aliases = listOf("e", "nation")
-        }
-
         register("settlementadmin") {
             description = "Admin Commands."
-            aliases = listOf("villageadmin", "va", "sa", "kingdomadmin", "ka", "empireadmin", "ea")
+            aliases = listOf("villageadmin", "va", "sa", "kingdomadmin", "ka")
         }
 
         register("resident") {

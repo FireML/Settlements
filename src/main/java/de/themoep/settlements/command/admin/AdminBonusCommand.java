@@ -2,8 +2,6 @@ package de.themoep.settlements.command.admin;
 
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -14,7 +12,7 @@ import org.bukkit.command.CommandSender;
 
 public class AdminBonusCommand extends SubCommand {
     public AdminBonusCommand(SubCommand parent) {
-        super(parent, "bonus add|set|remove <player>|s:<settlement>|e:<empire> <amount>", "bonusclaims");
+        super(parent, "bonus add|set|remove <player>|s:<settlement> <amount>", "bonusclaims");
         setPermission("settlements.admin.command.bonus");
     }
 
@@ -50,21 +48,6 @@ public class AdminBonusCommand extends SubCommand {
                 }
             } else {
                 getError("settlement-doesnt-exist").tell(sender, "name", name);
-            }
-        } else if (args[1].startsWith("empire:") || args[1].startsWith("e:")) {
-            String name = args[1].split(":")[1];
-            Empire empire = EmpireManager.getInstance().getEmpireFromName(name);
-            if (empire != null) {
-                if (operation.apply(empire, amount)) {
-                    getMessage("success").tell(sender,
-                            "operation", operation.name().toLowerCase(),
-                            "amount", String.valueOf(amount),
-                            "name", empire.getName()
-                    );
-                    DatabaseManager.getInstance().saveEmpire(empire);
-                }
-            } else {
-                getError("empire-doesnt-exist").tell(sender, "name", name);
             }
         } else {
             String name = args[1];

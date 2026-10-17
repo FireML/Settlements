@@ -4,7 +4,8 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.leveling.Levelable;
+
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
@@ -70,7 +71,7 @@ public abstract class SettlementsGUI implements ConfigMessages {
         return def;
     }
 
-    protected ItemStack getIcon(Levelable<?> selected) {
+    protected ItemStack getIcon(Settlement selected) {
         if (selected != null) {
             return getIcon(selected.getKey());
         }

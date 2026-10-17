@@ -41,8 +41,6 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
         if (adminCommand) {
             if (resident.hasSettlement() && resident.getSettlement().canAdminPlots(resident)) {
                 return true;
-            } else if (resident.hasEmpire() && resident.getSettlement().getEmpire().canAdminPlots(resident)) {
-                return true;
             }
             getError("cant-admin-plots").tell(resident);
             return false;
@@ -56,8 +54,7 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
             return false;
         }
         if (adminCommand) {
-            return (resident.hasSettlement() && resident.getSettlement().canAdminPlots(resident))
-                    || (resident.hasEmpire() && resident.getSettlement().getEmpire().canAdminPlots(resident));
+            return resident.hasSettlement() && resident.getSettlement().canAdminPlots(resident);
         }
         return true;
     }
@@ -79,7 +76,7 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
             if (land.isOwnedBy(resident) || land.isEmbassy()) {
                 getError("not-your-plot").tell(resident);
             } else {
-                getError("not-your-settlement").tell(resident, "state", land.getLandOwner().getStateTag());
+                getError("not-your-settlement").tell(resident, "state", land.getSettlement().getStateTag());
             }
         }
         return false;
@@ -89,9 +86,6 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
         if (adminCommand) {
             if (resident != null) {
                 if (resident.hasSettlement() && resident.getSettlement().canAdminPlots(resident)) {
-                    return true;
-                }
-                if (resident.hasEmpire() && resident.getSettlement().getEmpire().canAdminPlots(resident)) {
                     return true;
                 }
             }

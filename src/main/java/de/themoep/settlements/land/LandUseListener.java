@@ -257,7 +257,7 @@ public class LandUseListener implements LandAccessChecker, Listener {
                         Location shooterLocation = getLocation(e);
                         if (shooterLocation != null) {
                             OwnedLand shooterLand = LandManager.getInstance().getLand(shooterLocation);
-                            if (shooterLand == null || !shooterLand.isOwnedBy(entityLand.getLandOwner())) {
+                            if (shooterLand == null || !shooterLand.isOwnedBy(entityLand.getSettlement())) {
                                 e.setCancelled(true);
                             }
                         }

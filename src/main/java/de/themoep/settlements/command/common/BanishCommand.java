@@ -2,10 +2,11 @@ package de.themoep.settlements.command.common;
 
 import de.themoep.settlements.land.Banished;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.gui.BanishedGUI;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
@@ -17,30 +18,12 @@ import java.util.stream.Collectors;
 
 public interface BanishCommand extends ConfigMessages, TargetParser {
 
-    default boolean listBanished(Resident resident, LandOwner<?, ?> landOwner) {
-        new BanishedGUI(resident, landOwner).open();
-        if (true) return true;
-        Utils.runAsync(() -> {
-            resident.tell(getMessage("head").getText());
-            if (!landOwner.getBanished().isEmpty()) {
-                resident.tell(landOwner.getBanished().stream()
-                        .map(Banished::getTargetable)
-                        .map(entry -> {
-                            if (entry instanceof Resident) {
-                                return getMessage("entry").getReplacedText("name", entry.getName(), "title", ((Resident) entry).getSettlementTitle());
-                            } else if (entry instanceof LandOwner) {
-                                return getMessage("entry").getReplacedText("name", entry.getName(), "title", ((LandOwner<?, ?>) entry).getStateTag());
-                            }
-                            return null;
-                        })
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.joining(getMessage("separator").getText())));
-            }
-        });
+    default boolean listBanished(Resident resident, Settlement settlement) {
+        new BanishedGUI(resident, settlement).open();
         return true;
     }
 
-    default boolean banish(Resident resident, LandOwner<?, ?> source, String[] args) {
+    default boolean banish(Resident resident, Settlement source, String[] args) {
         if (args.length < 1) {
             return false;
         }
@@ -74,13 +57,13 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
                 String reason = Arrays.stream(args).skip(1).collect(Collectors.joining(" "));
                 if (!source.addBanished(resident, target, reason)) {
                     getError("already-banished").tell(resident,
-                            "type", target instanceof LandOwner<?, ?> ? ((LandOwner<?, ?>) target).getStateTag() : "Player",
+                            "type", target instanceof Settlement ? ((Settlement) target).getStateTag() : "Player",
                             "name", target.getName());
                     return;
                 }
 
                 getMessage("banished").tell(source.getOnlineResidents(),
-                        "type", target instanceof LandOwner<?, ?> ? ((LandOwner<?, ?>) target).getStateTag() : "Player",
+                        "type", target instanceof Settlement ? ((Settlement) target).getStateTag() : "Player",
                         "name", target.getName(),
                         "reason", reason);
                 for (Resident r : target.getOnlineResidents()) {
@@ -99,7 +82,7 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
         return true;
     }
 
-    default boolean unbanish(Resident resident, LandOwner<?, ?> source, String[] args) {
+    default boolean unbanish(Resident resident, Settlement source, String[] args) {
         if (args.length < 1) {
             return false;
         }
@@ -112,13 +95,13 @@ public interface BanishCommand extends ConfigMessages, TargetParser {
             Utils.runSync(() -> {
                 if (!source.removeBanished(resident, target)) {
                     getError("not-banished").tell(resident,
-                            "type", target instanceof LandOwner<?, ?> ? ((LandOwner<?, ?>) target).getStateTag() : "Player",
+                            "type", target instanceof Settlement ? ((Settlement) target).getStateTag() : "Player",
                             "name", target.getName());
                     return;
                 }
 
                 getMessage("unbanished").tell(source.getOnlineResidents(),
-                        "type", target instanceof LandOwner<?, ?> ? ((LandOwner<?, ?>) target).getStateTag() : "Player",
+                        "type", target instanceof Settlement ? ((Settlement) target).getStateTag() : "Player",
                         "target", target.getName());
                 source.save();
             });

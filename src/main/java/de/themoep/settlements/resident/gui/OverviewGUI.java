@@ -29,7 +29,7 @@ public class OverviewGUI extends ConfigurableGui {
         Settlement settlement = resident.getSettlement();
 
         gui.addElement(new StaticGuiElement('s', getIcon("settlement"),
-                getText("settlement." + (settlement.hasEmpire() ? "empire" : "no-empire"), settlement.getReplacements(this))));
+                getText("settlement", settlement.getReplacements(this))));
 
         gui.addElement(new StaticGuiElement('r', getIcon("rules"), click -> {
             ((SettlementRulesCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("rules"))

@@ -11,7 +11,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.BuildState;
 import de.themoep.settlements.land.BuildStateable;
 import de.themoep.settlements.land.FlagAble;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.UseFlag;
 import de.themoep.settlements.land.UseFlagManager;
@@ -19,6 +19,7 @@ import de.themoep.settlements.land.UseGroup;
 import de.themoep.settlements.land.UseGroupSetter;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -54,7 +55,7 @@ public class PermsGUI extends SettlementsGUI {
         gui.addElement(new StaticGuiElement('m', getIcon("modes"), click -> {
             if (permCheck.get()) {
                 Resident clickResident = ResidentManager.getInstance().getResident((Player) click.getWhoClicked());
-                if (flagAble instanceof LandOwner<?, ?> owner) {
+                if (flagAble instanceof Settlement owner) {
                     new ModeGUI(clickResident, owner).open();
                 } else if (flagAble instanceof OwnedLand ownedLand) {
                     new de.themoep.settlements.land.gui.plot.ModeGUI(clickResident, ownedLand).open();
@@ -68,7 +69,6 @@ public class PermsGUI extends SettlementsGUI {
 
         GuiElementGroup flagGroup = createGroup('u');
         for (UseGroup group : UseFlagManager.getInstance().getGroups()) {
-            if (group.name().equals("npc") && resident.hasSettlement() && !resident.getSettlement().isEnableNPCs()) continue;
             List<String> flagsList = new ArrayList<>();
             if (group.getUseFlags().size() > 1) {
                 for (UseFlag flag : group.getUseFlags()) {

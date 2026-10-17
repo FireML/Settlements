@@ -3,16 +3,12 @@
 color:
   # Claims of your own settlement
   own: GREEN
-  # Claims of your own empire
-  own-empire: DARK_GREEN
   # Plots owned by you
   own-plot: YELLOW
   # Plots linked to your own plot
   own-plot-linked: GOLD
   # Plots linked to the plot you are standing in
   own-plot-linked-current: BLUE
-  # Claims of other settlements that are in the same empire as you
-  empire: DARK_AQUA
   # Claims of settlements you are allied to
   ally: AQUA
   # Claims of enemy settlements
@@ -26,11 +22,11 @@ symbol:
   normal: "-"
   # A plot that is for sale
   for-sale: "$"
-  # A settlement/empire member's plot
+  # A settlement member's plot
   plot: "p"
-  # And embassy (plot that can be bought by players outside of the settlement/empire)
+  # And embassy (plot that can be bought by players outside the settlement)
   embassy: "e"
-  # The claim that contains the settlement/empire home
+  # The claim that contains the settlement home
   home: "H"
   # A settlement outpost
   outpost: "o"

@@ -12,7 +12,6 @@ import de.themoep.settlements.command.CommandManager;
 import de.themoep.settlements.command.PlayerSubCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -43,6 +42,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -100,10 +100,8 @@ public class ChatManager implements ConfigMessages, Listener {
         boolean resetChannel = false;
         if (settlement == null) {
             switch (channel) {
-                case EMPIRE, ALLY, SETTLEMENT -> resetChannel = true;
+                case ALLY, SETTLEMENT -> resetChannel = true;
             }
-        } else if (!res.hasEmpire() && channel == ChatChannel.EMPIRE) {
-            resetChannel = true;
         }
 
         if (resetChannel) {
@@ -173,7 +171,6 @@ public class ChatManager implements ConfigMessages, Listener {
                 "title", ComponentUtils.parseComponent(res.getDisplayTitle()),
                 "state", ComponentUtils.parseComponent(settlement != null ? settlement.getState().getTag() : ""),
                 "settlement", ComponentUtils.parseComponent(settlement != null ? settlement.getName() : ""),
-                "empire", ComponentUtils.parseComponent(res.hasEmpire() ? settlement.getEmpire().getName() : ""),
                 "sender", componentSender
                         .hoverEvent(getHover(sender, res))
                         .clickEvent(ClickEvent.suggestCommand("/msg " + sender.getName()))
@@ -258,34 +255,12 @@ public class ChatManager implements ConfigMessages, Listener {
             }
             case ALLY -> {
                 List<Resident> residentSet = settlement.getAllies().stream()
-                        .map(Ally::getLandOwner)
-                        .filter(a -> a instanceof Settlement)
+                        .map(Ally::getSettlement)
+                        .filter(Objects::nonNull)
                         .flatMap(a -> a.getOnlineResidents().stream())
                         .collect(Collectors.toCollection(ArrayList::new));
                 residentSet.addAll(settlement.getOnlineResidents());
                 tell(sender, residentSet, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
-            }
-            case EMPIREALLY -> {
-                List<Resident> eAllySet = settlement.getAllies().stream()
-                        .map(Ally::getLandOwner)
-                        .filter(a -> a instanceof Empire)
-                        .flatMap(a -> a.getOnlineResidents().stream())
-                        .collect(Collectors.toCollection(ArrayList::new));
-                eAllySet.addAll(settlement.getOnlineResidents());
-                if (settlement.hasEmpire()) {
-                    eAllySet.addAll(settlement.getEmpire().getOnlineResidents());
-                    settlement.getEmpire().getAllies().stream()
-                            .map(Ally::getLandOwner)
-                            .flatMap(a -> a.getOnlineResidents().stream())
-                            .forEach(eAllySet::add);
-                }
-                tell(sender, eAllySet, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
-            }
-            case EMPIRE -> {
-                if (settlement.hasEmpire()) {
-                    List<Resident> targets = settlement.getEmpire().getOnlineResidents();
-                    tell(sender, targets, channel, channelDefault, channelPrefixDefault, finalUnfilteredMessage, finalFilteredMessage, replacements, false);
-                }
             }
             case SETTLEMENT -> {
                 List<Resident> targets = settlement.getOnlineResidents();
@@ -404,13 +379,6 @@ public class ChatManager implements ConfigMessages, Listener {
                         "chiefdisplaytitle", res.getSettlement().getChief().getDisplayTitle(),
                         "chieftitle", res.getSettlement().getChief().getSettlementTitle(),
                         "chief", res.getSettlement().getChief().getName()
-                ): "",
-                "empire", res.hasEmpire() ? getMessage("hover.empire").getReplacedText(
-                        "name", res.getSettlement().getEmpire().getName(),
-                        "capital", res.getSettlement().getEmpire().getCapital().getName(),
-                        "leaderdisplaytitle", res.getSettlement().getEmpire().getCapital().getChief().getDisplayTitle(),
-                        "leadertitle", res.getSettlement().getEmpire().getCapital().getChief().getSettlementTitle(),
-                        "leader", res.getSettlement().getEmpire().getCapital().getChief().getName()
                 ): "",
                 "rank", res.hasSettlement() ? getMessage("hover.rank").getReplacedText(
                         "state", res.getSettlement().getState().getTag(),

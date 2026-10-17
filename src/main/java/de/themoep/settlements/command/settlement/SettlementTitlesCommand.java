@@ -20,7 +20,7 @@ public class SettlementTitlesCommand extends SettlementSubCommand {
         registerCommand(new SettlementSubCommand(this, "gui") {
             @Override
             public boolean run(Resident resident, String base, String alias, String... args) {
-                new RankSelectGUI<>("settlement.titles", resident, resident, resident.getSettlement(), rank -> new TitlesGUI<>("settlement", resident, resident.getSettlement(), rank).open()).open();
+                new RankSelectGUI("settlement.titles", resident, resident, resident.getSettlement(), rank -> new TitlesGUI("settlement", resident, resident.getSettlement(), rank).open()).open();
                 return true;
             }
         });
@@ -59,8 +59,6 @@ public class SettlementTitlesCommand extends SettlementSubCommand {
                         getError("too-long").tell(res, "input", args[1]);
                     } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
                         getError("invalid-characters").tell(res, "input", args[1]);
-                    } else if (Config.Titles.BLOCK_CURSES && Utils.containsAnyCurses(args[1])) {
-                        getError("prohibited-words").tell(res, "input", args[1]);
                     } else if (res.getSettlement().addTitle(rank, args[1])) {
                         getMessage("success").tell(res, "title", args[1], "rank", rank.getTag());
                     } else {
@@ -100,8 +98,6 @@ public class SettlementTitlesCommand extends SettlementSubCommand {
                             getError("too-long").tell(res, "input", args[1]);
                         } else if (!TITLE_PATTERN.matcher(args[1]).matches()) {
                             getError("invalid-characters").tell(res, "input", args[1]);
-                        } else if (Config.Titles.BLOCK_CURSES && Utils.containsAnyCurses(args[1])) {
-                            getError("prohibited-words").tell(res, "input", args[1]);
                         } else {
                             res.getSettlement().setDefaultTitle(rank, args[1]);
                             getMessage("success-new").tell(res, "title", args[1], "rank", rank.getTag());
@@ -137,7 +133,7 @@ public class SettlementTitlesCommand extends SettlementSubCommand {
     @Override
     public boolean run(Resident res, String base, String alias, String... args) {
         if (args.length == 0) {
-            new RankSelectGUI<>("settlement.titles", res, res, res.getSettlement(), rank -> new TitlesGUI<>("settlement", res, res.getSettlement(), rank).open()).open();
+            new RankSelectGUI("settlement.titles", res, res, res.getSettlement(), rank -> new TitlesGUI("settlement", res, res.getSettlement(), rank).open()).open();
             return true;
         }
         return false;

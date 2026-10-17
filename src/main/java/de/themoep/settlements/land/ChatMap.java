@@ -1,7 +1,6 @@
 package de.themoep.settlements.land;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
@@ -33,9 +32,9 @@ public class ChatMap {
     private static final int WIDTH = 29;
     private final ConfigMessages messages;
     private final List<RowEnd> rowEnds;
-    private final LandOwner<?, ?> landOwner;
+    private final Settlement landOwner;
 
-    public ChatMap(Player player, LandOwner<?, ?> landOwner, ConfigMessages messages) {
+    public ChatMap(Player player, Settlement landOwner, ConfigMessages messages) {
         this.messages = messages;
         this.landOwner = landOwner;
         MapGenerator generator = new ChatMap.MapGenerator(player);
@@ -210,21 +209,12 @@ public class ChatMap {
                     symbol = Symbol.HOME;
                 }
             }
-            if (land.getLandOwner().isMember(resident)) {
-                if (land.getLandOwner() instanceof Empire) {
-                    legend.add(RowEnd.EMPIRE_LAND);
-                    relation = Relation.OWN_EMPIRE;
-                } else {
-                    legend.add(RowEnd.OWN_LAND);
-                    relation = Relation.OWN;
-                }
-
-            } else if (landOwner != null && landOwner.isAlly(land.getLandOwner())) {
+            if (land.getSettlement().isMember(resident)) {
+                legend.add(RowEnd.OWN_LAND);
+                relation = Relation.OWN;
+            } else if (landOwner != null && landOwner.isAlly(land.getSettlement())) {
                 legend.add(RowEnd.ALLY);
                 relation = Relation.ALLY;
-            } else if (landOwner != null && landOwner.isTrusted(land.getLandOwner())) {
-                legend.add(RowEnd.EMPIRE);
-                relation = Relation.EMPIRE;
             } else {
                 legend.add(RowEnd.ENEMY);
                 relation = Relation.ENEMY;
@@ -253,13 +243,13 @@ public class ChatMap {
 
             Component hover = Component.text("");
             hover = hover.append(messages.getMessage("hover.info").getReplacedComponent(
-                    "state", land.getLandOwner().getStateTag(),
-                    "name", land.getLandOwner().getName()
+                    "state", land.getSettlement().getStateTag(),
+                    "name", land.getSettlement().getName()
             ));
-            if (land.getLandOwner().isAbandoned()) {
+            if (land.getSettlement().isAbandoned()) {
                 hover = hover.append(Component.newline()).append(messages.getMessage("hover.abandoned").getReplacedComponent(
-                        "countdown", UtilTime.format(land.getLandOwner().getCreated()
-                                + TimeUnit.MINUTES.toMillis(land.getLandOwner().getAbandonTimeConfig()) - System.currentTimeMillis())
+                        "countdown", UtilTime.format(land.getSettlement().getCreated()
+                                + TimeUnit.MINUTES.toMillis(land.getSettlement().getAbandonTimeConfig()) - System.currentTimeMillis())
                 ));
             } else {
                 if (!land.getDescription().isEmpty()) {
@@ -337,11 +327,9 @@ public class ChatMap {
 
     enum Relation implements ConfigKey {
         OWN,
-        OWN_EMPIRE,
         OWN_PLOT,
         OWN_PLOT_LINKED,
         OWN_PLOT_LINKED_CURRENT,
-        EMPIRE,
         ALLY,
         ENEMY,
         UNCLAIMED,
@@ -389,14 +377,12 @@ public class ChatMap {
 
     enum RowEnd implements ConfigKey {
         OWN_LAND,
-        EMPIRE_LAND,
         FOR_SALE,
         PLAYER_PLOT,
         LINKED_PLOT,
         EMBASSY,
         HOME,
         OUTPOST,
-        EMPIRE,
         ALLY,
         ENEMY,
         UNCLAIMED,

@@ -1,23 +1,28 @@
 package de.themoep.settlements.land.events;
 
-import de.themoep.settlements.land.LandOwner;
+
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Called before a landowner was fully disbanded
- */
-public class LandownerDisbandEvent extends Event {
+public class SettlementCreatedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final LandOwner<?, ?> landOwner;
+    private final Settlement landOwner;
+    private final Resident resident;
 
-    public LandownerDisbandEvent(LandOwner<?, ?> landOwner) {
+    public SettlementCreatedEvent(Settlement landOwner, Resident resident) {
         this.landOwner = landOwner;
+        this.resident = resident;
     }
 
-    public LandOwner<?, ?> getLandOwner() {
+    public Settlement getSettlement() {
         return landOwner;
+    }
+
+    public Resident getResident() {
+        return resident;
     }
 
     @NotNull

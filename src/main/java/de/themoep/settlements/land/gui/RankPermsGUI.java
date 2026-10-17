@@ -7,10 +7,11 @@ import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
 import de.themoep.settlements.SettlementsGUI;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.leveling.LevelInfo;
-import de.themoep.settlements.rank.Rank;
+
+import de.themoep.settlements.perk.SettlementPerk;
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfirmationGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
@@ -28,13 +29,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 
-public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Rank<L, R>> extends SettlementsGUI {
+public class RankPermsGUI extends SettlementsGUI {
     private final Resident res;
     private final InventoryGui gui;
 
-    private R rank;
+    private SettlementRank rank;
 
-    public RankPermsGUI(@NonNull String type, Resident res, L landOwner) {
+    public RankPermsGUI(@NonNull String type, Resident res, Settlement landOwner) {
         super(type + ".rank-perms");
         this.res = res;
         List<String> perms = landOwner.getToggleablePermissions().stream()
@@ -42,7 +43,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                 .toList();
         rank = landOwner.getDefaultRank();
         if (landOwner.useGuestRank()) {
-            rank = (R) rank.getParentRank();
+            rank = rank.getParentRank();
         }
         gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
                 "state", landOwner.getStateTag(),
@@ -68,12 +69,12 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                 Optional<Boolean> value = landOwner.getEffectivePermissionValue(rank, perm);
                 List<String> description = new ArrayList<>();
 
-                R fromRank = rank;
+                SettlementRank fromRank = rank;
                 TextColor color;
                 if (value.orElse(false)) {
-                    for (Object r : rank.getInheritedRanks()) {
-                        if (landOwner.getEffectivePermissionValue((R) r, perm).orElse(false)) {
-                            fromRank = (R) r;
+                    for (SettlementRank r : rank.getInheritedRanks()) {
+                        if (landOwner.getEffectivePermissionValue(r, perm).orElse(false)) {
+                            fromRank = r;
                         }
                     }
                     if (fromRank == rank) {
@@ -132,11 +133,11 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
                         if (click.getType() != ClickType.MIDDLE) {
                             if (landOwner.hasPermission(res, "ranks.perms.set") && landOwner.hasPermission(res, perm)) {
                                 Optional<Boolean> currentValue = landOwner.getEffectivePermissionValue(rank, perm);
-                                R currentFromRank = rank;
+                                SettlementRank currentFromRank = rank;
                                 if (currentValue.orElse(false)) {
-                                    for (Object r : rank.getInheritedRanks()) {
-                                        if (landOwner.getEffectivePermissionValue((R) r, perm).orElse(false)) {
-                                            currentFromRank = (R) r;
+                                    for (SettlementRank r : rank.getInheritedRanks()) {
+                                        if (landOwner.getEffectivePermissionValue(r, perm).orElse(false)) {
+                                            currentFromRank = r;
                                         }
                                     }
                                 }
@@ -191,7 +192,7 @@ public class RankPermsGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends
 
         gui.addElement(new DynamicGuiElement('t', h -> new StaticGuiElement('t', getIcon("titles"), click -> {
             if (landOwner.hasPermission(res, "titles")) {
-                new TitlesGUI<>(type, res, landOwner, rank).open();
+                new TitlesGUI(type, res, landOwner, rank).open();
             }
             return true;
         }, getText("titles",

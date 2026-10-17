@@ -1,27 +1,24 @@
-package de.themoep.settlements.empire.events;
+package de.themoep.settlements.land.events;
 
-import de.themoep.settlements.empire.Empire;
+
 import de.themoep.settlements.settlement.Settlement;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class EmpireJoinEvent extends Event {
+/**
+ * Called after a landowner was successfully abandoned
+ */
+public class SettlementAbandonedEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
-    private final Settlement settlement;
-    private final Empire empire;
+    private final Settlement landOwner;
 
-    public EmpireJoinEvent(Empire empire, Settlement settlement) {
-        this.settlement = settlement;
-        this.empire = empire;
-    }
-
-    public Empire getEmpire() {
-        return empire;
+    public SettlementAbandonedEvent(Settlement landOwner) {
+        this.landOwner = landOwner;
     }
 
     public Settlement getSettlement() {
-        return settlement;
+        return landOwner;
     }
 
     @NotNull

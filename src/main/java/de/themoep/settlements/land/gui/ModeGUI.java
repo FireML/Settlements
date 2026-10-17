@@ -4,17 +4,18 @@ import de.themoep.inventorygui.DynamicGuiElement;
 import de.themoep.inventorygui.GuiBackElement;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.events.LandModeChangeEvent;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 
 public class ModeGUI extends ConfigurableGui {
 
-    public ModeGUI(Resident resident, LandOwner<?, ?> landOwner) {
+    public ModeGUI(Resident resident, Settlement landOwner) {
         super(resident, landOwner.getKey() + ".mode");
 
         GuiElementGroup group = createGroup('m');

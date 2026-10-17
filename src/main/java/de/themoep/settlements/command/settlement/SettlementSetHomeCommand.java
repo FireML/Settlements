@@ -19,7 +19,7 @@ public class SettlementSetHomeCommand extends SettlementSubCommand {
         Settlement settlement = res.getSettlement();
         Player player = res.getPlayer();
         OwnedLand land = LandManager.getInstance().getLand(player.getLocation());
-        if (land == null || !land.getLandOwner().equals(settlement)) {
+        if (land == null || !land.getSettlement().equals(settlement)) {
             getError("not-your-settlement").tell(res, "state", res.getSettlement().getState().getTag());
             return true;
         }

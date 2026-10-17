@@ -19,8 +19,7 @@ public class SettlementHereCommand extends PlayerSubCommand {
             getError("no-settlement").tell(player);
             return true;
         }
-        getMessage(settlement.hasEmpire() ? "empire" : settlement.isAbandoned() ? "abandoned" : "general")
-                .tell(player, settlement.getReplacements(this));
+        getMessage(settlement.isAbandoned() ? "abandoned" : "general").tell(player, settlement.getReplacements(this));
         return true;
     }
 }

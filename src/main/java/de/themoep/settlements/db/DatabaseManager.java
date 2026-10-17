@@ -2,21 +2,18 @@ package de.themoep.settlements.db;
 
 import com.google.common.collect.ImmutableMap;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.config.Config;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -48,27 +45,13 @@ public abstract class DatabaseManager {
 
     public abstract void connect() throws Exception;
 
-    public abstract void addNewEmpire(Empire empire);
-
-    public abstract void saveEmpire(Empire empire);
-
-    public abstract void saveEmpires(Collection<Empire> empires);
-
-    public abstract void deleteEmpire(Empire empire);
-
     public abstract void addNewSettlement(Settlement settlement);
 
     public abstract void saveSettlement(Settlement settlement);
 
-    public void saveMissionData(MissionTaker<?> taker) {
-        if (taker instanceof Settlement settlement) {
-            saveMissionData(settlement);
-        } else if (taker instanceof Resident resident) {
-            saveMissionData(resident);
-        }
+    public void save(Settlement settlement) {
+        saveSettlement(settlement);
     }
-
-    public abstract void saveMissionData(Settlement settlement);
 
     public abstract void saveSettlementMissionData(Collection<Settlement> settlements);
 
@@ -80,11 +63,11 @@ public abstract class DatabaseManager {
 
     public abstract void saveSettlements(Collection<Settlement> values);
 
-    public abstract void delete(LandOwner<?, ?> landOwner, Ally ally);
+    public abstract void delete(Settlement settlement, Ally ally);
 
     public abstract void unclaimLand(OwnedLand... lands);
 
-    public abstract void unclaimLand(LandOwner<?, ?> landOwner);
+    public abstract void unclaimLand(Settlement settlement);
 
     public abstract void unclaimLand(String worldName);
 
@@ -107,11 +90,9 @@ public abstract class DatabaseManager {
 
     public abstract Collection<SettlementInvite> getSettlementInvites();
 
-    public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void save(Invite<T,S> invite);
+    public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void save(Invite<T, S> invite);
 
-    public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void delete(Invite<T,S> invite);
-
-    public abstract Collection<Empire> getAllEmpires();
+    public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void delete(Invite<T, S> invite);
 
     public abstract Resident getResident(int id);
 
@@ -129,110 +110,43 @@ public abstract class DatabaseManager {
      */
     public abstract void saveResidentNow(Resident resident);
 
-    public abstract void log(Empire empire, Settlement settlement, Resident resident, String action, Map<String, Long> values);
+    public abstract void log(Settlement settlement, Resident resident, String action, Map<String, Long> values);
 
-    public void log(Empire empire, Resident resident, String action, Map<String, Long> values) {
-        log(empire, resident.getSettlement(), resident, action, values);
+    public void log(Resident resident, String action, Map<String, Long> values) {
+        log(resident.getSettlement(), resident, action, values);
     }
 
-    public void log(Settlement settlement, Resident resident, String action, Map<String, Long> values) {
-        log(null, settlement, resident, action, values);
-    }
-
-    public void log(Empire empire, Settlement settlement, Resident resident, String action, String type, long amount) {
-        log(empire, settlement, resident, action, ImmutableMap.of(type, amount));
-    }
-
-    public void log(LandOwner<?, ?> claimsHolder, Resident resident, String action, String type, long amount) {
-        if (claimsHolder instanceof Settlement settlement) {
-            log(null, settlement, resident, action, ImmutableMap.of(type, amount));
-        } else if (claimsHolder instanceof Empire empire) {
-            log(empire, null, resident, action, ImmutableMap.of(type, amount));
-        }
-    }
-
-    public void logDeposit(LandOwner<?, ?> landOwner, Resident resident, Map<String, Long> deposited) {
-        log(
-                landOwner instanceof Empire empire ? empire : null,
-                landOwner instanceof Empire ? resident.getSettlement() : (Settlement) landOwner,
-                resident, "deposit", deposited
-        );
-    }
-
-    public void logDeposit(LandOwner<?, ?> landOwner, Resident resident, long deposited) {
-        if (landOwner instanceof Settlement settlement) {
-            logDeposit(settlement, resident, deposited);
-        } else if (landOwner instanceof Empire empire && resident.hasSettlement()) {
-            logDeposit(empire, resident.getSettlement(), resident, deposited);
-        }
-    }
-
-    public void logDeposit(Settlement settlement, Resident resident, long deposited) {
-        log(null, settlement, resident, "deposit", "cash", deposited);
+    public void log(Settlement settlement, Resident resident, String action, String type, long amount) {
+        log(settlement, resident, action, ImmutableMap.of(type, amount));
     }
 
     public void logDeposit(Settlement settlement, Resident resident, Map<String, Long> deposited) {
-        log(null, settlement, resident, "deposit", deposited);
+        log(
+            settlement,
+            resident,
+            "deposit",
+            deposited
+        );
     }
 
-    public void logDeposit(Empire empire, Settlement settlement, Resident resident, long deposited) {
-        log(empire, settlement, resident, "deposit", "cash", deposited);
-    }
-
-    public void logDeposit(Empire empire, Settlement settlement, Resident resident, Map<String, Long> deposited) {
-        log(empire, settlement, resident, "deposit", deposited);
-    }
-
-    public void logLevelup(Empire empire, Resident resident, Map<String, Long> removed) {
-        log(empire, resident.getSettlement(), resident, "levelup", removed);
+    public void logDeposit(Settlement settlement, Resident resident, long deposited) {
+        log(settlement, resident, "deposit", "cash", deposited);
     }
 
     public void logLevelup(Settlement settlement, Resident resident, Map<String, Long> removed) {
-        log(null, settlement, resident, "levelup", removed);
-    }
-
-    public void logWithdraw(LandOwner<?, ?> landOwner, Resident resident, long withdrawn) {
-        if (landOwner instanceof Settlement settlement) {
-            logWithdraw(settlement, resident, withdrawn);
-        } else if (landOwner instanceof Empire empire && resident.hasSettlement()) {
-            logWithdraw(empire, resident.getSettlement(), resident, withdrawn);
-        }
+        log(settlement, resident, "levelup", removed);
     }
 
     public void logWithdraw(Settlement settlement, Resident resident, long withdrawn) {
-        log(null, settlement, resident, "withdraw", "cash", withdrawn);
-    }
-
-    public void logWithdraw(Empire empire, Settlement settlement, Resident resident, long withdrawn) {
-        log(empire, settlement, resident, "withdraw", "cash", withdrawn);
+        log(settlement, resident, "withdraw", "cash", withdrawn);
     }
 
     public abstract int getLogPageCount(Settlement settlement, Resident resident, LogType type);
 
-    public abstract int getLogPageCount(Empire Empire, Resident resident, LogType type);
-
-    public abstract List<String[]> getLog(LandOwner<?, ?> landOwner, Resident resident, int page, LogType type);
-
-    public void save(LandOwner<?, ?> landOwner) {
-        landOwner.save();
-    }
-
-    public void save(Collection<LandOwner<?, ?>> landOwners) {
-        List<Settlement> settlements = new ArrayList<>();
-        List<Empire> empires = new ArrayList<>();
-        for (LandOwner<?, ?> landOwner : landOwners) {
-            if (landOwner instanceof Settlement settlement) {
-                settlements.add(settlement);
-            } else if (landOwner instanceof Empire empire) {
-                empires.add(empire);
-            }
-        }
-        saveSettlements(settlements);
-        saveEmpires(empires);
-    }
+    public abstract List<String[]> getLog(Settlement settlement, Resident resident, int page, LogType type);
 
     public void saveAllies(Collection<Ally> allies) {
-        allies.stream().map(Ally::getLandOwner).filter(Objects::nonNull).forEach(DatabaseSerializable::save);
+        allies.stream().map(Ally::getSettlement).filter(Objects::nonNull).forEach(DatabaseSerializable::save);
     }
 
     public abstract void disable();

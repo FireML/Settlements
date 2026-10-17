@@ -162,11 +162,6 @@ ranks:
     - settlement.tax.exempt
     - settlement.officer
 
-    - empire.create
-    - empire.join
-    - empire.help.chief
-    - empire.leave
-
   assistant:
     icon: diamond_sword
     inherits: resident

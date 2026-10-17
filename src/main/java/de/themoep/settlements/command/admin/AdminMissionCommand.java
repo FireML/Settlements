@@ -3,7 +3,6 @@ package de.themoep.settlements.command.admin;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.common.TargetParser;
 import de.themoep.settlements.db.DatabaseSerializable;
-import de.themoep.settlements.missions.MissionProvider;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.Message;
@@ -14,7 +13,7 @@ import org.bukkit.command.CommandSender;
 
 public class AdminMissionCommand extends SubCommand implements TargetParser {
     public AdminMissionCommand(SubCommand parent) {
-        super(parent, "mission add|set|remove <s:settlement|e:empire> <amount>", "finishedmissions");
+        super(parent, "mission add|set|remove <s:settlement> <amount>", "finishedmissions");
         setPermission("settlements.admin.command.mission");
     }
 
@@ -38,25 +37,23 @@ public class AdminMissionCommand extends SubCommand implements TargetParser {
         }
 
         Targetable targetable = getTarget(sender, args[1]);
-        if (targetable instanceof MissionProvider<?> provider) {
+        if (targetable instanceof Settlement provider) {
             if (operation.apply(provider, amount)) {
                 getMessage("success").tell(sender,
                         "operation", operation.name().toLowerCase(),
                         "amount", String.valueOf(amount),
                         "name", targetable.getName()
                 );
-                if (operation.equals(Operation.ADD) && targetable instanceof Settlement settlement) {
-                    Component message = Message.get("missions.awarded").getReplacedComponent(settlement.getReplacements(this));
+                if (operation.equals(Operation.ADD)) {
+                    Component message = Message.get("missions.awarded").getReplacedComponent(provider.getReplacements(this));
                     message = ComponentUtils.parsePlaceholders(message,
-                            "finishedmissions", String.valueOf(settlement.getFinishedMissions()),
-                            "amount", String.valueOf(amount),
-                            "state", settlement.getStateTag()
+                        "finishedmissions", String.valueOf(provider.getFinishedMissions()),
+                        "amount", String.valueOf(amount),
+                        "state", provider.getStateTag()
                     );
-                    MessageUtils.tellResidents(settlement.getOnlineResidents(), message);
+                    MessageUtils.tellResidents(provider.getOnlineResidents(), message);
                 }
-                if (targetable instanceof DatabaseSerializable serializable) {
-                    serializable.save();
-                }
+                provider.save();
             }
         } else {
             return false;
@@ -68,21 +65,21 @@ public class AdminMissionCommand extends SubCommand implements TargetParser {
     private enum Operation {
         ADD() {
             @Override
-            public boolean apply(MissionProvider<?> missionProvider, int amount) {
+            public boolean apply(Settlement missionProvider, int amount) {
                 missionProvider.setFinishedMissions(missionProvider.getFinishedMissions() + amount);
                 return true;
             }
         },
         SET() {
             @Override
-            public boolean apply(MissionProvider<?> missionProvider, int amount) {
+            public boolean apply(Settlement missionProvider, int amount) {
                 missionProvider.setFinishedMissions(amount);
                 return true;
             }
         },
         REMOVE() {
             @Override
-            public boolean apply(MissionProvider<?> missionProvider, int amount) {
+            public boolean apply(Settlement missionProvider, int amount) {
                 if (missionProvider.getFinishedMissions() >= amount) {
                     missionProvider.setFinishedMissions(missionProvider.getFinishedMissions() - amount);
                     return true;
@@ -91,6 +88,6 @@ public class AdminMissionCommand extends SubCommand implements TargetParser {
             }
         };
 
-        public abstract boolean apply(MissionProvider<?> missionProvider, int amount);
+        public abstract boolean apply(Settlement missionProvider, int amount);
     }
 }

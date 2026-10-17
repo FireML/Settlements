@@ -1,28 +1,37 @@
 package de.themoep.settlements.settlement;
 
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.common.collect.Table;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
-import de.themoep.settlements.empire.EmpireMission;
 import de.themoep.settlements.invites.InviteManager;
+import de.themoep.settlements.land.Ally;
+import de.themoep.settlements.land.AllyRequest;
+import de.themoep.settlements.land.Banished;
 import de.themoep.settlements.land.BuildState;
+import de.themoep.settlements.land.FlagAble;
+import de.themoep.settlements.land.JoinRequest;
+import de.themoep.settlements.land.LandAccess;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
+
+import de.themoep.settlements.land.ModeAble;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.land.TaxDebtAction;
-import de.themoep.settlements.land.events.LandownerChiefChangeEvent;
-import de.themoep.settlements.missions.Mission;
+import de.themoep.settlements.land.Unbanished;
+import de.themoep.settlements.land.Use;
+import de.themoep.settlements.land.UseFlag;
+import de.themoep.settlements.land.UseFlagManager;
+import de.themoep.settlements.land.events.SettlementChiefChangeEvent;
 import de.themoep.settlements.missions.MissionData;
-import de.themoep.settlements.missions.MissionProvider;
-import de.themoep.settlements.missions.MissionTaker;
 import de.themoep.settlements.perk.Perk;
+import de.themoep.settlements.perk.PerkData;
 import de.themoep.settlements.perk.SettlementPerk;
-import de.themoep.settlements.rank.EmpireRank;
+import de.themoep.settlements.perk.Vaultable;
+import de.themoep.settlements.perk.events.PerkUnlockedEvent;
 import de.themoep.settlements.rank.RankManager;
 import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
@@ -35,12 +44,14 @@ import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Sortable;
+import de.themoep.settlements.utils.StringUtils;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.NamedLocation;
+import de.themoep.settlements.world.SimpleLocation;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -59,6 +70,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -75,29 +88,127 @@ import java.util.stream.Collectors;
 
 import static de.themoep.settlements.utils.MessageUtils.yesOrNo;
 
-public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
-        implements Comparable<Settlement>, Targetable, MissionProvider<SettlementMission>, MissionTaker<EmpireMission> {
+public class Settlement implements Comparable<Settlement>, Targetable, Sortable<Settlement>, de.themoep.settlements.db.DatabaseSerializable, de.themoep.settlements.land.ModeAble, de.themoep.settlements.land.FlagAble, de.themoep.settlements.perk.Vaultable, de.themoep.settlements.utils.NameTag {
+    private final Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
+    private final Map<String, Long> vault = new HashMap<>();
+    private final Map<String, PerkData> perks = new LinkedHashMap<>();
+    private final Map<IdObject, JoinRequest<?>> joinRequests = new HashMap<>();
+    private final Map<Use, BuildState> use = new EnumMap<>(Use.class);
+    private final Map<String, Map<String, Boolean>> ranksPermissions = new HashMap<>();
+    private final Table<String, IdObject, AllyRequest> allyRequests = HashBasedTable.create();
+    private final List<Unbanished> unbanished = new ArrayList<>();
+    protected boolean allowAllyClaim = false;
+    protected Multimap<String, String> rankTitles = MultimapBuilder.hashKeys().linkedHashSetValues().build();
+    protected Map<String, String> defaultRankTitles = new HashMap<>();
+    protected Table<String, IdObject, Ally> allies = HashBasedTable.create();
+    protected Table<String, IdObject, Banished> banished = HashBasedTable.create();
     private int level;
     private UUID chief;
-    private Empire empire;
     private SettlementState settlementState;
     private final Map<String, NamedLocation> outpostHomes = new LinkedHashMap<>();
     private final Set<UUID> residents = new LinkedHashSet<>();
     private long missionPoints = 0;
     private long finishedMissions = 0;
-    private final Map<String, MissionData> missionData = new LinkedHashMap<>();
-    private long empireDisband = 0;
+    private IdObject id = IdObject.get(null);
+    private String name;
+    private String description = "";
+    private String rules = "";
+    private String discordLink = "";
+    private long created = System.currentTimeMillis();
+    private long bank = 0;
+    private long joinFee = 0;
+    private long tax = 0;
+    private double auctionTax = 0;
+    private TaxDebtAction taxDebtAction = TaxDebtAction.KICK;
+    private int bonusClaims = 0;
+    private SimpleLocation home = null;
+    private BuildState buildState = getDefaultBuildState();
+    private LandAccess access = LandAccess.PRIVATE;
+    private JoinType joinType = JoinType.INVITE_ONLY;
 
     protected Settlement() {
         super();
     }
 
     public Settlement(String name, UUID chief, int level, SettlementState state) {
-        super(name);
+        this.name = name;
         residents.add(chief);
         this.chief = chief;
         this.level = level;
         this.settlementState = state;
+    }
+
+    public static Settlement deserialize(Settlement landOwner, Map<String, Object> map) {
+        if (map == null || map.get("name") == null || map.get("buildState") == null) {
+            SettlementsPlugin.getInstance().getLogging().warn("Could not deserialize LandOwner! (" + map + ")");
+            return null;
+        }
+        landOwner.setName((String) map.get("name"));
+        landOwner.setDescription((String) map.get("description"));
+        landOwner.setRules((String) map.get("rules"));
+        landOwner.setDiscord((String) map.get("discord"));
+        landOwner.setCreated(Utils.getLong(map.get("created")));
+        landOwner.setId(IdObject.get(map));
+        landOwner.setBank(Utils.getLong(map.get("bank")));
+        landOwner.setJoinFee(Utils.getLong(map.get("joinFee")));
+        //noinspection rawtypes,unchecked
+        for (JoinRequest<?> request : ((Collection<JoinRequest>) map.get("joinRequests"))) {
+            landOwner.addJoinRequest(request);
+        }
+        landOwner.setTax(Utils.getLong(map.get("tax")));
+        landOwner.setAuctionTax(Utils.getDouble(map.get("auctionTax")));
+        try {
+            landOwner.setTaxDebtAction(TaxDebtAction.valueOf((String) map.get("taxDebtAction")));
+        } catch (IllegalArgumentException ignored) {}
+        for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
+            landOwner.setMode(mode, Utils.getBoolean(map.getOrDefault(mode.name(), mode.getDefault())));
+        }
+        landOwner.setBonusClaims((Integer) map.get("bonusClaims"));
+        try {
+            landOwner.setBuildState(BuildState.valueOf((String) map.get("buildState")));
+        } catch (IllegalArgumentException ignored) {}
+        try {
+            landOwner.setAccess(LandAccess.valueOf((String) map.get("access")));
+        } catch (IllegalArgumentException ignored) {}
+        try {
+            landOwner.setJoinType(JoinType.valueOf((String) map.get("joinType")));
+        } catch (IllegalArgumentException ignored) {}
+        if (map.get("homeLoc") != null) {
+            landOwner.setHome(SimpleLocation.deserialize((Map<String, Object>) map.get("homeLoc")));
+        }
+        Map<String, Object> uses = (Map<String, Object>) map.get("uses");
+        for (Use u : Use.values()) {
+            UseFlag useFlag = UseFlagManager.getInstance().get(u);
+            if (uses.containsKey(u.name()) && useFlag != null) {
+                landOwner.setUseState(u, Utils.parseEnum(BuildState.class, (String) uses.get(u.name()), useFlag.getDefault(landOwner.getDefaultBuildState())));
+            }
+        }
+        for (Ally ally : ((Collection<Ally>) map.get("allies"))) {
+            landOwner.allies.put(ally.getType(), ally.getLandOwnerId(), ally);
+        }
+        for (AllyRequest request : ((Collection<AllyRequest>) map.get("allyRequests"))) {
+            landOwner.addAllyRequest(request);
+        }
+        landOwner.setAllowAllyClaim(Utils.getBoolean(map.get("allowAllyClaim")));
+
+        for (Banished banished : ((Collection<Banished>) map.get("banished"))) {
+            landOwner.banished.put(banished.type(), banished.banishedId(), banished);
+        }
+        landOwner.getUnbanished().addAll(((Collection<Unbanished>) map.get("unbanished")));
+        ((Map<String, Object>) map.get("vault")).entrySet().stream()
+                .filter(e -> e.getValue() instanceof Number)
+                .forEach(e -> landOwner.getVault().put(e.getKey(), Long.parseLong(String.valueOf(e.getValue()))));
+        ((Map<String, Object>) map.get("perks")).entrySet().stream()
+                .filter(e -> e.getValue() instanceof Map)
+                .forEach(e -> landOwner.getPerksMap().put(e.getKey().toLowerCase(), PerkData.deserialize((Map<String, Object>) e.getValue())));
+        ((Map<String, Object>) map.get("permissions")).entrySet().stream()
+                .filter(e -> e.getValue() instanceof Map)
+                .forEach(e -> landOwner.getRanksPermissions().put(e.getKey().toLowerCase(), (Map<String, Boolean>) e.getValue()));
+        for (Map.Entry<String, Collection<String>> entry : ((Map<String, Collection<String>>) map.get("titles")).entrySet()) {
+            landOwner.rankTitles.putAll(entry.getKey().toLowerCase(), entry.getValue());
+        }
+        ((Map<String, Object>) map.get("defaulttitles")).forEach((key, value) -> landOwner.defaultRankTitles.put(key.toLowerCase(), (String) value));
+        return landOwner;
     }
 
     @Override
@@ -105,7 +216,6 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         DatabaseManager.getInstance().saveSettlement(this);
     }
 
-    @Override
     public void doUpkeep() {
         if (isAbandoned()) {
             SettlementsPlugin.getInstance().getLogging().info(getStateTag() + " " + getName() + " is abandoned. No upkeep.");
@@ -189,7 +299,6 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
     }
 
-    @Override
     public int distributeNewMissions() {
         if (!hasUnlocked("missions")) {
             return -1;
@@ -201,8 +310,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return distributed;
     }
 
-    @Override
-    public <T extends MissionTaker<SettlementMission>> int distributeNewMissions(T taker) {
+    public int distributeNewMissions(Resident taker) {
         if (!hasUnlocked("missions")) {
             return 0;
         }
@@ -218,7 +326,6 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return distributeAdditionalMissions(taker);
     }
 
-    @Override
     public int distributeAdditionalMissions() {
         if (!hasUnlocked("missions")) {
             return -1;
@@ -230,8 +337,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return distributed;
     }
 
-    @Override
-    public <T extends MissionTaker<SettlementMission>> int distributeAdditionalMissions(T taker) {
+    public int distributeAdditionalMissions(Resident taker) {
         if (!hasUnlocked("missions")) {
             return 0;
         }
@@ -263,7 +369,6 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return 0;
     }
 
-    @Override
     public boolean distributeMissionsOnLevelUp() {
         return Config.Settlement.Missions.DISTRIBUTE_ON_LEVELUP;
     }
@@ -286,13 +391,6 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     }
 
     private void payUpkeep(long lastTax) {
-        if (Config.Empire.Upkeep.EXEMPT_CAPITAL && hasEmpire() && getEmpire().isCapital(this)) {
-            // no upkeep for empire capitals
-            if (lastTax > 0) {
-                DatabaseManager.getInstance().saveSettlement(this);
-            }
-            return;
-        }
         long total = getUpkeep();
         if (total <= 0) {
             return; // no upkeep, no message.
@@ -335,11 +433,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
     }
 
-    @Override
     public long getUpkeep() {
-        if (Config.Empire.Upkeep.EXEMPT_CAPITAL && hasEmpire() && getEmpire().isCapital(this)) {
-            return 0;
-        }
         long amount = 0;
         for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
             amount += getClaimUpkeep(land.getWorld());
@@ -347,27 +441,26 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return amount;
     }
 
-    @Override
     public long getClaimUpkeep(String world) {
-        return Math.max(0, SettlementManager.getInstance().getLevel(getState(), getLevel()).map(l -> l.getClaimUpkeep(world)).orElse(0L)
-                - (hasEmpire() ? getEmpire().getClaimUpkeepReduction() : 0));
+        return Math.max(
+            0,
+            SettlementManager.getInstance().getLevel(getState(), getLevel())
+                .map(l -> l.getClaimUpkeep(world))
+                .orElse(0L)
+        );
     }
 
-    @Override
     public boolean isAbandoned() {
         return residents.isEmpty();
     }
 
-    @Override
     public long getAbandonTimeConfig() {
         return Config.Settlement.Upkeep.ABANDON_TIME;
     }
 
-    @Override
     public boolean canClaim(World world) {
         return !Config.Settlement.Claiming.DISABLED_WORLDS.contains(world.getName())
-                && !Config.Claiming.DISABLED_WORLDS.contains(world.getName())
-                && EmpireManager.getInstance().getEmpireFromWorld(world) == null;
+                && !Config.Claiming.DISABLED_WORLDS.contains(world.getName());
     }
 
     public void setOutpostHome(String name, Location loc) {
@@ -386,18 +479,10 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return outpostHomes;
     }
 
-    @Override
-    public boolean isTrusted(LandOwner<?, ?> landOwner) {
-        return (landOwner instanceof Empire && landOwner.equals(getEmpire()))
-                || (landOwner instanceof Settlement && hasEmpire() && getEmpire().isMember((Settlement) landOwner));
-    }
-
-    @Override
     public int getLevel() {
         return level;
     }
 
-    @Override
     public void setLevel(int level) {
         this.level = level;
         if (!ConfigManager.getInstance().getDataConfig().getConfig().contains(settlementState.getKey() + ".level" + level)) {
@@ -413,13 +498,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
     }
 
-    @Override
     @Nullable
     public SettlementLevel getLevelInfo() {
         return SettlementManager.getInstance().getLevel(getState(), getLevel()).orElse(null);
     }
 
-    @Override
     public Optional<SettlementLevel> getNextLevel() {
         int nextLevel = getLevel() + 1;
         SettlementState nextState = getState();
@@ -438,17 +521,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         this.missionPoints = missionPoints;
     }
 
-    @Override
-    public MissionProvider<EmpireMission> getMissionProvider() {
-        return getEmpire();
-    }
-
     public int getExtraMissions() {
         SettlementLevel settlementLevel = getLevelInfo();
         return settlementLevel != null ? settlementLevel.getExtraMissions() : 0;
     }
 
-    @Override
     public boolean isChief(UUID playerId) {
         return chief.equals(playerId);
     }
@@ -472,7 +549,6 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
     /**
      * Might run database operation!
      */
-    @Override
     public List<Resident> getResidents() {
         return residents.stream()
                 .map(id -> ResidentManager.getInstance().getResident(id)).filter(Objects::nonNull)
@@ -487,17 +563,14 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                 .toList();
     }
 
-    @Override
     public long getOnlineCount() {
         return residents.stream().map(Bukkit::getPlayer).filter(Objects::nonNull).count();
     }
 
-    @Override
     public boolean hasPermission(Resident resident, String perm) {
         return isMember(resident) && resident.hasPermission(perm.startsWith("settlement.") ? perm : "settlement." + perm);
     }
 
-    @Override
     public boolean isOfficer(Player player) {
         Resident res = ResidentManager.getInstance().getResident(player);
         return hasPermission(res, "officer");
@@ -511,22 +584,14 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return equals(resident.getSettlement());
     }
 
-    @Override
     public String getStateTag() {
         return getState().getTag();
     }
 
-    @Override
-    public MissionTaker<SettlementMission> getMissionTaker(Resident resident) {
-        return resident;
-    }
-
-    @Override
     public String getStateKey() {
         return getState().getKey();
     }
 
-    @Override
     public Resident getResident(String name) {
         for (Resident resident : getResidents()) {
             if (resident.getName().equalsIgnoreCase(name)) {
@@ -559,24 +624,20 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         this.settlementState = state;
     }
 
-    @Override
     public int getMaxClaimableChunks() {
         return SettlementManager.getInstance().getLevel(getState(), getLevel()).map(SettlementLevel::getChunks).orElse(0)
                 + getBonusClaimAmount();
     }
 
-    @Override
     public int getMaxSize() {
         int maxSize = getLevelInfo() != null ? getLevelInfo().getSize() : -1;
         return maxSize > 0 ? maxSize : Config.Settlement.MAX_SIZE;
     }
 
-    @Override
     public boolean isValidName(String name) {
         return Pattern.matches(Config.Settlement.NAME_VALIDATION, name);
     }
 
-    @Override
     public boolean changeName(String name) {
         return SettlementManager.getInstance().changeName(this, name);
     }
@@ -585,13 +646,12 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return getBonusClaims() + getPerksMap().entrySet().stream()
                 .filter(e -> getPerk(e.getKey()) != null)
                 .mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims())
-                .sum()
-                + (hasEmpire() ? getEmpire().getBonusClaimAmount() : 0);
+                .sum();
     }
 
     public int getMaxOutposts() {
         return SettlementManager.getInstance().getLevel(getState(), getLevel()).map(SettlementLevel::getOutposts).orElse(0)
-                + getBonusOutposts() + (hasEmpire() ? getEmpire().getBonusOutposts() : 0);
+                + getBonusOutposts();
     }
 
     public int getBonusOutposts() {
@@ -601,61 +661,19 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
                 .sum();
     }
 
-    public Empire getEmpire() {
-        return empire;
-    }
-
-    public void setEmpire(Empire empire) {
-        if (getEmpire() != null) {
-            getEmpire().getMemberIds().remove(getId());
-        }
-        this.empire = empire;
-        if (empire != null) {
-            empire.getMemberIds().add(getId());
-        } else {
-            getMissionData().clear();
-        }
-    }
-
-    public boolean hasEmpire() {
-        return empire != null;
-    }
-
-    @Override
-    public MissionData getMissionData(String missionId) {
-        return missionData.get(missionId.toLowerCase(Locale.ROOT));
-    }
-
-    @Override
-    public Collection<MissionData> getMissionData() {
-        return missionData.values();
-    }
-
-    public Map<String, Map<String, Long>> getMissionDataMap() {
-        return getMissionData().stream().collect(Collectors.toMap(md -> md.getMission().getDbId(), MissionData::getProgress));
-    }
-
-    public void addMissionData(MissionData md) {
-        missionData.put(md.getMission().getId().toLowerCase(Locale.ROOT), md);
-    }
-
     @NotNull
-    @Override
     public Map<String, Long> getNextLevelRequirements() {
         return getNextLevel().map(SettlementLevel::getRequirements).orElse(Collections.emptyMap());
     }
 
-    @Override
     public boolean isMaxLevel() {
         return (getState().atLeast(SettlementState.KINGDOM) && getLevel() >= Config.Settlement.Leveling.KINGDOM_MAX_LEVEL) || getNextLevelRequirements().isEmpty();
     }
 
-    @Override
     public boolean checkLevelUp(Resident resident) {
         return SettlementManager.getInstance().checkLevelUp(this, resident);
     }
 
-    @Override
     public Collection<SettlementPerk> getPerks(int level) {
         return SettlementManager.getInstance().getPerks().stream()
             .filter(p -> p.getLevel() == level && p.getState() == settlementState)
@@ -673,7 +691,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         if (key.equalsIgnoreCase("missionpoints")) {
             return missionPoints;
         }
-        return super.getAmount(key);
+        return Vaultable.super.getAmount(key);
     }
 
     @Override
@@ -683,7 +701,7 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         } else if ("missionpoints".equalsIgnoreCase(key)) {
             setMissionPoints(amount);
         } else {
-            super.setAmount(key, amount);
+            Vaultable.super.setAmount(key, amount);
         }
     }
 
@@ -695,19 +713,17 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         this.finishedMissions = finishedMissions;
     }
 
-    @Override
     public Collection<SettlementMission> getMissions() {
         return SettlementManager.getInstance().getMissions();
     }
 
-    @Override
     public long getMissionRedistributePrice() {
         return Config.Settlement.Missions.REDISTRIBUTE_PRICE;
     }
 
     @Override
     public boolean setMode(PlotMode mode, boolean value) {
-        if (super.setMode(mode, value)) {
+        if (ModeAble.super.setMode(mode, value)) {
             if (SettlementsPlugin.getInstance().isRunning() && mode == PlotMode.mobSpawning && !value) {
                 for (OwnedLand land : LandManager.getInstance().getClaimedLand(this)) {
                     World world = Bukkit.getWorld(land.getWorldName());
@@ -725,27 +741,22 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return false;
     }
 
-    @Override
-    public Collection<? extends Perk> getAvailablePerks() {
+    public Collection<SettlementPerk> getAvailablePerks() {
         return SettlementManager.getInstance().getPerks();
     }
 
-    @Override
     public SettlementPerk getPerk(String name) {
         return SettlementManager.getInstance().getPerk(name);
     }
 
-    @Override
     public boolean isUnlockable(String unlockable) {
         return SettlementManager.getInstance().getUnlockables().contains(unlockable);
     }
 
-    @Override
     protected Set<String> getPermissions() {
         return RankManager.getInstance().getSettlementChiefRank().getInheritedPermissions();
     }
 
-    @Override
     public Collection<String> getToggleablePermissions() {
         return RankManager.getInstance().getSettlementToggleablePerms();
     }
@@ -762,38 +773,65 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
 
     @Override
     public @NonNull LinkedHashMap<String, Object> serialize() {
-        LinkedHashMap<String, Object> map = super.serialize();
+        LinkedHashMap<String, Object> map1 = new LinkedHashMap<>();
+        map1.put("id", getId().value());
+        map1.put("name", getName());
+        map1.put("description", getDescription());
+        map1.put("rules", getRules());
+        map1.put("discord", getDiscord());
+        map1.put("created", getCreated());
+        for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
+            map1.put(mode.name(), getMode(mode));
+        }
+        map1.put("bank", getBank());
+        map1.put("joinFee", getJoinFee());
+        map1.put("tax", getTax());
+        map1.put("auctionTax", getAuctionTax());
+        map1.put("taxDebtAction", getTaxDebtAction().name());
+        map1.put("bonusClaims", getBonusClaims());
+        map1.put("buildState", getBuildState().name());
+        map1.put("access", getAccess().name());
+        map1.put("joinType", getJoinType().name());
+        map1.put("joinRequests", getJoinRequests());
+        if (getHome() != null)
+            map1.put("homeLoc", getHome());
+        else
+            map1.put("homeLoc", new SimpleLocation(null, 0, 0, 0));
+        map1.put("allies", getAllies());
+        map1.put("allyRequests", getAllyRequests());
+        map1.put("allowAllyClaim", isAllowAllyClaim());
+        map1.put("banished", getBanished());
+        map1.put("unbanished", getUnbanished());
+        map1.put("uses", getUseStates().entrySet().stream().collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
+        map1.put("vault", getVault());
+        map1.put("perks", getPerksMap().entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().serialize())));
+        map1.put("permissions", getRanksPermissions());
+        map1.put("titles", getRankTitles());
+        map1.put("defaulttiles", getDefaultRankTitles());
+        LinkedHashMap<String, Object> map = map1;
         map.put("chief", getChiefId());
         map.put("level", getLevel());
-        map.put("empireId", hasEmpire() ? getEmpire().getId().value() : null);
         map.put("settlementState", getState().name());
         map.put("finishedMissions", getFinishedMissions());
         map.put("missionPoints", getMissionPoints());
         map.put("residents", getResidentIds().stream().map(UUID::toString).collect(Collectors.toList()));
         map.put("outposts", getOutpostHomes().values().stream().collect(Collectors.toMap(NamedLocation::getName, NamedLocation::serialize)));
-        map.put("missiondata", getMissionData().stream().collect(Collectors.toMap(md -> md.getMission().getDbId(), MissionData::getProgress)));
-        map.put("enableNPCs", isEnableNPCs());
         return map;
     }
 
     public void transfer(Resident newChief) {
         if (isMember(newChief)) {
             Resident oldChief = this.getChief();
-            new LandownerChiefChangeEvent(this, this.getChief(), newChief).callEvent();
+            new SettlementChiefChangeEvent(this, this.getChief(), newChief).callEvent();
             oldChief.setSettlementRank(SettlementRank.getChief().next());
             newChief.setSettlementRank(SettlementRank.getChief());
             setChief(newChief.getUUID());
-            if (hasEmpire() && getEmpire().isChief(oldChief)) {
-                oldChief.setEmpireRank(EmpireRank.getLeader().next());
-                newChief.setEmpireRank(EmpireRank.getLeader());
-            }
             DatabaseManager.getInstance().saveResident(oldChief);
             DatabaseManager.getInstance().saveResident(newChief);
             DatabaseManager.getInstance().saveSettlement(this);
         }
     }
 
-    @Override
     public void removeMember(Targetable target) {
         if (target instanceof Resident resident && isMember(resident)) {
             new SettlementLeaveEvent(this, resident).callEvent();
@@ -820,52 +858,84 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
     }
 
-    @Override
     public String getTitle(Resident resident) {
         return resident.getSettlementTitle();
     }
 
-    @Override
     public boolean setTitle(Resident resident, String title) {
         return resident.setSettlementTitle(title);
     }
 
-    @Override
+    public Collection<String> getTitles(SettlementRank rank) {
+        Collection<String> titles = rankTitles.get(rank.name().toLowerCase());
+        if (titles.isEmpty()) {
+            return rank.getTitles(this);
+        }
+        return titles;
+    }
+
+    public boolean addTitle(SettlementRank rank, String title) {
+        if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
+            if (getTitle(rank, title) != null) {
+                return false;
+            } else {
+                rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
+            }
+        }
+        if (rankTitles.put(rank.name().toLowerCase(), title)) {
+            save();
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeTitle(SettlementRank rank, String title) {
+        if (rankTitles.get(rank.name().toLowerCase()).isEmpty()) {
+            if (getTitle(rank, title) != null) {
+                rankTitles.putAll(rank.name().toLowerCase(), rank.getTitles(this));
+            } else {
+                return false;
+            }
+        }
+        String titleCase = getTitle(rank, title);
+        if (rankTitles.remove(rank.name().toLowerCase(), titleCase)) {
+            if (getDefaultTitle(rank).equals(title)) {
+                defaultRankTitles.remove(rank.name().toLowerCase());
+            }
+            save();
+            return true;
+        }
+        return false;
+    }
+
     public int getTitlesPerRank() {
         return Config.Settlement.TITLES_PER_RANK;
     }
 
-    @Override
     public SettlementRank getHighestRank() {
         return SettlementRank.getChief();
     }
 
-    @Override
     public SettlementRank getDefaultRank() {
         return SettlementRank.getDefault();
     }
 
-    @Override
     public boolean useGuestRank() {
         return true;
     }
 
-    @Override
     public SettlementRank getRank(Resident resident) {
         return isMember(resident) ? resident.getSettlementRank() : null;
     }
 
-    @Override
     public Collection<SettlementRank> getRanks() {
         return RankManager.getInstance().getSettlementRanks();
     }
 
-    @Override
     public Collection<OwnedLand> getLand() {
         return LandManager.getInstance().getClaimedLand(this);
     }
 
-    @Override
     public long getTaxIncome() {
         long income = 0;
         for (Resident resident : getResidents()) {
@@ -884,32 +954,18 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return income;
     }
 
-    @Override
     public long getMaxTax() {
         return Config.Settlement.MAX_TAX;
     }
 
-    @Override
     public double getMaxAuctionTax() {
         return Config.Settlement.MAX_AUCTION_TAX;
-    }
-
-    public boolean leaveEmpire() {
-        if (empire != null) {
-            empire.removeMember(this);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isCapital() {
-        return hasEmpire() && getEmpire().isCapital(this);
     }
 
     @SuppressWarnings("unchecked")
     public static Settlement deserialize(Map<String, Object> map) {
         SettlementsPlugin.logDebug("Creating settlement from " + map);
-        Settlement settlement = LandOwner.deserialize(new Settlement(), map);
+        Settlement settlement = Settlement.deserialize(new Settlement(), map);
         if (settlement == null) {
             return null;
         }
@@ -922,27 +978,11 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         settlement.setLevel((Integer) map.get("level"));
         settlement.setFinishedMissions(Utils.getLong(map.get("finishedMissions")));
         settlement.setMissionPoints(Utils.getLong(map.get("missionPoints")));
-        settlement.setEmpire(EmpireManager.getInstance().getEmpireFromId(IdObject.get(map.get("empireId"))));
-        settlement.setEnableNPCs(Utils.getBoolean(map.get("enableNPCs")));
         ((Collection<String>) map.get("residents")).stream().map(UUID::fromString).forEach(u -> settlement.getResidentIds().add(u));
         ((Map<String, Map<String, Object>>) map.get("outposts")).values().stream()
                 .map(NamedLocation::deserialize)
                 .filter(Objects::nonNull)
                 .forEach(settlement::setOutpostHome);
-        ((Map<String, Object>) map.get("missiondata")).entrySet().stream()
-                .filter(e -> e.getValue() instanceof Map)
-                .forEach(e -> {
-                    Mission mission = Mission.fromDbId(e.getKey());
-                    if (mission != null) {
-                        MissionData md = new MissionData(mission);
-                        for (Map.Entry<?, ?> o : ((Map<?, ?>) e.getValue()).entrySet()) {
-                            if (o.getKey() instanceof String && o.getValue() instanceof Long) {
-                                md.getProgress().put((String) o.getKey(), (Long) o.getValue());
-                            }
-                        }
-                        settlement.addMissionData(md);
-                    }
-                });
         SettlementsPlugin.logDebug("Created settlement " + settlement.serialize());
         return settlement;
     }
@@ -984,12 +1024,732 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         }
     }
 
-    public void setEmpireDisband(long empireDisband) {
-        this.empireDisband = empireDisband;
+    public boolean canAdminLocks(Resident resident) {
+        return hasPermission(resident, "lock.admin");
     }
 
-    public long getEmpireDisband() {
-        return empireDisband;
+    public boolean canAdminPlots(Resident resident) {
+        return hasPermission(resident, "plot.admin");
+    }
+
+    public boolean canAdminPortals(Resident resident) {
+        return hasPermission(resident, "portal.admin");
+    }
+
+    public IdObject getId() {
+        return id;
+    }
+
+    public void setId(IdObject id) {
+        if (id == null) {
+            id = IdObject.get(null);
+        }
+        this.id = id;
+    }
+
+    public UUID getUUID() {
+        return UUID.nameUUIDFromBytes(getIdKey().getBytes());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getRules() {
+        return rules;
+    }
+
+    public void setRules(String rules) {
+        this.rules = rules;
+    }
+
+    public void setDiscord(String discordLink) {
+        this.discordLink = discordLink;
+    }
+
+    public String getDiscord() {
+        return discordLink;
+    }
+
+    @Override
+    public int hashCode() {
+        return getId().hashCode();
+    }
+
+    public Map<String, PerkData> getPerksMap() {
+        return perks;
+    }
+
+    public boolean hasUnlocked(String unlockable) {
+        unlockable = unlockable.toLowerCase(Locale.ROOT);
+        if (unlockable.startsWith("settlements.")) {
+            unlockable = unlockable.substring("settlements.".length());
+        }
+        if (unlockable.contains(getKey() + ".")) {
+            unlockable = unlockable.replace(getKey() + ".", "");
+        }
+        if (!isUnlockable(unlockable)) {
+            return true;
+        }
+        for (Perk perk : getPerks()) {
+            if (perk.getUnlockables().contains(unlockable.toLowerCase(Locale.ROOT))
+                    && hasUnlocked(perk)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasUnlocked(Perk perk) {
+        return perk != null && getPerksMap().containsKey(perk.name().toLowerCase(Locale.ROOT));
+    }
+
+    public Collection<SettlementPerk> getPerks() {
+        return getPerksMap().keySet().stream()
+                .map(this::getPerk)
+                .filter(Objects::nonNull)
+                .toList();
+    }
+
+    public PerkData getPerkData(Perk perk) {
+        return getPerksMap().get(perk.getKey().toLowerCase());
+    }
+
+    public boolean canUnlock(Perk perk) {
+        return !hasUnlocked(perk) && has(perk.getUnlockCost());
+    }
+
+    public boolean canRepeat(Perk perk) {
+        return hasUnlocked(perk) && has(perk.getRepeatCost()) && checkPerkCount(perk);
+    }
+
+    public boolean checkPerkCount(Perk perk) {
+        if (perk.getRepeat() > 0) {
+            PerkData p = getPerkData(perk);
+            if (p != null) {
+                return p.getTimes() <= perk.getRepeat();
+            }
+            return true;
+        }
+        return perk.getRepeat() < 0;
+    }
+
+    public boolean checkPerkCooldown(Perk perk) {
+        if (perk.getCooldown() > 0) {
+            PerkData p = getPerkData(perk);
+            if (p != null) {
+                return p.getLastUsed() + perk.getCooldown() * 1000 < System.currentTimeMillis();
+            }
+        }
+        return true;
+    }
+
+    public boolean unlockPerk(Resident resident, Perk perk) {
+        if (!hasUnlocked(perk)) {
+            getPerksMap().put(perk.name().toLowerCase(), new PerkData());
+            apply(resident.getPlayer(), perk);
+            new PerkUnlockedEvent(this, resident, perk).callEvent();
+            return true;
+        }
+        return false;
+    }
+
+    public void apply(Player player, Perk perk) {
+        if (perk.hasEffects()) {
+            applyEffects(player, perk);
+        }
+        runCommands(perk);
+    }
+
+    public boolean repeatPerk(Player player, Perk perk) {
+        PerkData p = getPerkData(perk);
+        if (p != null) {
+            p.addUse();
+            apply(player, perk);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean togglePerk(Player player, Perk perk) {
+        if (perk.hasEffects() || perk.hasActions()) {
+            PerkData perkData = getPerkData(perk);
+            if (perkData != null) {
+                perkData.toggle();
+                if (perkData.isActive()) {
+                    applyEffects(player, perk);
+                } else {
+                    removeEffects(player, perk);
+                }
+                save();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void applyEffects(Player player, Perk perk) {
+        SettlementsPlugin.getInstance().getLandPerks().updateEffects(false);
+        perk.toggleActions(player, this, true);
+    }
+
+    public void removeEffects(Player player, Perk perk) {
+        SettlementsPlugin.getInstance().getLandPerks().updateEffects(false);
+        perk.toggleActions(player, this, false);
+    }
+
+    public Map<String, Map<String, Boolean>> getRanksPermissions() {
+        return ranksPermissions;
+    }
+
+    public Map<String, Boolean> getPermissions(SettlementRank rank) {
+        return ranksPermissions.getOrDefault(rank.name().toLowerCase(), Collections.emptyMap());
+    }
+
+    public Map<String, Optional<Boolean>> getEffectivePermissions(SettlementRank rank) {
+        Map<String, Optional<Boolean>> map = new LinkedHashMap<>();
+        for (String perm : getPermissions()) {
+            map.put(perm, getEffectivePermissionValue(rank, perm));
+        }
+        return map;
+    }
+
+    public Optional<Boolean> getPermissionValue(SettlementRank rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getPermissionValue(rank, p));
+        }
+        Map<String, Boolean> map = ranksPermissions.get(rank.name().toLowerCase());
+        return Optional.ofNullable(map != null ? map.get(permission.toLowerCase()) : null);
+    }
+
+    public Optional<Boolean> getInheritedPermissionValue(SettlementRank rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getInheritedPermissionValue(rank, p));
+        }
+
+        Optional<Boolean> value = getPermissionValue(rank, permission);
+        if (value.isPresent()) {
+            return value;
+        }
+        if (rank.getInherits() != null) {
+            return getInheritedPermissionValue((SettlementRank) rank.getInheritedRank(), permission);
+        }
+        return Optional.empty();
+    }
+
+    public Optional<Boolean> getEffectivePermissionValue(SettlementRank rank, String permission) {
+        if (permission.contains(".group.")) {
+            return RankManager.getInstance().getFromGroup(permission, p -> getEffectivePermissionValue(rank, p));
+        }
+
+        if (rank.getParent() != null) {
+            Optional<Boolean> inheritValue = getInheritedPermissionValue(rank, permission);
+            if (inheritValue.isPresent()) {
+                return inheritValue;
+            }
+        }
+        return rank.getInheritedPermissionValue(permission);
+    }
+
+    public boolean setPermission(SettlementRank rank, String permission, boolean value) {
+        if (permission.contains(".group.")) {
+            Optional<Boolean> changed = RankManager.getInstance().applyToGroup(permission, p -> setPermission(rank, p, value));
+            if (changed.isPresent()) {
+                return changed.get();
+            }
+        }
+
+        if (getEffectivePermissionValue(rank, permission).orElse(false) == value) {
+            return false;
+        }
+
+        if (rank.getPermissionValue(permission) == value) {
+            return setDefaultPermission(rank, permission);
+        }
+
+        Boolean prev = ranksPermissions.computeIfAbsent(rank.name().toLowerCase(), k -> new LinkedHashMap<>()).put(permission.toLowerCase(), value);
+        return prev == null || prev != value;
+    }
+
+    public boolean setDefaultPermission(SettlementRank rank, String permission) {
+        if (permission.contains(".group.")) {
+            Optional<Boolean> changed = RankManager.getInstance().applyToGroup(permission, p -> setDefaultPermission(rank, p));
+            if (changed.isPresent()) {
+                return changed.get();
+            }
+        }
+        return ranksPermissions.getOrDefault(rank.name().toLowerCase(), new LinkedHashMap<>()).remove(permission.toLowerCase()) != null;
+    }
+
+    public String getIdKey() {
+        return getKey() + ":" + getId();
+    }
+
+    public BuildState getUseState(UseFlag useFlag, Use u) {
+        return use.getOrDefault(u, useFlag != null
+                ? useFlag.getDefault(getDefaultBuildState()) : getDefaultBuildState());
+    }
+
+    public Map<Use, BuildState> getUseStates() {
+        return use;
+    }
+
+    @Override
+    public Map<String, Long> getVault() {
+        return vault;
+    }
+
+    public long getBank() {
+        return bank;
+    }
+
+    public void setBank(long bank) {
+        this.bank = bank;
+    }
+
+    public boolean setUseState(Use u, BuildState state) {
+        if (state == null) {
+            return use.remove(u) != null;
+        } else {
+            return use.put(u, state) != null;
+        }
+    }
+
+    public boolean unsetUseState(UseFlag u) {
+        boolean r = false;
+        for (Use useType : u.getUseTypes()) {
+            r |= use.remove(useType) != null;
+        }
+        return r;
+    }
+
+    public boolean hasUseState(Use u) {
+        return use.containsKey(u);
+    }
+
+    public FlagAble getParent() {
+        return new FlagAble() {
+            @Override
+            public void setBuildState(BuildState buildState) {
+
+            }
+
+            @Override
+            public BuildState getBuildState() {
+                return getDefaultBuildState();
+            }
+
+            @Override
+            public BuildState getUseState(UseFlag useFlag, Use u) {
+                return useFlag != null ? useFlag.getDefault(getDefaultBuildState()) : getDefaultBuildState();
+            }
+
+            @Override
+            public Map<Use, BuildState> getUseStates() {
+                return Collections.emptyMap();
+            }
+
+            @Override
+            public boolean setUseState(Use u, BuildState state) {
+                return false;
+            }
+
+            @Override
+            public boolean unsetUseState(UseFlag u) {
+                return false;
+            }
+
+            @Override
+            public boolean hasUseState(Use u) {
+                return false;
+            }
+
+            @Override
+            public BuildState getDefaultBuildState() {
+                return Settlement.this.getDefaultBuildState();
+            }
+
+            @Override
+            public BuildState.AppliesTo getBuildStateType() {
+                return Settlement.this.getBuildStateType();
+            }
+
+            @Override
+            public void save() {
+
+            }
+
+            @Override
+            public FlagAble getParent() {
+                return null;
+            }
+
+            @Override
+            public String getStateTag() {
+                return Settlement.this.getStateTag();
+            }
+
+            @Override
+            public String getBuildTag() {
+                return Settlement.this.getTag();
+            }
+        };
+    }
+
+    public void runCommands(Perk perk) {
+        Utils.runAsync(() -> {
+            List<String> commands = new ArrayList<>();
+            for (String command : perk.getCommands()) {
+                for (Resident resident : getResidents()) {
+                    commands.add(StringUtils.parsePlaceholders(command,
+                            "player", resident.getName(),
+                            "playerid", resident.getUUID().toString(),
+                            "settlement", getName(),
+                            "state", getStateTag(),
+                            "level", Settlement.this instanceof Settlement ? String.valueOf(Settlement.this.getLevel()) : "-1",
+                            "perk", perk.getTag()
+                    ));
+                }
+            }
+            Utils.runSync(() -> {
+                for (String command : commands) {
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command);
+                }
+            });
+        });
+    }
+
+    @Override
+    public int getBonusClaims() {
+        return bonusClaims;
+    }
+
+    @Override
+    public void setBonusClaims(int bonusClaims) {
+        this.bonusClaims = bonusClaims;
+    }
+
+    public boolean isBanished(Targetable target) {
+        if (target instanceof Resident resident) {
+            return banished.contains("player", IdObject.get(resident.getUUID()))
+                    || (resident.hasSettlement() && isBanished(resident.getSettlement()));
+        } else if (target instanceof Settlement owner) {
+            return banished.contains(owner.getKey(), owner.getId());
+        }
+        return false;
+    }
+
+    public boolean addBanished(Resident sender, Targetable target, String reason) {
+        if (isBanished(target)) {
+            return false;
+        }
+        Banished entry;
+        if (target instanceof Resident res) {
+            entry = new Banished(
+                    "player",
+                    IdObject.get(res.getUUID()),
+                    System.currentTimeMillis(),
+                    sender != null ? sender.getUUID() : Utils.ZERO_UUID,
+                    reason
+            );
+        } else if (target instanceof Settlement owner) {
+            entry = new Banished(
+                    owner.getKey(),
+                    target.getId(),
+                    System.currentTimeMillis(),
+                    sender != null ? sender.getUUID() : Utils.ZERO_UUID,
+                    reason
+            );
+        } else {
+            return false;
+        }
+        return banished.put(entry.type(), entry.banishedId(), entry) == null;
+    }
+
+    public boolean removeBanished(Resident sender, Targetable target) {
+        if (target instanceof Resident res) {
+            Banished entry = banished.remove("player", IdObject.get(res.getUUID()));
+            if (entry != null) {
+                unbanished.add(entry.toUnbanish(sender));
+                return true;
+            }
+            return false;
+        } else if (target instanceof Settlement owner) {
+            Banished entry = banished.remove(owner.getDbName(), owner.getId());
+            if (entry != null) {
+                unbanished.add(entry.toUnbanish(sender));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Ally addAlly(Settlement landOwner) {
+        Ally ally = new Ally(landOwner.getKey(), landOwner.getId(), System.currentTimeMillis(), isAllowAllyClaim());
+        allies.put(landOwner.getKey(), landOwner.getId(), ally);
+        return ally;
+    }
+
+    public Ally removeAlly(Settlement landOwner) {
+        return allies.remove(landOwner.getKey(), landOwner.getId());
+    }
+
+    public boolean isAlly(Settlement landOwner) {
+        return allies.contains(landOwner.getKey(), landOwner.getId());
+    }
+
+    public boolean isAlly(Resident resident) {
+        return isMember(resident)
+                || (resident.hasSettlement() && isAlly(resident.getSettlement()));
+    }
+
+    public boolean hasAllies() {
+        return !getAllies().isEmpty();
+    }
+
+    public boolean hasSettlementAllies() {
+        return getAllies().stream().anyMatch(a -> a.getType().equals("settlement"));
+    }
+
+    public boolean hasAllyRequest(Settlement landOwner) {
+        return allyRequests.contains(landOwner.getKey(), landOwner.getId());
+    }
+
+    public AllyRequest addAllyRequest(AllyRequest request) {
+        return allyRequests.put(request.getSourceType(), request.getSourceId(), request);
+    }
+
+    public AllyRequest removeAllyRequest(Settlement landOwner) {
+        return allyRequests.remove(landOwner.getKey(), landOwner.getId());
+    }
+
+    public AllyRequest removeAllyRequest(AllyRequest request) {
+        return allyRequests.remove(request.getSourceType(), request.getSourceId());
+    }
+
+    public Collection<AllyRequest> getAllyRequests() {
+        return allyRequests.values();
+    }
+
+    public boolean hasJoinRequest(Targetable targetable) {
+        return joinRequests.containsKey(targetable.getId());
+    }
+
+    public JoinRequest<?> addJoinRequest(JoinRequest<?> request) {
+        return joinRequests.put(request.getSourceId(), request);
+    }
+
+    public JoinRequest<?> removeJoinRequest(Targetable targetable) {
+        return joinRequests.remove(targetable.getId());
+    }
+
+    public JoinRequest<?> removeJoinRequest(JoinRequest<?> request) {
+        return joinRequests.remove(request.getSourceId());
+    }
+
+    public Collection<JoinRequest<?>> getJoinRequests() {
+        return joinRequests.values();
+    }
+
+    @Override
+    public Map<PlotMode, Boolean> getModes() {
+        return modes;
+    }
+
+    public SimpleLocation getHome() {
+        return home;
+    }
+
+    public boolean hasHome() {
+        return this.getHome() != null;
+    }
+
+    public Collection<Banished> getBanished() {
+        return banished.values();
+    }
+
+    public List<Unbanished> getUnbanished() {
+        return unbanished;
+    }
+
+    public Ally getAlly(Settlement landOwner) {
+        return allies.get(landOwner.getKey(), landOwner.getId());
+    }
+
+    public Collection<Ally> getAllies() {
+        return allies.values();
+    }
+
+    public boolean isAllowAllyClaim() {
+        return allowAllyClaim;
+    }
+
+    public void setAllowAllyClaim(boolean allowAllyClaim) {
+        this.allowAllyClaim = allowAllyClaim;
+    }
+
+    public void setHome(SimpleLocation home) {
+        this.home = home;
+    }
+
+    public void setHome(Location location) {
+        setHome(new SimpleLocation(location));
+    }
+
+    public long getJoinFee() {
+        return joinFee;
+    }
+
+    public void setJoinFee(long joinFee) {
+        this.joinFee = joinFee;
+    }
+
+    public long getTax() {
+        if (getMaxTax() > -1 && tax > getMaxTax() ) {
+            return getMaxTax();
+        }
+        return tax;
+    }
+
+    public void setTax(long tax) {
+        this.tax = tax;
+    }
+
+    public double getAuctionTax() {
+        if (getMaxAuctionTax() > -1 && auctionTax > getMaxAuctionTax() ) {
+            return getMaxAuctionTax();
+        }
+        return auctionTax;
+    }
+
+    public void setAuctionTax(long auctionTax) {
+        setAuctionTax(auctionTax / 100d);
+    }
+
+    public void setAuctionTax(double auctionTax) {
+        this.auctionTax = auctionTax;
+    }
+
+    public TaxDebtAction getTaxDebtAction() {
+        return taxDebtAction;
+    }
+
+    public void setTaxDebtAction(TaxDebtAction taxDebtAction) {
+        this.taxDebtAction = taxDebtAction;
+    }
+
+    public void setBuildState(BuildState buildState) {
+        this.buildState = buildState;
+    }
+
+    public BuildState getBuildState() {
+        return this.buildState;
+    }
+
+    public LandAccess getAccess() {
+        return access;
+    }
+
+    public void setAccess(LandAccess access) {
+        this.access = access;
+    }
+
+    public JoinType getJoinType() {
+        return joinType;
+    }
+
+    public void setJoinType(JoinType joinType) {
+        this.joinType = joinType;
+    }
+
+    public boolean isChief(Targetable target) {
+        if (target instanceof Resident) {
+            return isChief(((Resident) target).getUUID());
+        }
+        return false;
+    }
+
+    public long getCreated() {
+        return created;
+    }
+
+    public void setCreated(long created) {
+        this.created = created;
+    }
+
+    public void setDefaultTitle(SettlementRank rank, String title) {
+        String t = getTitle(rank, title);
+        defaultRankTitles.put(rank.name().toLowerCase(), title);
+        if (t == null) {
+            addTitle(rank, title);
+        } else {
+            save();
+        }
+    }
+
+    public String getDefaultTitle(SettlementRank rank) {
+        return defaultRankTitles.getOrDefault(rank.name(), getTitles(rank).iterator().next());
+    }
+
+    public String getTitle(SettlementRank rank, String title) {
+        for (String rankTitle : getTitles(rank)) {
+            if (rankTitle.equalsIgnoreCase(title)) {
+                return rankTitle;
+            }
+        }
+        return null;
+    }
+
+    public Map<String, Collection<String>> getRankTitles() {
+        return rankTitles.asMap();
+    }
+
+    public Map<String, String> getDefaultRankTitles() {
+        return defaultRankTitles;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o != null && o.getClass().equals(getClass()) && ((Settlement) o).getId().equals(getId());
+    }
+
+    @Override
+    public void logDeposit(Resident resident, Map<String, Long> deposited) {
+        Utils.runAsync(() -> DatabaseManager.getInstance().logDeposit(this, resident, deposited));
+    }
+
+    public boolean canLevelUp() {
+        if (isMaxLevel()) {
+            return false;
+        }
+        return has(getNextLevelRequirements());
+    }
+
+    public double getNextLevelProgress() {
+        Map<String, Long> requirements = getNextLevelRequirements();
+        if (requirements.isEmpty()) {
+            return 1;
+        }
+
+        double totalProgress = 0;
+
+        for (Map.Entry<String, Long> requirement : requirements.entrySet()) {
+            totalProgress += Math.min(1, (double) getAmount(requirement.getKey()) / requirement.getValue());
+        }
+
+        return totalProgress / requirements.size();
     }
 
     public enum Placeholder {
@@ -997,8 +1757,6 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         description((c, v) -> v.getDescription()),
         state((c, v) -> v.getStateTag()),
         level((c, v) -> String.valueOf(v.getLevel())),
-        empire((c, v) -> v.hasEmpire() ? v.getEmpire().getName() : ""),
-        empirelevel((c, v) -> v.hasEmpire() ? String.valueOf(v.getEmpire().getLevel()) : ""),
         access((c, v) -> v.getAccess().getTag()),
         jointype((c, v) -> v.getJoinType().getTag()),
         upkeep((c, v) -> Utils.CURRENCY_FORMAT.format(v.getUpkeep())),
@@ -1126,7 +1884,6 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return String.join("\n", lines);
     }
 
-    @Override
     public String name() {
         return "Settlement";
     }
@@ -1142,14 +1899,13 @@ public class Settlement extends LandOwner<SettlementRank, SettlementLevel>
         return Sort.values();
     }
 
-    private enum Sort implements Sortable.Sort<Settlement> {
+    public enum Sort implements Sortable.Sort<Settlement> {
         LEVEL(Settlement::compareTo),
         SIZE((s1, s2) -> Integer.compare(s2.getResidentIds().size(), s1.getResidentIds().size())),
         NAME((s1, s2) -> s1.getName().compareToIgnoreCase(s2.getName())),
-        PRIVACY(Comparator.comparing(LandOwner::getAccess)),
-        RECRUITMENT(Comparator.comparing(LandOwner::getJoinType)),
-        AGE((s1, s2) -> Long.compare(s2.getCreated(), s1.getCreated())),
-        ;
+        PRIVACY(Comparator.comparing(Settlement::getAccess)),
+        RECRUITMENT(Comparator.comparing(Settlement::getJoinType)),
+        AGE((s1, s2) -> Long.compare(s2.getCreated(), s1.getCreated()));
 
         private final Comparator<Settlement> comparator;
 

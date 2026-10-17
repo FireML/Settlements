@@ -1,7 +1,5 @@
 package de.themoep.settlements.land;
 
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.PerkEffect;
 import de.themoep.settlements.rank.SettlementRank;
@@ -70,61 +68,12 @@ public class LandPerks {
         Resident resident = ResidentManager.getInstance().getResident(p);
 
         if (resident.hasSettlement() && (land == null || (land.isOwnedBy(resident.getSettlement()) && land.getMode(PlotMode.buff)))) {
-            if (resident.hasEmpire() && resident.getSettlement().getEmpire().getMode(PlotMode.buff)) {
-                effects.addAll(getEffects(p, resident, land, resident.getSettlement().getEmpire(), refresh));
-            }
             if (resident.getSettlement().getMode(PlotMode.buff)) {
                 effects.addAll(getEffects(p, resident, land, resident.getSettlement(), refresh));
             }
         }
 
-        Empire empire = EmpireManager.getInstance().getEmpireFromWorld(p.getWorld());
-        if (empire != null) {
-            for (Perk perk : empire.getPerks()) {
-                if (!empire.getPerkData(perk).isActive()) {
-                    continue;
-                }
-
-                for (PerkEffect effect : perk.getEffects()) {
-                    if (!effect.isPermanent() && refresh) {
-                        continue;
-                    }
-
-                    if (resident.hasSettlement()) {
-                        if (effect.getApplyTo() == PerkEffect.EffectInfluenced.FREE) {
-                            continue;
-                        } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALLIES) {
-                            if (!empire.isAlly(resident.getSettlement()) && !empire.isAlly(resident.getSettlement().getEmpire())) {
-                                continue;
-                            }
-                        } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.TRUSTED) {
-                            if (!empire.isTrusted(resident.getSettlement())) {
-                                continue;
-                            }
-                        } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.MEMBERS) {
-                            if (!empire.isMember(resident)) {
-                                continue;
-                            }
-                        }
-                    }
-                    if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ENEMIES) {
-                        if (empire.isAlly(resident.getSettlement())
-                                || (resident.hasEmpire() && empire.isAlly(resident.getSettlement().getEmpire()))
-                                || empire.isMember(resident)
-                                || empire.isTrusted(resident.getSettlement())) {
-                            continue;
-                        }
-                    }
-
-                    if (effect.getApplyIn() != PerkEffect.EffectLocation.EVERYWHERE && effect.getApplyIn() != PerkEffect.EffectLocation.EMPIRE_WORLD) {
-                        continue;
-                    }
-                    effects.add(effect);
-                }
-            }
-        }
-
-        if (land != null && land.getLandOwner() instanceof Settlement settlement && !land.isOwnedBy(resident.getSettlement()) && land.getMode(PlotMode.buff)) {
+        if (land != null && land.getSettlement() instanceof Settlement settlement && !land.isOwnedBy(resident.getSettlement()) && land.getMode(PlotMode.buff)) {
             for (Perk perk : settlement.getPerks()) {
                 if (!settlement.getPerkData(perk).isActive()) {
                     continue;
@@ -147,16 +96,6 @@ public class LandPerks {
                         }
                         case PLOT_FRIENDS -> {
                             if (!land.isPlot() || !resident.isFriend(land.getPlotOwner())) {
-                                continue;
-                            }
-                        }
-                        case ENEMY_SETTLEMENT -> {
-                            if (settlement.isTrusted(resident.getSettlement())) {
-                                continue;
-                            }
-                        }
-                        case TRUSTED_SETTLEMENT -> {
-                            if (!settlement.isTrusted(resident.getSettlement())) {
                                 continue;
                             }
                         }
@@ -190,12 +129,12 @@ public class LandPerks {
         return potionEffects.values();
     }
 
-    private <T extends Perk> Collection<? extends PerkEffect> getEffects(Player p, Resident resident, OwnedLand land, LandOwner<?, ?> perkable, boolean refresh) {
+    private <T extends Perk> Collection<? extends PerkEffect> getEffects(Player p, Resident resident, OwnedLand land, Settlement perkable, boolean refresh) {
         List<PerkEffect> effects = new ArrayList<>();
 
-        LandOwner<?, ?> landOwner = null;
+        Settlement landOwner = null;
         if (land != null) {
-            landOwner = land.getLandOwner();
+            landOwner = land.getSettlement();
         }
 
         for (Perk perk : perkable.getPerks()) {
@@ -213,10 +152,6 @@ public class LandPerks {
                 }
 
                 if (land == null) {
-                    if (effect.getApplyIn() == PerkEffect.EffectLocation.EMPIRE_WORLD
-                            && !perkable.equals(EmpireManager.getInstance().getEmpireFromWorld(p.getWorld()))) {
-                        continue;
-                    }
                     if (effect.getApplyIn() != PerkEffect.EffectLocation.UNCLAIMED) {
                         continue;
                     }
@@ -232,23 +167,13 @@ public class LandPerks {
                                 continue;
                             }
                         }
-                        case EMPIRE_WORLD, OWN_SETTLEMENT -> {
+                        case OWN_SETTLEMENT -> {
                             if (!land.isOwnedBy(perkable)) {
-                                continue;
-                            }
-                        }
-                        case ENEMY_SETTLEMENT -> {
-                            if (land.isOwnedBy(perkable) || landOwner.isTrusted(perkable)) {
                                 continue;
                             }
                         }
                         case ALLIED_SETTLEMENT -> {
                             if (!land.isOwnedBy(perkable) && !landOwner.isAlly(perkable)) {
-                                continue;
-                            }
-                        }
-                        case TRUSTED_SETTLEMENT -> {
-                            if (!land.isOwnedBy(perkable) && !landOwner.isTrusted(perkable)) {
                                 continue;
                             }
                         }
@@ -263,7 +188,7 @@ public class LandPerks {
         return effects;
     }
 
-    private boolean appliesTo(PerkEffect effect, Resident resident, LandOwner<?, ?> landOwner) {
+    private boolean appliesTo(PerkEffect effect, Resident resident, Settlement landOwner) {
         if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALL) {
             return true;
 
@@ -272,9 +197,6 @@ public class LandPerks {
 
         } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.ALLIES) {
             return landOwner.isMember(resident) || landOwner.isAlly(resident);
-
-        } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.TRUSTED) {
-            return landOwner.isMember(resident) || landOwner.isTrusted(resident.getSettlement());
 
         } else if (effect.getApplyTo() == PerkEffect.EffectInfluenced.MEMBERS) {
             return landOwner.isMember(resident);

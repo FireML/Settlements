@@ -3,10 +3,10 @@ package de.themoep.settlements.land.gui;
 import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.InventoryGui;
 import de.themoep.inventorygui.StaticGuiElement;
-import de.themoep.settlements.land.LandOwner;
-import de.themoep.settlements.leveling.LevelInfo;
-import de.themoep.settlements.rank.Rank;
+
+import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -14,13 +14,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import java.util.Comparator;
 import java.util.function.Consumer;
 
-public class RankSelectGUI<L extends LandOwner<R, ? extends LevelInfo>, R extends Rank<L, R>> extends ConfigurableGui {
+public class RankSelectGUI extends ConfigurableGui {
 
-    public RankSelectGUI(@NonNull String type, Resident resident, Resident target, L landOwner, Consumer<R> rankConsumer) {
+    public RankSelectGUI(@NonNull String type, Resident resident, Resident target, Settlement landOwner, Consumer<SettlementRank> rankConsumer) {
         this(type, resident, target, landOwner, rankConsumer, rankConsumer);
     }
 
-    public RankSelectGUI(@NonNull String type, Resident resident, Resident target, L landOwner, Consumer<R> rankConsumer, Consumer<R> chiefRankConsumer) {
+    public RankSelectGUI(@NonNull String type, Resident resident, Resident target, Settlement landOwner, Consumer<SettlementRank> rankConsumer, Consumer<SettlementRank> chiefRankConsumer) {
         super(resident, type + ".rank-select", "state", landOwner.getStateTag());
 
         GuiElementGroup group = createGroup('r');

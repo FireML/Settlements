@@ -2,15 +2,15 @@ package de.themoep.settlements.command.admin;
 
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.common.TargetParser;
-import de.themoep.settlements.missions.MissionProvider;
-import de.themoep.settlements.missions.MissionTaker;
+import de.themoep.settlements.resident.Resident;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.Targetable;
 import org.bukkit.command.CommandSender;
 
 public class AdminDistributeMissionCommand extends SubCommand implements TargetParser {
     public AdminDistributeMissionCommand(SubCommand parent) {
-        super(parent, "distributemission <s:settlement|r:resident>");
+        super(parent, "distributemission <r:resident>");
         setPermission("settlements.admin.command.distributemission");
     }
 
@@ -21,8 +21,8 @@ public class AdminDistributeMissionCommand extends SubCommand implements TargetP
         }
 
         Targetable targetable = getTarget(sender, args[0]);
-        if (targetable instanceof MissionTaker<?> taker) {
-            MissionProvider<?> provider = taker.getMissionProvider();
+        if (targetable instanceof Resident taker) {
+            Settlement provider = taker.getMissionProvider();
             if (provider != null) {
                 if (taker.distributeNewMissions() > 0) {
                     getMessage("success").tell(sender,
@@ -33,7 +33,7 @@ public class AdminDistributeMissionCommand extends SubCommand implements TargetP
                             "name", targetable.getName());
                 }
             } else {
-                sender.sendMessage(ComponentUtils.parseComponent(targetable.getName() + " isn't in settlement/empire."));
+                sender.sendMessage(ComponentUtils.parseComponent(targetable.getName() + " isn't in settlement."));
             }
         } else {
             return false;

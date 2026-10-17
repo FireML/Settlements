@@ -17,7 +17,7 @@ public class PlotUnownCommand extends PlotSubCommand {
         } else {
             if (land.isPlotOwner(res)) {
                 getMessage("success").tell(res);
-            } else if (land.getLandOwner().canAdminPlots(res)) {
+            } else if (land.getSettlement().canAdminPlots(res)) {
                 getMessage("success-other").tell(res, "owner", ResidentManager.getInstance().getResident(land.getPlotOwner()).getName());
             } else {
                 getError("cant-admin-plots").tell(res);

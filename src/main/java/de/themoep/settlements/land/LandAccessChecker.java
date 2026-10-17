@@ -1,8 +1,8 @@
 package de.themoep.settlements.land;
 
-import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
+import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.Pair;
 import de.themoep.settlements.utils.StringUtils;
@@ -24,7 +24,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         if (land != null) {
             Pair<Boolean, String> r = getCanBuild(user, land, land.getUseState(use), "use");
             if (r == null || (!land.isPlot() && !r.getLeft())) {
-                Pair<Boolean, String> rOwner = getCanBuild(user, land.getLandOwner(), land.getLandOwner().getUseState(use), "use");
+                Pair<Boolean, String> rOwner = getCanBuild(user, land.getSettlement(), land.getSettlement().getUseState(use), "use");
                 if (r == null || (rOwner != null && !rOwner.getLeft() && !land.isPlot())) {
                     r = rOwner;
                 }
@@ -45,7 +45,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         if (land != null) {
             Pair<Boolean, String> r = getCanBuild(building, land, land.getBuildState(), "build");
             if (r == null || (!land.isPlot() && !r.getLeft())) {
-                Pair<Boolean, String> rOwner = getCanBuild(building, land.getLandOwner(), land.getLandOwner().getBuildState(), "build");
+                Pair<Boolean, String> rOwner = getCanBuild(building, land.getSettlement(), land.getSettlement().getBuildState(), "build");
                 if (r == null || (rOwner != null && !rOwner.getLeft() && !land.isPlot())) {
                     r = rOwner;
                 }
@@ -58,7 +58,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
     }
 
     default Pair<Boolean, String> getCanBuild(Player building, OwnedLand land, BuildState state, String type) {
-        if (land.isPlotOwner(building) || land.getLandOwner().isChief(building.getUniqueId())) {
+        if (land.isPlotOwner(building) || land.getSettlement().isChief(building.getUniqueId())) {
             return new Pair<>(true, "");
         }
 
@@ -70,7 +70,7 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
             state = BuildState.PRIVATE;
         }
 
-        if (!land.isPlot() && !state.appliesTo(BuildState.AppliesTo.get(land.getLandOwner()))) {
+        if (!land.isPlot() && !state.appliesTo(BuildState.AppliesTo.get(land.getSettlement()))) {
             return null;
         }
 
@@ -93,22 +93,14 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
             }
         }
         if (BuildState.OFFICERS.atLeast(state)) {
-            allowed |= land.getLandOwner().isOfficer(building);
+            allowed |= land.getSettlement().isOfficer(building);
         }
         if (BuildState.RESIDENTS.atLeast(state)) {
-            allowed |= land.getLandOwner().isMember(ResidentManager.getInstance().getResident(building));
+            allowed |= land.getSettlement().isMember(ResidentManager.getInstance().getResident(building));
         }
         if (BuildState.ALLY == state) {
             Resident resident = ResidentManager.getInstance().getResident(building);
-            allowed |= land.getLandOwner().isMember(resident) || land.getLandOwner().isAlly(resident);
-        }
-        if (BuildState.TRUSTED == state) {
-            Resident resident = ResidentManager.getInstance().getResident(building);
-            if (resident == null) {
-                allowed = false;
-            } else {
-                allowed |= land.getLandOwner().isMember(resident) || land.getLandOwner().isTrusted(resident);
-            }
+            allowed |= land.getSettlement().isMember(resident) || land.getSettlement().isAlly(resident);
         }
         if (BuildState.PUBLIC.atLeast(state)) {
             allowed = true;
@@ -117,45 +109,34 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
         if (allowed) {
             return new Pair<>(true, "");
         }
-        return new Pair<>(false, getMessage("state." + type + "." + land.getLandOwner().getKey() + ".plot", state.getKey()).getReplacedText(
+        return new Pair<>(false, getMessage("state." + type + "." + land.getSettlement().getKey() + ".plot", state.getKey()).getReplacedText(
                 "owner", owner != null ? owner.getName() : land.getPlotOwner() != null ? land.getPlotOwner().toString() : "-",
-                "name", land.getLandOwner().getName(),
-                "state", land.getLandOwner().getStateTag()
+                "name", land.getSettlement().getName(),
+                "state", land.getSettlement().getStateTag()
         ));
     }
 
-    default Pair<Boolean, String> getCanBuild(Player building, LandOwner<?, ?> landOwner, BuildState state, String type) {
-        if (landOwner.isChief(building.getUniqueId())) {
+    default Pair<Boolean, String> getCanBuild(Player building, Settlement settlement, BuildState state, String type) {
+        if (settlement.isChief(building.getUniqueId())) {
             return new Pair<>(true, "");
         }
 
-        if (state == null || !state.appliesTo(landOwner.getBuildStateType())) {
-            state = landOwner.getDefaultBuildState();
+        if (state == null || !state.appliesTo(settlement.getBuildStateType())) {
+            state = settlement.getDefaultBuildState();
         }
         boolean allowed;
 
         Resident resident = null;
         switch (state) {
-            case OFFICERS -> allowed = landOwner.isOfficer(building);
-            case PRIVATE -> {
-                resident = ResidentManager.getInstance().getResident(building);
-                if (landOwner instanceof Empire empire) {
-                    allowed = empire.getCapital().isMember(resident);
-                } else {
-                    allowed = landOwner.isMember(resident);
-                }
-            }
+            case OFFICERS -> allowed = settlement.isOfficer(building);
+            case PRIVATE -> allowed = settlement.isMember(ResidentManager.getInstance().getResident(building));
             case RESIDENTS -> {
                 resident = ResidentManager.getInstance().getResident(building);
-                allowed = landOwner.isMember(resident);
+                allowed = settlement.isMember(resident);
             }
             case ALLY -> {
                 resident = ResidentManager.getInstance().getResident(building);
-                allowed = landOwner.isMember(resident) || landOwner.isAlly(resident);
-            }
-            case TRUSTED -> {
-                resident = ResidentManager.getInstance().getResident(building);
-                allowed = landOwner.isMember(resident) || landOwner.isTrusted(resident);
+                allowed = settlement.isMember(resident) || settlement.isAlly(resident);
             }
             case PUBLIC -> allowed = true;
             default -> {
@@ -163,19 +144,19 @@ public interface LandAccessChecker extends ConfigMessages, Listener {
             }
         }
 
-        if (allowed && resident != null && landOwner.useGuestRank() && landOwner.getRank(resident) == landOwner.getDefaultRank()) {
+        if (allowed && resident != null && settlement.useGuestRank() && settlement.getRank(resident) == settlement.getDefaultRank()) {
             return new Pair<>(false, getError("rules-not-accepted").getReplacedText(
-                    "name", landOwner.getName(),
-                    "state", landOwner.getStateTag()
+                    "name", settlement.getName(),
+                    "state", settlement.getStateTag()
             ));
         }
 
         if (allowed) {
             return new Pair<>(true, "");
         }
-        return new Pair<>(false, getMessage("state." + type + "." + landOwner.getKey() + ".landowner", state.getKey()).getReplacedText(
-                "name", landOwner.getName(),
-                "state", landOwner.getStateTag()
+        return new Pair<>(false, getMessage("state." + type + "." + settlement.getKey() + ".landowner", state.getKey()).getReplacedText(
+                "name", settlement.getName(),
+                "state", settlement.getStateTag()
         ));
     }
 

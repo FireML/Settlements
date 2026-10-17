@@ -3,7 +3,6 @@ package de.themoep.settlements.land;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.customevents.CreaturePreSpawnEvent;
 import uk.firedev.daisylib.events.move.PlayerMoveChunkEvent;
-import de.themoep.settlements.empire.Empire;
 import de.themoep.settlements.land.events.LandChangeEvent;
 import de.themoep.settlements.land.events.LandEnterEvent;
 import de.themoep.settlements.land.events.LandLeaveEvent;
@@ -395,38 +394,35 @@ public class LandModeListener implements LandAccessChecker {
         Player player = event.getPlayer();
         Resident resident = ResidentManager.getInstance().getResident(player);
         Settlement playerSettlement = resident.getSettlement();
-        Empire playerEmpire = resident.hasEmpire() ? playerSettlement.getEmpire() : null;
         OwnedLand originalLand = LandManager.getInstance().getLand(event.getFrom());
         OwnedLand destinationLand = LandManager.getInstance().getLand(event.getTo());
-        boolean sameSettlement = originalLand != null && destinationLand != null && originalLand.getLandOwner().equals(destinationLand.getLandOwner());
+        boolean sameSettlement = originalLand != null && destinationLand != null && originalLand.getSettlement().equals(destinationLand.getSettlement());
 
         if (!sameSettlement && originalLand != null) {
-            MessageUtils.tellAdvanced(player, originalLand.getLandOwner().getStateKey() + ".leave" + (originalLand.getLandOwner().isAbandoned() ? "-abandoned" : ""),
-                    "name", originalLand.getLandOwner().getName(),
-                    "state", originalLand.getLandOwner().getStateTag()
+            MessageUtils.tellAdvanced(player, originalLand.getSettlement().getStateKey() + ".leave" + (originalLand.getSettlement().isAbandoned() ? "-abandoned" : ""),
+                    "name", originalLand.getSettlement().getName(),
+                    "state", originalLand.getSettlement().getStateTag()
             );
-            if (originalLand.getLandOwner().getMode(PlotMode.buff)
-                    && (originalLand.isOwnedBy(playerSettlement) || originalLand.isOwnedBy(playerEmpire))) {
+            if (originalLand.getSettlement().getMode(PlotMode.buff) && originalLand.isOwnedBy(playerSettlement)) {
                 SettlementsPlugin.getInstance().getLandPerks().removeEffects(player, originalLand, true);
             }
         }
 
         if (destinationLand != null) {
             if (!sameSettlement) {
-                MessageUtils.tellAdvanced(player, destinationLand.getLandOwner().getStateKey() + ".enter" + (destinationLand.getLandOwner().isAbandoned() ? "-abandoned" : ""),
+                MessageUtils.tellAdvanced(player, destinationLand.getSettlement().getStateKey() + ".enter" + (destinationLand.getSettlement().isAbandoned() ? "-abandoned" : ""),
                         "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",
-                        "name", destinationLand.getLandOwner().getName(),
-                        "state", destinationLand.getLandOwner().getStateTag()
+                        "name", destinationLand.getSettlement().getName(),
+                        "state", destinationLand.getSettlement().getStateTag()
                 );
-                if (destinationLand.getLandOwner().getMode(PlotMode.buff)
-                        && (destinationLand.isOwnedBy(playerSettlement) || destinationLand.isOwnedBy(playerEmpire))) {
+                if (destinationLand.getSettlement().getMode(PlotMode.buff) && destinationLand.isOwnedBy(playerSettlement)) {
                     SettlementsPlugin.getInstance().getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }
             if (originalLand != null && originalLand.isPlotOwner(destinationLand.getPlotOwner()) && destinationLand.hasLink() && !originalLand.isLinked(destinationLand)) {
                 Utils.runAsync(() -> MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".linked",
-                        "name", destinationLand.getLandOwner().getName(),
-                        "state", destinationLand.getLandOwner().getStateTag(),
+                        "name", destinationLand.getSettlement().getName(),
+                        "state", destinationLand.getSettlement().getStateTag(),
                         "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
                         "name", destinationLand.getName(),
                         "description", destinationLand.getDescription(),
@@ -435,17 +431,17 @@ public class LandModeListener implements LandAccessChecker {
             } else if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner()) || !originalLand.getName().equals(destinationLand.getName()) || !originalLand.getDescription().equals(destinationLand.getDescription())) {
                 if (destinationLand.isPlot()) {
                     Utils.runAsync(() -> MessageUtils.tellAdvanced(player,  (destinationLand.isEmbassy() ? "embassy" : "plot") + ".owned" + (destinationLand.getDescription().isEmpty() ? "" : "-description"),
-                            "name", destinationLand.getLandOwner().getName(),
-                            "state", destinationLand.getLandOwner().getStateTag(),
+                            "name", destinationLand.getSettlement().getName(),
+                            "state", destinationLand.getSettlement().getStateTag(),
                             "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
                             "name", destinationLand.getName(),
                             "description", destinationLand.getDescription(),
                             "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : ""
                     ));
-                } else if (destinationLand.isForSale() && (destinationLand.getLandOwner().isMember(resident) || destinationLand.isEmbassy())) {
+                } else if (destinationLand.isForSale() && (destinationLand.getSettlement().isMember(resident) || destinationLand.isEmbassy())) {
                     MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".for-sale" + (destinationLand.getDescription().isEmpty() ? "" : "-description"),
-                            "name", destinationLand.getLandOwner().getName(),
-                            "state", destinationLand.getLandOwner().getStateTag(),
+                            "name", destinationLand.getSettlement().getName(),
+                            "state", destinationLand.getSettlement().getStateTag(),
                             "name", destinationLand.getName(),
                             "description", destinationLand.getDescription(),
                             "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",
@@ -453,8 +449,8 @@ public class LandModeListener implements LandAccessChecker {
                     );
                 } else if (!destinationLand.getDescription().isEmpty() || !destinationLand.getName().isEmpty()) {
                     MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".description",
-                            "name", destinationLand.getLandOwner().getName(),
-                            "state", destinationLand.getLandOwner().getStateTag(),
+                            "name", destinationLand.getSettlement().getName(),
+                            "state", destinationLand.getSettlement().getStateTag(),
                             "name", destinationLand.getName(),
                             "description", destinationLand.getDescription(),
                             "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : "",

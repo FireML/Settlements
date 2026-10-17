@@ -3,11 +3,9 @@ package de.themoep.settlements.command.common;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import de.themoep.settlements.db.DatabaseManager;
-import de.themoep.settlements.empire.Empire;
-import de.themoep.settlements.empire.EmpireManager;
 import de.themoep.settlements.land.ChatMap;
 import de.themoep.settlements.land.LandManager;
-import de.themoep.settlements.land.LandOwner;
+
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
@@ -33,15 +31,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public interface LandOwnerCommand extends ConfigMessages {
-    default LandOwner<?, ?> getTarget(Resident resident, String arg) {
-        LandOwner<?, ?> target = null;
-        if (arg.startsWith("empire:") || arg.startsWith("e:")) {
-            target = EmpireManager.getInstance().getEmpireFromName(arg.split(":")[1]);
-            if (target == null) {
-                getError("empire-doesnt-exist").tell(resident, "name", arg.split(":")[1]);
-                return null;
-            }
-        } else if (arg.startsWith("settlement:") || arg.startsWith("s:")) {
+    default Settlement getTarget(Resident resident, String arg) {
+        Settlement target = null;
+        if (arg.startsWith("settlement:") || arg.startsWith("s:")) {
             target = SettlementManager.getInstance().getFromName(arg.split(":")[1]);
             if (target == null) {
                 getError("settlement-doesnt-exist").tell(resident, "name", arg.split(":")[1]);
@@ -53,14 +45,8 @@ public interface LandOwnerCommand extends ConfigMessages {
                 name = name.split(":")[1];
             }
             Settlement settlement = SettlementManager.getInstance().getFromName(name);
-            Empire empire = EmpireManager.getInstance().getEmpireFromName(name);
-            if (settlement != null && empire != null) {
-                getError("ambiguous-target").tell(resident, "name", name);
-                return null;
-            } else if (settlement != null) {
+            if (settlement != null) {
                 target = settlement;
-            } else if (empire != null) {
-                target = empire;
             }
             if (target == null) {
                 getError("settlement-doesnt-exist").tell(resident, "name", name);
@@ -70,17 +56,17 @@ public interface LandOwnerCommand extends ConfigMessages {
         return target;
     }
 
-    default boolean handleClaim(Resident res, LandOwner<?, ?> landOwner, String... args) {
+    default boolean handleClaim(Resident res, Settlement settlement, String... args) {
         Player player = res.getPlayer();
-        if (!landOwner.canClaim(player.getWorld())) {
-            getError("world-not-claimable").tell(player, "world", player.getWorld().getName(), "state", landOwner.getStateTag());
+        if (!settlement.canClaim(player.getWorld())) {
+            getError("world-not-claimable").tell(player, "world", player.getWorld().getName(), "state", settlement.getStateTag());
             return true;
         }
-        int amountClaimed = LandManager.getInstance().getClaimedLandSize(landOwner);
-        int maxClaimAllowed = landOwner.getMaxClaimableChunks();
+        int amountClaimed = LandManager.getInstance().getClaimedLandSize(settlement);
+        int maxClaimAllowed = settlement.getMaxClaimableChunks();
         Set<SimpleChunkLocation> toClaim = new LinkedHashSet<>();
         if (args.length == 1) {
-            if (landOwner.hasPermission(res, "claim.radius")) {
+            if (settlement.hasPermission(res, "claim.radius")) {
                 try {
                     int radius = Integer.parseInt(args[0]);
                     int maxRadius = Config.Claiming.MAX_RADIUS;
@@ -99,7 +85,7 @@ public interface LandOwnerCommand extends ConfigMessages {
                 return true;
             }
         } else if (args.length >= 2) {
-            if (landOwner.hasPermission(res, "claim.coords")) {
+            if (settlement.hasPermission(res, "claim.coords")) {
                 try {
                     toClaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (NumberFormatException e) {
@@ -124,7 +110,7 @@ public interface LandOwnerCommand extends ConfigMessages {
             for (SimpleChunkLocation c : toClaim) {
                 for (SimpleChunkLocation chunk : WorldUtils.getChunksAdjacent(c)) {
                     OwnedLand checkLand = LandManager.getInstance().getLand(chunk);
-                    if (checkLand != null && checkLand.isOwnedBy(landOwner)) {
+                    if (checkLand != null && checkLand.isOwnedBy(settlement)) {
                         landAround = true;
                         break;
                     }
@@ -149,12 +135,12 @@ public interface LandOwnerCommand extends ConfigMessages {
                 if (toClaim.size() > 1) {
                     continue;
                 }
-                if (land.getLandOwner().equals(landOwner)) {
+                if (land.getSettlement().equals(settlement)) {
                     MessageUtils.tell(player, getError("already-own-land").getComponent());
                 } else {
                     MessageUtils.tell(player, getError("cant-claim-here").getReplacedComponent(
-                            "owner", land.getLandOwner().getName(),
-                            "state", land.getLandOwner().getStateTag()
+                            "owner", land.getSettlement().getName(),
+                            "state", land.getSettlement().getStateTag()
                     ));
                 }
                 return true;
@@ -164,14 +150,14 @@ public interface LandOwnerCommand extends ConfigMessages {
                 if (checkLand == null) {
                     continue;
                 }
-                if (!checkLand.isOwnedBy(landOwner) && (
-                        !checkLand.getLandOwner().isAlly(landOwner) || (
-                                !(checkLand.getLandOwner() instanceof Settlement)
-                                        || !checkLand.getLandOwner().isAllowAllyClaim()))) {
+                if (!checkLand.isOwnedBy(settlement) && (
+                        !checkLand.getSettlement().isAlly(settlement) || (
+                                checkLand.getSettlement() == null
+                                        || !checkLand.getSettlement().isAllowAllyClaim()))) {
                     if (toClaim.size() == 1) {
                         res.tell(getError("claim-too-close").getText(),
-                                "owner", checkLand.getLandOwner().getName(),
-                                "state", checkLand.getLandOwner().getStateTag()
+                                "owner", checkLand.getSettlement().getName(),
+                                "state", checkLand.getSettlement().getStateTag()
                         );
                         return true;
                     } else {
@@ -179,20 +165,20 @@ public interface LandOwnerCommand extends ConfigMessages {
                     }
                 }
             }
-            OwnedLand newLand = LandManager.getInstance().claimLand(c, player.getLocation(), landOwner);
-            MessageUtils.tellResidents(landOwner.getOnlineResidents(), getMessage("success").getReplacedComponent(
+            OwnedLand newLand = LandManager.getInstance().claimLand(c, player.getLocation(), settlement);
+            MessageUtils.tellResidents(settlement.getOnlineResidents(), getMessage("success").getReplacedComponent(
                     "player", player.getName(),
                     "world", newLand.getWorldName(),
                     "x", String.valueOf(newLand.getX()),
                     "z", String.valueOf(newLand.getZ())
             ));
             if (newLand.containsHome()) {
-                SimpleBlockLocation home = new SimpleBlockLocation(newLand.getLandOwner().getHome());
-                getMessage("home-set").tell(landOwner,
+                SimpleBlockLocation home = new SimpleBlockLocation(newLand.getSettlement().getHome());
+                getMessage("home-set").tell(settlement,
                         "title", res.getDisplayTitle(),
                         "displaytitle", res.getDisplayTitle(),
                         "name", player.getName(),
-                        "state", landOwner.getStateTag(),
+                        "state", settlement.getStateTag(),
                         "world", home.getWorld(),
                         "x", String.valueOf(home.getX()),
                         "y", String.valueOf(home.getY()),
@@ -202,16 +188,16 @@ public interface LandOwnerCommand extends ConfigMessages {
             amountClaimed++;
         }
         if (!toSave.isEmpty()) {
-            if (landOwner.getLevel() == 1 && landOwner instanceof Empire || (landOwner instanceof Settlement && ((Settlement) landOwner).getState() == SettlementState.VILLAGE)) {
+            if (settlement.getLevel() == 1 && settlement.getState() == SettlementState.VILLAGE) {
                 getMessage("new-upkeep").tell(res,
-                        "upkeep", String.valueOf(landOwner.getUpkeep()),
-                        "upkeepperclaim", String.valueOf(landOwner.getClaimUpkeep(player.getWorld().getName()))
+                        "upkeep", String.valueOf(settlement.getUpkeep()),
+                        "upkeepperclaim", String.valueOf(settlement.getClaimUpkeep(player.getWorld().getName()))
                 );
             }
             Utils.runAsync(() -> {
                 DatabaseManager.getInstance().saveLand(toSave);
                 if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
-                    new ChatMap(res.getPlayer(), landOwner, toSave.getFirst().getMapKey());
+                    new ChatMap(res.getPlayer(), settlement, toSave.getFirst().getMapKey());
                 }
             });
         }
@@ -220,9 +206,9 @@ public interface LandOwnerCommand extends ConfigMessages {
 
     Cache<UUID, Runnable> confirm = CacheBuilder.newBuilder().expireAfterWrite(Duration.ofMinutes(1)).build();
 
-    default boolean handleUnclaim(Resident res, LandOwner<?, ?> landOwner, String base, String alias, String... args) {
+    default boolean handleUnclaim(Resident res, Settlement settlement, String base, String alias, String... args) {
         Player player = res.getPlayer();
-        if (!landOwner.canClaim(player.getWorld())) {
+        if (!settlement.canClaim(player.getWorld())) {
             getError("world-not-claimable").tell(res, "world", player.getWorld().getName());
             return true;
         }
@@ -239,7 +225,7 @@ public interface LandOwnerCommand extends ConfigMessages {
                 }
                 return true;
             }
-            if (landOwner.hasPermission(res, "unclaim.radius")) {
+            if (settlement.hasPermission(res, "unclaim.radius")) {
                 try {
                     int radius = Integer.parseInt(args[0]);
                     int maxRadius = Config.Claiming.MAX_RADIUS;
@@ -258,7 +244,7 @@ public interface LandOwnerCommand extends ConfigMessages {
                 return true;
             }
         } else if (args.length >= 2) {
-            if (landOwner.hasPermission(res, "unclaim.coords")) {
+            if (settlement.hasPermission(res, "unclaim.coords")) {
                 try {
                     toUnclaim.add(new SimpleChunkLocation(player.getWorld().getName(), Integer.parseInt(args[0]), Integer.parseInt(args[1])));
                 } catch (NumberFormatException e) {
@@ -279,9 +265,9 @@ public interface LandOwnerCommand extends ConfigMessages {
         for (SimpleChunkLocation c : toUnclaim) {
             OwnedLand land = LandManager.getInstance().getLand(c);
             if (land != null) {
-                if (!land.isOwnedBy(landOwner)) {
+                if (!land.isOwnedBy(settlement)) {
                     if (toUnclaim.size() == 1) {
-                        getError("not-your-" + landOwner.getKey()).tell(res, "state", land.getLandOwner().getStateTag());
+                        getError("not-your-" + settlement.getKey()).tell(res, "state", land.getSettlement().getStateTag());
                         return true;
                     }
                 } else if (land.isOutpost()) {
@@ -289,7 +275,7 @@ public interface LandOwnerCommand extends ConfigMessages {
                         getMessage("outpost").tell(res, "base", base, "outpost", land.getOutpostName());
                         return true;
                     }
-                } else if (land.containsHome() && (toUnclaim.size() > 1 || LandManager.getInstance().getClaimedLandSize(landOwner) > 1)) {
+                } else if (land.containsHome() && (toUnclaim.size() > 1 || LandManager.getInstance().getClaimedLandSize(settlement) > 1)) {
                     if (toUnclaim.size() == 1) {
                         getMessage("home").tell(res, "base", base);
                         return true;
@@ -309,11 +295,11 @@ public interface LandOwnerCommand extends ConfigMessages {
         }
         if (!unclaimedLand.isEmpty()) {
             Runnable unclaim = () -> {
-                unclaimedLand.forEach(l -> getMessage("success").tell(landOwner,
+                unclaimedLand.forEach(l -> getMessage("success").tell(settlement,
                         "player", res.getName(),
                         "name", res.getName(),
                         "title", res.getDisplayTitle(),
-                        "rank", landOwner.getRank(res).getTag(),
+                        "rank", settlement.getRank(res).getTag(),
                         "world", l.getWorldName(),
                         "location", l.getSimpleKey(),
                         "centerx", String.valueOf(l.getX() * 16 + 8),
@@ -323,13 +309,13 @@ public interface LandOwnerCommand extends ConfigMessages {
                 );
                 if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
                     ConfigMessages configMessages = unclaimedLand.iterator().next().getMapKey();
-                    Utils.runAsync(() -> new ChatMap(res.getPlayer(), landOwner, configMessages));
+                    Utils.runAsync(() -> new ChatMap(res.getPlayer(), settlement, configMessages));
                 }
                 LandManager.getInstance().unclaimLand(unclaimedLand);
-                if (landOwner.getLevel() == 1) {
+                if (settlement.getLevel() == 1) {
                     getMessage("new-upkeep").tell(res,
-                            "upkeep", String.valueOf(landOwner.getUpkeep()),
-                            "upkeepperclaim", String.valueOf(landOwner.getClaimUpkeep(player.getWorld().getName()))
+                            "upkeep", String.valueOf(settlement.getUpkeep()),
+                            "upkeepperclaim", String.valueOf(settlement.getClaimUpkeep(player.getWorld().getName()))
                     );
                 }
 
@@ -345,7 +331,7 @@ public interface LandOwnerCommand extends ConfigMessages {
                 unclaim.run();
             }
         } else if (toUnclaim.size() == 1) {
-            getError("no-" + landOwner.getKey()).tell(res);
+            getError("no-" + settlement.getKey()).tell(res);
         }
         return true;
     }
