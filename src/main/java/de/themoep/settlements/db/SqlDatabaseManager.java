@@ -1,8 +1,6 @@
 package de.themoep.settlements.db;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.chat.ChatChannel;
-import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.invites.Invite;
 import de.themoep.settlements.invites.SettlementInvite;
 import de.themoep.settlements.land.Ally;
@@ -29,6 +27,7 @@ import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import uk.firedev.chatchannels.api.ChatChannel;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -566,14 +565,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 }
             }
             if (resident.getId() != null && !resident.getId().isNull()) {
-                updateList(conn, "resident_channels", "userId", (Integer) resident.getId().value(), "channel", resident.getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
-                updateUserList(conn, "resident_friends", "userId", (Integer) resident.getId().value(), "friendId", resident.getFriends().stream().map(Friend::getPlayerId).collect(Collectors.toList()));
-                updateDataMap(conn, "resident_channel_colors", "userId", (Integer) resident.getId().value(), "channel", "color", Arrays.stream(ChatChannel.values())
-                        .filter(c -> resident.getChannelColor(c, ChatColorType.MESSAGE) != null)
-                        .collect(Collectors.toMap(Enum::name, c -> NamedTextColor.nearestTo(resident.getChannelColor(c, ChatColorType.MESSAGE)).toString())));
-                updateDataMap(conn, "resident_channel_prefix_colors", "userId", (Integer) resident.getId().value(), "channel", "color", Arrays.stream(ChatChannel.values())
-                        .filter(c -> resident.getChannelColor(c, ChatColorType.PREFIX) != null)
-                        .collect(Collectors.toMap(Enum::name, c -> NamedTextColor.nearestTo(resident.getChannelColor(c, ChatColorType.PREFIX)).toString())));
                 if (!hadId) {
                     ResidentManager.getInstance().addResident(resident);
                 }

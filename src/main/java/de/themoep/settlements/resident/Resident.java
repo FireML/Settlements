@@ -5,9 +5,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.chat.ChatChannel;
-import de.themoep.settlements.chat.ChatColorType;
-import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.land.LandManager;
@@ -41,6 +38,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import uk.firedev.chatchannels.api.ChatChannel;
+import uk.firedev.daisylib.external.vault.VaultWrapper;
 
 import java.sql.Date;
 import java.time.Duration;
@@ -68,9 +67,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private SettlementRank rank = SettlementRank.getDefault();
     private String settlementTitle = null;
     private Settlement settlement = null;
-    private ChatChannel activeChannel = ChatChannel.GENERAL;
-    private final Set<ChatChannel> channels = EnumSet.of(ChatChannel.GENERAL);
-    private final Table<ChatChannel, ChatColorType, TextColor> channelColors = HashBasedTable.create(ChatChannel.values().length, ChatColorType.values().length);
     private final Map<UUID, Friend> friends = new ConcurrentHashMap<>();
     private final Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
     private boolean swear = true;
@@ -198,76 +194,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public Collection<FriendRequest> getFriendRequests() {
         return friendRequests.values();
-    }
-
-    public boolean getSwear() {
-        return swear;
-    }
-
-    public void setSwear(boolean swear) {
-        this.swear = swear;
-    }
-
-    public boolean getSocialSpy() {
-        return socialSpy;
-    }
-
-    public void setSocialSpy(boolean socialSpy) {
-        this.socialSpy = socialSpy;
-    }
-
-    public ChatChannel getActiveChannel() {
-        return activeChannel;
-    }
-
-    public boolean setActiveChannel(ChatChannel channel) {
-        if (activeChannel != channel) {
-            activeChannel = channel;
-            return true;
-        }
-        return false;
-    }
-
-    public Set<ChatChannel> getChannels() {
-        return channels;
-    }
-
-    public boolean isListening(ChatChannel channel) {
-        return getChannels().contains(channel);
-    }
-
-    public boolean addChannel(ChatChannel channel) {
-        if (channels.add(channel)) {
-            Message.get("command.chat.joined").tell(this, "name", channel.getTag());
-            return true;
-        }
-        return false;
-    }
-
-    public boolean removeChannel(ChatChannel channel) {
-        if (channels.remove(channel)) {
-            Message.get("command.chat.leave.success").tell(this, "name", channel.getTag());
-            return true;
-        }
-        Message.get("command.chat.leave.not-joined").tell(this, "name", channel.getTag());
-        return false;
-    }
-
-    public TextColor getChannelColor(ChatChannel channel, ChatColorType type) {
-        return channelColors.get(channel, type);
-    }
-
-    public TextColor getChannelColor(ChatChannel channel, ChatColorType type, TextColor def) {
-        TextColor color = channelColors.get(channel, type);
-        return color != null ? color : def;
-    }
-
-    public TextColor setChannelColor(ChatChannel channel, ChatColorType type, TextColor chatColor) {
-        return chatColor != null ? channelColors.put(channel, type, chatColor) : removeChannelColor(channel, type);
-    }
-
-    public TextColor removeChannelColor(ChatChannel channel, ChatColorType type) {
-        return channelColors.remove(channel, type);
     }
 
     public MissionData getMissionData(String missionId) {
@@ -620,7 +546,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
              return UtilTime.format(System.currentTimeMillis() - r.getLastLogin(), false) + " " + Message.get("names.ago").getText();
         }),
         plots(r -> String.valueOf(LandManager.getInstance().getOwnedPlotCount(r.getUUID()))),
-        activechannel(r -> r.getActiveChannel().getTag()),
         primarygroup(r -> {
             Player player = r.getPlayer();
             if (player != null) {
@@ -631,14 +556,16 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         vaultprefix(r -> {
             Player player = r.getPlayer();
             if (player != null) {
-                return ChatManager.getInstance().getPlayerGroupPrefix(player);
+                String group = SettlementsPlugin.getInstance().getChat().getPrimaryGroup(player);
+                return VaultWrapper.get().getChat().getGroupPrefix((String) null, group);
             }
             return "Unknown";
         }),
         vaultsuffix(r -> {
             Player player = r.getPlayer();
             if (player != null) {
-                return ChatManager.getInstance().getPlayerSuffix(player);
+                String group = SettlementsPlugin.getInstance().getChat().getPrimaryGroup(player);
+                return VaultWrapper.get().getChat().getGroupSuffix((String) null, group);
             }
             return "Unknown";
         }),
@@ -674,18 +601,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         map.put("taxPaid", getTaxPaid());
         map.put("donated", getDonated());
         map.put("missionPoints", getMissionPoints());
-        map.put("channels", getChannels().stream().map(ChatChannel::name).collect(Collectors.toList()));
-        map.put("activeChannel", getActiveChannel().name());
-        map.put("channelColors", channelColors.column(ChatColorType.MESSAGE).entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> entry.getKey().name(),
-                        entry -> NamedTextColor.nearestTo(entry.getValue()).toString())));
-        map.put("channelPrefixColors", channelColors.column(ChatColorType.PREFIX).entrySet().stream()
-                .collect(Collectors.toMap(
-                        entry -> entry.getKey().name(),
-                        entry -> NamedTextColor.nearestTo(entry.getValue()).toString())));
-        map.put("swear", getSwear());
-        map.put("socialSpy", getSocialSpy());
         map.put("bonusClaims", getBonusClaims());
         map.put("friends", getFriends().stream().map(f -> f.getPlayerId().toString()).collect(Collectors.toList()));
         map.put("friendRequests", getFriendRequests());
@@ -740,40 +655,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
                         resident.addMissionData(md);
                     }
                 });
-        resident.getChannels().clear();
-        ((Collection<String>) map.get("channels")).stream()
-                .map(s -> Utils.parseEnum(ChatChannel.class, s.toUpperCase()))
-                .filter(Objects::nonNull)
-                .forEach(c -> resident.getChannels().add(c));
-        try {
-            resident.setActiveChannel(ChatChannel.valueOf(((String) map.get("activeChannel")).toUpperCase()));
-        } catch (Exception e) {
-            SettlementsPlugin.getInstance().getLogging().warn("Invalid active channel for resident " + resident.getName() + "/" + resident.getUUID() + ": " + map.get("activeChannel"));
-        }
-        if (map.containsKey("channelColors")) {
-            for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelColors")).entrySet()) {
-                ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
-                TextColor color = ColorUtils.getColor(entry.getValue().replace('-', '_').toLowerCase(Locale.ROOT), NamedTextColor.WHITE);
-                if (channel != null && color != null) {
-                    resident.setChannelColor(channel, ChatColorType.MESSAGE, color);
-                }
-            }
-        }
-        if (map.containsKey("channelPrefixColors")) {
-            for (Map.Entry<String, String> entry : ((Map<String, String>) map.get("channelPrefixColors")).entrySet()) {
-                ChatChannel channel = Utils.parseEnum(ChatChannel.class, entry.getKey().toUpperCase());
-                TextColor color = ColorUtils.getColor(entry.getValue().replace('-', '_').toLowerCase(Locale.ROOT), NamedTextColor.WHITE);
-                if (channel != null && color != null) {
-                    resident.setChannelColor(channel, ChatColorType.PREFIX, color);
-                }
-            }
-        }
-        if (map.containsKey("swear")) {
-            resident.setSwear(Utils.getBoolean(map.get("swear")));
-        }
-        if (map.containsKey("socialSpy")) {
-            resident.setSocialSpy(Utils.getBoolean(map.get("socialSpy")));
-        }
         if (map.containsKey("bonusClaims")) {
             resident.setBonusClaims((Integer) map.get("bonusClaims"));
         }

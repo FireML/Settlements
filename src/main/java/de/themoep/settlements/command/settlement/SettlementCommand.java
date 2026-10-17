@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.settlement;
 
-import de.themoep.settlements.command.ChatCommand;
 import de.themoep.settlements.command.HelpCommand;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.command.plot.PlotCommand;
@@ -15,12 +14,12 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import uk.firedev.chatchannels.commands.ChatCommand;
 
 public class SettlementCommand extends SubCommand {
     public SettlementCommand() {
         super(null, "settlement", "village", "kingdom", "s", "v", "k");
         setHelpCommand(new HelpCommand(this));
-        registerCommand(new ChatCommand());
         registerCommand(new SettlementActiveCommand(this));
         registerCommand(new SettlementAlliesCommand(this));
         registerCommand(new SettlementAllyCommand(this));

@@ -35,4 +35,5 @@ public interface NameTag extends ConfigKey, HumanReadable {
         }
         return humanizedName();
     }
+
 }

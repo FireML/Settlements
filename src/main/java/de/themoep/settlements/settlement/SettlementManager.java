@@ -1,7 +1,7 @@
 package de.themoep.settlements.settlement;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.chat.ChatChannel;
+import de.themoep.settlements.chat.SettlementChat;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.Ally;
 import de.themoep.settlements.land.BuildState;
@@ -31,6 +31,9 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import uk.firedev.chatchannels.ChatChannels;
+import uk.firedev.chatchannels.api.ChatChannel;
+import uk.firedev.chatchannels.data.PlayerData;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -172,7 +175,6 @@ public class SettlementManager {
         settlements.put(settlement.getName().replace(' ', '_').toLowerCase(), settlement);
         chief.setSettlement(settlement);
         chief.setSettlementRank(SettlementRank.getChief());
-        chief.addChannel(ChatChannel.SETTLEMENT);
         Utils.runAsync(() -> {
             DatabaseManager.getInstance().addNewSettlement(settlement);
             if (!settlement.getId().isNull()) {
@@ -189,7 +191,7 @@ public class SettlementManager {
 
     public Settlement getAt(Location location) {
         OwnedLand ownedLand = LandManager.getInstance().getLand(location);
-        return ownedLand != null && ownedLand.getSettlement() instanceof Settlement ? (Settlement) ownedLand.getSettlement() : null;
+        return ownedLand != null ? ownedLand.getSettlement() : null;
     }
 
     public Settlement getFromId(IdObject id) {
@@ -333,7 +335,6 @@ public class SettlementManager {
             }
         }
         removeResidentFromSettlement(resident);
-        resident.removeChannel(ChatChannel.SETTLEMENT);
         resident.setTaxExempted(false);
         resident.setTaxPaid(0);
         resident.setDonated(0);

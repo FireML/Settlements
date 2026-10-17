@@ -103,24 +103,23 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         registerListener(new LandEnterListener());
         registerListener(new LandChangeListener());
 
-        if (!Config.Chat.CHAT_ONLY) {
-
-            this.getLandPerks().runTimer();
-            registerListener(new CustomEventManager());
-            registerListener(new BanishListener());
-            registerListener(new SettlementListener());
-            if (Config.Settlement.Missions.ENABLED) {
-                registerListener(new MissionListener());
-            }
-            registerListener(landModeListener = new LandModeListener());
-            registerListener(new LandBlockListener());
-            registerListener(new LandUseListener());
-
-            this.upkeep();
-
-            ConfigManager.getInstance().updateBossBar();
+        this.getLandPerks().runTimer();
+        registerListener(new CustomEventManager());
+        registerListener(new BanishListener());
+        registerListener(new SettlementListener());
+        if (Config.Settlement.Missions.ENABLED) {
+            registerListener(new MissionListener());
         }
+        registerListener(landModeListener = new LandModeListener());
+        registerListener(new LandBlockListener());
+        registerListener(new LandUseListener());
+
+        this.upkeep();
+
+        ConfigManager.getInstance().updateBossBar();
+
         IntegrationManager.getInstance().load();
+        ChatManager.getInstance().load();
         running = true;
         getCommand("towny").setExecutor(new TownyCommand());
     }
@@ -228,15 +227,10 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         ResidentManager.load();
         // Post load actions after residents and settlements are accessible
         SettlementManager.getInstance().postLoad();
-        if (!Config.Chat.CHAT_ONLY) {
-            LandManager.load();
-        }
+        LandManager.load();
         InviteManager.load();
         if (ConfigManager.getInstance().getEventsConf().getConfig().getBoolean("enabled")) {
             EventManager.load();
-        }
-        if (Config.Chat.ENABLED) {
-            ChatManager.load();
         }
         return true;
     }

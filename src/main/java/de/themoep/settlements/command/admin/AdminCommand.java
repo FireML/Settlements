@@ -12,7 +12,6 @@ public class AdminCommand extends SubCommand {
         super(null, "settlementadmin", "settlementsadmin", "sa", "villageadmin", "va", "kingdomadmin", "ka");
         setPermission("settlements.admin.command");
         setHelpCommand(new HelpCommand(this));
-        this.registerCommand(new AdminSocialSpyCommand(this));
         this.registerCommand(new AdminReloadCommand(this));
         this.registerCommand(new AdminConvertConfigCommand(this));
         this.registerCommand(new AdminBonusCommand(this));

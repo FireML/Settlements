@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Table;
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.Ally;
@@ -64,6 +63,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
+import uk.firedev.chatchannels.api.ChatChannel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -845,7 +845,6 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
             new SettlementJoinEvent(this, resident).callEvent();
             resident.setSettlement(this);
             resident.setSettlementRank(SettlementRank.getDefault());
-            resident.addChannel(ChatChannel.SETTLEMENT);
             resident.setDonated(0);
             resident.setTaxPaid(0);
             resident.setTaxExempted(false);

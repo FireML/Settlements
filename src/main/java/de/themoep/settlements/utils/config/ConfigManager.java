@@ -4,7 +4,6 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.event.EventManager;
 import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.utils.CursesFilter;
 import de.themoep.settlements.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -78,13 +77,9 @@ public class ConfigManager {
     private ConfigAccessor settlementLevelConf;
     private ConfigAccessor settlementMissionsConf;
     private ConfigAccessor mapConf;
-    private ConfigAccessor npcConf;
-    private ConfigAccessor npcLevelConf;
     private ConfigAccessor settlementPerksConf;
     private ConfigAccessor eventsConf;
     private ConfigAccessor useFlagsConf;
-    private CursesFilter toggleableCurses;
-    private CursesFilter forcedCurses;
     private ConfigAccessor lastUpkeepConf;
 
     private ConfigAccessor settlementRanksConf;
@@ -174,9 +169,7 @@ public class ConfigManager {
         useFlagsConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "useflags.yml");
         lastUpkeepConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "lastUpkeep.yml");
         guisConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "guis.yml");
-        if (Config.Chat.CHAT_ONLY) {
-            Config.Portal.ENABLED = false;
-        } else if (SettlementsPlugin.getInstance().isRunning()) {
+        if (SettlementsPlugin.getInstance().isRunning()) {
             SettlementManager.getInstance().loadConfig();
             UseFlagManager.getInstance().loadConfig();
             Message.clearCache();
@@ -465,14 +458,6 @@ public class ConfigManager {
         return mapConf.getConfig();
     }
 
-    public FileConfiguration getNpcConfig() {
-        return npcConf.getConfig();
-    }
-
-    public FileConfiguration getNpcLevelConfig() {
-        return npcLevelConf.getConfig();
-    }
-
     public FileConfiguration getPerksConfig() {
         return settlementPerksConf.getConfig();
     }
@@ -491,14 +476,6 @@ public class ConfigManager {
 
     public FileConfiguration getGuisConfig() {
         return guisConf.getConfig();
-    }
-
-    public CursesFilter getForcedCurses() {
-        return forcedCurses;
-    }
-
-    public CursesFilter getToggleableCurses() {
-        return toggleableCurses;
     }
 
     public FileConfiguration getConfig() {

@@ -1,8 +1,6 @@
 package de.themoep.settlements.utils;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.chat.ChatChannel;
-import de.themoep.settlements.chat.ChatColorType;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -24,6 +22,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WaterMob;
+import uk.firedev.chatchannels.api.ChatChannel;
 import uk.firedev.daisylib.builders.TitleBuilder;
 import uk.firedev.daisylib.utils.Scheduling;
 
@@ -100,15 +99,6 @@ public class Utils {
             SettlementsPlugin.getInstance().getLogging().exception(e);
         }
         return 0;
-    }
-
-    public static TextColor getChannelColor(ChatChannel channel, ChatColorType type) {
-        return switch (type) {
-            case PREFIX ->
-                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-prefix-colors." + channel.getKey()).toLowerCase(), NamedTextColor.WHITE);
-            case MESSAGE ->
-                    ColorUtils.getColor(ConfigManager.getInstance().getConfig().getString("chat.channel-colors." + channel.getKey()).toLowerCase(), NamedTextColor.WHITE);
-        };
     }
 
     public static boolean hasPlotMode(PlotMode mode, String type) {
@@ -471,12 +461,9 @@ public class Utils {
         return r;
     }
 
+    @Deprecated(forRemoval = true)
     public static String filterAllCurses(String message) {
-        return ConfigManager.getInstance().getToggleableCurses().filterCurses(ConfigManager.getInstance().getForcedCurses().filterCurses(message));
-    }
-
-    public static boolean containsAnyCurses(String message) {
-        return ConfigManager.getInstance().getToggleableCurses().containsCurses(message) || ConfigManager.getInstance().getForcedCurses().containsCurses(message);
+        return message;
     }
 
     public static long getLong(Object o) {

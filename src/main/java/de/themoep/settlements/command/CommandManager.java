@@ -94,9 +94,7 @@ public class CommandManager implements TabExecutor {
         if (instance == null) {
             instance = new CommandManager();
             instance.setup();
-            if (!Config.Chat.CHAT_ONLY) {
-                instance.registerCommands();
-            }
+            instance.registerCommands();
         }
     }
 

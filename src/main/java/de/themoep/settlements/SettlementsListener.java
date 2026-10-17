@@ -1,6 +1,5 @@
 package de.themoep.settlements;
 
-import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -13,6 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerResourcePackStatusEvent;
+import uk.firedev.chatchannels.api.ChatChannel;
 
 public class SettlementsListener implements Listener {
 
@@ -39,10 +39,6 @@ public class SettlementsListener implements Listener {
                     ResidentManager.getInstance().invalidateName(res.getName());
                     res.setName(event.getName());
                     ResidentManager.getInstance().addResident(res);
-                }
-                if (Config.Chat.ENABLED && Config.Chat.RESET_CHANNELS_ON_LOGIN && res.isListening(ChatChannel.GENERAL)) {
-                    res.setActiveChannel(ChatChannel.GENERAL);
-                    Message.get("command.chat.joined").tell(res, "name", ChatChannel.GENERAL.getTag());
                 }
                 res.save();
             }

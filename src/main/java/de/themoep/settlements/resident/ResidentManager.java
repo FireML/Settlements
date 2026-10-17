@@ -5,7 +5,6 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.banish.CustomRunnable;
-import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.invites.InviteManager;
 import de.themoep.settlements.land.LandManager;
@@ -18,6 +17,7 @@ import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import uk.firedev.chatchannels.api.ChatChannel;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -102,10 +102,6 @@ public class ResidentManager {
 
     public void invalidateName(String name) {
         residentsByName.invalidate(name.toLowerCase());
-    }
-
-    public boolean isListening(Player p, ChatChannel channel) {
-        return this.getResident(p).getChannels().contains(channel);
     }
 
     public Resident getResident(Player p) {

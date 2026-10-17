@@ -1,6 +1,5 @@
 package de.themoep.settlements.command.admin;
 
-import de.themoep.settlements.chat.ChatChannel;
 import de.themoep.settlements.command.SubCommand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
@@ -12,6 +11,7 @@ import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import uk.firedev.chatchannels.api.ChatChannel;
 
 public class AdminJoinCommand extends SubCommand {
     public AdminJoinCommand(SubCommand parent) {
@@ -40,7 +40,7 @@ public class AdminJoinCommand extends SubCommand {
             }
             Utils.runSync(() -> {
                 settlement.addMember(target);
-                Message.get("command.chat.joined").tell(target, "name", ChatChannel.SETTLEMENT.getTag());
+                Message.get("command.chat.joined").tell(target);
                 MessageUtils.tell(sender, ComponentUtils.parseComponent("&6&l" + target.getName() + "&r&c&l is now in " + settlement.getName()));
                 Player targetP = target.getPlayer();
                 if (targetP != null) {
