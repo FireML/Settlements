@@ -256,8 +256,8 @@ public class LandPerks {
     }
 
     private static Set<String> getActiveEffects(Player player) {
-        return Arrays.stream(PERK_EFFECTS.get(player.getUniqueId()).split(","))
-            .collect(Collectors.toSet());
+        String effects = PERK_EFFECTS.get(player.getUniqueId());
+        return effects == null ? Set.of() : Set.of(effects.split(","));
     }
 
     private static String getEffectIdentifier(PotionEffect effect) {
