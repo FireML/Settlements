@@ -402,7 +402,7 @@ public class Config {
         public static class Notify {
             @ConfigEntry(old = {"chat.notify.sound"})
             @ConfigComment("The sound that is played when a player's name is mentioned in chat")
-            public static Sound SOUND = Sound.ENTITY_EXPERIENCE_ORB_PICKUP;
+            public static String SOUND = "ENTITY_EXPERIENCE_ORB_PICKUP";
 
             @ConfigEntry(old = {"chat.notify.cooldown"})
             @ConfigComment("Seconds between notification sounds")

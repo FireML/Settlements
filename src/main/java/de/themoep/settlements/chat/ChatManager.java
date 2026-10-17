@@ -25,6 +25,7 @@ import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.event.HoverEvent;
@@ -35,6 +36,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import uk.firedev.daisylib.config.serializer.SoundSerializer;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -348,7 +350,15 @@ public class ChatManager implements ConfigMessages, Listener {
             notifyCooldowns.put(resident.getUUID(), true);
             Player player = resident.getPlayer();
             if (player != null) {
-                player.playSound(player.getLocation(), Config.Chat.Notify.SOUND, 3, 1);
+                Sound configSound = SoundSerializer.get().deserialize(Config.Chat.Notify.SOUND);
+                if (configSound == null) {
+                    return;
+                }
+                Sound sound = Sound.sound(configSound)
+                    .volume(3)
+                    .pitch(1)
+                    .build();
+                player.playSound(sound);
             }
         }
     }

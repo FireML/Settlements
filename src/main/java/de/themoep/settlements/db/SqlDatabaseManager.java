@@ -1408,7 +1408,11 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                  if (task != null) {
                      task.cancel();
                  }
-                 Utils.runAsync(saving);
+                 if (SettlementsPlugin.getInstance().isRunning()) {
+                     Utils.runAsync(saving);
+                 } else {
+                     saving.run();
+                 }
                  return true;
              }
              return false;
