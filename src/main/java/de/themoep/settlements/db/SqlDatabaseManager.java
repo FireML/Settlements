@@ -848,12 +848,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private Resident createResident(Connection conn, ResultSet rs) throws SQLException {
         Map<String, Object> map = toMap(rs);
         int id = rs.getInt("id");
-        map.put("channels", selectList(conn, "resident_channels", "userId", id, "channel"));
         map.put("friends", selectResidentsMap(conn, "resident_friends", "userId", id, "friendId"));
         map.put("friendRequests", getFriendRequests(conn, id));
-        map.put("ignores", selectResidentList(conn, "resident_ignores", "userId", id, "ignoredId"));
-        map.put("channelColors", selectMap(conn, "resident_channel_colors", "userId", id, "channel", "color", String.class));
-        map.put("channelPrefixColors", selectMap(conn, "resident_channel_prefix_colors", "userId", id, "channel", "color", String.class));
 
         PreparedStatement mdSta = conn.prepareStatement("SELECT * FROM resident_missiondata WHERE userId = ?;");
         mdSta.setInt(1, id);

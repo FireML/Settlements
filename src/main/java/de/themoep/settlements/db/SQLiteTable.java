@@ -29,7 +29,7 @@ public enum SQLiteTable {
             + "taxDebtAction VARCHAR(255) NOT NULL,"
             + "finishedMissions BIGINT,"
             + "missionPoints BIGINT,"
-            + "bonusClaims INTEGER,"
+            + "bonusClaims LONG,"
             + "homeLoc_world VARCHAR(255),"
             + "homeLoc_x DOUBLE,"
             + "homeLoc_y DOUBLE,"
@@ -173,7 +173,7 @@ public enum SQLiteTable {
             + "settlementJoin BIGINT(11) NOT NULL,"
             + "rank VARCHAR(255),"
             + "title VARCHAR(16),"
-            + "bonusClaims INTEGER,"
+            + "bonusClaims LONG,"
             + "missionPoints BIGINT,"
             + "lastLogin BIGINT(11) NOT NULL,"
             + "taxExempted BOOLEAN NOT NULL,"
@@ -193,16 +193,6 @@ public enum SQLiteTable {
             + "UNIQUE (userId, friendId)"
             + ");"
             + "CREATE INDEX resident_friends_id ON resident_friends (userId);"),
-
-    RESIDENT_IGNORES("CREATE TABLE IF NOT EXISTS resident_ignores ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "userId INTEGER,"
-            + "ignoredId INTEGER,"
-            + "FOREIGN KEY (userId) REFERENCES residents(id) ON DELETE CASCADE,"
-            + "FOREIGN KEY (ignoredId) REFERENCES residents(id) ON DELETE CASCADE,"
-            + "UNIQUE (userId, ignoredId)"
-            + ");"
-            + "CREATE INDEX resident_ignores_id ON resident_ignores (userId);"),
 
     RESIDENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS resident_missiondata ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"

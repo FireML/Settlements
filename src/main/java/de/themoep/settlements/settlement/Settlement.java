@@ -163,7 +163,7 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
         for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
             landOwner.setMode(mode, Utils.getBoolean(map.getOrDefault(mode.name(), mode.getDefault())));
         }
-        landOwner.setBonusClaims((Long) map.get("bonusClaims"));
+        landOwner.setBonusClaims(Long.parseLong(String.valueOf(map.get("bonusClaims"))));
         try {
             landOwner.setBuildState(BuildState.valueOf((String) map.get("buildState")));
         } catch (IllegalArgumentException ignored) {}
