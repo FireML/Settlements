@@ -117,22 +117,20 @@ public class SettlementListener implements Listener {
                 }
                 if (notification.exists()) {
                     for (Resident r : landOwner.getOnlineResidents()) {
-                        if (r.isReceivingCloseBuildingNotification(landOwner)) {
+                        if (!r.disabledCloseBuildingNotification(landOwner)) {
                             notification.tell(r,
                                     "name", landOwner.getName(),
                                     "settlement", landOwner.getName(),
-                                    "state", landOwner.getStateTag(),
-                                    "time", String.valueOf(Config.Claiming.Close.Building.TOGGLE_TIME)
+                                    "state", landOwner.getStateTag()
                             );
                         }
                     }
                 }
-                if (resident.isReceivingCloseBuildingNotification(landOwner)) {
+                if (!resident.disabledCloseBuildingNotification(landOwner)) {
                     Message.get("close-claims.player." + type).tell(player,
                             "name", landOwner.getName(),
                             "settlement", landOwner.getName(),
-                            "state", landOwner.getStateTag(),
-                            "time", String.valueOf(Config.Claiming.Close.Building.TOGGLE_TIME)
+                            "state", landOwner.getStateTag()
                     );
                     if (Config.Claiming.Close.Building.BLOCK_INSIDE
                             && !Config.Claiming.Close.Building.ALLOWED_BLOCKS.contains(block)

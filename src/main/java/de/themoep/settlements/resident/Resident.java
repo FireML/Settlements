@@ -38,8 +38,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.NonNull;
 import uk.firedev.chatchannels.api.ChatChannel;
 import uk.firedev.daisylib.external.vault.VaultWrapper;
+import uk.firedev.daisylib.utils.CooldownHelper;
 
 import java.sql.Date;
 import java.time.Duration;
@@ -48,6 +50,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -69,8 +72,6 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private Settlement settlement = null;
     private final Map<UUID, Friend> friends = new ConcurrentHashMap<>();
     private final Map<String, FriendRequest> friendRequests = new ConcurrentHashMap<>();
-    private boolean swear = true;
-    private boolean socialSpy = false;
     private long missionPoints = 0;
     private final Map<String, MissionData> missionData = new LinkedHashMap<>();
     private long bonusClaims = 0;
@@ -84,11 +85,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     // Temporary, per session settings:
     private boolean resourcePack = false;
     private boolean showSidebar = true;
-    private boolean hasMessagesEnabled = true;
-    private boolean notifyEnabled = true;
-    private final Cache<IdObject, Boolean> closeBuildingNotificationToggles = CacheBuilder.newBuilder()
-            .expireAfterWrite(Duration.ofMinutes(Config.Claiming.Close.Building.TOGGLE_TIME))
-            .build();
+    private final Map<UUID, Settlement> disabledBuildingNotifications = new HashMap<>();
 
     public Resident(UUID uuid, String name) {
         this.uuid = uuid;
@@ -699,31 +696,16 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return hasSettlement() && getSettlement().hasAllies();
     }
 
-    public boolean isNotifyEnabled() {
-        return notifyEnabled;
+    public boolean disabledCloseBuildingNotification(Settlement settlement) {
+        return disabledBuildingNotifications.containsKey(settlement.getUUID());
     }
 
-    public void setNotifyEnabled(boolean notifyEnabled) {
-        this.notifyEnabled = notifyEnabled;
+    public void disableCloseBuildingNotification(Settlement settlement) {
+        disabledBuildingNotifications.put(settlement.getUUID(), settlement);
     }
 
-    public boolean isReceivingCloseBuildingNotification(Settlement settlement) {
-        return !settlement.equals(getSettlement()) && closeBuildingNotificationToggles.getIfPresent(settlement.getId()) == null;
-    }
-
-    /**
-     * Toggle whether to receive notifications about a certain settlement
-     * @param settlement The settlement
-     * @return Whether the resident will now be receiving notifications
-     */
-    public boolean toggleCloseBuildingNotification(Settlement settlement) {
-        if (isReceivingCloseBuildingNotification(settlement)) {
-            closeBuildingNotificationToggles.put(settlement.getId(), false);
-            return false;
-        } else {
-            closeBuildingNotificationToggles.invalidate(settlement.getId());
-            return true;
-        }
+    public void enableCloseBuildingNotification(Settlement settlement) {
+        disabledBuildingNotifications.remove(settlement.getUUID());
     }
 
     @Override

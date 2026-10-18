@@ -12,6 +12,7 @@ import de.themoep.settlements.utils.config.ConfigMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.jspecify.annotations.NonNull;
+import uk.firedev.daisylib.messages.replacer.Replacer;
 
 public class WarningToggleCommand {
 
@@ -29,11 +30,17 @@ public class WarningToggleCommand {
                             throw NOT_A_RESIDENT.create();
                         }
                         Settlement settlement = ctx.getArgument("settlement", Settlement.class);
-                        String option = resident.toggleCloseBuildingNotification(settlement) ? "enabled" : "disabled";
+                        String option;
+                        if (resident.disabledCloseBuildingNotification(settlement)) {
+                            resident.enableCloseBuildingNotification(settlement);
+                            option = "enabled";
+                        } else {
+                            resident.disableCloseBuildingNotification(settlement);
+                            option = "disabled";
+                        }
                         ConfigMessage.get("command.warningtoggle." + option)
-                            .replace("state", settlement.getStateTag())
-                            .replace("settlement", settlement.getName())
-                            .replace("time", Config.Claiming.Close.Building.TOGGLE_TIME)
+                            .replace("{state}", settlement.getStateTag())
+                            .replace("{settlement}", settlement.getName())
                             .send(ctx.getSource().getSender());
                         return 1;
                     })

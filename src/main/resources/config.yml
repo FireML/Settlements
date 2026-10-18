@@ -89,8 +89,6 @@ claiming:
       - "Events"
       - "Spawn"
       - "Mapart"
-      # The time in minutes a disabled close building notification stays around
-      toggle-time: 30
     unclaim:
       # How many days to wait before automatically unclaiming claims that are too close when unallying
       # Set to -1 to disable the automatic unclaiming of too close lands

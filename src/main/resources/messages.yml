@@ -112,10 +112,10 @@ close-claims:
   player:
     break: |-
       &cYou are breaking a block near a claim of {state} {name}! Avoid doing this!
-      &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for {time} minutes.
+      &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning until the next restart.
     place: |-
       &cYou are placing a block near a claim of {state} {settlement}! Avoid doing this! 
-      &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning for {time} minutes.
+      &cRun [&e/warningtoggle](/warningtoggle {name})&c to disable this warning until the next restart.
     block: |-
       &cYou can only place or break blocks near claims!
       &7Only Shulker Boxes can be placed/broken.
@@ -2057,7 +2057,7 @@ command:
   ## New Messages.
   warningtoggle:
     enabled: "<gray>You will now receive close building warnings for {state} {settlement}."
-    disabled: "<gold>Temporarily disabled close building warnings for {state} {settlement}. ({time}m)"
+    disabled: "<gold>Temporarily disabled close building warnings for {state} {settlement}."
 
   ## Old messages
   resident:

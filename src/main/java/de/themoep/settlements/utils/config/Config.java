@@ -143,10 +143,6 @@ public class Config {
                 @ConfigEntry(parser = "StringSet")
                 @ConfigComment("Which worlds should this check be ignored in?")
                 public static Set<String> ALLOWED_WORLDS = new HashSet<>();
-
-                @ConfigEntry(old = {"close-building-notification-toggle-time", "settlement.close.building-notification.toggle-time"})
-                @ConfigComment("The time in minutes a disabled close building notification stays around")
-                public static int TOGGLE_TIME = 30;
             }
         }
     }
