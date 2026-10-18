@@ -96,10 +96,6 @@ bukkit {
             aliases = listOf("togglewarning")
             usage = "/<command> <settlement>"
         }
-
-        register("towny") {
-            aliases = listOf("t")
-        }
     }
 }
 

@@ -4,7 +4,6 @@ import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
 import de.themoep.settlements.command.main.MainCommand;
 import de.themoep.settlements.commandold.CommandManager;
-import de.themoep.settlements.commandold.TownyCommand;
 import de.themoep.settlements.customevents.CustomEventManager;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.integration.IntegrationManager;
@@ -122,7 +121,6 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
         IntegrationManager.getInstance().load();
         ChatManager.getInstance().load();
         running = true;
-        getCommand("towny").setExecutor(new TownyCommand());
     }
 
     private void upkeep() {
