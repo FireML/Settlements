@@ -33,25 +33,10 @@ public class Config {
     @ConfigComment("How long in seconds a player has time to confirm certain commands")
     public static int COMMAND_CONFIRM_TIME = 30;
 
+    @ConfigComment("SQLite Settings")
     public static class Storage {
         @ConfigEntry(reload = false)
-        public static String TYPE = "mysql";
-        @ConfigEntry(reload = false)
-        public static String HOST = "localhost";
-        @ConfigEntry(reload = false)
-        public static int PORT = 3306;
-        @ConfigEntry(reload = false)
-        public static String USER = "root";
-        @ConfigEntry(reload = false)
-        public static String PASSWORD = "password";
-        @ConfigEntry(reload = false)
-        public static String DATABASE = "settlements";
-        @ConfigEntry(reload = false)
         public static String TABLE_PREFIX = "settlements_";
-        @ConfigEntry(reload = false)
-        public static String URL_PARAMETERS = "";
-        @ConfigComment("MySQL connection timeout in ms")
-        public static long CONNECTION_TIMEOUT = 30000;
         @ConfigComment("Should all data be saved again on shutdown? Normally modifications \n" +
                 "are saved directly, this just makes sure it's all saved!")
         public static boolean SAVE_ON_SHUTDOWN = true;

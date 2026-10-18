@@ -15,17 +15,9 @@ max-rules-length: 25000
 # How long in seconds a player has time to confirm certain commands
 command-confirm-time: 30
 
+# SQLite Settings
 storage:
-  type: sqlite
-  host: localhost
-  port: 3306
-  user: user
-  password: password
-  database: db
   table-prefix: settlements_
-  url-parameters: ""
-  # MySQL connection timeout in ms
-  connection-timeout: 30000
   # Should all data be saved again on shutdown? Normally modifications
   # are saved directly, this just makes sure it's all saved!
   save-on-shutdown: true

@@ -29,17 +29,8 @@ public abstract class DatabaseManager {
 
     synchronized public static void load() {
         if (instance == null) {
-            String type = Config.Storage.TYPE;
-            if ("mysql".equalsIgnoreCase(type)) {
-                instance = new MySqlDatabase();
-                SettlementsPlugin.logDebug("Using MySQL as storage.");
-            } else if ("sqlite".equalsIgnoreCase(type)) {
-                instance = new SQLiteDatabase();
-                SettlementsPlugin.logDebug("Using SQLite as storage.");
-            } else {
-                SettlementsPlugin.getInstance().getLogging().error("Invalid database type config value: " + Config.Storage.TYPE);
-                SettlementsPlugin.getInstance().getServer().getPluginManager().disablePlugin(SettlementsPlugin.getInstance());
-            }
+            instance = new SQLiteDatabase();
+            SettlementsPlugin.logDebug("Using SQLite as storage.");
         }
     }
 
