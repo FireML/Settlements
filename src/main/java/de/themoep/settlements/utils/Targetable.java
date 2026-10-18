@@ -6,15 +6,15 @@ import java.util.List;
 
 public interface Targetable {
 
-    int getBonusClaims();
+    long getBonusClaims();
 
-    void setBonusClaims(int bonusClaims);
+    void setBonusClaims(long bonusClaims);
 
-    default void addBonusClaims(int add) {
+    default void addBonusClaims(long add) {
         setBonusClaims(getBonusClaims() + add);
     }
 
-    default boolean removeBonusClaims(int remove) {
+    default boolean removeBonusClaims(long remove) {
         if (getBonusClaims() >= remove) {
             setBonusClaims(getBonusClaims() - remove);
             return true;

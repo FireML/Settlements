@@ -31,6 +31,7 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.Nullable;
 import uk.firedev.chatchannels.ChatChannels;
 import uk.firedev.chatchannels.api.ChatChannel;
 import uk.firedev.chatchannels.data.PlayerData;
@@ -208,7 +209,7 @@ public class SettlementManager {
         return settlementUuids.get(uuid);
     }
 
-    public Settlement getFromName(String name) {
+    public @Nullable Settlement getFromName(String name) {
         if (name == null || name.isEmpty()) {
             return null;
         }
@@ -372,7 +373,6 @@ public class SettlementManager {
     }
 
     public boolean onLevelUp(Settlement settlement, Resident res) {
-        List<String> perksDesc = new ArrayList<>();
         for (SettlementPerk perk : getPerks()) {
             if (settlement.getState() == perk.getState() && settlement.getLevel() == perk.getLevel()) {
                 if (perk.getUnlockCost().isEmpty()) {
@@ -381,7 +381,6 @@ public class SettlementManager {
                 } else {
                     MessageUtils.tellResidents(settlement.getOnlineResidents(), Message.get("levels.perk-available").getReplacedComponent("perk", perk.getTag()));
                 }
-                perksDesc.add(perk.getTag());
             }
         }
 

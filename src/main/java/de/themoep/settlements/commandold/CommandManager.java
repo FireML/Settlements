@@ -1,7 +1,6 @@
 package de.themoep.settlements.commandold;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.commandold.admin.AdminCommand;
 import de.themoep.settlements.commandold.friend.FriendCommand;
 import de.themoep.settlements.commandold.plot.PlotCommand;
 import de.themoep.settlements.commandold.resident.ResidentCommand;
@@ -24,7 +23,6 @@ public class CommandManager implements TabExecutor {
     private final Map<String, SubCommand> commandMap = new LinkedHashMap<>();
 
     private void setup() {
-        registerCommand(new AdminCommand(), false);
         SettlementsPlugin.logDebug("Loaded CommandManager for " + commandMap.size() + " commands");
     }
 

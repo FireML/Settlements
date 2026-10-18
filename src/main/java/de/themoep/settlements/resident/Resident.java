@@ -73,7 +73,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     private boolean socialSpy = false;
     private long missionPoints = 0;
     private final Map<String, MissionData> missionData = new LinkedHashMap<>();
-    private int bonusClaims = 0;
+    private long bonusClaims = 0;
     private long lastLogin = 0;
     private long settlementJoin;
     private boolean taxExempted = false;
@@ -220,6 +220,14 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return missionPoints;
     }
 
+    public void addMissionPoints(long missionPoints) {
+        this.missionPoints += missionPoints;
+    }
+
+    public void removeMissionPoints(long missionPoints) {
+        this.missionPoints -= missionPoints;
+    }
+
     public void setMissionPoints(long missionPoints) {
         this.missionPoints = missionPoints;
     }
@@ -317,11 +325,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return true;
     }
 
-    public int getBonusClaims() {
+    public long getBonusClaims() {
         return bonusClaims;
     }
 
-    public void setBonusClaims(int bonusClaims) {
+    public void setBonusClaims(long bonusClaims) {
         this.bonusClaims = bonusClaims;
     }
 

@@ -120,7 +120,7 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
     private long tax = 0;
     private double auctionTax = 0;
     private TaxDebtAction taxDebtAction = TaxDebtAction.KICK;
-    private int bonusClaims = 0;
+    private long bonusClaims = 0;
     private SimpleLocation home = null;
     private BuildState buildState = getDefaultBuildState();
     private LandAccess access = LandAccess.PRIVATE;
@@ -163,7 +163,7 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
         for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND_OWNER)) {
             landOwner.setMode(mode, Utils.getBoolean(map.getOrDefault(mode.name(), mode.getDefault())));
         }
-        landOwner.setBonusClaims((Integer) map.get("bonusClaims"));
+        landOwner.setBonusClaims((Long) map.get("bonusClaims"));
         try {
             landOwner.setBuildState(BuildState.valueOf((String) map.get("buildState")));
         } catch (IllegalArgumentException ignored) {}
@@ -624,7 +624,7 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
         this.settlementState = state;
     }
 
-    public int getMaxClaimableChunks() {
+    public long getMaxClaimableChunks() {
         return SettlementManager.getInstance().getLevel(getState(), getLevel()).map(SettlementLevel::getChunks).orElse(0)
                 + getBonusClaimAmount();
     }
@@ -642,10 +642,10 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
         return SettlementManager.getInstance().changeName(this, name);
     }
 
-    public int getBonusClaimAmount() {
+    public long getBonusClaimAmount() {
         return getBonusClaims() + getPerksMap().entrySet().stream()
                 .filter(e -> getPerk(e.getKey()) != null)
-                .mapToInt(e -> e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims())
+                .mapToLong(e -> (long) e.getValue().getTimes() * getPerk(e.getKey()).getBonusClaims())
                 .sum();
     }
 
@@ -707,6 +707,14 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
 
     public long getFinishedMissions() {
         return finishedMissions;
+    }
+
+    public void addFinishedMissions(long amount) {
+        this.finishedMissions += amount;
+    }
+
+    public void removeFinishedMissions(long amount) {
+        this.finishedMissions -= amount;
     }
 
     public void setFinishedMissions(long finishedMissions) {
@@ -1431,12 +1439,12 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
     }
 
     @Override
-    public int getBonusClaims() {
+    public long getBonusClaims() {
         return bonusClaims;
     }
 
     @Override
-    public void setBonusClaims(int bonusClaims) {
+    public void setBonusClaims(long bonusClaims) {
         this.bonusClaims = bonusClaims;
     }
 

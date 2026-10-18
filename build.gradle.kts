@@ -77,11 +77,6 @@ bukkit {
             aliases = listOf("s", "village", "kingdom", "k", "v")
         }
 
-        register("settlementadmin") {
-            description = "Admin Commands."
-            aliases = listOf("villageadmin", "va", "sa", "kingdomadmin", "ka")
-        }
-
         register("resident") {
             description = "Shows you the name of the players settlement."
             aliases = listOf("res")

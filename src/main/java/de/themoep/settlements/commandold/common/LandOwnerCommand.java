@@ -62,7 +62,7 @@ public interface LandOwnerCommand extends ConfigMessages {
             return true;
         }
         int amountClaimed = LandManager.getInstance().getClaimedLandSize(settlement);
-        int maxClaimAllowed = settlement.getMaxClaimableChunks();
+        long maxClaimAllowed = settlement.getMaxClaimableChunks();
         Set<SimpleChunkLocation> toClaim = new LinkedHashSet<>();
         if (args.length == 1) {
             if (settlement.hasPermission(res, "claim.radius")) {

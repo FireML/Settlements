@@ -2,6 +2,7 @@ package de.themoep.settlements;
 
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
+import de.themoep.settlements.command.main.MainCommand;
 import de.themoep.settlements.commandold.CommandManager;
 import de.themoep.settlements.commandold.TownyCommand;
 import de.themoep.settlements.customevents.CustomEventManager;
@@ -28,6 +29,7 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.event.Listener;
@@ -204,7 +206,8 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     @Override
     public void onLoad() {
-        // Register dependencies here
+        logging.info("Registering plugin commands.");
+        loadCommands();
     }
 
     public boolean loadManagers() {
@@ -273,6 +276,12 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
 
     public @NonNull ComponentLogging getLogging() {
         return this.logging;
+    }
+
+    private void loadCommands() {
+        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+            commands.registrar().register(MainCommand.get());
+        });
     }
 
 }

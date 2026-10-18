@@ -2901,24 +2901,6 @@ command:
     settings:
       description: Shows a settings gui
   settlementadmin:
-    description: Settlement administration command
-    bonus:
-      description: Add/set/remove bonus claims from Residents/Settlements
-      success: "&aSUCCESS: {operation} {amount} to {name}"
-    convertconfig:
-      description: Convert the config to a certain config version
-      same-version: "&cConfig is already version {version}."
-      success: "&aSUCCESS: Converted config from version {from} to {to}"
-    cooperationpoints:
-      description: Add/set/remove finished Mission Points of Settlements/Residents
-      success: "&aSUCCESS: {operation} {amount} to {name}"
-    mission:
-      description: Add/set/remove finished mission count of settlements
-      success: "&aSUCCESS: {operation} {amount} to {name}"
-    distributemission:
-      description: Distribute new missions to a settlement/resident
-      success: "&aSUCCESS: {name} now has {amount} missions"
-      none-distributed: "&cUnable to give {name} new missions. Does the level have missions?"
     distributenewmissions:
       description: Distribute new missions to all settlement members
       success: "&aSUCCESS: Distributed new missions to all {state} {name} members"
