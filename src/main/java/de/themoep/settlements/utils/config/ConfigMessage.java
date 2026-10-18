@@ -1,20 +1,26 @@
 package de.themoep.settlements.utils.config;
 
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import uk.firedev.daisylib.messages.config.PaperConfigReader;
 import uk.firedev.daisylib.messages.message.ComponentMessage;
+import uk.firedev.daisylib.messages.message.ComponentSingleMessage;
 
 public class ConfigMessage {
 
     private static final PaperConfigReader reader = new PaperConfigReader(ConfigManager.getInstance().getMessagesConfig());
 
+    private static ComponentSingleMessage getPrefix() {
+        return ComponentMessage.componentMessage(reader, "prefix", "<gray>[Settlements]</gray> ").toSingleMessage();
+    }
+
     public static @NonNull ComponentMessage<?, ?> get(@NonNull String key) {
-        return ComponentMessage.componentMessage(reader, key, "<red>Unknown Message: <yellow>" + key);
+        return ComponentMessage.componentMessage(reader, key, "<red>Unknown Message: <yellow>" + key)
+            .replace("{prefix}", getPrefix());
     }
 
     public static @NonNull ComponentMessage<?, ?> get(@NonNull String key, @NonNull String def) {
-        return ComponentMessage.componentMessage(reader, key, def);
+        return ComponentMessage.componentMessage(reader, key, def)
+            .replace("{prefix}", getPrefix());
     }
 
 }

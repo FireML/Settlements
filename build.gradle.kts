@@ -82,10 +82,6 @@ bukkit {
             aliases = listOf("res")
         }
 
-        register("tax") {
-            description = "Shows tax information."
-        }
-
         register("friend") {
             description = "Friending command"
             aliases = listOf("friends", "f")

@@ -31,7 +31,6 @@ public class CommandManager implements TabExecutor {
         registerCommand(new SettlementCommand());
         registerCommand(new ResidentCommand());
         registerCommand(new FriendCommand());
-        registerCommand(new TaxCommand());
     }
 
     public void registerCommand(SubCommand ex) {
