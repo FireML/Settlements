@@ -2,7 +2,7 @@ package de.themoep.settlements.db;
 
 public enum SQLiteTable {
 
-    SETTLEMENTS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlements ("
+    SETTLEMENTS("CREATE TABLE IF NOT EXISTS settlements ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "name VARCHAR(255) NOT NULL,"
             + "chiefId INTEGER NOT NULL,"
@@ -36,12 +36,11 @@ public enum SQLiteTable {
             + "homeLoc_z DOUBLE,"
             + "homeLoc_yaw FLOAT,"
             + "homeLoc_pitch FLOAT,"
-            + "enableNPCs BOOLEAN NOT NULL,"
-            + "FOREIGN KEY (chiefId) REFERENCES {tablePrefix}residents(id) ON DELETE RESTRICT"
+            + "FOREIGN KEY (chiefId) REFERENCES residents(id) ON DELETE RESTRICT"
             + ");"
-            + "CREATE UNIQUE INDEX settlements_names ON {tablePrefix}settlements (name);"),
+            + "CREATE UNIQUE INDEX settlements_names ON settlements (name);"),
 
-    SETTLEMENT_OUTPOSTS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_outposts ("
+    SETTLEMENT_OUTPOSTS("CREATE TABLE IF NOT EXISTS settlement_outposts ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "name VARCHAR(255),"
@@ -51,67 +50,57 @@ public enum SQLiteTable {
             + "z DOUBLE,"
             + "yaw FLOAT,"
             + "pitch FLOAT,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, name)"
             + ");"
-            + "CREATE INDEX settlement_outposts_id ON {tablePrefix}settlement_outposts (settlementId);"),
+            + "CREATE INDEX settlement_outposts_id ON settlement_outposts (settlementId);"),
 
-    SETTLEMENT_VAULTS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_vaults ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "settlementId INTEGER,"
-            + "content VARCHAR(255) NOT NULL,"
-            + "amount BIGINT,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
-            + "UNIQUE (settlementId, content)"
-            + ");"
-            + "CREATE INDEX settlement_vault_id ON {tablePrefix}settlement_vaults (settlementId);"),
-
-    SETTLEMENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_missiondata ("
+    SETTLEMENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS settlement_missiondata ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "mission VARCHAR(255) NOT NULL,"
             + "type VARCHAR(255) NOT NULL,"
             + "progress BIGINT DEFAULT 0,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, mission, type)"
             + ");"
-            + "CREATE INDEX settlement_missiondata_id ON {tablePrefix}settlement_missiondata (settlementId);"),
+            + "CREATE INDEX settlement_missiondata_id ON settlement_missiondata (settlementId);"),
 
-    SETTLEMENT_PERKS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_perks ("
+    SETTLEMENT_PERKS("CREATE TABLE IF NOT EXISTS settlement_perks ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "perk VARCHAR(255) NOT NULL,"
             + "times INTEGER NOT NULL,"
             + "lastUsed BIGINT,"
             + "active BOOLEAN,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, perk)"
             + ");"
-            + "CREATE INDEX settlement_perks_id ON {tablePrefix}settlement_perks (settlementId);"),
+            + "CREATE INDEX settlement_perks_id ON settlement_perks (settlementId);"),
 
-    SETTLEMENT_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_uses ("
+    SETTLEMENT_USES("CREATE TABLE IF NOT EXISTS settlement_uses ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "type VARCHAR(255) NOT NULL,"
             + "state VARCHAR(255) NOT NULL,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, type)"
             + ");"
-            + "CREATE INDEX settlement_uses_id ON {tablePrefix}settlement_uses (settlementId);"),
+            + "CREATE INDEX settlement_uses_id ON settlement_uses (settlementId);"),
 
-    SETTLEMENT_BANISHED("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_banished ("
+    SETTLEMENT_BANISHED("CREATE TABLE IF NOT EXISTS settlement_banished ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "banished_id VARCHAR(128) NOT NULL,"
             + "banished_date BIGINT(11) NOT NULL,"
             + "banished_sender VARCHAR(36),"
             + "banished_reason TEXT,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, banished_id)"
             + ");"
-            + "CREATE INDEX settlement_banished_id ON {tablePrefix}settlement_banished (settlementId);"),
+            + "CREATE INDEX settlement_banished_id ON settlement_banished (settlementId);"),
 
-    SETTLEMENT_UNBANISHED("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_unbanished ("
+    SETTLEMENT_UNBANISHED("CREATE TABLE IF NOT EXISTS settlement_unbanished ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "unbanished_id VARCHAR(128) NOT NULL,"
@@ -120,53 +109,53 @@ public enum SQLiteTable {
             + "unbanished_reason TEXT,"
             + "unbanished_unbanisher VARCHAR(36),"
             + "unbanished_unbanishdate VARCHAR(36),"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, unbanished_id, unbanished_date)"
             + ");"
-            + "CREATE INDEX settlement_unbanished_id ON {tablePrefix}settlement_unbanished (settlementId);"),
+            + "CREATE INDEX settlement_unbanished_id ON settlement_unbanished (settlementId);"),
 
-    SETTLEMENT_ALLIES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_allies ("
+    SETTLEMENT_ALLIES("CREATE TABLE IF NOT EXISTS settlement_allies ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "allies_id VARCHAR(36) NOT NULL,"
             + "allies_created BIGINT(11) NOT NULL, "
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, allies_id)"
             + ");"
-            + "CREATE INDEX settlement_allies_id ON {tablePrefix}settlement_allies (settlementId);"),
+            + "CREATE INDEX settlement_allies_id ON settlement_allies (settlementId);"),
 
-    SETTLEMENT_PERMISSIONS("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_permissions ("
+    SETTLEMENT_PERMISSIONS("CREATE TABLE IF NOT EXISTS settlement_permissions ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "rank VARCHAR(255) NOT NULL,"
             + "permission VARCHAR(255) NOT NULL,"
             + "value BOOLEAN NOT NULL,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, rank, permission)"
             + ");"
-            + "CREATE INDEX settlement_permissions_id ON {tablePrefix}settlement_permissions (settlementId);"),
+            + "CREATE INDEX settlement_permissions_id ON settlement_permissions (settlementId);"),
 
-    SETTLEMENT_TITLES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_titles ("
+    SETTLEMENT_TITLES("CREATE TABLE IF NOT EXISTS settlement_titles ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "rank VARCHAR(255) NOT NULL,"
             + "title VARCHAR(16) NOT NULL,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, rank, title)"
             + ");"
-            + "CREATE INDEX settlement_titles_id ON {tablePrefix}settlement_titles (settlementId);"),
+            + "CREATE INDEX settlement_titles_id ON settlement_titles (settlementId);"),
 
-    SETTLEMENT_DEFAULTTITLES("CREATE TABLE IF NOT EXISTS {tablePrefix}settlement_defaulttitles ("
+    SETTLEMENT_DEFAULTTITLES("CREATE TABLE IF NOT EXISTS settlement_defaulttitles ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "rank VARCHAR(255) NOT NULL,"
             + "title VARCHAR(16) NOT NULL,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
             + "UNIQUE (settlementId, rank)"
             + ");"
-            + "CREATE INDEX settlement_defaulttitles_id ON {tablePrefix}settlement_defaulttitles (settlementId);"),
+            + "CREATE INDEX settlement_defaulttitles_id ON settlement_defaulttitles (settlementId);"),
 
-    RESIDENTS("CREATE TABLE IF NOT EXISTS {tablePrefix}residents ("
+    RESIDENTS("CREATE TABLE IF NOT EXISTS residents ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "uuid CHAR(36) NOT NULL,"
             + "name VARCHAR(16) NOT NULL,"
@@ -179,76 +168,44 @@ public enum SQLiteTable {
             + "lastLogin BIGINT(11) NOT NULL,"
             + "taxExempted BOOLEAN NOT NULL,"
             + "taxDebtAction VARCHAR(255) NOT NULL,"
-            + "activeChannel VARCHAR(255) NOT NULL,"
             + "taxPaid NUMERIC(19,4) DEFAULT 0,"
             + "donated NUMERIC(19,4) DEFAULT 0,"
-            + "swear BOOLEAN NOT NULL,"
-            + "socialSpy BOOLEAN NOT NULL,"
-            + "FOREIGN KEY (settlementId) REFERENCES {tablePrefix}settlements(id) ON DELETE SET NULL"
+            + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE SET NULL"
             + ");"
-            + "CREATE UNIQUE INDEX residents_id ON {tablePrefix}residents (uuid);"),
+            + "CREATE UNIQUE INDEX residents_id ON residents (uuid);"),
 
-    RESIDENT_CHANNELS("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_channels ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "userId INTEGER,"
-            + "channel VARCHAR(255),"
-            + "FOREIGN KEY (userId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
-            + "UNIQUE (userId, channel)"
-            + ");"
-            + "CREATE INDEX resident_channels_id ON {tablePrefix}resident_channels (userId);"),
-
-    RESIDENT_CHANNEL_COLORS("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_channel_colors ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "userId INTEGER,"
-            + "channel VARCHAR(255),"
-            + "color VARCHAR(255),"
-            + "FOREIGN KEY (userId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
-            + "UNIQUE (userId, channel)"
-            + ");"
-            + "CREATE INDEX resident_channel_colors_id ON {tablePrefix}resident_channel_colors (userId);"),
-
-    RESIDENT_CHANNEL_PREFIX_COLORS("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_channel_prefix_colors ("
-            + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + "userId INTEGER,"
-            + "channel VARCHAR(255),"
-            + "color VARCHAR(255),"
-            + "FOREIGN KEY (userId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
-            + "UNIQUE (userId, channel)"
-            + ");"
-            + "CREATE INDEX resident_channel_prefix_colors_id ON {tablePrefix}resident_channel_prefix_colors (userId);"),
-
-    RESIDENT_FRIENDS("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_friends ("
+    RESIDENT_FRIENDS("CREATE TABLE IF NOT EXISTS resident_friends ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "userId INTEGER,"
             + "friendId INTEGER,"
-            + "FOREIGN KEY (userId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
-            + "FOREIGN KEY (friendId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (userId) REFERENCES residents(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (friendId) REFERENCES residents(id) ON DELETE CASCADE,"
             + "UNIQUE (userId, friendId)"
             + ");"
-            + "CREATE INDEX resident_friends_id ON {tablePrefix}resident_friends (userId);"),
+            + "CREATE INDEX resident_friends_id ON resident_friends (userId);"),
 
-    RESIDENT_IGNORES("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_ignores ("
+    RESIDENT_IGNORES("CREATE TABLE IF NOT EXISTS resident_ignores ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "userId INTEGER,"
             + "ignoredId INTEGER,"
-            + "FOREIGN KEY (userId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
-            + "FOREIGN KEY (ignoredId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (userId) REFERENCES residents(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (ignoredId) REFERENCES residents(id) ON DELETE CASCADE,"
             + "UNIQUE (userId, ignoredId)"
             + ");"
-            + "CREATE INDEX resident_ignores_id ON {tablePrefix}resident_ignores (userId);"),
+            + "CREATE INDEX resident_ignores_id ON resident_ignores (userId);"),
 
-    RESIDENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS {tablePrefix}resident_missiondata ("
+    RESIDENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS resident_missiondata ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "userId INTEGER,"
             + "mission VARCHAR(255) NOT NULL,"
             + "type VARCHAR(255) NOT NULL,"
             + "progress BIGINT DEFAULT 0,"
-            + "FOREIGN KEY (userId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (userId) REFERENCES residents(id) ON DELETE CASCADE,"
             + "UNIQUE (userId, mission, type)"
             + ");"
-            + "CREATE INDEX resident_missiondata_id ON {tablePrefix}resident_missiondata (userId);"),
+            + "CREATE INDEX resident_missiondata_id ON resident_missiondata (userId);"),
 
-    INVITES("CREATE TABLE IF NOT EXISTS {tablePrefix}invites ("
+    INVITES("CREATE TABLE IF NOT EXISTS invites ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "type VARCHAR(255) NOT NULL,"
             + "targetType VARCHAR(255) NOT NULL,"
@@ -257,9 +214,9 @@ public enum SQLiteTable {
             + "sourceId INTEGER NOT NULL,"
             + "time BIGINT(11) NOT NULL"
             + ");"
-            + "CREATE INDEX invite_type ON {tablePrefix}invites (type);"),
+            + "CREATE INDEX invite_type ON invites (type);"),
 
-    CLAIMS("CREATE TABLE IF NOT EXISTS {tablePrefix}claims ("
+    CLAIMS("CREATE TABLE IF NOT EXISTS claims ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "landOwnerType VARCHAR(255) NOT NULL,"
             + "landOwnerId INTEGER NOT NULL,"
@@ -276,46 +233,46 @@ public enum SQLiteTable {
             + "description TEXT,"
             + "buildState VARCHAR(255),"
             + "link VARCHAR(36),"
-            + "FOREIGN KEY (ownerId) REFERENCES {tablePrefix}residents(id) ON DELETE SET NULL,"
+            + "FOREIGN KEY (ownerId) REFERENCES residents(id) ON DELETE SET NULL,"
             + "UNIQUE(world, x, z)"
             + ");"
-            + "CREATE INDEX claims_worlds ON {tablePrefix}claims (world);"
-            + "CREATE INDEX claims_x ON {tablePrefix}claims (x);"
-            + "CREATE INDEX claims_z ON {tablePrefix}claims (z);"
-            + "CREATE INDEX claims_type ON {tablePrefix}claims (landOwnerType);"
-            + "CREATE INDEX claims_id ON {tablePrefix}claims (landOwnerId);"),
+            + "CREATE INDEX claims_worlds ON claims (world);"
+            + "CREATE INDEX claims_x ON claims (x);"
+            + "CREATE INDEX claims_z ON claims (z);"
+            + "CREATE INDEX claims_type ON claims (landOwnerType);"
+            + "CREATE INDEX claims_id ON claims (landOwnerId);"),
 
-    CLAIM_USES("CREATE TABLE IF NOT EXISTS {tablePrefix}claim_uses ("
+    CLAIM_USES("CREATE TABLE IF NOT EXISTS claim_uses ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "claimId INTEGER,"
             + "type VARCHAR(255) NOT NULL,"
             + "state VARCHAR(255) NOT NULL,"
-            + "FOREIGN KEY (claimId) REFERENCES {tablePrefix}claims(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (claimId) REFERENCES claims(id) ON DELETE CASCADE,"
             + "UNIQUE (claimId, type)"
             + ");"
-            + "CREATE INDEX claim_uses_id ON {tablePrefix}claim_uses (claimId);"),
+            + "CREATE INDEX claim_uses_id ON claim_uses (claimId);"),
 
-    CLAIM_MODES("CREATE TABLE IF NOT EXISTS {tablePrefix}claim_modes ("
+    CLAIM_MODES("CREATE TABLE IF NOT EXISTS claim_modes ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "claimId INTEGER,"
             + "mode VARCHAR(255) NOT NULL,"
             + "enabled BOOLEAN NOT NULL,"
-            + "FOREIGN KEY (claimId) REFERENCES {tablePrefix}claims(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (claimId) REFERENCES claims(id) ON DELETE CASCADE,"
             + "UNIQUE (claimId, mode)"
             + ");"
-            + "CREATE INDEX claim_modes_id ON {tablePrefix}claim_modes (claimId);"),
+            + "CREATE INDEX claim_modes_id ON claim_modes (claimId);"),
 
-    CLAIM_MEMBERS("CREATE TABLE IF NOT EXISTS {tablePrefix}claim_members ("
+    CLAIM_MEMBERS("CREATE TABLE IF NOT EXISTS claim_members ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "claimId INTEGER,"
             + "memberId INTEGER,"
-            + "FOREIGN KEY (claimId) REFERENCES {tablePrefix}claims(id) ON DELETE CASCADE,"
-            + "FOREIGN KEY (memberId) REFERENCES {tablePrefix}residents(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (claimId) REFERENCES claims(id) ON DELETE CASCADE,"
+            + "FOREIGN KEY (memberId) REFERENCES residents(id) ON DELETE CASCADE,"
             + "UNIQUE (claimId, memberId)"
             + ");"
-            + "CREATE INDEX claim_members_id ON {tablePrefix}claim_members (claimId);"),
+            + "CREATE INDEX claim_members_id ON claim_members (claimId);"),
 
-    LOGS("CREATE TABLE IF NOT EXISTS {tablePrefix}logs ("
+    LOGS("CREATE TABLE IF NOT EXISTS logs ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
             + "residentId INTEGER,"
@@ -324,8 +281,8 @@ public enum SQLiteTable {
             + "amount BIGINT NOT NULL,"
             + "timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP"
             + ");"
-            + "CREATE INDEX logs_settlementId ON {tablePrefix}logs (settlementId);"
-            + "CREATE INDEX logs_residentId ON {tablePrefix}logs (residentId);");
+            + "CREATE INDEX logs_settlementId ON logs (settlementId);"
+            + "CREATE INDEX logs_residentId ON logs (residentId);");
 
     private final String sql;
 
@@ -333,8 +290,8 @@ public enum SQLiteTable {
         this.sql = sql;
     }
 
-    public String getSql(String tablePrefix) {
-        return sql.replace("{tablePrefix}", tablePrefix);
+    public String getSql() {
+        return sql;
     }
 
     public String getDbName() {

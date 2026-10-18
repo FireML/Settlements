@@ -61,7 +61,6 @@ import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public abstract class SqlDatabaseManager extends DatabaseManager {
-    protected String tablePrefix;
     protected final SettlementsPlugin plugin = SettlementsPlugin.getInstance();
 
     private SaveQueue<Consumer<Connection>> logQueue;
@@ -73,8 +72,6 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public void connect() throws Exception {
-        tablePrefix = Config.Storage.TABLE_PREFIX;
-
         int queueSize = Config.Storage.Queue.SIZE;
         int queueWait = Config.Storage.Queue.WAIT;
         int missionQueueSize = Config.Storage.Queue.Missions.SIZE;
@@ -179,7 +176,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         settlementQueue.remove(settlement.getId(), settlement);
         Connection conn = getConnection();
         if (settlement.getId() != null && !settlement.getId().isNull()) {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE id=?")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM settlements WHERE id=?")) {
                 sta.setInt(1, (Integer) settlement.getId().value());
                 sta.executeUpdate();
             } catch (SQLException e) {
@@ -188,7 +185,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 close(conn);
             }
         } else {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "settlements WHERE name=?")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM settlements WHERE name=?")) {
                 sta.setString(1, settlement.getName());
                 sta.executeUpdate();
             } catch (SQLException e) {
@@ -204,7 +201,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Utils.catchSync();
         Connection conn = getConnection();
         if (ally.getId() != null && !ally.getId().isNull()) {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + landOwner.getDbName() + "_allies WHERE id=?")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + landOwner.getDbName() + "_allies WHERE id=?")) {
                 sta.setInt(1, (Integer) ally.getId().value());
                 sta.executeUpdate();
             } catch (SQLException e) {
@@ -213,7 +210,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 close(conn);
             }
         } else {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + landOwner.getDbName() + "_allies WHERE " + landOwner.getDbName() + "Id = ?, allies_id = ? LIMIT 1")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + landOwner.getDbName() + "_allies WHERE " + landOwner.getDbName() + "Id = ?, allies_id = ? LIMIT 1")) {
                 sta.setInt(1, (Integer) landOwner.getId().value());
                 sta.setInt(2, (Integer) ally.getId().value());
                 sta.executeUpdate();
@@ -245,7 +242,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         inviteQueue.remove(invite.getId(), invite);
         Connection conn = getConnection();
         if (invite.getId() != null && !invite.getId().isNull()) {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "invites WHERE id=?")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM invites WHERE id=?")) {
                 sta.setInt(1, (Integer) invite.getId().value());
                 sta.executeUpdate();
             } catch (SQLException e) {
@@ -254,7 +251,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 close(conn);
             }
         } else {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "invites WHERE type = ? AND targetType = ? AND targetId = ? AND sourceType = ? AND sourceId = ? LIMIT 1")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM invites WHERE type = ? AND targetType = ? AND targetId = ? AND sourceType = ? AND sourceId = ? LIMIT 1")) {
                 sta.setString(1, invite.name());
                 sta.setString(2, invite.getTargetType());
                 sta.setInt(3, (Integer) invite.getTargetId().value());
@@ -277,8 +274,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             return;
         }
         Connection conn = getConnection();
-        try (PreparedStatement idSta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE id = ?;");
-             PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ? AND x = ? AND z = ?;")) {
+        try (PreparedStatement idSta = conn.prepareStatement("DELETE FROM claims WHERE id = ?;");
+             PreparedStatement sta = conn.prepareStatement("DELETE FROM claims WHERE world = ? AND x = ? AND z = ?;")) {
             for (OwnedLand land : lands) {
                 landQueue.remove(land.getId(), land);
                 if (land.getId().isNull()) {
@@ -313,7 +310,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
 
         Connection conn = getConnection();
-        try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE landOwnerType = ? AND landOwnerId = ?;")) {
+        try (PreparedStatement sta = conn.prepareStatement("DELETE FROM claims WHERE landOwnerType = ? AND landOwnerId = ?;")) {
             sta.setString(1, landOwner.getDbName());
             sta.setInt(2, (Integer) landOwner.getId().value());
             sta.executeUpdate();
@@ -333,7 +330,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
 
         Connection conn = getConnection();
-        try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + tablePrefix + "claims WHERE world = ?;")) {
+        try (PreparedStatement sta = conn.prepareStatement("DELETE FROM claims WHERE world = ?;")) {
             sta.setString(1, worldName);
             sta.executeUpdate();
         } catch (SQLException e) {
@@ -348,7 +345,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Utils.catchSync();
 
         Connection conn = getConnection();
-        try (PreparedStatement sta = conn.prepareStatement("UPDATE " + tablePrefix + "claims SET world = ? WHERE world = ?;")) {
+        try (PreparedStatement sta = conn.prepareStatement("UPDATE claims SET world = ? WHERE world = ?;")) {
             sta.setString(1, newName);
             sta.setString(2, oldName);
             sta.executeUpdate();
@@ -388,7 +385,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public Collection<OwnedLand> getAllLand() {
         Utils.catchSync();
-        String sql = "SELECT c.*, r.uuid AS `owner` FROM " + tablePrefix + "claims AS c LEFT JOIN " + tablePrefix + "residents AS r ON c.ownerId = r.id;";
+        String sql = "SELECT c.*, r.uuid AS `owner` FROM claims AS c LEFT JOIN residents AS r ON c.ownerId = r.id;";
         Connection conn = getConnection();
         try ( ResultSet rs = conn.createStatement().executeQuery(sql)) {
             List<OwnedLand> claims = new ArrayList<>();
@@ -410,7 +407,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public void deleteLand(IdObject idObject) {
         Utils.catchSync();
-        String sql = "DELETE FROM " + tablePrefix + "claims WHERE id = ?;";
+        String sql = "DELETE FROM claims WHERE id = ?;";
         Connection conn = getConnection();
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, (Integer) idObject.value());
@@ -425,7 +422,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     @Override
     public Collection<Settlement> getAllSettlements() {
         Utils.catchSync();
-        String sql = "SELECT s.*, r.uuid AS chief FROM " + tablePrefix + "settlements AS s LEFT JOIN " + tablePrefix + "residents AS r ON s.chiefId = r.id;";
+        String sql = "SELECT s.*, r.uuid AS chief FROM settlements AS s LEFT JOIN residents AS r ON s.chiefId = r.id;";
         Connection conn = getConnection();
         try (ResultSet rs = conn.createStatement().executeQuery(sql)) {
             List<Settlement> settlements = new ArrayList<>();
@@ -447,7 +444,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     public Collection<SettlementInvite> getSettlementInvites() {
         Utils.catchSync();
         Connection conn = getConnection();
-        try (PreparedStatement sta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "invites WHERE type = ?;")) {
+        try (PreparedStatement sta = conn.prepareStatement("SELECT * FROM invites WHERE type = ?;")) {
             sta.setString(1, "settlementinvite");
             ResultSet rs = sta.executeQuery();
             List<SettlementInvite> invites = new ArrayList<>();
@@ -468,7 +465,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public Resident getResident(int id) {
-        String sql = "SELECT * FROM " + tablePrefix + "residents WHERE id=?";
+        String sql = "SELECT * FROM residents WHERE id=?";
         Connection conn = getConnection();
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setInt(1, id);
@@ -486,7 +483,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
     @Override
     public Resident getResident(UUID uuid) {
-        String sql = "SELECT * FROM " + tablePrefix + "residents WHERE uuid=?";
+        String sql = "SELECT * FROM residents WHERE uuid=?";
         Connection conn = getConnection();
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setString(1, uuid.toString());
@@ -507,7 +504,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         if (!name.matches("^\\w{3,16}$")) {
             return null;
         }
-        String sql = "SELECT * FROM " + tablePrefix + "residents WHERE name LIKE ?";
+        String sql = "SELECT * FROM residents WHERE name LIKE ?";
         Connection conn = getConnection();
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setString(1, name.replace("_", "\\_"));
@@ -588,7 +585,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     private void log(Connection conn, Timestamp timestamp, Settlement settlement, Resident resident, String action, Map<String, Long> values) {
-        try (PreparedStatement sta = conn.prepareStatement("INSERT INTO " + tablePrefix + "logs " +
+        try (PreparedStatement sta = conn.prepareStatement("INSERT INTO logs " +
                      "(`settlementId`, `residentId`, `action`, `type`, `amount`, `timestamp`) " +
                      "VALUES (?, ?, ?, ?, ?, ?);"
              )
@@ -620,7 +617,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             return 0;
         }
         String sql = "SELECT count(l.id) " +
-                "FROM " + tablePrefix + "logs AS l " +
+                "FROM logs AS l " +
                 "WHERE l." + column + "=?";
         switch (type) {
             case BANK -> sql += " AND l.type = 'cash'";
@@ -666,8 +663,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         int start = (page-1) * Config.ENTRIES_PER_PAGE;
         String sql = "SELECT l.settlementId, l.action, l.type, l.amount, l.timestamp, r.name AS playerName, r.uuid AS playerId, r.rank AS playerRank, r.title AS playerTitle " +
-                "FROM " + tablePrefix + "logs AS l " +
-                "LEFT JOIN " + tablePrefix + "residents AS r ON l.residentId = r.id " +
+                "FROM logs AS l " +
+                "LEFT JOIN residents AS r ON l.residentId = r.id " +
                 "WHERE l." + column + "=?";
         switch (type) {
             case BANK -> sql += " AND l.type = 'cash'";
@@ -732,7 +729,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         int id = rs.getInt("id");
         Map<String, Object> map = toMap(rs);
 
-        PreparedStatement rSta = conn.prepareStatement("SELECT id, uuid FROM " + tablePrefix + "residents WHERE settlementId = ?;");
+        PreparedStatement rSta = conn.prepareStatement("SELECT id, uuid FROM residents WHERE settlementId = ?;");
         rSta.setInt(1, id);
         ResultSet rRs = rSta.executeQuery();
         Collection<String> residents = new LinkedHashSet<>();
@@ -751,7 +748,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("vault", selectMap(conn, "settlement_vaults", "settlementId", id, "content", "amount", Long.class));
         map.put("defaulttitles", selectMap(conn, "settlement_defaulttitles", "settlementId", id, "rank", "title", String.class));
 
-        PreparedStatement oSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_outposts WHERE settlementId = ?;");
+        PreparedStatement oSta = conn.prepareStatement("SELECT * FROM settlement_outposts WHERE settlementId = ?;");
         oSta.setInt(1, id);
         ResultSet oRs = oSta.executeQuery();
         Map<String, Map<String, Object>> outposts = new LinkedHashMap<>();
@@ -760,7 +757,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         map.put("outposts", outposts);
 
-        PreparedStatement pSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_perks WHERE settlementId = ?;");
+        PreparedStatement pSta = conn.prepareStatement("SELECT * FROM settlement_perks WHERE settlementId = ?;");
         pSta.setInt(1, id);
         ResultSet pRs = pSta.executeQuery();
         Map<String, Map<String, Object>> unlockedPerks = new LinkedHashMap<>();
@@ -769,7 +766,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         map.put("perks", unlockedPerks);
 
-        PreparedStatement rpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_permissions WHERE settlementId = ?;");
+        PreparedStatement rpSta = conn.prepareStatement("SELECT * FROM settlement_permissions WHERE settlementId = ?;");
         rpSta.setInt(1, id);
         ResultSet rpRs = rpSta.executeQuery();
         Map<String, Map<String, Boolean>> rankPermissions = new LinkedHashMap<>();
@@ -779,7 +776,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         map.put("permissions", rankPermissions);
 
-        PreparedStatement mdSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_missiondata WHERE settlementId = ?;");
+        PreparedStatement mdSta = conn.prepareStatement("SELECT * FROM settlement_missiondata WHERE settlementId = ?;");
         mdSta.setInt(1, id);
         ResultSet mdRs = mdSta.executeQuery();
         Map<String, Map<String, Long>> missionData = new LinkedHashMap<>();
@@ -789,7 +786,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         }
         map.put("missiondata", missionData);
 
-        PreparedStatement tpSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "settlement_titles WHERE settlementId = ?;");
+        PreparedStatement tpSta = conn.prepareStatement("SELECT * FROM settlement_titles WHERE settlementId = ?;");
         tpSta.setInt(1, id);
         ResultSet tpRs = tpSta.executeQuery();
         Map<String, Collection<String>> rankTitles = new LinkedHashMap<>();
@@ -805,7 +802,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private Collection<AllyRequest> getAllyRequests(Connection conn, String type, int id) {
         Utils.catchSync();
         String sql = "SELECT *" +
-                " FROM " + tablePrefix + "invites" +
+                " FROM invites" +
                 " WHERE type = ? AND targetType = ? AND targetId = ?;";
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setString(1, "allyrequest");
@@ -829,7 +826,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private Collection<JoinRequest<?>> getJoinRequests(Connection conn, String type, int id) {
         Utils.catchSync();
         String sql = "SELECT *" +
-                " FROM " + tablePrefix + "invites" +
+                " FROM invites" +
                 " WHERE type = ? AND targetType = ? AND targetId = ?;";
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setString(1, "joinrequest");
@@ -858,7 +855,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         map.put("channelColors", selectMap(conn, "resident_channel_colors", "userId", id, "channel", "color", String.class));
         map.put("channelPrefixColors", selectMap(conn, "resident_channel_prefix_colors", "userId", id, "channel", "color", String.class));
 
-        PreparedStatement mdSta = conn.prepareStatement("SELECT * FROM " + tablePrefix + "resident_missiondata WHERE userId = ?;");
+        PreparedStatement mdSta = conn.prepareStatement("SELECT * FROM resident_missiondata WHERE userId = ?;");
         mdSta.setInt(1, id);
         ResultSet mdRs = mdSta.executeQuery();
         Map<String, Map<String, Long>> missionData = new LinkedHashMap<>();
@@ -873,8 +870,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private Collection<FriendRequest> getFriendRequests(Connection conn, int id) {
         Utils.catchSync();
         String sql = "SELECT i.targetId AS targetId, i.sourceId AS sourceId, i.time AS time, r.uuid as senderUuid, r.name as senderName" +
-                " FROM " + tablePrefix + "invites AS i" +
-                " JOIN " + tablePrefix + "residents AS r ON i.sourceId = r.id" +
+                " FROM invites AS i" +
+                " JOIN residents AS r ON i.sourceId = r.id" +
                 " WHERE i.type = ? AND i.targetId = ?;";
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setString(1, "friendrequest");
@@ -940,7 +937,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         int i = 0;
         deleteObjects.put(++i, keyId);
         if (values.isEmpty()) {
-            deleteSql = "DELETE FROM " + tablePrefix + tableName +
+            deleteSql = "DELETE FROM " + tableName +
                     " WHERE " + keyColumn + " = ?;";
         } else if (!mapValue.isEmpty() && values.values().iterator().next() instanceof Collection) {
             Map<String, Collection<Object>> map = new HashMap<>();
@@ -951,7 +948,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 }
             }
 
-            deleteSql = "DELETE FROM " + tablePrefix + tableName +
+            deleteSql = "DELETE FROM " + tableName +
                     " WHERE " + keyColumn + " = ?";
 
             if (!map.isEmpty()) {
@@ -992,7 +989,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 deleteObjects.put(++i, o);
             }
 
-            deleteSql = "DELETE FROM " + tablePrefix + tableName +
+            deleteSql = "DELETE FROM " + tableName +
                     " WHERE " + keyColumn + " = ?";
 
             if (!keyObjects.isEmpty()) {
@@ -1004,7 +1001,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             deleteSql += ";";
 
         } else {
-            deleteSql = "DELETE FROM " + tablePrefix + tableName +
+            deleteSql = "DELETE FROM " + tableName +
                     " WHERE " + keyColumn + " = ?" +
                     " AND " + mapKey + " NOT IN " +
                     "(" + String.join(",", Collections.nCopies(values.size(), "?")) + ");";
@@ -1049,7 +1046,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     private <T> Map<String, T> selectMap(Connection conn, String table, String idColumn, int id, String keyColumn, String valueColumn, Class<T> valueClass) throws SQLException {
-        PreparedStatement sta = conn.prepareStatement("SELECT * FROM " + tablePrefix + table + " WHERE " + idColumn + " = ?;");
+        PreparedStatement sta = conn.prepareStatement("SELECT * FROM " + table + " WHERE " + idColumn + " = ?;");
         sta.setInt(1, id);
         ResultSet rs = sta.executeQuery();
         Map<String, T> map = new LinkedHashMap<>();
@@ -1066,7 +1063,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private <D extends DatabaseSerializable> List<D> selectDeserializableList(Connection conn, String tableName, String keyColumn, int keyValue, String valueType, Class<D> deserializable) throws SQLException {
         try {
             Method deserialize = deserializable.getMethod("deserialize", Map.class);
-            PreparedStatement sta = conn.prepareStatement("SELECT * FROM " + tablePrefix + tableName + " WHERE " + keyColumn + "=?;");
+            PreparedStatement sta = conn.prepareStatement("SELECT * FROM " + tableName + " WHERE " + keyColumn + "=?;");
             sta.setInt(1, keyValue);
             ResultSet rs = sta.executeQuery();
             List<D> list = new ArrayList<>();
@@ -1092,7 +1089,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     private List<Object> selectList(Connection conn, String tableName, String keyColumn, int keyValue, String valueColumn) throws SQLException {
-        String sql = "SELECT " + valueColumn + " FROM " + tablePrefix + tableName + " WHERE " + keyColumn + "=?;";
+        String sql = "SELECT " + valueColumn + " FROM " + tableName + " WHERE " + keyColumn + "=?;";
         List<Object> list = new ArrayList<>();
         PreparedStatement sta = conn.prepareStatement(sql);
         sta.setInt(1, keyValue);
@@ -1104,8 +1101,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     private Collection<String> selectResidentList(Connection conn, String tableName, String keyColumn, int keyValue, String valueColumn) throws SQLException {
-        String sql = "SELECT r.uuid FROM " + tablePrefix + tableName + " AS f" +
-                " JOIN " + tablePrefix + "residents AS r ON f." + valueColumn + " = r.id" +
+        String sql = "SELECT r.uuid FROM " + tableName + " AS f" +
+                " JOIN residents AS r ON f." + valueColumn + " = r.id" +
                 " WHERE f." + keyColumn + "=?";
         Set<String> uuids = new LinkedHashSet<>();
         PreparedStatement sta = conn.prepareStatement(sql);
@@ -1118,8 +1115,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     }
 
     private Map<UUID, String> selectResidentsMap(Connection conn, String tableName, String keyColumn, int keyValue, String valueColumn) throws SQLException {
-        String sql = "SELECT r.uuid AS uuid, r.name AS name FROM " + tablePrefix + tableName + " AS f" +
-                " JOIN " + tablePrefix + "residents AS r ON f." + valueColumn + " = r.id" +
+        String sql = "SELECT r.uuid AS uuid, r.name AS name FROM " + tableName + " AS f" +
+                " JOIN residents AS r ON f." + valueColumn + " = r.id" +
                 " WHERE f." + keyColumn + "=?";
         Map<UUID, String> map = new LinkedHashMap<>();
         PreparedStatement sta = conn.prepareStatement(sql);
@@ -1134,7 +1131,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private void updateList(Connection conn, String tableName, String keyColumn, int keyId, String entryColumn, Collection<?> entries) throws SQLException {
         String deleteSql;
         if (entries.isEmpty()) {
-            deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
+            deleteSql = "DELETE FROM " + tableName + " " +
                     " WHERE " + keyColumn + " = ?;";
         } else {
             String andSql;
@@ -1144,7 +1141,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             } else {
                 andSql = " AND " + entryColumn + " NOT IN (" + String.join(",", Collections.nCopies(entries.size(), "?")) + ")";
             }
-            deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
+            deleteSql = "DELETE FROM " + tableName + " " +
                     " WHERE " + keyColumn + " = ?" + andSql + ";";
         }
 
@@ -1161,7 +1158,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         deleteSta.executeUpdate();
 
         if (!entries.isEmpty()) {
-            StringBuilder insertSql = new StringBuilder(getInsertIgnore() + " INTO " + tablePrefix + tableName + " (" + keyColumn); // TODO: Insert update
+            StringBuilder insertSql = new StringBuilder(getInsertIgnore() + " INTO " + tableName + " (" + keyColumn); // TODO: Insert update
             Object o = entries.iterator().next();
             if (o instanceof DatabaseSerializable serializable) {
                 Collection<String> keys = serializable.serialize().keySet();
@@ -1193,13 +1190,13 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     private void updateUserList(Connection conn, String tableName, String keyColumn, int keyId, String usersColumn, Collection<UUID> users) throws SQLException {
         String deleteSql;
         if (users.isEmpty()) {
-            deleteSql = "DELETE FROM " + tablePrefix + tableName + " " +
+            deleteSql = "DELETE FROM " + tableName + " " +
                     " WHERE " + keyColumn + " = ?;";
         } else {
-            deleteSql = "DELETE t FROM " + tablePrefix + tableName + " AS t" +
+            deleteSql = "DELETE t FROM " + tableName + " AS t" +
                     " WHERE t." + keyColumn + " = ?" +
                     " AND t." + usersColumn + " NOT IN " +
-                    "(SELECT r.id FROM " + tablePrefix + "residents AS r WHERE r.uuid IN (" + String.join(",", Collections.nCopies(users.size(), "?")) + "));";
+                    "(SELECT r.id FROM residents AS r WHERE r.uuid IN (" + String.join(",", Collections.nCopies(users.size(), "?")) + "));";
         }
 
         PreparedStatement deleteSta = conn.prepareStatement(deleteSql);
@@ -1211,8 +1208,8 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         deleteSta.executeUpdate();
 
         if (!users.isEmpty()) {
-            String insertSql = getInsertIgnore() + " INTO " + tablePrefix + tableName + " (" + keyColumn + ", " + usersColumn + ")" +
-                    " VALUES (?,(SELECT r.id FROM " + tablePrefix + "residents AS r WHERE r.uuid=?));";
+            String insertSql = getInsertIgnore() + " INTO " + tableName + " (" + keyColumn + ", " + usersColumn + ")" +
+                    " VALUES (?,(SELECT r.id FROM residents AS r WHERE r.uuid=?));";
             PreparedStatement insertSta = conn.prepareStatement(insertSql);
             for (UUID id : users) {
                 insertSta.setInt(1, keyId);
@@ -1389,12 +1386,12 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
 
         /**
          * Finish up adding to this queue and check if we should save or not
-         * @return Whether or not a save was run due to finishing up
+         * @return Whether a save was run due to finishing up
          */
         public boolean finishAdding() {
              if (forceSave || (SettlementsPlugin.getInstance().isRunning() && queue.size()  > maxSize / 2)) {
                  if (queue.size()  > maxSize / 2) {
-                     SettlementsPlugin.logDebug("Triggering " + type + " save queue due to finnish reaching half size (" + queue.size() + ")");
+                     SettlementsPlugin.logDebug("Triggering " + type + " save queue due to finish reaching half size (" + queue.size() + ")");
                  }
                  if (task != null) {
                      task.cancel();

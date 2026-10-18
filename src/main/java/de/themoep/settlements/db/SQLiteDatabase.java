@@ -64,7 +64,7 @@ public class SQLiteDatabase extends SqlDatabaseManager {
             sta.addBatch("PRAGMA FOREIGN_KEY_CHECKS = OFF");
 
             for (SQLiteTable table : SQLiteTable.values()) {
-                sta.addBatch(table.getSql(tablePrefix));
+                sta.addBatch(table.getSql());
             }
 
             sta.addBatch("PRAGMA FOREIGN_KEY_CHECKS = ON");
@@ -81,7 +81,7 @@ public class SQLiteDatabase extends SqlDatabaseManager {
     @Override
     protected PreparedStatement executeSerializableInsert(Connection conn, String tableName, DatabaseSerializable serializable, Map<String, Object> values) throws SQLException {
         if (!serializable.getId().isNull()) {
-            String updateSql = "UPDATE " + tablePrefix + tableName + " SET " + values.keySet().stream().map(c -> "`" + c + "`" + "=?").collect(Collectors.joining(","))
+            String updateSql = "UPDATE " + tableName + " SET " + values.keySet().stream().map(c -> "`" + c + "`" + "=?").collect(Collectors.joining(","))
                     + " WHERE id=?;";
             PreparedStatement updateSta = conn.prepareStatement(updateSql);
             int i = 0;
@@ -92,7 +92,7 @@ public class SQLiteDatabase extends SqlDatabaseManager {
             updateSta.executeUpdate();
         }
 
-        String insertSql = getInsertIgnore() + " INTO " + tablePrefix + tableName
+        String insertSql = getInsertIgnore() + " INTO " + tableName
                 + " (`" + String.join("`,`", values.keySet()) + "`)"
                 + " VALUES (" + String.join(",", Collections.nCopies(values.size(), "?")) + ")";
         PreparedStatement insertSta = conn.prepareStatement(insertSql, serializable.getId().isNull() ? PreparedStatement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS);
@@ -107,9 +107,9 @@ public class SQLiteDatabase extends SqlDatabaseManager {
 
     @Override
     protected void executeDataMapUpdate(Connection conn, String tableName, String keyColumn, int keyId, String mapKey, Map<String, ?> values, Set<String> columns, String... mapValueColumns) throws SQLException {
-        PreparedStatement updateSta = conn.prepareStatement("UPDATE " + tablePrefix + tableName + " SET " + columns.stream().map(c -> "`" + c + "`" + "=?").collect(Collectors.joining(","))
+        PreparedStatement updateSta = conn.prepareStatement("UPDATE " + tableName + " SET " + columns.stream().map(c -> "`" + c + "`" + "=?").collect(Collectors.joining(","))
                 + " WHERE `" + keyColumn + "`=? AND `" + mapKey + "`=?;");
-        PreparedStatement insertSta = conn.prepareStatement(getInsertIgnore() + " INTO " + tablePrefix + tableName + " (`" + keyColumn + "`,`" + mapKey + "`," + columns.stream().map(c -> "`" + c + "`").collect(Collectors.joining(",")) + ")"
+        PreparedStatement insertSta = conn.prepareStatement(getInsertIgnore() + " INTO " + tableName + " (`" + keyColumn + "`,`" + mapKey + "`," + columns.stream().map(c -> "`" + c + "`").collect(Collectors.joining(",")) + ")"
                 + " VALUES (?,?," + String.join(",", Collections.nCopies(columns.size(), "?")) + ");");
         for (Map.Entry<String, ?> entry : values.entrySet()) {
             if (entry.getValue() instanceof Collection) {

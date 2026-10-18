@@ -35,8 +35,6 @@ public class Config {
 
     @ConfigComment("SQLite Settings")
     public static class Storage {
-        @ConfigEntry(reload = false)
-        public static String TABLE_PREFIX = "settlements_";
         @ConfigComment("Should all data be saved again on shutdown? Normally modifications \n" +
                 "are saved directly, this just makes sure it's all saved!")
         public static boolean SAVE_ON_SHUTDOWN = true;
