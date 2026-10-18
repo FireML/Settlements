@@ -2054,6 +2054,12 @@ usage:
     previous: "<< Prev "
     next: " Next >>"
 command:
+  ## New Messages.
+  warningtoggle:
+    enabled: "<gray>You will now receive close building warnings for {state} {settlement}."
+    disabled: "<gold>Temporarily disabled close building warnings for {state} {settlement}. ({time}m)"
+
+  ## Old messages
   resident:
     claimtransfer:
       success: "&e{name} &r&7added &6{amount}&r&7 bonus claims to the {targetstate} {target}!"

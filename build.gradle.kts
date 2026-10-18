@@ -90,12 +90,6 @@ bukkit {
             description = "Friending command"
             aliases = listOf("friends", "f")
         }
-
-        register("warningtoggle") {
-            description = "Toggle the warning when building near settlements"
-            aliases = listOf("togglewarning")
-            usage = "/<command> <settlement>"
-        }
     }
 }
 

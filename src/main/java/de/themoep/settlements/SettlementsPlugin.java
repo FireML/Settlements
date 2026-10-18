@@ -2,6 +2,7 @@ package de.themoep.settlements;
 
 import de.themoep.settlements.banish.BanishListener;
 import de.themoep.settlements.chat.ChatManager;
+import de.themoep.settlements.command.WarningToggleCommand;
 import de.themoep.settlements.command.main.MainCommand;
 import de.themoep.settlements.commandold.CommandManager;
 import de.themoep.settlements.customevents.CustomEventManager;
@@ -279,6 +280,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
     private void loadCommands() {
         getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             commands.registrar().register(MainCommand.get());
+            commands.registrar().register(WarningToggleCommand.get());
         });
     }
 
