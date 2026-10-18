@@ -55,6 +55,16 @@ public enum SQLiteTable {
             + ");"
             + "CREATE INDEX settlement_outposts_id ON settlement_outposts (settlementId);"),
 
+    SETTLEMENT_VAULTS("CREATE TABLE IF NOT EXISTS settlement_vaults ("
+        + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+        + "settlementId INTEGER,"
+        + "content VARCHAR(255) NOT NULL,"
+        + "amount BIGINT,"
+        + "FOREIGN KEY (settlementId) REFERENCES settlements(id) ON DELETE CASCADE,"
+        + "UNIQUE (settlementId, content)"
+        + ");"
+        + "CREATE INDEX settlement_vault_id ON settlement_vaults (settlementId);"),
+
     SETTLEMENT_MISSIONDATA("CREATE TABLE IF NOT EXISTS settlement_missiondata ("
             + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
             + "settlementId INTEGER,"
