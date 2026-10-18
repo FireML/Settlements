@@ -2,6 +2,7 @@ prefix: "<gray>[Settlements]</gray> "
 
 command:
   warningtoggle:
+    in-settlement: "{prefix}<red>You are a member of {state} {settlement}."
     enabled: "{prefix}<white>You will now receive close building warnings for {state} {settlement}."
     disabled: "{prefix}<white>Temporarily disabled close building warnings for {state} {settlement}."
   tax:

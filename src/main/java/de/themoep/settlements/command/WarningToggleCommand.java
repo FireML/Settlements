@@ -11,7 +11,9 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.audience.Audience;
 import org.jspecify.annotations.NonNull;
+import uk.firedev.daisylib.messages.message.ComponentMessage;
 import uk.firedev.daisylib.messages.replacer.Replacer;
 
 public class WarningToggleCommand {
@@ -30,6 +32,14 @@ public class WarningToggleCommand {
                             throw NOT_A_RESIDENT.create();
                         }
                         Settlement settlement = ctx.getArgument("settlement", Settlement.class);
+                        if (settlement.equals(resident.getSettlement())) {
+                            sendMessage(
+                                ConfigMessage.get("command.warningtoggle.in-settlement"),
+                                ctx.getSource().getSender(),
+                                settlement
+                            );
+                            return 1;
+                        }
                         String option;
                         if (resident.disabledCloseBuildingNotification(settlement)) {
                             resident.enableCloseBuildingNotification(settlement);
@@ -38,13 +48,21 @@ public class WarningToggleCommand {
                             resident.disableCloseBuildingNotification(settlement);
                             option = "disabled";
                         }
-                        ConfigMessage.get("command.warningtoggle." + option)
-                            .replace("{state}", settlement.getStateTag())
-                            .replace("{settlement}", settlement.getName())
-                            .send(ctx.getSource().getSender());
+                        sendMessage(
+                            ConfigMessage.get("command.warningtoggle." + option),
+                            ctx.getSource().getSender(),
+                            settlement
+                        );
                         return 1;
                     })
             ).build();
+    }
+
+    private static void sendMessage(ComponentMessage<?, ?> message, Audience sender, Settlement settlement) {
+        message
+            .replace("{state}", settlement.getStateTag())
+            .replace("{settlement}", settlement.getName())
+            .send(sender);
     }
 
 }
