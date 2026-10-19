@@ -1091,8 +1091,12 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
         this.rules = rules;
     }
 
-    public void setDiscord(String discordLink) {
+    public boolean setDiscord(String discordLink) {
+        if (!discordLink.startsWith("https://discord.gg")) {
+            return false;
+        }
         this.discordLink = discordLink;
+        return true;
     }
 
     public String getDiscord() {
