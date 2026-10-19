@@ -7,20 +7,22 @@ import uk.firedev.daisylib.messages.message.ComponentSingleMessage;
 
 public class ConfigMessage {
 
-    private static final PaperConfigReader reader = new PaperConfigReader(ConfigManager.getInstance().getMessagesConfig());
-
     private static ComponentSingleMessage getPrefix() {
-        return ComponentMessage.componentMessage(reader, "prefix", "<gray>[Settlements]</gray> ").toSingleMessage();
+        return ComponentMessage.componentMessage(getReader(), "prefix", "<gray>[Settlements]</gray> ").toSingleMessage();
     }
 
     public static @NonNull ComponentMessage<?, ?> get(@NonNull String key) {
-        return ComponentMessage.componentMessage(reader, key, "<red>Unknown Message: <yellow>" + key)
+        return ComponentMessage.componentMessage(getReader(), key, "<red>Unknown Message: <yellow>" + key)
             .replace("{prefix}", getPrefix());
     }
 
     public static @NonNull ComponentMessage<?, ?> get(@NonNull String key, @NonNull String def) {
-        return ComponentMessage.componentMessage(reader, key, def)
+        return ComponentMessage.componentMessage(getReader(), key, def)
             .replace("{prefix}", getPrefix());
+    }
+
+    private static PaperConfigReader getReader() {
+        return new PaperConfigReader(ConfigManager.getInstance().getMessagesConfig());
     }
 
 }
