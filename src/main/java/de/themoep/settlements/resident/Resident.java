@@ -1,9 +1,5 @@
 package de.themoep.settlements.resident;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
@@ -19,7 +15,6 @@ import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementMission;
-import de.themoep.settlements.utils.ColorUtils;
 import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.ConfigMessages;
 import de.themoep.settlements.utils.IdObject;
@@ -30,40 +25,33 @@ import de.themoep.settlements.utils.Sortable;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.utils.config.Config;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.NonNull;
-import uk.firedev.chatchannels.api.ChatChannel;
 import uk.firedev.daisylib.external.vault.VaultWrapper;
-import uk.firedev.daisylib.utils.CooldownHelper;
 
 import java.sql.Date;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, Sortable<Resident> {
+public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, Sortable<Resident>, ForwardingAudience {
     private IdObject id = IdObject.get(null);
     private final UUID uuid;
     private String name;
@@ -417,7 +405,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         Collections.addAll(replacements, initial);
 
         for (Placeholder replacement : Placeholder.values()) {
-            replacements.add(replacement.name());
+            replacements.add("{" + replacement.name() + "}");
             replacements.add(replacement.getValue(this));
         }
 
@@ -505,6 +493,12 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public int distributeNewMissions() {
         return getMissionProvider().distributeNewMissions();
+    }
+
+    @Override
+    public @NonNull Iterable<? extends Audience> audiences() {
+        Player player = getPlayer();
+        return player == null ? List.of() : List.of(player);
     }
 
     public enum Sort implements Sortable.Sort<Resident> {

@@ -77,11 +77,6 @@ bukkit {
             aliases = listOf("s", "village", "kingdom", "k", "v")
         }
 
-        register("resident") {
-            description = "Shows you the name of the players settlement."
-            aliases = listOf("res")
-        }
-
         register("friend") {
             description = "Friending command"
             aliases = listOf("friends", "f")

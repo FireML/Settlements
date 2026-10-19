@@ -1,5 +1,6 @@
 package de.themoep.settlements.utils;
 
+import de.themoep.minedown.adventure.MineDown;
 import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.resident.Resident;
@@ -7,6 +8,7 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -22,8 +24,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WaterMob;
+import org.checkerframework.checker.units.qual.C;
 import uk.firedev.chatchannels.api.ChatChannel;
 import uk.firedev.daisylib.builders.TitleBuilder;
+import uk.firedev.daisylib.messages.message.ComponentMessage;
 import uk.firedev.daisylib.utils.Scheduling;
 
 import java.lang.reflect.Field;
@@ -414,6 +418,19 @@ public class Utils {
 
     public static Map<String, String> toMap(String... args) {
         return addAll(new LinkedHashMap<>(), args);
+    }
+
+    // Parses string array into a map of strings and components for compat with DaisyLib. - TODO remove when messages are rewritten
+    public static Map<String, Component> toParsedMap(String... args) {
+        return addAllParsed(new LinkedHashMap<>(), args);
+    }
+
+    // Adds the provided array to the provided map of strings and components for compat with DaisyLib. - TODO remove when messages are rewritten
+    public static Map<String, Component> addAllParsed(Map<String, Component> map, String... args) {
+        for (int i = 0; i+1 < args.length; i+=2) {
+            map.put(args[i], MineDown.parse(args[i+1]));
+        }
+        return map;
     }
 
     public static Map<String, String> addAll(Map<String, String> map, String... args) {

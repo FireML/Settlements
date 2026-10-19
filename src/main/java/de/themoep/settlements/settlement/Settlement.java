@@ -51,6 +51,8 @@ import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.NamedLocation;
 import de.themoep.settlements.world.SimpleLocation;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -63,7 +65,6 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
-import uk.firedev.chatchannels.api.ChatChannel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +89,7 @@ import java.util.stream.Collectors;
 
 import static de.themoep.settlements.utils.MessageUtils.yesOrNo;
 
-public class Settlement implements Comparable<Settlement>, Targetable, Sortable<Settlement>, de.themoep.settlements.db.DatabaseSerializable, de.themoep.settlements.land.ModeAble, de.themoep.settlements.land.FlagAble, de.themoep.settlements.perk.Vaultable, de.themoep.settlements.utils.NameTag {
+public class Settlement implements Comparable<Settlement>, Targetable, Sortable<Settlement>, de.themoep.settlements.db.DatabaseSerializable, de.themoep.settlements.land.ModeAble, de.themoep.settlements.land.FlagAble, de.themoep.settlements.perk.Vaultable, de.themoep.settlements.utils.NameTag, ForwardingAudience {
     private final Map<PlotMode, Boolean> modes = new EnumMap<>(PlotMode.class);
     private final Map<String, Long> vault = new HashMap<>();
     private final Map<String, PerkData> perks = new LinkedHashMap<>();
@@ -558,9 +559,17 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
     @Override
     public List<Resident> getOnlineResidents() {
         return residents.stream()
-                .map(Bukkit::getPlayer).filter(Objects::nonNull)
-                .map(p -> ResidentManager.getInstance().getResident(p))
-                .toList();
+            .map(Bukkit::getPlayer)
+            .filter(Objects::nonNull)
+            .map(p -> ResidentManager.getInstance().getResident(p))
+            .toList();
+    }
+
+    public List<Player> getOnlinePlayers() {
+        return residents.stream()
+            .map(Bukkit::getPlayer)
+            .filter(Objects::nonNull)
+            .toList();
     }
 
     public long getOnlineCount() {
@@ -1757,6 +1766,11 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
         }
 
         return totalProgress / requirements.size();
+    }
+
+    @Override
+    public @NonNull Iterable<? extends Audience> audiences() {
+        return getOnlinePlayers();
     }
 
     public enum Placeholder {
