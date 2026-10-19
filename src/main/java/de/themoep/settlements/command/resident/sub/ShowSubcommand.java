@@ -7,10 +7,16 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.ConfigMessage;
+import de.themoep.settlements.utils.dialog.InfoDialogBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NonNull;
+import uk.firedev.daisylib.messages.message.ComponentMessage;
+import uk.firedev.daisylib.messages.replacer.Replacer;
+
+import java.util.List;
 
 public class ShowSubcommand {
 
@@ -35,9 +41,21 @@ public class ShowSubcommand {
 
     public static void execute(@NonNull CommandSender sender, @NonNull Resident resident) {
         String key = resident.hasSettlement() ? "command.resident.show.settlement" : "command.resident.show.no-settlement";
-        ConfigMessage.get(key)
-            .replace(Utils.toParsedMap(resident.getReplacements()))
-            .send(sender);
+        Replacer replacer = Replacer.replacer()
+            .addReplacements(Utils.toParsedMap(resident.getReplacements()));
+
+        ComponentMessage<?, ?> title = ConfigMessage.get("command.resident.show.title")
+            .replace(replacer);
+
+        Component info = ConfigMessage.get(key)
+            .replace(replacer)
+            .toSingleMessage() // Turns it into a single component with newlines
+            .get();
+
+        new InfoDialogBuilder()
+            .withTitle(title)
+            .addContent(info)
+            .open(sender);
     }
 
 }
