@@ -2054,42 +2054,6 @@ usage:
     previous: "<< Prev "
     next: " Next >>"
 command:
-  friend:
-    description: Friend based commands
-    add:
-      already-friends: "&cYou are already friends with &6{name}"
-      already-sent-request: "&cYou already sent a friend request to &6{name}"
-      success: "&aSent a friend request to &6{name}&a!"
-      received: "&6{name}&a wants to be your friend! Accept it with [&e/friend accept {name}](/friend accept {name})"
-      mail: "{name} wants to be your friend! Accept it with /friend accept {name}"
-      description: Send a friend request to a player
-    accept:
-      no-request: "&6{name}&c has not sent you a friend request"
-      success:
-        target: "&aYou are now friends with &6{name}&a!"
-        sender: "&6{name}&a accepted your friend request!"
-        mail: "{name} accepted your friend request!"
-    deny:
-      no-request: "&6{name}&c has not sent you a friend request"
-      success:
-        target: "&aFriend request denied!"
-        sender: "&6{name}&a denied your friend request!"
-        mail: "{name} denied your friend request!"
-    remove:
-      not-friends: "&cYou are not friends with &6{name}&c nor have they sent you a request?"
-      success: "&aYou are no longer friends with &6{name}"
-      removed-request: "&aRemoved friend request by &6{name}"
-      description: Removes a player from your friend list
-    list:
-      description: Lists all the people on your friends list
-      no-friends: "&cYou have no one on your friend list."
-      head: "&a&lFriends:&r"
-      entry: "{online}{name}"
-      head-requests: "&aFriend requests:&r"
-      request-entry: "[&f{name}](/friend accept {name}) [&x](/friend reject {name}))"
-      separator: "&7, "
-      online: "&a"
-      offline: "&c"
   plot:
     admin:
       description: "Allows administrating of plots"
