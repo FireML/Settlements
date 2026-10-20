@@ -161,8 +161,16 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         return friends.put(id, new Friend(id, name)) == null;
     }
 
+    public boolean addFriend(Resident resident) {
+        return addFriend(resident.getUUID(), resident.getName());
+    }
+
     public boolean removeFriend(UUID id) {
         return friends.remove(id) != null;
+    }
+
+    public boolean removeFriend(Resident resident) {
+        return removeFriend(resident.getUUID());
     }
 
     public boolean addFriendRequest(FriendRequest friendRequest) {
@@ -171,6 +179,10 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
 
     public FriendRequest removeFriendRequest(String playerName) {
         return friendRequests.remove(playerName.toLowerCase(Locale.ROOT));
+    }
+
+    public FriendRequest removeFriendRequest(Resident resident) {
+        return friendRequests.remove(resident.getName().toLowerCase(Locale.ROOT));
     }
 
     public FriendRequest getFriendRequest(String playerName) {

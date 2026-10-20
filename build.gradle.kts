@@ -76,11 +76,6 @@ bukkit {
             description = "Settlement Commands."
             aliases = listOf("s", "village", "kingdom", "k", "v")
         }
-
-        register("friend") {
-            description = "Friending command"
-            aliases = listOf("friends", "f")
-        }
     }
 }
 

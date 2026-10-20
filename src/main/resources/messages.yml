@@ -70,3 +70,22 @@ command:
         - ""
         - "<white>Join Date: <yellow>{joindate}"
         - "<white>Last Login: <yellow>{lastlogin}"
+  friend:
+    add:
+      already-friends: "{prefix}<red>You are already friends with <gold>{name}<red>!"
+      already-sent-request: "{prefix}<red>You already sent a friend request to <gold>{name}<red>!"
+      success: "{prefix}<white>Sent a friend request to <gold>{name}<white>!"
+      received: "{prefix}<gold>{name}<white> wants to be your friend! Accept it with <click:run_command:'/friend accept {name}'><gold><u>/friend accept {name}"
+    accept:
+      no-request: "{prefix}<gold>{name} <red>has not sent you a friend request."
+      success:
+        target: "{prefix}<white>You are now friends with <gold>{name}<white>!"
+        sender: "{prefix}<gold>{name}<white> accepted your friend request!"
+    deny:
+      no-request: "{prefix}<gold>{name} <red>has not sent you a friend request."
+      success:
+        target: "{prefix}<white>Denied friend request from <gold>{name}<white>!"
+        sender: "{prefix}<gold>{name}<white> denied your friend request!"
+    remove:
+      not-friends: "{prefix}<red>You are not friends with <gold>{name}<red>."
+      success: "{prefix}<white>You are no longer friends with <gold>{name}<white>."

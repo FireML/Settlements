@@ -2054,51 +2054,6 @@ usage:
     previous: "<< Prev "
     next: " Next >>"
 command:
-  ## New Messages.
-  warningtoggle:
-    enabled: "<gray>You will now receive close building warnings for {state} {settlement}."
-    disabled: "<gold>Temporarily disabled close building warnings for {state} {settlement}."
-
-  ## Old messages
-  resident:
-    claimtransfer:
-      success: "&e{name} &r&7added &6{amount}&r&7 bonus claims to the {targetstate} {target}!"
-      description: Add bonus claims to settlements
-      not-enough-bonus: "&cNot enough bonus claims to transfer &r&6{amount}&r&c!"
-    show:
-      info:
-        free: |-
-          &e&l{name}
-          &fSettlement: &enone
-          &fBalance: &e${balance}
-          &fTax: &e${tax}
-          &fBonus claims: &e{bonus}
-          &fJoin Date: &e{joindate}
-          &fLast Login: &e{lastlogin}
-        in-settlement: |-
-          &e&l{name}
-          &fSettlement: &e{settlement}
-          &fRank: &e{title}
-          &fBalance: &e${balance}
-          &fTax: &e${tax}
-          &fMissions: &e{missionpoints}
-          &fBonus claims: &e{bonus}
-          &fJoin Date: &e{joindate}
-          &fLast Login: &e{lastlogin}
-      description: Shows you information about a resident
-    description: Resident management commands
-  tax:
-    info:
-      info: |-
-        &a&m---------------
-        &6{state} tax: &e${tax}
-        &6Total Plot Tax: &e${plottax}
-        &6Total Tax: &e${totaltax}
-        &6Plots owned: &e{plotamount}
-        &a&m---------------
-        &c${totaltax} is deducted from your balance every upkeep
-      description: Tax information command
-    description: Tax command
   friend:
     description: Friend based commands
     add:

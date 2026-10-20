@@ -1,9 +1,13 @@
 package de.themoep.settlements.utils.config;
 
+import de.themoep.settlements.utils.Utils;
 import org.jspecify.annotations.NonNull;
 import uk.firedev.daisylib.messages.config.PaperConfigReader;
 import uk.firedev.daisylib.messages.message.ComponentMessage;
 import uk.firedev.daisylib.messages.message.ComponentSingleMessage;
+import uk.firedev.daisylib.messages.replacer.Replacer;
+
+import java.util.Map;
 
 public class ConfigMessage {
 
@@ -12,14 +16,14 @@ public class ConfigMessage {
     }
 
     public static @NonNull ComponentMessage<?, ?> get(@NonNull String key) {
-        return ComponentMessage.componentMessage(getReader(), key, "<red>Unknown Message: <yellow>" + key)
-            .replace("{prefix}", getPrefix());
+        return get(key, "<red>Unknown Message: <yellow>" + key);
     }
 
     public static @NonNull ComponentMessage<?, ?> get(@NonNull String key, @NonNull String def) {
         return ComponentMessage.componentMessage(getReader(), key, def)
             .replace("{prefix}", getPrefix());
     }
+
 
     private static PaperConfigReader getReader() {
         return new PaperConfigReader(ConfigManager.getInstance().getMessagesConfig());
