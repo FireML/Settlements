@@ -25,7 +25,7 @@ dialog:
 
 command:
   warningtoggle:
-    in-settlement: "{prefix}<red>You are a member of {state} {settlement}."
+    in-settlement: "{prefix}<white>You are a member of {state} {settlement}."
     enabled: "{prefix}<white>You will now receive close building warnings for {state} {settlement}."
     disabled: "{prefix}<white>Temporarily disabled close building warnings for {state} {settlement}."
   tax:
@@ -47,7 +47,7 @@ command:
     claimtransfer:
       success: "{prefix}<white>Successfully transferred <gold>{amount}</gold> bonus claims to {targetstate} {target}."
       notify-settlement: "{prefix}<white>{name} <gray>transferred <gold>{amount}</gold> bonus claims to the settlement!"
-      not-enough-bonus: "{prefix}<red>You don't have enough bonus claims to transfer to {targetstate} {target}! (<yellow>{claims}/{amount}</yellow>)"
+      not-enough-bonus: "{prefix}<white>You don't have enough bonus claims to transfer to {targetstate} {target}! (<yellow>{claims}/{amount}</yellow>)"
     show:
       title: "<yellow><bold>Resident {name}"
       no-settlement:
@@ -72,21 +72,21 @@ command:
         - "<white>Last Login: <yellow>{lastlogin}"
   friend:
     add:
-      already-friends: "{prefix}<red>You are already friends with <gold>{name}<red>!"
-      already-sent-request: "{prefix}<red>You already sent a friend request to <gold>{name}<red>!"
+      already-friends: "{prefix}<white>You are already friends with <gold>{name}<white>!"
+      already-sent-request: "{prefix}<white>You already sent a friend request to <gold>{name}<white>!"
       success: "{prefix}<white>Sent a friend request to <gold>{name}<white>!"
       received: "{prefix}<gold>{name}<white> wants to be your friend! Accept with <click:run_command:'/friend accept {name}'><gold><u>/friend accept {name}<white>."
     accept:
-      no-request: "{prefix}<gold>{name} <red>has not sent you a friend request."
+      no-request: "{prefix}<gold>{name} <white>has not sent you a friend request."
       success:
         target: "{prefix}<white>You are now friends with <gold>{name}<white>!"
         sender: "{prefix}<gold>{name}<white> accepted your friend request!"
     deny:
-      no-request: "{prefix}<gold>{name} <red>has not sent you a friend request."
+      no-request: "{prefix}<gold>{name} <white>has not sent you a friend request."
       success:
         target: "{prefix}<white>Denied friend request from <gold>{name}<white>!"
         sender: "{prefix}<gold>{name}<white> denied your friend request!"
     remove:
-      not-friends: "{prefix}<red>You are not friends with <gold>{name}<red>."
+      not-friends: "{prefix}<white>You are not friends with <gold>{name}<white>."
       success: "{prefix}<white>You are no longer friends with <gold>{name}<white>."
       removed-request: "{prefix}<white>Cancelled friend request to <gold>{name}<white>."
