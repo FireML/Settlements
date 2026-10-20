@@ -1,5 +1,28 @@
 prefix: "<gray>[Settlements]</gray> "
 
+dialog:
+  claiming:
+    chunk-state:
+      claimed-by-your-settlement:
+        - "Claimed by your {ownerstate}"
+        - ""
+        - "Click to unclaim"
+      claimed-by-ally: "Claimed by allied {ownerstate} {owner}"
+      claimed-by-settlement: "Claimed by {ownerstate} {owner}"
+      claimed-by-you:
+        - "Your Plot"
+        - ""
+        - "Click to unclaim"
+      claimed-plot: "{plotowner}'s Plot"
+      unclaimed-plot:
+        - "Unclaimed Plot"
+        - ""
+        - "Click to claim"
+      unclaimed:
+        - "Unclaimed Land"
+        - ""
+        - "Click to claim"
+
 command:
   warningtoggle:
     in-settlement: "{prefix}<red>You are a member of {state} {settlement}."
@@ -26,25 +49,24 @@ command:
       notify-settlement: "{prefix}<white>{name} <gray>transferred <gold>{amount}</gold> bonus claims to the settlement!"
       not-enough-bonus: "{prefix}<red>You don't have enough bonus claims to transfer to {targetstate} {target}! (<yellow>{claims}/{amount}</yellow>)"
     show:
+      title: "<yellow><bold>Resident {name}"
       no-settlement:
-        - "<aqua><st>                                "
-        - "<aqua>» <yellow><bold>Resident {name}"
-        - "<aqua>» <white>Settlement: <yellow>None"
-        - "<aqua>» <white>Balance: <yellow>${balance}"
-        - "<aqua>» <white>Tax: <yellow>${tax}"
-        - "<aqua>» <white>Bonus claims: <yellow>{bonus}"
-        - "<aqua>» <white>Join Date: <yellow>{joindate}"
-        - "<aqua>» <white>Last Login: <yellow>{lastlogin}"
-        - "<aqua><st>                                "
+        - "<white>Settlement: <yellow>None"
+        - "<white>Bonus claims: <yellow>{bonus}"
+        - ""
+        - "<white>Balance: <yellow>${balance}"
+        - "<white>Tax: <yellow>${tax}"
+        - ""
+        - "<white>Join Date: <yellow>{joindate}"
+        - "<white>Last Login: <yellow>{lastlogin}"
       settlement:
-        - "<aqua><st>                                "
-        - "<aqua>» <yellow><bold>Resident {name}"
-        - "<aqua>» <white>Settlement: <yellow>{settlement}"
-        - "<aqua>» <white>Rank: <yellow>{title}"
-        - "<aqua>» <white>Balance: <yellow>${balance}"
-        - "<aqua>» <white>Tax: <yellow>${tax}"
-        - "<aqua>» <white>Missions: <yellow>{missionpoints}"
-        - "<aqua>» <white>Bonus claims: <yellow>{bonus}"
-        - "<aqua>» <white>Join Date: <yellow>{joindate}"
-        - "<aqua>» <white>Last Login: <yellow>{lastlogin}"
-        - "<aqua><st>                                "
+        - "<white>Settlement: <yellow>{settlementstate} {settlement}"
+        - "<white>Rank: <yellow>N/A" # {title}
+        - "<white>Missions: <yellow>{missionpoints}"
+        - "<white>Bonus claims: <yellow>{bonus}"
+        - ""
+        - "<white>Balance: <yellow>${balance}"
+        - "<white>Tax: <yellow>${tax}"
+        - ""
+        - "<white>Join Date: <yellow>{joindate}"
+        - "<white>Last Login: <yellow>{lastlogin}"

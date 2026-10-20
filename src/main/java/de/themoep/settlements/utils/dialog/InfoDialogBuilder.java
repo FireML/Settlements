@@ -73,8 +73,9 @@ public class InfoDialogBuilder {
             .base(
                 DialogBase.builder(ComponentMessage.componentMessage(title).replace(replacer).get())
                     .canCloseWithEscape(true)
-                    .afterAction(DialogBase.DialogAfterAction.CLOSE)
+                    .afterAction(DialogBase.DialogAfterAction.NONE)
                     .body(getBodies())
+                    .pause(false)
                     .build()
             )
             .type(DialogType.notice(

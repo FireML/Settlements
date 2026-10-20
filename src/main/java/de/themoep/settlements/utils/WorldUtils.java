@@ -1,6 +1,7 @@
 package de.themoep.settlements.utils;
 
 import de.themoep.settlements.world.SimpleChunkLocation;
+import org.bukkit.Chunk;
 import org.bukkit.GameRules;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -33,6 +34,10 @@ public class WorldUtils {
             }
         }
         return chunksAround;
+    }
+
+    public static Collection<SimpleChunkLocation> getChunksAdjacent(Chunk chunk) {
+        return getChunksAdjacent(new SimpleChunkLocation(chunk));
     }
 
     public static Collection<SimpleChunkLocation> getChunksAdjacent(SimpleChunkLocation location) {
