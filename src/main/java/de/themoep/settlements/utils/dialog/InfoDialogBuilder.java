@@ -18,7 +18,7 @@ import java.util.Map;
 
 public class InfoDialogBuilder {
 
-    private final Replacer replacer = Replacer.replacer();
+    private final Replacer replacer = Replacer.component();
     private @NonNull Component title = Component.text("Information");
     private final @NonNull List<Object> content = new ArrayList<>();
 

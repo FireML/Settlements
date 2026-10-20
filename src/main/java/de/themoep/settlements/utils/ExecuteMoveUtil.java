@@ -38,7 +38,7 @@ public class ExecuteMoveUtil implements Listener {
                                 "seconds", ComponentUtils.parseComponent(String.valueOf(waiting.get())),
                                 "action", ComponentUtils.parseComponent(action)
                         );
-                        Replacer replacer = Replacer.replacer().addReplacements(replacements);
+                        Replacer replacer = Replacer.component().addReplacements(replacements);
                         TitleBuilder.create()
                                 .withTitle(replacer.apply(messages.getMessage("waiting.title").getComponent()))
                                 .withSubtitle(replacer.apply(messages.getMessage("waiting.subtitle").getComponent()))
@@ -74,7 +74,7 @@ public class ExecuteMoveUtil implements Listener {
                 Message.get("move-cancelled.message").tell(e.getPlayer(), "action", action.getAction());
             }
             Map<String, Component> replacements = Map.of("action", ComponentUtils.parseComponent(action.getAction()));
-            Replacer replacer = Replacer.replacer().addReplacements(replacements);
+            Replacer replacer = Replacer.component().addReplacements(replacements);
             TitleBuilder.create()
                     .withTitle(replacer.apply(Message.get("move-cancelled.title").getComponent()))
                     .withSubtitle(replacer.apply(Message.get("move-cancelled.subtitle").getComponent()))

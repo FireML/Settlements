@@ -47,7 +47,7 @@ public abstract class ChunkState {
     public abstract @NonNull String hoverKey();
 
     public @NonNull Component getSquare() {
-        Replacer replacer = Replacer.replacer()
+        Replacer replacer = Replacer.component()
             .addReplacement("{ownerstate}", land == null ? "None" : land.getSettlement().getStateTag())
             .addReplacement("{owner}", land == null ? "None" : land.getSettlement().getName())
             .addReplacement("{embassy}", land == null ? "No" : yesOrNo(land.isEmbassy()))

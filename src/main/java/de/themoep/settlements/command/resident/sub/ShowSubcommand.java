@@ -41,7 +41,7 @@ public class ShowSubcommand {
 
     public static void execute(@NonNull CommandSender sender, @NonNull Resident resident) {
         String key = resident.hasSettlement() ? "command.resident.show.settlement" : "command.resident.show.no-settlement";
-        Replacer replacer = Replacer.replacer()
+        Replacer replacer = Replacer.component()
             .addReplacements(Utils.toParsedMap(resident.getReplacements()));
 
         ComponentMessage<?, ?> title = ConfigMessage.get("command.resident.show.title")

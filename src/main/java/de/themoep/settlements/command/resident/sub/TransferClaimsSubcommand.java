@@ -30,7 +30,7 @@ public class TransferClaimsSubcommand {
                                 }
                                 Settlement settlement = ctx.getArgument("settlement", Settlement.class);
                                 long amount = ctx.getArgument("amount", long.class);
-                                Replacer replacer = Replacer.replacer()
+                                Replacer replacer = Replacer.component()
                                     .addReplacement("{name}", resident.getName())
                                     .addReplacement("{amount}", amount)
                                     .addReplacement("{claims}", resident.getBonusClaims())

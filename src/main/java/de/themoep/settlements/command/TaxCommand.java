@@ -42,7 +42,7 @@ public class TaxCommand {
     private static void sendInfo(@NonNull Player player, @NonNull Settlement settlement, @NonNull Resident resident) {
         long settlementTax = resident.getSettlementTax();
         long plotTax = resident.getPlotTax();
-        Replacer replacer = Replacer.replacer()
+        Replacer replacer = Replacer.component()
             .addReplacement("{state}", settlement.getStateTag())
             .addReplacement("{tax}", Utils.CURRENCY_FORMAT.format(settlementTax))
             .addReplacement("{plottax}", Utils.CURRENCY_FORMAT.format(plotTax))
@@ -53,7 +53,7 @@ public class TaxCommand {
 
     private static void sendInfo(@NonNull Player player, @NonNull Resident resident) {
         long plotTax = resident.getPlotTax();
-        Replacer replacer = Replacer.replacer()
+        Replacer replacer = Replacer.component()
             .addReplacement("{plotamount}", LandManager.getInstance().getOwnedPlot(resident.getUUID()).size())
             .addReplacement("{totaltax}", Utils.CURRENCY_FORMAT.format(plotTax));
         ConfigMessage.get("command.tax.info-no-settlement").replace(replacer).send(player);
