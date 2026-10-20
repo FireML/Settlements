@@ -89,3 +89,4 @@ command:
     remove:
       not-friends: "{prefix}<red>You are not friends with <gold>{name}<red>."
       success: "{prefix}<white>You are no longer friends with <gold>{name}<white>."
+      removed-request: "{prefix}<white>Cancelled friend request to <gold>{name}<white>."

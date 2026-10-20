@@ -20,6 +20,16 @@ public class RemoveSubcommand {
                     .executes(ctx -> {
                         Resident target = ctx.getArgument("resident", Resident.class);
                         Resident resident = ResidentManager.getInstance().getResident(ctx.getSource().getPlayerOrThrow());
+
+                        FriendRequest request = target.removeFriendRequest(resident);
+                        if (request != null) {
+                            DatabaseManager.getInstance().delete(request);
+                            ConfigMessage.get("command.friend.remove.removed-request")
+                                .replacePlainText("{name}", target.getName())
+                                .send(resident);
+                            return 1;
+                        }
+
                         if (!resident.removeFriend(target)) {
                             ConfigMessage.get("command.friend.remove.not-friends")
                                 .replacePlainText("{name}", target.getName())
