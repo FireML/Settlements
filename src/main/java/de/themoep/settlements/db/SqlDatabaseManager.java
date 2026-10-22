@@ -210,7 +210,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 close(conn);
             }
         } else {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + landOwner.getDbName() + "_allies WHERE " + landOwner.getDbName() + "Id = ?, allies_id = ? LIMIT 1")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM " + landOwner.getDbName() + "_allies WHERE " + landOwner.getDbName() + "Id = ?, allies_id = ?")) {
                 sta.setInt(1, (Integer) landOwner.getId().value());
                 sta.setInt(2, (Integer) ally.getId().value());
                 sta.executeUpdate();
@@ -251,7 +251,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
                 close(conn);
             }
         } else {
-            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM invites WHERE type = ? AND targetType = ? AND targetId = ? AND sourceType = ? AND sourceId = ? LIMIT 1")) {
+            try (PreparedStatement sta = conn.prepareStatement("DELETE FROM invites WHERE `type` = ? AND `targetType` = ? AND `targetId` = ? AND `sourceType` = ? AND `sourceId` = ?")) {
                 sta.setString(1, invite.name());
                 sta.setString(2, invite.getTargetType());
                 sta.setInt(3, (Integer) invite.getTargetId().value());
@@ -444,15 +444,13 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
     public Collection<SettlementInvite> getSettlementInvites() {
         Utils.catchSync();
         Connection conn = getConnection();
-        try (PreparedStatement sta = conn.prepareStatement("SELECT * FROM invites WHERE type = ?;")) {
+        try (PreparedStatement sta = conn.prepareStatement("SELECT * FROM invites WHERE `type` = ?;")) {
             sta.setString(1, "settlementinvite");
             ResultSet rs = sta.executeQuery();
             List<SettlementInvite> invites = new ArrayList<>();
             while (rs.next()) {
                 SettlementInvite invite = SettlementInvite.deserialize(toMap(rs));
-                if (invite != null) {
-                    invites.add(invite);
-                }
+                invites.add(invite);
             }
             return invites;
         } catch (SQLException e) {
@@ -803,7 +801,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Utils.catchSync();
         String sql = "SELECT *" +
                 " FROM invites" +
-                " WHERE type = ? AND targetType = ? AND targetId = ?;";
+                " WHERE `type` = ? AND `targetType` = ? AND `targetId` = ?;";
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setString(1, "allyrequest");
             sta.setString(2, type);
@@ -827,7 +825,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
         Utils.catchSync();
         String sql = "SELECT *" +
                 " FROM invites" +
-                " WHERE type = ? AND targetType = ? AND targetId = ?;";
+                " WHERE `type` = ? AND `targetType` = ? AND `targetId` = ?;";
         try (PreparedStatement sta = conn.prepareStatement(sql)) {
             sta.setString(1, "joinrequest");
             sta.setString(2, type);
@@ -876,9 +874,7 @@ public abstract class SqlDatabaseManager extends DatabaseManager {
             List<FriendRequest> requests = new ArrayList<>();
             while (rs.next()) {
                 FriendRequest request = FriendRequest.deserialize(toMap(rs));
-                if (request != null) {
-                    requests.add(request);
-                }
+                requests.add(request);
             }
             return requests;
         } catch (SQLException e) {
