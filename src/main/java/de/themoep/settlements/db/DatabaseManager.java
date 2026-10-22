@@ -12,6 +12,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Targetable;
+import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 
 import java.util.Collection;
@@ -82,6 +83,10 @@ public abstract class DatabaseManager {
     public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void save(Invite<T, S> invite);
 
     public abstract <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void delete(Invite<T, S> invite);
+
+    public <T extends Targetable & DatabaseSerializable, S extends Targetable & DatabaseSerializable> void deleteAsync(Invite<T, S> invite) {
+        Utils.runAsync(() -> delete(invite));
+    } 
 
     public abstract Resident getResident(int id);
 

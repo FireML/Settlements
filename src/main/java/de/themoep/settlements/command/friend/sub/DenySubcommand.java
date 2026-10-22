@@ -28,10 +28,10 @@ public class DenySubcommand {
                                 .send(resident);
                             return 1;
                         }
-                        DatabaseManager.getInstance().delete(request);
+                        DatabaseManager.getInstance().deleteAsync(request);
                         FriendRequest reverseRequest = target.removeFriendRequest(resident);
                         if (reverseRequest != null) {
-                            DatabaseManager.getInstance().delete(reverseRequest);
+                            DatabaseManager.getInstance().deleteAsync(reverseRequest);
                         }
                         ConfigMessage.get("command.friend.deny.success.target")
                             .replacePlainText("{name}", target.getName())

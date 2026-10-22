@@ -28,10 +28,10 @@ public class AcceptSubcommand {
                                 .send(resident);
                             return 1;
                         }
-                        DatabaseManager.getInstance().delete(request);
+                        DatabaseManager.getInstance().deleteAsync(request);
                         FriendRequest reverseRequest = target.removeFriendRequest(resident);
                         if (reverseRequest != null) {
-                            DatabaseManager.getInstance().delete(reverseRequest);
+                            DatabaseManager.getInstance().deleteAsync(reverseRequest);
                         }
                         target.addFriend(resident);
                         resident.addFriend(target);

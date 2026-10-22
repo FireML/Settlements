@@ -23,7 +23,7 @@ public class RemoveSubcommand {
 
                         FriendRequest request = target.removeFriendRequest(resident);
                         if (request != null) {
-                            DatabaseManager.getInstance().delete(request);
+                            DatabaseManager.getInstance().deleteAsync(request);
                             ConfigMessage.get("command.friend.remove.removed-request")
                                 .replacePlainText("{name}", target.getName())
                                 .send(resident);
