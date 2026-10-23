@@ -8,7 +8,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.utils.config.ConfigMessage;
+import de.themoep.settlements.utils.config.message.ConfigMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;

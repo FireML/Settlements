@@ -5,7 +5,7 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.utils.config.ConfigMessage;
+import de.themoep.settlements.utils.config.message.ConfigMessage;
 import de.themoep.settlements.utils.dialog.claim.states.ClaimedByAllyState;
 import de.themoep.settlements.utils.dialog.claim.states.ClaimedBySettlementState;
 import de.themoep.settlements.utils.dialog.claim.states.ClaimedByYouState;

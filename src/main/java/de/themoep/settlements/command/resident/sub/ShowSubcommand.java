@@ -6,7 +6,7 @@ import de.themoep.settlements.command.exceptions.NotAResidentException;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.Utils;
-import de.themoep.settlements.utils.config.ConfigMessage;
+import de.themoep.settlements.utils.config.message.ConfigMessage;
 import de.themoep.settlements.utils.dialog.InfoDialogBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -15,8 +15,6 @@ import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NonNull;
 import uk.firedev.daisylib.messages.message.ComponentMessage;
 import uk.firedev.daisylib.messages.replacer.Replacer;
-
-import java.util.List;
 
 public class ShowSubcommand {
 

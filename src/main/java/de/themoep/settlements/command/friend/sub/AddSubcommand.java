@@ -5,7 +5,7 @@ import de.themoep.settlements.command.argument.ResidentArgument;
 import de.themoep.settlements.resident.FriendRequest;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.utils.config.ConfigMessage;
+import de.themoep.settlements.utils.config.message.ConfigMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.jspecify.annotations.NonNull;

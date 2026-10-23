@@ -1,13 +1,10 @@
-package de.themoep.settlements.utils.config;
+package de.themoep.settlements.utils.config.message;
 
-import de.themoep.settlements.utils.Utils;
+import de.themoep.settlements.utils.config.ConfigManager;
 import org.jspecify.annotations.NonNull;
 import uk.firedev.daisylib.messages.config.PaperConfigReader;
 import uk.firedev.daisylib.messages.message.ComponentMessage;
 import uk.firedev.daisylib.messages.message.ComponentSingleMessage;
-import uk.firedev.daisylib.messages.replacer.Replacer;
-
-import java.util.Map;
 
 public class ConfigMessage {
 

@@ -2,17 +2,12 @@ package de.themoep.settlements.utils.dialog.claim.states;
 
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.WorldUtils;
 import de.themoep.settlements.utils.config.Config;
-import de.themoep.settlements.utils.config.ConfigMessage;
 import de.themoep.settlements.utils.dialog.claim.ChunkState;
 import de.themoep.settlements.world.SimpleChunkLocation;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
