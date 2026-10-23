@@ -7,16 +7,42 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
+import io.papermc.paper.advancement.AdvancementDisplay;
+import io.papermc.paper.advancement.PaperAdvancementDisplay;
+import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.AdvancementType;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.DisplayInfo;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.Criterion;
+import net.minecraft.advancements.triggers.ImpossibleTrigger;
+import net.minecraft.core.HolderSet;
+import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.UnsafeValues;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.advancement.CraftAdvancement;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Ambient;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
@@ -24,7 +50,12 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WaterMob;
+import org.bukkit.inventory.ItemType;
 import org.checkerframework.checker.units.qual.C;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NonNull;
 import uk.firedev.chatchannels.api.ChatChannel;
 import uk.firedev.daisylib.builders.TitleBuilder;
 import uk.firedev.daisylib.messages.message.ComponentMessage;
@@ -41,8 +72,10 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TimerTask;
@@ -545,4 +578,54 @@ public class Utils {
     public static <R> void addAmount(Map<R, Long> m, R r, Long amount) {
         m.put(r, m.getOrDefault(r, (long) 0) + amount);
     }
+
+    public static void showToast(@NonNull Player player, @NonNull ItemType itemType, @NonNull AdvancementType type, @NonNull Component title, @NonNull Component description) {
+        if (!(player instanceof CraftPlayer nmsPlayer)) {
+            return;
+        }
+        ItemStack nmsItem = ((CraftItemStack) itemType.createItemStack()).handle;
+        DisplayInfo info = new DisplayInfo(
+            ItemStackTemplate.fromStack(nmsItem),
+            PaperAdventure.asVanilla(title),
+            PaperAdventure.asVanilla(description),
+            Optional.empty(),
+            type,
+            true,
+            false,
+            false
+        );
+        Map<String, Criterion<?>> criteria = Map.of(
+            "done",
+            CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance())
+        );
+        Advancement advancement = new Advancement(
+            Optional.empty(),
+            Optional.of(info),
+            new AdvancementRewards(0, HolderSet.empty(), List.of(), Optional.empty()),
+            criteria,
+            new AdvancementRequirements(List.of(List.of("done"))),
+            false
+        );
+        AdvancementHolder holder = new AdvancementHolder(
+            Identifier.parse("settlements:toast_" + UUID.randomUUID()),
+            advancement
+        );
+        ClientboundUpdateAdvancementsPacket.PositionedAdvancement positioned = new ClientboundUpdateAdvancementsPacket.PositionedAdvancement(
+            holder, 0, 0
+        );
+        AdvancementProgress progress = new AdvancementProgress();
+        progress.update(advancement.requirements());
+        progress.grantProgress("done");
+
+        nmsPlayer.getHandle().connection.send(
+            new ClientboundUpdateAdvancementsPacket(
+                false,
+                List.of(positioned),
+                Set.of(),
+                Map.of(holder.id(), progress),
+                true
+            )
+        );
+    }
+
 }

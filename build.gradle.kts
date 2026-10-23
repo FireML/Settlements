@@ -3,6 +3,7 @@ plugins {
     `maven-publish`
     id("com.gradleup.shadow") version "9.6.1"
     id("de.eldoria.plugin-yml.bukkit") version "0.9.0"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.24"
 }
 
 repositories {
@@ -21,10 +22,13 @@ repositories {
     maven("https://repo.jsinco.dev/releases")
     maven("https://mvn.wesjd.net/")
     maven("https://jitpack.io")
+
+    // OpenToast
+    maven("https://repo.pauli.fyi/releases")
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.3.build.+")
+    paperweight.paperDevBundle("26.3.build.+")
 
     bukkitLibrary("com.github.ben-manes.caffeine:caffeine:3.1.8")
     bukkitLibrary("com.zaxxer:HikariCP:5.1.0")
