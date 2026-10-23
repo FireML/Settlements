@@ -1,7 +1,7 @@
 package de.themoep.settlements.resident;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Sortable;
 import org.bukkit.entity.Player;
@@ -55,7 +55,7 @@ public class Friend implements Sortable<Friend> {
 
 
     @Override
-    public String[] getReplacements(ConfigMessages configMessages, String... initial) {
+    public String[] getReplacements(ConfigMessagesOld configMessages, String... initial) {
         return getResident().getReplacements(
                 "online", configMessages.getText(getPlayer() != null ? "online" : "offline")
         );

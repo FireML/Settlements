@@ -1,13 +1,13 @@
 package de.themoep.settlements.integration;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
 import org.jspecify.annotations.NonNull;
 
-public interface SettlementsIntegration extends ConfigMessages {
+public interface SettlementsIntegration extends ConfigMessagesOld {
 
     @NonNull String name();
 

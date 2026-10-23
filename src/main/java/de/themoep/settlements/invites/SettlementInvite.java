@@ -4,7 +4,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.ItemUtils;
 import org.bukkit.inventory.ItemStack;
@@ -48,7 +48,7 @@ public class SettlementInvite extends Invite<Resident, Settlement> {
 
 
     @Override
-    public String[] getReplacements(ConfigMessages configMessages, String... initial) {
+    public String[] getReplacements(ConfigMessagesOld configMessages, String... initial) {
         Settlement source = getSource();
         return source.getReplacements(configMessages, initial);
     }

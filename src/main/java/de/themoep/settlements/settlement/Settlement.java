@@ -37,7 +37,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.events.SettlementJoinEvent;
 import de.themoep.settlements.settlement.events.SettlementLeaveEvent;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
@@ -1020,7 +1020,7 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
         return 0;
     }
 
-    public String[] getReplacements(ConfigMessages configMessages, String... initial) {
+    public String[] getReplacements(ConfigMessagesOld configMessages, String... initial) {
         List<String> replacements = new ArrayList<>();
         Collections.addAll(replacements, initial);
 
@@ -1032,7 +1032,7 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
         return replacements.toArray(new String[0]);
     }
 
-    public String getReplacement(ConfigMessages configMessages, String placeholder) {
+    public String getReplacement(ConfigMessagesOld configMessages, String placeholder) {
         try {
             return Placeholder.valueOf(placeholder).getValue(configMessages, this);
         } catch (IllegalArgumentException ex) {
@@ -1854,13 +1854,13 @@ public class Settlement implements Comparable<Settlement>, Targetable, Sortable<
                 .collect(Collectors.joining(", "))),
         ;
 
-        private final BiFunction<ConfigMessages, Settlement, String> valueProvider;
+        private final BiFunction<ConfigMessagesOld, Settlement, String> valueProvider;
 
-        Placeholder(BiFunction<ConfigMessages, Settlement, String> valueProvider) {
+        Placeholder(BiFunction<ConfigMessagesOld, Settlement, String> valueProvider) {
             this.valueProvider = valueProvider;
         }
 
-        public String getValue(ConfigMessages configMessages, Settlement settlement) {
+        public String getValue(ConfigMessagesOld configMessages, Settlement settlement) {
             return valueProvider.apply(configMessages, settlement);
         }
     }

@@ -11,7 +11,7 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.MessageUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.WorldUtils;
@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public interface LandOwnerCommand extends ConfigMessages {
+public interface LandOwnerCommand extends ConfigMessagesOld {
     default Settlement getTarget(Resident resident, String arg) {
         Settlement target = null;
         if (arg.startsWith("settlement:") || arg.startsWith("s:")) {
@@ -307,7 +307,7 @@ public interface LandOwnerCommand extends ConfigMessages {
                         "z", String.valueOf(l.getZ()))
                 );
                 if (args.length >= 3 && "map".equalsIgnoreCase(args[2])) {
-                    ConfigMessages configMessages = unclaimedLand.iterator().next().getMapKey();
+                    ConfigMessagesOld configMessages = unclaimedLand.iterator().next().getMapKey();
                     Utils.runAsync(() -> new ChatMap(res.getPlayer(), settlement, configMessages));
                 }
                 LandManager.getInstance().unclaimLand(unclaimedLand);

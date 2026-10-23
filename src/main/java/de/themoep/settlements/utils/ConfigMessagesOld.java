@@ -1,6 +1,5 @@
 package de.themoep.settlements.utils;
 
-import de.themoep.settlements.perk.Perk;
 import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.settlement.Settlement;
 
@@ -9,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public interface ConfigMessages extends ConfigKey {
+public interface ConfigMessagesOld extends ConfigKey {
     String type();
 
     default String getText(String key, String... replacements) {

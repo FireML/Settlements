@@ -7,7 +7,7 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ColorUtils;
 import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.ConfigKey;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.config.ConfigManager;
 import de.themoep.settlements.world.NamedLocation;
@@ -30,11 +30,11 @@ import java.util.concurrent.TimeUnit;
 public class ChatMap {
     private static final int HEIGHT = 13;
     private static final int WIDTH = 29;
-    private final ConfigMessages messages;
+    private final ConfigMessagesOld messages;
     private final List<RowEnd> rowEnds;
     private final Settlement landOwner;
 
-    public ChatMap(Player player, Settlement landOwner, ConfigMessages messages) {
+    public ChatMap(Player player, Settlement landOwner, ConfigMessagesOld messages) {
         this.messages = messages;
         this.landOwner = landOwner;
         MapGenerator generator = new ChatMap.MapGenerator(player);

@@ -3,7 +3,7 @@ package de.themoep.settlements.missions;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.MaterialUtils;
 import de.themoep.settlements.utils.NameTag;
 import org.bukkit.Material;
@@ -123,7 +123,7 @@ public abstract class Mission implements NameTag {
         KILL
     }
 
-    public static String[] getReplacements(ConfigMessages messages, Settlement provider, Resident taker) {
+    public static String[] getReplacements(ConfigMessagesOld messages, Settlement provider, Resident taker) {
         return new String[] {
                 "amount", String.valueOf(taker.getMissionData().size()),
                 "missions", taker.getMissionData().stream()

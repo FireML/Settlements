@@ -7,20 +7,15 @@ import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.ConfigManager;
-import io.papermc.paper.advancement.AdvancementDisplay;
-import io.papermc.paper.advancement.PaperAdvancementDisplay;
 import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextColor;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
-import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.advancements.triggers.Criterion;
@@ -28,19 +23,14 @@ import net.minecraft.advancements.triggers.ImpossibleTrigger;
 import net.minecraft.core.HolderSet;
 import net.minecraft.network.protocol.game.ClientboundUpdateAdvancementsPacket;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.UnsafeValues;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.advancement.CraftAdvancement;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Ambient;
@@ -51,14 +41,8 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.WaterMob;
 import org.bukkit.inventory.ItemType;
-import org.checkerframework.checker.units.qual.C;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NonNull;
-import uk.firedev.chatchannels.api.ChatChannel;
 import uk.firedev.daisylib.builders.TitleBuilder;
-import uk.firedev.daisylib.messages.message.ComponentMessage;
 import uk.firedev.daisylib.utils.Scheduling;
 
 import java.lang.reflect.Field;
@@ -350,7 +334,7 @@ public class Utils {
      * Teleports a player. Checks cooldown and delay bypass permissions
      * @return false if teleport occurred instantly and no wait task was started
      */
-    public static boolean teleport(ConfigMessages messages, Player player, Location loc, String type, String... replacements) {
+    public static boolean teleport(ConfigMessagesOld messages, Player player, Location loc, String type, String... replacements) {
         if (loc == null || loc.getWorld() == null) {
             messages.getError("destination-unknown").tell(player, "type", loc == null ? "location" : "world");
             return false;
@@ -397,7 +381,7 @@ public class Utils {
      * Teleports a player. Checks cooldown and delay bypass permissions
      * @return false if teleport occurred instantly and no wait task was started
      */
-    public static boolean teleport(ConfigMessages messages, Player player, String type, Runnable runnable) {
+    public static boolean teleport(ConfigMessagesOld messages, Player player, String type, Runnable runnable) {
         boolean bypassDelay = player.hasPermission("settlements.bypass.teleport-delay");
         if (bypassDelay && !player.hasPermission("settlements.bypass.teleport-cooldown")) {
             long cooldown = TELEPORT_COOLDOWNS.getOrDefault(player.getUniqueId(), 0L)

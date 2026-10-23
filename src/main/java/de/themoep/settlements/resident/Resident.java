@@ -16,7 +16,7 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementMission;
 import de.themoep.settlements.utils.ComponentUtils;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
@@ -485,7 +485,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     }
 
     @Override
-    public String[] getReplacements(ConfigMessages configMessages, String... initial) {
+    public String[] getReplacements(ConfigMessagesOld configMessages, String... initial) {
         return getReplacements(initial);
     }
 

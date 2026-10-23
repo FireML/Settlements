@@ -4,14 +4,14 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.missions.Mission;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.Utils;
 import uk.firedev.daisylib.utils.Scheduling;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public interface MissionCommand<M extends Mission> extends ConfigMessages {
+public interface MissionCommand<M extends Mission> extends ConfigMessagesOld {
 
     List<Resident> confirmation = new ArrayList<>();
 

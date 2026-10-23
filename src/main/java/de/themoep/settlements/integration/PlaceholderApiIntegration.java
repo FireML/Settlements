@@ -9,7 +9,7 @@ import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.settlement.SettlementState;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.Utils;
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.clip.placeholderapi.PlaceholderAPIPlugin;
@@ -24,7 +24,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class PlaceholderApiIntegration implements ConfigMessages, SettlementsIntegration {
+public class PlaceholderApiIntegration implements ConfigMessagesOld, SettlementsIntegration {
 
     private final PlaceholderAPIPlugin apiPlugin = PlaceholderAPIPlugin.getInstance();
 

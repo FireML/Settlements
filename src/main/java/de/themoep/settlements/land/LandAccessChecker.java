@@ -3,14 +3,14 @@ package de.themoep.settlements.land;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.Pair;
 import de.themoep.settlements.utils.StringUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
-public interface LandAccessChecker extends ConfigMessages, Listener {
+public interface LandAccessChecker extends ConfigMessagesOld, Listener {
 
     default Pair<Boolean, String> canUse(Player user, Use use, Location loc) {
         UseFlag flag = UseFlagManager.getInstance().get(use);

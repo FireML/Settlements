@@ -3,11 +3,11 @@ package de.themoep.settlements.commandold.common;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.Targetable;
 import org.bukkit.command.CommandSender;
 
-public interface TargetParser extends ConfigMessages {
+public interface TargetParser extends ConfigMessagesOld {
 
     default Targetable getTarget(Resident resident, String input) {
         return getTarget(resident.getPlayer(), input);

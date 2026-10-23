@@ -27,7 +27,7 @@ public class ExecuteMoveUtil implements Listener {
     /**
      * @return true if a waiting task was scheduled
      */
-    public boolean execute(Player p, Runnable r, int delay, String action, ConfigMessages messages) {
+    public boolean execute(Player p, Runnable r, int delay, String action, ConfigMessagesOld messages) {
         if (delay > 0) {
             AtomicInteger waiting = new AtomicInteger(delay);
             ActionRunnable waitingRunnable = new ActionRunnable(action) {

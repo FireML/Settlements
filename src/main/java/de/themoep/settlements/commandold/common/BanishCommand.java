@@ -6,7 +6,7 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.gui.BanishedGUI;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.Targetable;
 import de.themoep.settlements.utils.Utils;
 import org.bukkit.entity.Player;
@@ -14,7 +14,7 @@ import org.bukkit.entity.Player;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public interface BanishCommand extends ConfigMessages, TargetParser {
+public interface BanishCommand extends ConfigMessagesOld, TargetParser {
 
     default boolean listBanished(Resident resident, Settlement settlement) {
         new BanishedGUI(resident, settlement).open();

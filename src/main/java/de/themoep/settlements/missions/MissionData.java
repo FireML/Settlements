@@ -2,7 +2,7 @@ package de.themoep.settlements.missions;
 
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementMission;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.Utils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -90,7 +90,7 @@ public class MissionData implements ConfigurationSerializable {
         return missionData;
     }
 
-    public String[] getReplacements(ConfigMessages messages, Settlement provider) {
+    public String[] getReplacements(ConfigMessagesOld messages, Settlement provider) {
         return new String[] {
                 "title", getMission().getTag(),
                 "requirements", getMission().getRequirements().entrySet().stream().map(e ->
@@ -105,7 +105,7 @@ public class MissionData implements ConfigurationSerializable {
         };
     }
 
-    private String getMissionAction(ConfigMessages messages, Settlement provider) {
+    private String getMissionAction(ConfigMessagesOld messages, Settlement provider) {
         String action = isFinished() ? messages.getText("finished") : "";
 
         if (getMission() instanceof SettlementMission settlementMission && settlementMission.onlyOnSettlementClaim()) {

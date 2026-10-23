@@ -6,7 +6,7 @@ import de.themoep.inventorygui.GuiElementGroup;
 import de.themoep.inventorygui.StaticGuiElement;
 
 import de.themoep.settlements.settlement.Settlement;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.NameTag;
@@ -22,7 +22,7 @@ import java.util.Locale;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-public abstract class SettlementsGUI implements ConfigMessages {
+public abstract class SettlementsGUI implements ConfigMessagesOld {
 
     private final String name;
 

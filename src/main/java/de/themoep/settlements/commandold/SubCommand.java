@@ -2,7 +2,7 @@ package de.themoep.settlements.commandold;
 
 
 import de.themoep.settlements.rank.Rankable;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.MessageUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.bukkit.Bukkit;
@@ -18,7 +18,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
-public abstract class SubCommand implements ConfigMessages, Rankable {
+public abstract class SubCommand implements ConfigMessagesOld, Rankable {
     protected static final String PERMISSION_PREFIX = "settlements.command.";
     private final SubCommand parent;
     private final List<String> aliases;

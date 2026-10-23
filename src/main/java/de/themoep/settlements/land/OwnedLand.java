@@ -4,12 +4,11 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.db.DatabaseSerializable;
 import de.themoep.settlements.land.events.LandModeChangeEvent;
-import de.themoep.settlements.rank.SettlementRank;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
 import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
-import de.themoep.settlements.utils.ConfigMessages;
+import de.themoep.settlements.utils.ConfigMessagesOld;
 import de.themoep.settlements.utils.IdObject;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.StringUtils;
@@ -598,8 +597,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return getSettlement().canAdminPlots(resident);
     }
 
-    public ConfigMessages getMapKey() {
-        return new ConfigMessages() {
+    public ConfigMessagesOld getMapKey() {
+        return new ConfigMessagesOld() {
             @Override
             public String type() {
                 return "command";
