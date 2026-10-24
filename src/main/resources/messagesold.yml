@@ -47,9 +47,6 @@ error:
   no-world: "&c{state} {name} has not unlocked a world."
   rules-not-accepted: "&cYou must accept the [&e{state} rules](/s rules) first!"
   not-unlocked: "&cThe {state} does not have the {function} function unlocked yet!"
-  no-channel-permission: "&cNo permission to use {channel} channel!"
-  not-enough-money: "&cThere is not enough money in your account to pay &r&6{amount}&r&c!"
-  not-your-settlement: "&cThis is not your {state}!"
   no-settlement: "&cNo settlement at your location!"
   invalid-rank: "&c(!) &r&c{rank} &7is not a valid rank!"
   invalid-group: "&c(!) &r&c{group} &7is not a valid group!"
@@ -57,15 +54,11 @@ error:
   settlement-doesnt-exist: "&cThere is no settlement with the name &6{name}&c found!"
   invalid-characters: "&c{input} contains invalid characters!"
   prohibited-words: "&e{input}&c contains prohibited words!"
-  too-long: "&c{input} is too long, only {amount} characters are allowed!"
   player-not-found: "&cNo &r&6player&r&c with the name &r&6{name}&r&c found!"
-  not-a-claim: "&cYou are not currently standing in claimed land"
   not-a-plot: "&cYou are not currently standing in an owned plot"
   none-connected: "&cERROR: &cThere are no plots are connected to this one!"
   none-linked: "&cERROR: &cThere are no plots are linked to this one!"
   not-linked: "&cERROR: &cThat plot isn't linked to this one!"
-  not-for-sale: "&cThis land is not for sale!"
-  not-your-plot: "&cThis is not your plot!"
   world-not-claimable: "&cClaiming is disabled in this world!"
   claim-too-close: "&c(!) &r&7You are too close to &e{owner}'s&7 land !"
   already-own-land: "&e&l(!) &r&7Your settlement already owns this land!"
@@ -83,7 +76,6 @@ error:
   not-unlocked-yet: "&cThis feature only unlocked with {state} level {level}!"
   level-required: "&cYou must be in a {state} level {level}!"
   no-allies: "&cYou have no allies!"
-  cant-set-embassy: "&cYou can't set an embassy here!"
   teleport-cooldown: "&cYou have to wait &e{cooldown}&c before you can teleport again!"
   nothing-to-confirm: "&cThere is nothing to confirm. It might have timed out."
   portals-not-linked: "&cThese two portals are (no longer) linked!"
@@ -2067,11 +2059,6 @@ command:
         private: allows you to build in your claimed land
         friends: allows your friends to build in your claimed land
       description: Sets the build mode of a plot
-    buy:
-      cant-buy-embassy: "&cYou can't buy this plot as it is an embassy of your {state}!"
-      tax-warning: "&6There is plot tax of &e${tax}&6, type [&e/plot buy](/plot buy) again to confirm!"
-      purchased: "&aSuccessfully purchased the land for {price}."
-      description: Buys the chunk you are standing in
     info:
       general: |-
         &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
@@ -2091,8 +2078,6 @@ command:
       success-coords: "&a&lSUCCESS: &r&7Linked {x} {z} to your current one!"
       success-existing: "[&7Linked to other {amount} plots now!](&a{x}/{z} is linked to:\n&f{linked})"
       description: Link surrounding land flags with the current one
-    reset:
-      success: "&a&lSUCCESS: &7Reset all perms and modes in this plot."
     members:
       add:
         success: "&a&lSUCCESS: &r&7Added [{name}](Name: {name}\nUUID: {uuid}) to the plot!"
@@ -2106,62 +2091,16 @@ command:
         footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
         previous: "<< Prev "
         next: " Next >>"
-    mode:
-      modes: "&cAvailable modes: {modes}"
-      success: "&7Plot mode &6{mode}&7: &6{value}"
-      unset: "&7Unset plot mode &6{mode}&7! Now inherits from parent {parent}: &6{value}"
-      description: Sets the modes of a plot
-      embassy:
-        description: Sets plot as embassy for everyone to purchase
-        success-no-sale: "&7Plot set as &6{mode}&7!"
-        success: "&7Plot set as &6{mode}&7 with price &6{value}!"
-    set:
-      embassy: The plot can be purchased by players outside of the settlement
-    name:
-      success: "&aSet name of plot to &r{name}"
-      description: Set the name of a plot
-    desc:
-      success: "&aSet description of plot to &r{description}"
-      description: Set the description of a plot
-    unown:
-      success: "&aPlot is no longer owned by you!"
-      success-other: "&aPlot is no longer owned by &e{owner}&a!"
-      description: Removes ownership of the plot you are standing in
-    settings:
-      description: Manage plot settings
     sale:
       current: "&7The current price of this land is: &6 {price}"
       already-owned: "&cLand is already owned"
       success: "&a&lSUCCESS &7This land has been put on sale for &e${price}&7!"
       no-longer-for-sale: "&a&lSUCCESS &7This land is no longer for sale!"
       description: Gets or sets the price of a claimed chunk
-    tax:
-      current: "&7This plot's tax is &e${tax}&7!"
-      description: Plot taxes
-      set:
-        success: "&e&l(!) &r&7Daily tax of this plot was set to &e${amount}&7!"
-        above-max: "&c(!) &cMax tax amount is &e{max}&c!"
-        below-zero: "&c(!) &cTax amount cannot be negative!"
-        already-owned: "&c(!) &cYou can only change the tax of unowned claims!"
-        description: Sets the tax a player needs to pay each day he is owning this plot
     unlink:
       none-connected: "&c(!): &cNo plots are linked to this one!"
       disconnected: "&r&7Unlinked from {amount} other plots!"
       description: Unlink this plot's flags
-    unsale:
-      success: "&aThis land is no longer for sale!"
-      description: Remove the ability to buy a chunk
-    perms:
-      flags: "&cAvailable flags: {flags}"
-      states: "&cAvailable states: {states}"
-      success: "&7Plot State of &6{flag} &7set to &6{state}"
-      success-all: "&7Set all flags to &6{state}"
-      unset: "&7Unset plot state &6{flag}&7! Now inherits from parent {parent}: &6{state}"
-      unset-all: "&7Unset all flags! All flags now inherit from &6{parent}"
-      description: Sets the use flags of a plot
-      all:
-        description: Sets all flags to a certain state
-    description: Plot Commands
   settlement:
     group:
       manage-res:

@@ -90,3 +90,49 @@ command:
       not-friends: "{prefix}<white>You are not friends with <gold>{name}<white>."
       success: "{prefix}<white>You are no longer friends with <gold>{name}<white>."
       removed-request: "{prefix}<white>Cancelled friend request to <gold>{name}<white>."
+  plot:
+    mode:
+      success: "{prefix}<white>Successfully set plot mode <gold>{mode} <white>to <gold>{value}<white>."
+      inherit: "{prefix}<white>Plot mode <gold>{mode}<white> now inherits from parent <gold>{parent}<white>: <gold>{value}<white>."
+      no-parent: "{prefix}<white>Plot mode <gold>{mode}<white> cannot be reset as it does not apply to parent <gold>{parent}<white>."
+      embassy:
+        success-no-sale: "{prefix}<white>Successfully set the plot to an <gold>embassy<white>!"
+        success: "{prefix}<white>Successfully set the plot to an <gold>embassy<white> with price <gold>{value}<white>!"
+    setname:
+      success: "{prefix}<white>Set name of plot to <gold>{name}<white>!"
+    setdescription:
+      success: "{prefix}<white>Set description of plot to <gold>{description}<white>!"
+    perms:
+      success: "{prefix}<white>Successfully set state of plot flag <gold>{flag} <white>to <gold>{state}<white>."
+      success-all: "{prefix}<white>Successfully set state of all plot flags to <gold>{state}<white>."
+      inherit: "{prefix}<white>Plot state <gold>{flag}<white> now inherits from parent <gold>{parent}<white>: <gold>{value}<white>."
+      inherit-all: "{prefix}<white>All plot flags now inherit from parent <gold>{parent}<white>."
+    sale:
+      current: "{prefix}<white>The current price of this land is: <gold>{price}<white>."
+      already-owned: "{prefix}<white>This land is already owned."
+      success: "{prefix} <green><b>SUCCESS</b> <white>This land has been put on sale for <gold>${price}<white>!"
+      no-longer-for-sale: "{prefix} <green><b>SUCCESS</b> <white>This land is no longer for sale!"
+    buy:
+      tax-warning: "{prefix}<white>This plot is taxed at <gold>${tax}/day <white>. Type <click:run_command:'/plot buy'><u><gold>/plot buy</click> <white>again to confirm!"
+      purchased: "{prefix}<white>Successfully purchased this land for <gold>${price}<white>."
+    reset:
+      success: "{prefix}<white>Successfully reset all permissions and modes in this plot."
+    unown:
+      success: "{prefix}<white>This plot is no longer owned by you!"
+      success-other: "{prefix}<white>This plot is no longer owned by <gold>{owner}<white>!"
+    tax:
+      current: "{prefix}<white>This plot's tax is <gold>${tax}<white>!"
+      set:
+        success: "{prefix}<white>Daily tax of this plot was set to <gold>${amount}<white>!"
+        already-owned: "{prefix}<white>You can only change the tax of unowned claims!"
+
+# Error messages.
+error:
+  not-a-claim: "{prefix}<white>You are not currently standing in claimed land."
+  not-your-settlement: "{prefix}<white>This is not your {state}!"
+  not-your-plot: "{prefix}<white>This is not your plot!"
+  not-for-sale: "{prefix}<white>This land is not for sale!"
+  cant-buy-embassy: "{prefix}<white>You can't buy this plot as it is an embassy of your {state}!"
+  cant-set-embassy: "{prefix}<white>You can't set an embassy here!"
+  string-too-long: "{prefix}<gold>{input} <white>is too long. (<gold>{amount}<white>/<gold>{max}<white>} Characters)"
+  not-enough-money: "{prefix}<white>You do not have enough money to pay <gold>{amount}<white>!"

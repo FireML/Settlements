@@ -226,14 +226,14 @@ public class Config {
     public static class Plot {
         @ConfigEntry(old = {"plot-max-tax"})
         @ConfigComment("Maximum value that a plot's tax can be set to. Set to -1 to disable maximum")
-        public static long MAX_TAX = -1;
+        public static int MAX_TAX = -1;
 
         @ConfigEntry(old = {"plot.name-length"})
-        @ConfigComment("Maximum length that plot names can be (without formatting). Cannot be longer than 255.")
+        @ConfigComment("Maximum length that plot names can be. Cannot be longer than 255.")
         public static int NAME_LENGTH = 25;
 
         @ConfigEntry(old = {"plot.description-length"})
-        @ConfigComment("Maximum length that plot descriptions can be (without formatting).")
+        @ConfigComment("Maximum length that plot descriptions can be.")
         public static int DESCRIPTION_LENGTH = 255;
     }
 

@@ -21,6 +21,9 @@ public class ConfigMessage {
             .replace("{prefix}", getPrefix());
     }
 
+    public static @NonNull ComponentMessage<?, ?> getError(@NonNull String key) {
+        return get("error." + key);
+    }
 
     private static PaperConfigReader getReader() {
         return new PaperConfigReader(ConfigManager.getInstance().getMessagesConfig());

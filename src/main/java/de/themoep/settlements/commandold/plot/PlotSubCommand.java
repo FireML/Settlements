@@ -82,17 +82,6 @@ public abstract class PlotSubCommand extends ResidentSubCommand {
         return false;
     }
 
-    private boolean isPlotAdmin(Resident resident) {
-        if (adminCommand) {
-            if (resident != null) {
-                if (resident.hasSettlement() && resident.getSettlement().canAdminPlots(resident)) {
-                    return true;
-                }
-            }
-        }
-        return !adminCommand;
-    }
-
     private boolean testParentPlotAdmin(Resident resident, OwnedLand land) {
         return !(getParent() instanceof PlotSubCommand) || ((PlotSubCommand) getParent()).testPlotAdmin(resident, land);
     }

@@ -71,6 +71,14 @@ public enum PlotMode implements NameTag {
         throw new IllegalArgumentException("No enum constant " + s + " applying to " + to + " found!");
     }
 
+    public static PlotMode getOrNull(String s, AppliesTo to) {
+        PlotMode state = get(s);
+        if (state.appliesTo(to)) {
+            return state;
+        }
+        return null;
+    }
+
     private static PlotMode get(String s) {
         try {
             return valueOf(s);
