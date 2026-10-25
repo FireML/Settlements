@@ -417,7 +417,7 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
         Collections.addAll(replacements, initial);
 
         for (Placeholder replacement : Placeholder.values()) {
-            replacements.add("{" + replacement.name() + "}");
+            replacements.add(replacement.name());
             replacements.add(replacement.getValue(this));
         }
 

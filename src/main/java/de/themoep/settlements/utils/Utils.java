@@ -445,7 +445,7 @@ public class Utils {
     // Adds the provided array to the provided map of strings and components for compat with DaisyLib. - TODO remove when messages are rewritten
     public static Map<String, Component> addAllParsed(Map<String, Component> map, String... args) {
         for (int i = 0; i+1 < args.length; i+=2) {
-            map.put(args[i], MineDown.parse(args[i+1]));
+            map.put("{" + args[i] + "}", MineDown.parse(args[i+1]));
         }
         return map;
     }

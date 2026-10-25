@@ -1,10 +1,14 @@
 package de.themoep.settlements.utils.config.message;
 
 import de.themoep.settlements.utils.config.ConfigManager;
+import net.kyori.adventure.text.Component;
 import org.jspecify.annotations.NonNull;
 import uk.firedev.daisylib.messages.config.PaperConfigReader;
+import uk.firedev.daisylib.messages.message.ComponentListMessage;
 import uk.firedev.daisylib.messages.message.ComponentMessage;
 import uk.firedev.daisylib.messages.message.ComponentSingleMessage;
+
+import java.util.List;
 
 public class ConfigMessage {
 
@@ -23,6 +27,14 @@ public class ConfigMessage {
 
     public static @NonNull ComponentMessage<?, ?> getError(@NonNull String key) {
         return get("error." + key);
+    }
+
+    public static @NonNull ComponentListMessage emptyListMessage() {
+        return ComponentMessage.componentMessage(List.of());
+    }
+
+    public static @NonNull ComponentSingleMessage emptySingleMessage() {
+        return ComponentMessage.componentMessage(Component.empty());
     }
 
     private static PaperConfigReader getReader() {

@@ -553,8 +553,8 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
 
     public enum Placeholder {
         state(l -> l.getSettlement().getStateTag()),
-        name(OwnedLand::getName),
-        description(OwnedLand::getDescription),
+        name(l -> l.getName().isEmpty() ? "None" : l.getName()),
+        description(l -> l.getDescription().isEmpty() ? "None" : l.getDescription()),
         members(l -> String.valueOf(l.getPlotMembers().size())),
         landowner(l -> l.getSettlement().getName()),
         plotowner(l -> l.isPlot() && l.getPlotOwner() != null ? ResidentManager.getInstance().getResidentName(l.getPlotOwner()) : ""),
@@ -573,8 +573,7 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         z(l -> String.valueOf(l.getZ())),
         world(OwnedLand::getWorldName),
         tax(l -> String.valueOf(l.tax)),
-        price(l -> String.valueOf(l.price)),
-        ;
+        price(l -> String.valueOf(l.price));
 
         private final Function<OwnedLand, String> valueProvider;
 
