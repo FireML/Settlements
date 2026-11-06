@@ -71,6 +71,7 @@ public class ConfigManager {
     };
 
     private ConfigAccessor messages;
+    private ConfigAccessor messagesOld;
     private ConfigAccessor commands;
     private ConfigAccessor data;
     private ConfigAccessor settlementLevelConf;
@@ -156,6 +157,7 @@ public class ConfigManager {
         int configVersion = SettlementsPlugin.getInstance().getConfig().getInt("config-version", 0);
         load(SettlementsPlugin.getInstance().getConfig(), "", Config.class, configVersion, isReload);
         messages = new ConfigAccessor(SettlementsPlugin.getInstance(), "messages.yml");
+        messagesOld = new ConfigAccessor(SettlementsPlugin.getInstance(), "messagesold.yml");
         data = new ConfigAccessor(SettlementsPlugin.getInstance(), "data.yml");
         commands = new ConfigAccessor(SettlementsPlugin.getInstance(), "commands.yml");
         settlementLevelConf = new ConfigAccessor(SettlementsPlugin.getInstance(), "settlementLevelConf.yml");
@@ -430,6 +432,10 @@ public class ConfigManager {
 
     public FileConfiguration getMessagesConfig() {
         return messages.getConfig();
+    }
+
+    public FileConfiguration getMessagesConfigOld() {
+        return messagesOld.getConfig();
     }
 
     public FileConfiguration getCommandsConfig() {

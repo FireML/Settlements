@@ -40,6 +40,7 @@ public interface ConfigMessagesOld extends ConfigKey {
     default Message getMessage(String key) {
         return getMessage(null, key);
     }
+
     default Message getMessage(String extraPath, String key) {
         String path = getConfigPath() + (extraPath != null && !extraPath.isEmpty() ? "." + extraPath : "");
         Message message = Message.get(path + (key.isEmpty() ? "" : "." + key));

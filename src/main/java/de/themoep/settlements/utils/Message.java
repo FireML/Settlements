@@ -26,11 +26,11 @@ public class Message {
 
     protected Message(String key) {
         this.key = key;
-        if (ConfigManager.getInstance().getMessagesConfig().isString(key)) {
-            rawText = ConfigManager.getInstance().getMessagesConfig().getString(key);
+        if (ConfigManager.getInstance().getMessagesConfigOld().isString(key)) {
+            rawText = ConfigManager.getInstance().getMessagesConfigOld().getString(key);
             exists = true;
-        } else if (ConfigManager.getInstance().getMessagesConfig().isList(key)) {
-            List<String> list = ConfigManager.getInstance().getMessagesConfig().getStringList(key);
+        } else if (ConfigManager.getInstance().getMessagesConfigOld().isList(key)) {
+            List<String> list = ConfigManager.getInstance().getMessagesConfigOld().getStringList(key);
             rawText = list.stream().map(String::valueOf).collect(Collectors.joining("\n"));
             exists = true;
         } else {

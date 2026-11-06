@@ -64,7 +64,7 @@ command:
         - "<white>Join Date: <yellow>{joindate}"
         - "<white>Last Login: <yellow>{lastlogin}"
       settlement:
-        - "<white>Settlement: <yellow>{settlementstate} {settlement}"
+        - "<white>{settlementstate}: <yellow>{settlement}"
         - "<white>Rank: <yellow>N/A" # {title}
         - "<white>Missions: <yellow>{missionpoints}"
         - "<white>Bonus claims: <yellow>{bonus}"
@@ -79,7 +79,7 @@ command:
       already-friends: "{prefix}<white>You are already friends with <gold>{name}<white>!"
       already-sent-request: "{prefix}<white>You already sent a friend request to <gold>{name}<white>!"
       success: "{prefix}<white>Sent a friend request to <gold>{name}<white>!"
-      received: "{prefix}<gold>{name}<white> wants to be your friend! Accept with <click:run_command:'/friend accept {name}'><gold><u>/friend accept {name}<white>."
+      received: "{prefix}<gold>{name}<white> wants to be your friend! Accept with <click:run_command:'/friend accept {name}'><gold><u>/friend accept {name}</u><white>."
     accept:
       no-request: "{prefix}<gold>{name} <white>has not sent you a friend request."
       success:
