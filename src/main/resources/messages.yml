@@ -1,6 +1,10 @@
 prefix: "<gray>[Settlements]</gray> "
 
 dialog:
+  # Generic Information Dialogs
+  info:
+    player: "{icon} {name} - {data}"
+  # Claiming Dialog
   claiming:
     chunk-state:
       claimed-by-your-settlement:
@@ -110,8 +114,8 @@ command:
     sale:
       current: "{prefix}<white>The current price of this land is: <gold>{price}<white>."
       already-owned: "{prefix}<white>This land is already owned."
-      success: "{prefix} <green><b>SUCCESS</b> <white>This land has been put on sale for <gold>${price}<white>!"
-      no-longer-for-sale: "{prefix} <green><b>SUCCESS</b> <white>This land is no longer for sale!"
+      success: "{prefix}<green><b>SUCCESS</b> <white>This land has been put on sale for <gold>${price}<white>!"
+      no-longer-for-sale: "{prefix}<green><b>SUCCESS</b> <white>This land is no longer for sale!"
     buy:
       tax-warning: "{prefix}<white>This plot is taxed at <gold>${tax}/day <white>. Type <click:run_command:'/plot buy'><u><gold>/plot buy</click> <white>again to confirm!"
       purchased: "{prefix}<white>Successfully purchased this land for <gold>${price}<white>."
@@ -125,12 +129,53 @@ command:
       set:
         success: "{prefix}<white>Daily tax of this plot was set to <gold>${amount}<white>!"
         already-owned: "{prefix}<white>You can only change the tax of unowned claims!"
+    build:
+      success: "{prefix}<white>Set {type} state of {flagable} to {state}"
+      reset: "{prefix}<gold>{type} <white>state of {flagable} now inherits from parent <gold>{parent}<white>: <gold>{value}<white>."
+      states:
+        residents: residents and officers to build in claimed land
+        officers: only officers are allowed to build in claimed land
+        public: allows everyone to build in your claimed land
+        ally: allows your allies to build in your claimed land
+        private: allows you to build in your claimed land
+        friends: allows your friends to build in your claimed land
+    info:
+      general:
+        - "<aqua>⊱<st>    </st><gold> Plot Info <aqua><st>    </st>⊰"
+        - "<aqua>» <gold>{state}: <yellow>{landowner}"
+        - "<aqua>» <gold>Name: <yellow>{name}"
+        - "<aqua>» <gold>Description: <yellow>{description}"
+        - "<aqua>» <gold>Members: <yellow>{members}"
+        - "<aqua>» <gold>Modes:"
+        - "  <aqua>» <gold>Hostile Mob Spawning: <yellow>{hostilespawning}"
+        - "  <aqua>» <gold>Passive Mob Spawning: <yellow>{passivespawning}"
+        - "  <aqua>» <gold>Fire Spread: <yellow>{firespread}"
+        - "  <aqua>» <gold>Explosions: <yellow>{explosions}"
+        - "  <aqua>» <gold>PvP: <yellow>{pvp}"
+        - "  <aqua>» <gold>Build: <yellow>{build} (from {buildsource})"
+        - "  <aqua>» <gold>Embassy: <yellow>{embassy}"
+        - "{owner}"
+        - "{plotprice}"
+        - "{plottax}"
+        - "<aqua>⊱<st>    </st><gold> Plot Info <aqua><st>    </st>⊰"
+      owner: "<aqua>» <gold>Plot Owner: <yellow>{owner}"
+      price: "<aqua>» <gold>Plot Price: <yellow>{price}"
+      tax: "<aqua>» <gold>Plot Tax: <yellow>{tax}"
+      link: "<aqua>» <gold>Linked To: <yellow><hover:show_text:'<aqua>{x}/{z} is linked to\n<yellow>{linked}'>{amount} Plots</hover>"
+    members:
+      add:
+        success: "{prefix}<white>Successfully added <gold>{name} <white>to the plot!"
+        already-a-member: "{prefix}<gold>{name} <white>is already a member of this plot."
+      remove:
+        success: "{prefix}<white>Successfully removed <gold>{name} <white>to the plot!"
+        not-a-member: "{prefix}<gold>{name} <white>is not a member of this plot."
 
 # Error messages.
 error:
   not-a-claim: "{prefix}<white>You are not currently standing in claimed land."
   not-your-settlement: "{prefix}<white>This is not your {state}!"
   not-your-plot: "{prefix}<white>This is not your plot!"
+  not-a-plot: "{prefix}<white>You are not currently standing in an owned plot."
   not-for-sale: "{prefix}<white>This land is not for sale!"
   cant-buy-embassy: "{prefix}<white>You can't buy this plot as it is an embassy of your {state}!"
   cant-set-embassy: "{prefix}<white>You can't set an embassy here!"

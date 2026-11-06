@@ -17,6 +17,8 @@ import de.themoep.settlements.utils.config.Config;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import uk.firedev.chatchannels.api.ChatChannel;
 
 import java.util.Collection;
@@ -133,7 +135,7 @@ public class ResidentManager {
         return resident;
     }
 
-    public Resident getResident(UUID uuid) {
+    public @Nullable Resident getResident(UUID uuid) {
         Resident resident = residentsByUuid.getIfPresent(uuid);
         if (resident == null) {
             synchronized (RESIDENT_LOCK) {

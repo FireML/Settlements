@@ -54,7 +54,6 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
     private String description = "";
     private BuildState buildState = null;
     private final EnumMap<Use, BuildState> use = new EnumMap<>(Use.class);
-    private UUID link;
 
     public OwnedLand(Settlement landOwner, SimpleChunkLocation location) {
         super(location.getWorld(), location.getX(), location.getZ());
@@ -220,6 +219,22 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         return plotMembers;
     }
 
+    public boolean addPlotMember(UUID uuid) {
+        if (plotMembers.contains(uuid)) {
+            return false;
+        }
+        plotMembers.add(uuid);
+        return true;
+    }
+
+    public boolean removePlotMember(UUID uuid) {
+        if (!plotMembers.contains(uuid)) {
+            return false;
+        }
+        plotMembers.remove(uuid);
+        return true;
+    }
+
     public void setForSale(boolean forSale) {
         this.forSale = forSale;
     }
@@ -326,33 +341,6 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         this.description = StringUtils.stripColors(description).length() > Config.Plot.DESCRIPTION_LENGTH ? description.substring(0, Config.Plot.DESCRIPTION_LENGTH) : description;
     }
 
-    public Collection<OwnedLand> getLinked() {
-        return LandManager.getInstance().getLinked(this);
-    }
-
-    public boolean removeLink() {
-        return LandManager.getInstance().removeLink(this);
-    }
-
-    public boolean isLinked(OwnedLand land) {
-        return land != null && hasLink() && getLink().equals(land.getLink());
-    }
-
-    public UUID getLink() {
-        return link;
-    }
-
-    /**
-     * Use {@link LandManager#addLink(OwnedLand, UUID)} to ensure data consistency!
-     */
-    public void setLink(UUID link) {
-        this.link = link;
-    }
-
-    public boolean hasLink() {
-        return getLink() != null;
-    }
-
     public void setId(IdObject id) {
         if (id == null) {
             id = IdObject.get(null);
@@ -427,7 +415,6 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         map.put("embassy", isEmbassy());
         map.put("modes", getModes().entrySet().stream().filter(e -> e.getKey().appliesTo(PlotMode.AppliesTo.LAND_OWNER)).collect(Collectors.toMap(e -> e.getKey().name(), Map.Entry::getValue)));
         map.put("buildState", getBuildState() != null ? getBuildState().name() : null);
-        map.put("link", getLink() != null ? getLink().toString() : null);
         map.put("uses", getUseStates().entrySet().stream().filter(e -> e.getValue() != null).collect(Collectors.toMap(e -> e.getKey().name(), e -> e.getValue().name())));
         return map;
     }
@@ -470,10 +457,6 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
         }
         land.setBuildState(Utils.parseEnum(BuildState.class, (String) map.get("buildState"), land.getBuildState()));
 
-        if (map.get("link") != null && !((String) map.get("link")).isEmpty()) {
-            land.setLink(UUID.fromString((String) map.get("link")));
-        }
-
         Map<String, Object> uses = (Map<String, Object>) map.get("uses");
         for (Use u : Use.values()) {
             UseFlag useFlag = UseFlagManager.getInstance().get(u);
@@ -490,42 +473,6 @@ public class OwnedLand extends SimpleChunkLocation implements DatabaseSerializab
             ((Collection<String>) map.get("plotMembers")).stream().map(Utils::parseUuid).filter(Objects::nonNull).forEach(m -> land.getPlotMembers().add(m));
         }
         return land;
-    }
-
-    public boolean syncLinked(OwnedLand land) {
-        if (this == land || !isOwnedBy(land.getSettlement()) || !isPlotOwner(land.getPlotOwner()) || !isLinked(land)) {
-            return false;
-        }
-        boolean r = false;
-        if (!getName().equals(land.getName())) {
-            setName(land.getName());
-            r = true;
-        }
-        if (!getDescription().equals(land.getDescription())) {
-            setDescription(land.getDescription());
-            r = true;
-        }
-        if (getBuildState() != land.getBuildState()) {
-            setBuildState(land.getBuildState());
-            r = true;
-        }
-        for (PlotMode mode : PlotMode.values(PlotMode.AppliesTo.LAND)) {
-            if (land.hasMode(mode)) {
-                r |= setMode(mode, land.getMode(mode));
-            } else {
-                r |= unsetMode(mode);
-            }
-        }
-        for (Use use : Use.values()) {
-            if (land.hasUseState(use)) {
-                r |= setUseState(use, land.getUseState(use));
-            } else if (hasUseState(use)) {
-                r |= unsetUseState(use);
-            }
-        }
-        getPlotMembers().clear();
-        getPlotMembers().addAll(land.getPlotMembers());
-        return r;
     }
 
     public boolean containsHome() {

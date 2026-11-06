@@ -1,8 +1,6 @@
 package de.themoep.settlements.commandold;
 
 import de.themoep.settlements.SettlementsPlugin;
-import de.themoep.settlements.command.friend.FriendCommand;
-import de.themoep.settlements.commandold.plot.PlotCommand;
 import de.themoep.settlements.commandold.settlement.SettlementCommand;
 import de.themoep.settlements.utils.ComponentUtils;
 import de.themoep.settlements.utils.MessageUtils;
@@ -26,7 +24,6 @@ public class CommandManager implements TabExecutor {
     }
 
     private void registerCommands() {
-        registerCommand(new PlotCommand());
         registerCommand(new SettlementCommand());
     }
 

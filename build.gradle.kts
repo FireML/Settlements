@@ -72,10 +72,6 @@ bukkit {
     paperPluginLoader = "de.themoep.settlements.LibraryLoader"
 
     commands {
-        register("plot") {
-            description = "Manage Plots."
-        }
-
         register("settlement") {
             description = "Settlement Commands."
             aliases = listOf("s", "village", "kingdom", "k", "v")

@@ -419,16 +419,7 @@ public class LandModeListener implements LandAccessChecker {
                     SettlementsPlugin.getInstance().getLandPerks().giveEffects(player, destinationLand, true);
                 }
             }
-            if (originalLand != null && originalLand.isPlotOwner(destinationLand.getPlotOwner()) && destinationLand.hasLink() && !originalLand.isLinked(destinationLand)) {
-                Utils.runAsync(() -> MessageUtils.tellAdvanced(player, (destinationLand.isEmbassy() ? "embassy" : "plot") + ".linked",
-                        "name", destinationLand.getSettlement().getName(),
-                        "state", destinationLand.getSettlement().getStateTag(),
-                        "owner", ResidentManager.getInstance().getResident(destinationLand.getPlotOwner()).getName(),
-                        "name", destinationLand.getName(),
-                        "description", destinationLand.getDescription(),
-                        "pvp", destinationLand.getMode(PlotMode.pvp) ? Message.get("pvp-is-enabled").getText() : ""
-                ));
-            } else if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner()) || !originalLand.getName().equals(destinationLand.getName()) || !originalLand.getDescription().equals(destinationLand.getDescription())) {
+            if (originalLand == null || !originalLand.isPlotOwner(destinationLand.getPlotOwner()) || !originalLand.getName().equals(destinationLand.getName()) || !originalLand.getDescription().equals(destinationLand.getDescription())) {
                 if (destinationLand.isPlot()) {
                     Utils.runAsync(() -> MessageUtils.tellAdvanced(player,  (destinationLand.isEmbassy() ? "embassy" : "plot") + ".owned" + (destinationLand.getDescription().isEmpty() ? "" : "-description"),
                             "name", destinationLand.getSettlement().getName(),

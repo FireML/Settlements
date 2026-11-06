@@ -55,7 +55,6 @@ error:
   invalid-characters: "&c{input} contains invalid characters!"
   prohibited-words: "&e{input}&c contains prohibited words!"
   player-not-found: "&cNo &r&6player&r&c with the name &r&6{name}&r&c found!"
-  not-a-plot: "&cYou are not currently standing in an owned plot"
   none-connected: "&cERROR: &cThere are no plots are connected to this one!"
   none-linked: "&cERROR: &cThere are no plots are linked to this one!"
   not-linked: "&cERROR: &cThat plot isn't linked to this one!"
@@ -2046,61 +2045,6 @@ usage:
     previous: "<< Prev "
     next: " Next >>"
 command:
-  plot:
-    admin:
-      description: "Allows administrating of plots"
-    build:
-      success: "&aSet {type} state of {flagable} to {state}"
-      states:
-        residents: residents and officers to build in claimed land
-        officers: only officers are allowed to build in claimed land
-        public: allows everyone to build in your claimed land
-        ally: allows your allies to build in your claimed land
-        private: allows you to build in your claimed land
-        friends: allows your friends to build in your claimed land
-      description: Sets the build mode of a plot
-    info:
-      general: |-
-        &a⊱&m━━━━&r&6Plot Info&a&m━━━━&a⊰
-        &c{state}: &7{landowner}
-        &9&lName: &r{name}
-        &9&lBoard: &r{description}
-        &9&lMembers: &r{members} &7[(Click to view)](/plot members list)
-        &9&lModes: &7Hostile MobSpawning: &6{hostilespawning}&r&7 | Passive Mobspawning: &r&e{passivespawning}&r&7 | FireSpread: &6{firespread}&r&7 | Explosions: &6{explosions}&r&7 | PvP: &6{pvp}&r&7 | Build: &6{build}&r&7 (from {buildsource}) | Embassy: &6{embassy}
-      owner: "&a&lPlot Owner: &7{name}"
-      price: "&a&lPlot Price: &7${price}"
-      tax: "&a&lPlot Tax: &7${tax}"
-      link: "[&aLinked to &7{amount}&a other plots!](&a{x}/{z} is linked to:\n&f{linked})"
-      description: Get information about the current plot
-    link:
-      already-linked: "&c(!): &cAlready linked to plot {location}!"
-      success: "&a&lSUCCESS: &r&7Linked {amount} plots to your current one!"
-      success-coords: "&a&lSUCCESS: &r&7Linked {x} {z} to your current one!"
-      success-existing: "[&7Linked to other {amount} plots now!](&a{x}/{z} is linked to:\n&f{linked})"
-      description: Link surrounding land flags with the current one
-    members:
-      add:
-        success: "&a&lSUCCESS: &r&7Added [{name}](Name: {name}\nUUID: {uuid}) to the plot!"
-        already-a-member: "&c[{name}](Name: {name}\nUUID: {uuid}) is already a member of the plot?"
-      remove:
-        success: "&a&lSUCCESS: &r&7Removed [{name}](Name: {name}\nUUID: {uuid}) from the plot!"
-        not-a-member: "&c[{name}](Name: {name}\nUUID: {uuid}) is not a member of the plot?"
-      list:
-        head: "&a⊱&m━━━━&r&6Plot Members [{page}/{maxpage}]&a&m━━━━&a⊰"
-        entry: "- [{name}](Name: {name}\nUUID: {uuid}) [&cx](hover=Click to remove {name} run_command=/plot members remove {uuid})"
-        footer: "&a⊱&m━━━━&r{previous}&6{page}/{maxpage}{next}&a&m━━━━&a⊰"
-        previous: "<< Prev "
-        next: " Next >>"
-    sale:
-      current: "&7The current price of this land is: &6 {price}"
-      already-owned: "&cLand is already owned"
-      success: "&a&lSUCCESS &7This land has been put on sale for &e${price}&7!"
-      no-longer-for-sale: "&a&lSUCCESS &7This land is no longer for sale!"
-      description: Gets or sets the price of a claimed chunk
-    unlink:
-      none-connected: "&c(!): &cNo plots are linked to this one!"
-      disconnected: "&r&7Unlinked from {amount} other plots!"
-      description: Unlink this plot's flags
   settlement:
     group:
       manage-res:

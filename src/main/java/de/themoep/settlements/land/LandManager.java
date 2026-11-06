@@ -27,7 +27,6 @@ import org.bukkit.World;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -46,7 +45,6 @@ public class LandManager {
     private final Multimap<String, SimpleChunkLocation> nearbyTable = MultimapBuilder.hashKeys().hashSetValues().build();
     private final Multimap<IdObject, OwnedLand> settlementLands = MultimapBuilder.hashKeys().hashSetValues().build();
     private final Multimap<UUID, OwnedLand> playerPlots = MultimapBuilder.hashKeys().hashSetValues().build();
-    private final Multimap<UUID, OwnedLand> linkedPlots = MultimapBuilder.hashKeys().hashSetValues().build();
 
     private LandManager() {
         nearbyRadius = Config.Claiming.Close.Building.DISTANCE;
@@ -56,7 +54,7 @@ public class LandManager {
         for (OwnedLand land : DatabaseManager.getInstance().getAllLand()) {
             cacheLand(land);
         }
-        SettlementsPlugin.logDebug("Loaded LandManager with " + settlementLands.size() + " lands, " + playerPlots.size() + " player plots and " + linkedPlots.size() + " linked plots");
+        SettlementsPlugin.logDebug("Loaded LandManager with " + settlementLands.size() + " lands, " + playerPlots.size() + " player plots");
 
     }
 
@@ -69,7 +67,7 @@ public class LandManager {
 
     private void cacheLand(OwnedLand land) {
         landTable.put(land.getWorldName(), land.getSimpleKey(), land);
-        if (land.getSettlement() instanceof Settlement) {
+        if (land.getSettlement() != null) {
             settlementLands.put(land.getSettlement().getId(), land);
         }
         if (nearbyRadius > 0) {
@@ -85,9 +83,6 @@ public class LandManager {
             playerPlots.put(land.getPlotOwner(), land);
             // Cache plot owner
             ResidentManager.getInstance().getResident(land.getPlotOwner());
-        }
-        if (land.hasLink()) {
-            linkedPlots.put(land.getLink(), land);
         }
     }
 
@@ -209,38 +204,12 @@ public class LandManager {
             List<OwnedLand> claims = new ArrayList<>(getClaimedLand(landowner));
             for (OwnedLand claim : claims) {
                 new LandUnclaimEvent(claim).callEvent();
-                removeLink(claim);
                 landTable.remove(claim.getWorld(), claim.getSimpleKey());
                 SettlementsPlugin.getInstance().getLogging().info("Chunk " + claim.getKey() + " owned by " + landowner.getName() + " was unclaimed");
             }
             settlementLands.removeAll(landowner.getId());
         });
         Utils.runAsync(() -> DatabaseManager.getInstance().unclaimLand(landowner));
-    }
-
-    public boolean removeLink(OwnedLand land) {
-        if (land != null && land.hasLink()) {
-            UUID link = land.getLink();
-            land.setLink(null);
-            return linkedPlots.remove(link, land);
-        }
-        return false;
-    }
-
-    public boolean addLink(OwnedLand land, UUID link) {
-        if (land != null && link != null && !link.equals(land.getLink())) {
-            removeLink(land);
-            land.setLink(link);
-            return linkedPlots.put(link, land);
-        }
-        return false;
-    }
-
-    public Collection<OwnedLand> getLinked(OwnedLand land) {
-        if (land != null && land.hasLink()) {
-            return linkedPlots.get(land.getLink());
-        }
-        return new HashSet<>();
     }
 
     public static LandManager getInstance() {
@@ -268,10 +237,9 @@ public class LandManager {
 
     public void setPlotOwner(OwnedLand land, UUID owner) {
         if (land.isPlot()) {
-            playerPlots.remove(land.getPlotOwner(), land.getLocation());
+            playerPlots.remove(land.getPlotOwner(), land);
         }
         land.getPlotMembers().clear();
-        land.removeLink();
         land.setPlotOwner(owner);
         if (owner != null) {
             land.setBuildState(BuildState.PRIVATE);
@@ -384,16 +352,8 @@ public class LandManager {
     }
 
     public void syncAndSave(OwnedLand land) {
-        List<OwnedLand> lands = new ArrayList<>();
-        lands.add(land);
         cacheLand(land);
-        for (OwnedLand c : land.getLinked()) {
-            if (c.syncLinked(land)) {
-                lands.add(c);
-            }
-        }
-
-        DatabaseManager.getInstance().saveLand(lands);
+        DatabaseManager.getInstance().saveLand(land);
     }
 
     public void checkUnclaim() {

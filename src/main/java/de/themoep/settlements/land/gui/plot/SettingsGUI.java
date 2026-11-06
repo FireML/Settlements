@@ -219,16 +219,8 @@ public class SettingsGUI extends PlotGUI {
             }
             List<String> description = new ArrayList<>();
             ItemStack item = getIcon("link");
-            if (land.hasLink()) {
-                description.add(getMessage("linked").getReplacedText("amount", String.valueOf(land.getLinked().size() - 1)));
-                ItemUtils.setGlowing(item, true);
-            }
-            if (land.isPlotOwner(resident) || (land.canAdmin(resident) && (land.isPlot() || land.hasLink()))) {
-                if (description.isEmpty()) {
-                    description.add(getText("link"));
-                } else {
-                    description.add(getText("unlink"));
-                }
+            if (land.isPlotOwner(resident) || (land.canAdmin(resident) && land.isPlot())) {
+                description.add(getText("link"));
             }
             if (description.isEmpty()) {
                 return null;
@@ -238,22 +230,7 @@ public class SettingsGUI extends PlotGUI {
                 if (currentLand != null) {
                     boolean canAdmin = currentLand.canAdmin(resident);
                     if (currentLand.isPlotOwner(resident) || canAdmin) {
-                        if (currentLand.hasLink()) {
-                            Collection<OwnedLand> linkedLands = currentLand.getLinked();
-                            int linked = linkedLands.size() - 1;
-                            Set<OwnedLand> toSave = new HashSet<>();
-                            if (linked == 1) {
-                                OwnedLand otherLand = linkedLands.stream().filter(o -> !o.equals(currentLand)).findAny().get();
-                                otherLand.removeLink();
-                                toSave.add(otherLand);
-                            }
-                            if (currentLand.removeLink()) {
-                                toSave.add(currentLand);
-                                Utils.runAsync(() -> DatabaseManager.getInstance().saveLand(toSave));
-                                gui.draw();
-                            }
-                            Message.get("command.plot.unlink.disconnected").tell(resident, "amount", String.valueOf(linked));
-                        } else if (currentLand.isPlot()) {
+                        if (currentLand.isPlot()) {
                             gui.close();
                             Utils.runAsync(() -> new ChatMap(resident.getPlayer(), currentLand.getSettlement(), currentLand.getMapKey()));
                         }

@@ -1,8 +1,8 @@
 package de.themoep.settlements.commandold.settlement;
 
+import de.themoep.settlements.command.plot.PlotCommand;
 import de.themoep.settlements.commandold.HelpCommand;
 import de.themoep.settlements.commandold.SubCommand;
-import de.themoep.settlements.commandold.plot.PlotCommand;
 import de.themoep.settlements.commandold.settlement.money.SettlementMoneyCommand;
 import de.themoep.settlements.commandold.settlement.outpost.OutpostTeleportCommand;
 import de.themoep.settlements.db.LogType;
@@ -52,7 +52,6 @@ public class SettlementCommand extends SubCommand {
         registerCommand(outpostCommand);
         registerCommand(new OutpostTeleportCommand(outpostCommand));
         registerCommand(new SettlementPerksCommand(this));
-        registerCommand(new PlotCommand());
         registerCommand(new SettlementRanksCommand(this));
         registerCommand(new SettlementRenameCommand(this));
         registerCommand(new SettlementResCommand(this));

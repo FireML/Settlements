@@ -73,7 +73,7 @@ public class ModeGUI extends PlotGUI {
                                             }
                                         }
                                         if (click.getType() == ClickType.MIDDLE) {
-                                            if (currentLand.unsetMode(m) || currentLand.hasLink()) {
+                                            if (currentLand.unsetMode(m)) {
                                                 Message.get("command.plot.mode.unset").tell(resident,
                                                         "mode", m.getTag(),
                                                         "value", yesOrNo(currentLand.getSettlement().getMode(m)),

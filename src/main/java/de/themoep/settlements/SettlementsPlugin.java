@@ -6,6 +6,7 @@ import de.themoep.settlements.command.TaxCommand;
 import de.themoep.settlements.command.WarningToggleCommand;
 import de.themoep.settlements.command.friend.FriendCommand;
 import de.themoep.settlements.command.main.MainCommand;
+import de.themoep.settlements.command.plot.PlotCommand;
 import de.themoep.settlements.command.resident.ResidentCommand;
 import de.themoep.settlements.commandold.CommandManager;
 import de.themoep.settlements.customevents.CustomEventManager;
@@ -287,6 +288,7 @@ public class SettlementsPlugin extends JavaPlugin implements Listener {
             commands.registrar().register(TaxCommand.get());
             commands.registrar().register(ResidentCommand.get(), List.of("res"));
             commands.registrar().register(FriendCommand.get());
+            commands.registrar().register(PlotCommand.get());
         });
     }
 

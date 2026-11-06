@@ -28,6 +28,8 @@ import de.themoep.settlements.utils.Utils;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.object.ObjectContents;
+import net.kyori.adventure.text.object.ObjectContentsLike;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
@@ -51,7 +53,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, Sortable<Resident>, ForwardingAudience {
+public class Resident implements ConfigurationSerializable, DatabaseSerializable, Targetable, Sortable<Resident>, ForwardingAudience, ObjectContentsLike {
     private IdObject id = IdObject.get(null);
     private final UUID uuid;
     private String name;
@@ -511,6 +513,11 @@ public class Resident implements ConfigurationSerializable, DatabaseSerializable
     public @NonNull Iterable<? extends Audience> audiences() {
         Player player = getPlayer();
         return player == null ? List.of() : List.of(player);
+    }
+
+    @Override
+    public @NonNull ObjectContents asObjectContents() {
+        return ObjectContents.playerHead(uuid);
     }
 
     public enum Sort implements Sortable.Sort<Resident> {

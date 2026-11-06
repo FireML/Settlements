@@ -1,7 +1,10 @@
 package de.themoep.settlements.command.plot;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import de.themoep.settlements.command.plot.sub.BuildSubcommand;
 import de.themoep.settlements.command.plot.sub.BuySubcommand;
+import de.themoep.settlements.command.plot.sub.InfoSubcommand;
+import de.themoep.settlements.command.plot.sub.MembersSubcommand;
 import de.themoep.settlements.command.plot.sub.PermissionsSubcommand;
 import de.themoep.settlements.command.plot.sub.ResetSubcommand;
 import de.themoep.settlements.command.plot.sub.SaleSubcommand;
@@ -18,7 +21,10 @@ public class PlotCommand {
 
     public static @NonNull LiteralCommandNode<CommandSourceStack> get() {
         return Commands.literal("plot")
+            .then(BuildSubcommand.get())
             .then(BuySubcommand.get())
+            .then(InfoSubcommand.get())
+            .then(MembersSubcommand.get())
             .then(PermissionsSubcommand.get())
             .then(ResetSubcommand.get())
             .then(SaleSubcommand.get())

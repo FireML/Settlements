@@ -222,16 +222,8 @@ public class ChatMap {
 
             if (land.isPlot()) {
                 if (land.isPlotOwner(resident)) {
-                    if (land.isLinked(playerLand)) {
-                        relation = Relation.OWN_PLOT_LINKED_CURRENT;
-                        legend.add(RowEnd.LINKED_PLOT);
-                    } else if (land.hasLink()) {
-                        legend.add(RowEnd.LINKED_PLOT);
-                        relation = Relation.OWN_PLOT_LINKED;
-                    } else {
-                        legend.add(RowEnd.PLAYER_PLOT);
-                        relation = Relation.OWN_PLOT;
-                    }
+                    legend.add(RowEnd.PLAYER_PLOT);
+                    relation = Relation.OWN_PLOT;
                 }
                 symbol = Symbol.PLOT;
             }
@@ -272,34 +264,14 @@ public class ChatMap {
 
             Component cb = ComponentUtils.parseComponent("&" + relation.getColor().asHexString() + symbol.getText());
             if (canLinkPlot && land.isPlotOwner(playerLand.getPlotOwner())) {
-                if (land.hasLink()) {
-                    hover = hover.append(Component.newline()).append(messages.getMessage("hover.linked")
-                            .getReplacedComponent(
-                                    "location", x + "-" + z,
-                                    "x", String.valueOf(x),
-                                    "z", String.valueOf(z),
-                                    "linked", String.valueOf(land.getLinked().size() - 1),
-                                    "linkgroup", Base64.getEncoder().encodeToString(land.getLink().toString().getBytes()).substring(0, 4)
-                            ));
-                }
                 if (!current) {
-                    if (land.isLinked(playerLand)) {
-                        hover = hover.append(Component.newline()).append(messages.getMessage("hover.click-to-unlink")
-                                .getReplacedComponent(
-                                        "location", x + "-" + z,
-                                        "x", String.valueOf(x),
-                                        "z", String.valueOf(z)
-                                ));
-                        cb = cb.clickEvent(ClickEvent.runCommand("/plot unlink " + x + " " + z + " map"));
-                    } else {
-                        hover = hover.append(Component.newline()).append(messages.getMessage("hover.click-to-link")
-                                .getReplacedComponent(
-                                        "location", x + "-" + z,
-                                        "x", String.valueOf(x),
-                                        "z", String.valueOf(z)
-                                ));
-                        cb = cb.clickEvent(ClickEvent.runCommand("/plot link " + x + " " + z + " map"));
-                    }
+                    hover = hover.append(Component.newline()).append(messages.getMessage("hover.click-to-link")
+                        .getReplacedComponent(
+                            "location", x + "-" + z,
+                            "x", String.valueOf(x),
+                            "z", String.valueOf(z)
+                        ));
+                    cb = cb.clickEvent(ClickEvent.runCommand("/plot link " + x + " " + z + " map"));
                 }
             } else if (claimable && canUnclaimCoords && land.isOwnedBy(landOwner)) {
                 hover = hover.append(Component.newline()).append(messages.getMessage("hover.click-to-unclaim")
