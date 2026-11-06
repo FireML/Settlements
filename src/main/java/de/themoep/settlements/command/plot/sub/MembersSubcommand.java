@@ -6,7 +6,7 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.utils.LandUtils;
+import de.themoep.settlements.utils.checks.LandChecks;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.message.ConfigMessage;
 import de.themoep.settlements.utils.dialog.InfoDialogBuilder;
@@ -53,7 +53,7 @@ public class MembersSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(player, land)) {
+                        if (!LandChecks.checkPlotAdmin(player, land)) {
                             return 1;
                         }
                         Resident target = ctx.getArgument("resident", Resident.class);
@@ -83,7 +83,7 @@ public class MembersSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(player, land)) {
+                        if (!LandChecks.checkPlotAdmin(player, land)) {
                             return 1;
                         }
                         Resident target = ctx.getArgument("resident", Resident.class);

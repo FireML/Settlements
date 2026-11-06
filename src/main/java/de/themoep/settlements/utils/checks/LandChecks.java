@@ -1,4 +1,4 @@
-package de.themoep.settlements.utils;
+package de.themoep.settlements.utils.checks;
 
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
@@ -9,7 +9,7 @@ import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
 
-public class LandUtils {
+public class LandChecks {
 
     public static boolean checkPlotAdmin(@NonNull Resident resident, @NonNull Chunk chunk) {
         OwnedLand land = LandManager.getInstance().getLand(chunk);

@@ -3,7 +3,7 @@ package de.themoep.settlements.command.plot.sub;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.utils.LandUtils;
+import de.themoep.settlements.utils.checks.LandChecks;
 import de.themoep.settlements.utils.config.message.ConfigMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -21,7 +21,7 @@ public class UnownSubcommand {
                     ConfigMessage.getError("not-a-claim").send(player);
                     return 1;
                 }
-                if (!LandUtils.checkPlotAdmin(player, land)) {
+                if (!LandChecks.checkPlotAdmin(player, land)) {
                     return 1;
                 }
                 if (!land.isPlot()) {

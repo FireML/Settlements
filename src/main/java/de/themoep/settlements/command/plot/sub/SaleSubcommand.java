@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.utils.LandUtils;
+import de.themoep.settlements.utils.checks.LandChecks;
 import de.themoep.settlements.utils.config.message.ConfigMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -22,7 +22,7 @@ public class SaleSubcommand {
                     ConfigMessage.getError("not-a-claim").send(player);
                     return 1;
                 }
-                if (!LandUtils.checkPlotAdmin(player, land)) {
+                if (!LandChecks.checkPlotAdmin(player, land)) {
                     return 1;
                 }
                 if (land.isForSale()) {
@@ -43,7 +43,7 @@ public class SaleSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(player, land)) {
+                        if (!LandChecks.checkPlotAdmin(player, land)) {
                             return 1;
                         }
                         if (land.isPlot()) {
@@ -70,7 +70,7 @@ public class SaleSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(player, land)) {
+                        if (!LandChecks.checkPlotAdmin(player, land)) {
                             return 1;
                         }
                         if (land.isPlot()) {

@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.themoep.settlements.db.DatabaseManager;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.utils.LandUtils;
+import de.themoep.settlements.utils.checks.LandChecks;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.message.ConfigMessage;
@@ -25,7 +25,7 @@ public class TaxSubcommand {
                     ConfigMessage.getError("not-a-claim").send(player);
                     return 1;
                 }
-                if (!LandUtils.checkPlotAdmin(player, land)) {
+                if (!LandChecks.checkPlotAdmin(player, land)) {
                     return 1;
                 }
                 ConfigMessage.get("command.plot.tax.current")
@@ -42,7 +42,7 @@ public class TaxSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(player, land)) {
+                        if (!LandChecks.checkPlotAdmin(player, land)) {
                             return 1;
                         }
                         if (land.isPlot()) {

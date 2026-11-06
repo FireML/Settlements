@@ -9,7 +9,7 @@ import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.UseFlag;
 import de.themoep.settlements.land.UseFlagManager;
-import de.themoep.settlements.utils.LandUtils;
+import de.themoep.settlements.utils.checks.LandChecks;
 import de.themoep.settlements.utils.config.message.ConfigMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -35,7 +35,7 @@ public class PermissionsSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(player, land)) {
+                        if (!LandChecks.checkPlotAdmin(player, land)) {
                             return 1;
                         }
                         for (UseFlag flag : UseFlagManager.getInstance().getUseFlags()) {
@@ -57,7 +57,7 @@ public class PermissionsSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(player, land)) {
+                        if (!LandChecks.checkPlotAdmin(player, land)) {
                             return 1;
                         }
                         BuildState state = ctx.getArgument("state", BuildState.class);
@@ -84,7 +84,7 @@ public class PermissionsSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(player, land)) {
+                        if (!LandChecks.checkPlotAdmin(player, land)) {
                             return 1;
                         }
                         UseFlag flag = ctx.getArgument("flag", UseFlag.class);
@@ -106,7 +106,7 @@ public class PermissionsSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(player, land)) {
+                        if (!LandChecks.checkPlotAdmin(player, land)) {
                             return 1;
                         }
                         UseFlag flag = ctx.getArgument("flag", UseFlag.class);

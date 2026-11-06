@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import de.themoep.settlements.land.LandManager;
 import de.themoep.settlements.land.OwnedLand;
-import de.themoep.settlements.utils.LandUtils;
+import de.themoep.settlements.utils.checks.LandChecks;
 import de.themoep.settlements.utils.config.Config;
 import de.themoep.settlements.utils.config.message.ConfigMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -25,7 +25,7 @@ public class SetDescriptionSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(player, land)) {
+                        if (!LandChecks.checkPlotAdmin(player, land)) {
                             return 1;
                         }
                         String description = ctx.getArgument("description", String.class);

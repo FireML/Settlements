@@ -7,7 +7,7 @@ import de.themoep.settlements.land.OwnedLand;
 import de.themoep.settlements.land.PlotMode;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.resident.ResidentManager;
-import de.themoep.settlements.utils.LandUtils;
+import de.themoep.settlements.utils.checks.LandChecks;
 import de.themoep.settlements.utils.config.message.ConfigMessage;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -41,7 +41,7 @@ public class SetSubcommand {
                             ConfigMessage.getError("not-a-claim").send(player);
                             return 1;
                         }
-                        if (!LandUtils.checkPlotAdmin(resident, land)) {
+                        if (!LandChecks.checkPlotAdmin(resident, land)) {
                             return 1;
                         }
                         if (land.containsHome() || land.isOutpost()) {
@@ -75,7 +75,7 @@ public class SetSubcommand {
                     ConfigMessage.getError("not-a-claim").send(player);
                     return 1;
                 }
-                if (!LandUtils.checkPlotAdmin(resident, land)) {
+                if (!LandChecks.checkPlotAdmin(resident, land)) {
                     return 1;
                 }
                 PlotMode mode = ctx.getArgument("mode", PlotMode.class);
@@ -102,7 +102,7 @@ public class SetSubcommand {
                     ConfigMessage.getError("not-a-claim").send(player);
                     return 1;
                 }
-                if (!LandUtils.checkPlotAdmin(resident, land)) {
+                if (!LandChecks.checkPlotAdmin(resident, land)) {
                     return 1;
                 }
                 PlotMode mode = ctx.getArgument("mode", PlotMode.class);
@@ -129,7 +129,7 @@ public class SetSubcommand {
                     ConfigMessage.getError("not-a-claim").send(player);
                     return 1;
                 }
-                if (!LandUtils.checkPlotAdmin(resident, land)) {
+                if (!LandChecks.checkPlotAdmin(resident, land)) {
                     return 1;
                 }
                 PlotMode mode = ctx.getArgument("mode", PlotMode.class);
