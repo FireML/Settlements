@@ -40,7 +40,7 @@ public class MembersGUI extends PlotGUI {
                             }
                         }
                         return true;
-                    }, getText("element",
+                    }, getComponent("element",
                             "name", memberName,
                             "uuid", memberId.toString()
                     )));
@@ -62,7 +62,7 @@ public class MembersGUI extends PlotGUI {
                 }
             }).open();
             return true;
-        }, getText("add")));
+        }, getComponent("add")));
 
         GuiElementGroup pages = new GuiElementGroup('p');
         gui.addElement(pages);
@@ -77,10 +77,10 @@ public class MembersGUI extends PlotGUI {
                 return new StaticGuiElement('p', icon, page + 1, click -> {
                     gui.setPageNumber(click.getWhoClicked(), page);
                     return true;
-                }, getText("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
+                }, getComponent("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
             }));
         }
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 }

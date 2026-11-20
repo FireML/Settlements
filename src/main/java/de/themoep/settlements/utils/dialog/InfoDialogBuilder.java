@@ -13,7 +13,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
-import uk.firedev.daisylib.messages.message.ComponentMessage;
+import uk.firedev.daisylib.messages.message.Message;
 import uk.firedev.daisylib.messages.replacer.Replacer;
 
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class InfoDialogBuilder {
         if (players.isEmpty()) {
             return new InfoDialogBuilder();
         }
-        ComponentMessage<?, ?> entry = ConfigMessage.get("dialog.info.player");
+        Message<?, ?> entry = ConfigMessage.get("dialog.info.player");
         InfoDialogBuilder builder = new InfoDialogBuilder();
         players.forEach(player -> {
             Replacer replacer = Replacer.component()
@@ -65,7 +65,7 @@ public class InfoDialogBuilder {
         if (residents.isEmpty()) {
             return new InfoDialogBuilder();
         }
-        ComponentMessage<?, ?> entry = ConfigMessage.get("dialog.info.player");
+        Message<?, ?> entry = ConfigMessage.get("dialog.info.player");
         InfoDialogBuilder builder = new InfoDialogBuilder();
         residents.forEach(resident -> {
             Replacer replacer = Replacer.component()
@@ -114,7 +114,7 @@ public class InfoDialogBuilder {
     }
 
     public InfoDialogBuilder withTitle(Object title) {
-        this.title = ComponentMessage.componentMessage(title).get();
+        this.title = Message.message(title).get();
         return this;
     }
 
@@ -139,7 +139,7 @@ public class InfoDialogBuilder {
     public DialogLike build() {
         return Dialog.create(builder -> builder.empty()
             .base(
-                DialogBase.builder(ComponentMessage.componentMessage(title).replace(replacer).get())
+                DialogBase.builder(Message.message(title).replace(replacer).get())
                     .canCloseWithEscape(true)
                     .afterAction(DialogBase.DialogAfterAction.NONE)
                     .body(getBodies())
@@ -157,7 +157,7 @@ public class InfoDialogBuilder {
     }
 
     private List<? extends DialogBody> getBodies() {
-        return ComponentMessage.componentMessage(content).replace(replacer).get().stream()
+        return Message.message(content).replace(replacer).get().stream()
             .map(DialogBody::plainMessage)
             .toList();
     }

@@ -30,9 +30,9 @@ public class ResidentGUI extends ConfigurableGui {
 
         gui.addElement(new DynamicGuiElement('p', who -> new StaticGuiElement('p',
                 ItemUtils.getHead(resident.getUUID(), resident.getName()),
-                getText("info", resident.getReplacements()))));
+                getComponent("info", resident.getReplacements()))));
 
-        gui.addElement(new DynamicGuiElement('a', who -> new StaticGuiElement('a', getIcon("accepted"), getText("accepted.entry",
+        gui.addElement(new DynamicGuiElement('a', who -> new StaticGuiElement('a', getIcon("accepted"), getComponent("accepted.entry",
                 "state", resident.getSettlement().getTag(),
                 "accepted", resident.getSettlementRank() == resident.getSettlement().getDefaultRank()
                         ? getText("accepted.not-accepted") : getText("accepted.accepted")
@@ -45,7 +45,7 @@ public class ResidentGUI extends ConfigurableGui {
                         resident.save();
                     }
                 }, TaxDebtAction.NONE.getKey(), getIcon("evasion"),
-                        getText("tax-evasion",
+                        getComponent("tax-evasion",
                                 "taxevasion", TaxDebtAction.NONE.getTag(),
                                 "action", resident.getSettlement().hasPermission(sender, "settaxevasion") ? getText("unlockables.unlocked.change") : getText("no-permission")
                         )),
@@ -55,7 +55,7 @@ public class ResidentGUI extends ConfigurableGui {
                         resident.save();
                     }
                 }, TaxDebtAction.KICK.getKey(), getIcon("evasion"),
-                        getText("tax-evasion",
+                        getComponent("tax-evasion",
                                 "taxevasion", TaxDebtAction.KICK.getTag(),
                                 "action", resident.getSettlement().hasPermission(sender, "settaxevasion") ? getText("unlockables.unlocked.change") : getText("no-permission")
                         ))));
@@ -66,7 +66,7 @@ public class ResidentGUI extends ConfigurableGui {
                         resident.setTaxExempted(true);
                         resident.save();
                     }
-                }, Boolean.TRUE.toString(), getIcon("taxes"), getText("taxes.entry",
+                }, Boolean.TRUE.toString(), getIcon("taxes"), getComponent("taxes.entry",
                         "donated", Utils.CURRENCY_FORMAT.format(resident.getDonated()),
                         "taxpaid", Utils.CURRENCY_FORMAT.format(resident.getTaxPaid()),
                         "exempted", getText("taxes.exempted"),
@@ -77,7 +77,7 @@ public class ResidentGUI extends ConfigurableGui {
                         resident.setTaxExempted(false);
                         resident.save();
                     }
-                }, Boolean.FALSE.toString(), getIcon("taxes"), getText("taxes.entry",
+                }, Boolean.FALSE.toString(), getIcon("taxes"), getComponent("taxes.entry",
                         "donated", Utils.CURRENCY_FORMAT.format(resident.getDonated()),
                         "taxpaid", Utils.CURRENCY_FORMAT.format(resident.getTaxPaid()),
                         "exempted", getText("taxes.paying"),
@@ -89,7 +89,7 @@ public class ResidentGUI extends ConfigurableGui {
                 new TitleGUI("settlement", sender, resident, resident.getSettlement()).open();
             }
             return true;
-        }, getText("settitle",
+        }, getComponent("settitle",
                 "title", resident.getSettlementTitle(),
                 "action", resident.getSettlement().hasPermission(sender, "settitle") ? getText("unlockables.unlocked.change") : getText("no-permission")
         ))));
@@ -122,7 +122,7 @@ public class ResidentGUI extends ConfigurableGui {
                 }).open();
             }
             return true;
-        }, getText("rank",
+        }, getComponent("rank",
                 "rank", resident.getSettlementRank().getTag(),
                 "action", getText(resident.getSettlement().hasPermission(sender, "setrank")
                         ? sender.getSettlementRank().above(resident.getSettlementRank())
@@ -137,7 +137,7 @@ public class ResidentGUI extends ConfigurableGui {
                 Message.get("command.settlement.kicknotice.success").actionbar(sender, "name", resident.getName());
             }
             return true;
-        }, getText("eviction",
+        }, getComponent("eviction",
                 "action", getText(sender.hasPermission("settlement.kicknotice")
                         ? sender.getSettlementRank().above(resident.getSettlementRank())
                         ? "unlockables.unlocked.send"
@@ -156,7 +156,7 @@ public class ResidentGUI extends ConfigurableGui {
             }, c -> InventoryGui.goBack(c.getWhoClicked()), "player", resident.getName(), "state", resident.getSettlement().getStateTag())
                     .open((Player) click.getWhoClicked());
             return true;
-        }, getText("kick.entry",
+        }, getComponent("kick.entry",
                 "player", resident.getName(),
                 "state", resident.getSettlement().getStateTag(),
                 "action", getText(resident.getSettlement().hasPermission(sender, "settlement.kick")
@@ -197,7 +197,7 @@ public class ResidentGUI extends ConfigurableGui {
                     .plugin(SettlementsPlugin.getInstance())
                     .open(sender.getPlayer());
             return true;
-        }, getText("banish.entry",
+        }, getComponent("banish.entry",
                 "action", resident.getSettlement().hasPermission(sender, "banish")
                         ? sender.getSettlementRank().above(resident.getSettlementRank())
                                 ? getText("unlockables.unlocked.banish")

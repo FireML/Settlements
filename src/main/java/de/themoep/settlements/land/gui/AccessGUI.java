@@ -24,8 +24,8 @@ public class AccessGUI extends ConfigurableGui {
                     if (landOwner.getAccess() == access) {
                         return new StaticGuiElement('a',
                                 getIcon("selected"),
-                                getText("selected", "access", access.getTag()),
-                                getText("access." + access.getKey(), "state", landOwner.getStateTag())
+                                getComponent("selected", "access", access.getTag()),
+                                getComponent("access." + access.getKey(), "state", landOwner.getStateTag())
                         );
                     }
                     return new StaticGuiElement('a',
@@ -39,8 +39,8 @@ public class AccessGUI extends ConfigurableGui {
                                 }
                                 return true;
                             },
-                            getText("available", "access", access.getTag()),
-                            getText("access." + access.getKey(), "state", landOwner.getStateTag())
+                            getComponent("available", "access", access.getTag()),
+                            getComponent("access." + access.getKey(), "state", landOwner.getStateTag())
                     );
                 }
                 return null;

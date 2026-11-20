@@ -16,6 +16,7 @@ import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.StringUtils;
 import de.themoep.settlements.utils.Utils;
+import net.kyori.adventure.text.Component;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -32,7 +33,7 @@ public class TitlesGUI extends SettlementsGUI {
     public TitlesGUI(@NonNull String type, Resident resident, Settlement landOwner, SettlementRank rank) {
         super(type + ".titles");
         this.resident = resident;
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title",
                 "state", landOwner.getStateTag(),
                 "rank", rank.getTag(landOwner)
         ), getSetup());
@@ -46,25 +47,25 @@ public class TitlesGUI extends SettlementsGUI {
             for (String title : landOwner.getTitles(rank)) {
                 group.addElement(new DynamicGuiElement('t', h -> {
                     ItemStack item = getIcon("title");
-                    List<String> description = new ArrayList<>();
-                    description.add(getText("entry.title",
+                    List<Component> description = new ArrayList<>();
+                    description.add(getComponent("entry.title",
                             "title", title,
                             "rank", rank.getTag(landOwner)
                     ));
                     if (title.equals(landOwner.getDefaultTitle(rank))) {
-                        description.add(getText("entry.default",
+                        description.add(getComponent("entry.default",
                                 "title", title,
                                 "rank", rank.getTag(landOwner)
                         ));
                         ItemUtils.setGlowing(item, true);
                     } else if (resident.hasPermission(type + ".titles.set") && !rank.above(landOwner.getRank(resident))) {
-                        description.add(getText("entry.set",
+                        description.add(getComponent("entry.set",
                                 "title", title,
                                 "rank", rank.getTag(landOwner)
                         ));
                     }
                     if (resident.hasPermission(type + ".titles.remove") && !rank.above(landOwner.getRank(resident))) {
-                        description.add(getText("entry.remove",
+                        description.add(getComponent("entry.remove",
                                 "title", title,
                                 "rank", rank.getTag(landOwner)
                         ));
@@ -95,7 +96,7 @@ public class TitlesGUI extends SettlementsGUI {
                             }
                         }
                         return true;
-                    }, description.toArray(new String[0]));
+                    }, description.toArray(new Component[0]));
                 }));
             }
 
@@ -157,14 +158,14 @@ public class TitlesGUI extends SettlementsGUI {
                                 .open((Player) click.getWhoClicked());
                     }
                     return true;
-                }, getText("add.title",
+                }, getComponent("add.title",
                         "rank", rank.getTag(landOwner),
                         "state", landOwner.getStateTag()
                 )));
             }
         }
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 
     public void open() {

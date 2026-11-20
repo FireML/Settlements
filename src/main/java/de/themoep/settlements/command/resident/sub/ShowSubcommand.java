@@ -13,7 +13,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NonNull;
-import uk.firedev.daisylib.messages.message.ComponentMessage;
+import uk.firedev.daisylib.messages.message.Message;
 import uk.firedev.daisylib.messages.replacer.Replacer;
 
 public class ShowSubcommand {
@@ -41,7 +41,7 @@ public class ShowSubcommand {
         String key = resident.hasSettlement() ? "command.resident.show.settlement" : "command.resident.show.no-settlement";
         Replacer replacer = Replacer.component().addReplacements(Utils.toParsedMap(resident.getReplacements()));
 
-        ComponentMessage<?, ?> title = ConfigMessage.get("command.resident.show.title")
+        Message<?, ?> title = ConfigMessage.get("command.resident.show.title")
             .replace(replacer);
 
         Component info = ConfigMessage.get(key)

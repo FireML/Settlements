@@ -17,6 +17,7 @@ import de.themoep.settlements.land.UseFlagManager;
 import de.themoep.settlements.land.UseFlagSetter;
 import de.themoep.settlements.land.UseGroup;
 import de.themoep.settlements.utils.Message;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.inventory.ClickType;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -31,11 +32,11 @@ public class UseGUI extends SettlementsGUI {
 
     public UseGUI(@NonNull String type, UseGroup group, FlagAble flagAble, Supplier<Boolean> permCheck, BiConsumer<BuildStateable, GuiElement.Click> buildSetter) {
         super(type + ".use");
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title"), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));
         gui.addElements(getConfiguredElements());
-        gui.addElement(new StaticGuiElement('s', getIcon("states"), getText("states", "state", flagAble.getParent().getStateTag())));
+        gui.addElement(new StaticGuiElement('s', getIcon("states"), getComponent("states", "state", flagAble.getParent().getStateTag())));
 
         GuiElementGroup useGroup = createGroup('u');
         for (UseFlag u : group.getUseFlags()) {
@@ -45,8 +46,8 @@ public class UseGUI extends SettlementsGUI {
                     if (state == null) {
                         state = flagAble.getDefaultBuildState();
                     }
-                    List<String> text = new ArrayList<>();
-                    text.add(getMessage("entry.text").getReplacedText(
+                    List<Component> text = new ArrayList<>();
+                    text.add(getMessage("entry.text").getReplacedComponent(
                             "flag", u.getTag(),
                             "access", state.getTag(),
                             "nextaccess", state.next(BuildState.AppliesTo.SETTLEMENT).getTag(),
@@ -54,12 +55,12 @@ public class UseGUI extends SettlementsGUI {
                     ));
                     FlagAble parent = flagAble.getParent();
                     if (flagAble.hasUseState(u)) {
-                        text.addAll(getMessage("entry.click-to-unset").getReplacedTextList(
+                        text.addAll(getMessage("entry.click-to-unset").getReplacedComponentList(
                                 "parent", parent.getStateTag(),
                                 "value", parent.getUseState(u).getTag()
                         ));
                     } else {
-                        text.addAll(getMessage("entry.parent").getReplacedTextList(
+                        text.addAll(getMessage("entry.parent").getReplacedComponentList(
                                 "parent", parent.getStateTag(),
                                 "value", parent.getUseState(u).getTag()
                         ));
@@ -81,7 +82,7 @@ public class UseGUI extends SettlementsGUI {
                             }
                         }
                         return true;
-                    },text.toArray(new String[0]));
+                    },text.toArray(new Component[0]));
                 }
                 return null;
             }));
@@ -102,15 +103,15 @@ public class UseGUI extends SettlementsGUI {
                     click.getGui().draw();
                 }
                 return true;
-            }, getMessage("toggle-all").getReplacedText("access", state.getTag())));
+            }, getMessage("toggle-all").getReplacedComponent("access", state.getTag())));
         }
         gui.addElement(allGroup);
 
-        gui.addElement(new GuiPageElement('p', getIcon("previous"), GuiPageElement.PageAction.PREVIOUS, getText("page.previous", "page", "%prevpage%")));
+        gui.addElement(new GuiPageElement('p', getIcon("previous"), GuiPageElement.PageAction.PREVIOUS, getComponent("page.previous", "page", "%prevpage%")));
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
 
-        gui.addElement(new GuiPageElement('n', getIcon("next"), GuiPageElement.PageAction.NEXT, getText("page.next", "page", "%nextpage%")));
+        gui.addElement(new GuiPageElement('n', getIcon("next"), GuiPageElement.PageAction.NEXT, getComponent("page.next", "page", "%nextpage%")));
     }
 
     public void open(HumanEntity player) {

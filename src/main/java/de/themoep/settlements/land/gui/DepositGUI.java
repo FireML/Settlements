@@ -44,7 +44,7 @@ public class DepositGUI extends SettlementsGUI {
         this.resident = player;
         this.settlement = settlement;
 
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), SETUP);
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title"), SETUP);
 
         inv = Bukkit.createInventory(null, SIZE);
 

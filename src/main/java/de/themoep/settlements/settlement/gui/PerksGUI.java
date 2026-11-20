@@ -11,6 +11,7 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.settlement.SettlementManager;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -36,20 +37,20 @@ public class PerksGUI extends ConfigurableGui {
             group.addElement(new DynamicGuiElement('p', (h) -> {
                 if (resident.hasSettlement()) {
                     PerkData perkData = settlement.getPerkData(perk);
-                    List<String> lore = new ArrayList<>();
-                    lore.add(getText("entry", "name", perk.getTag()));
+                    List<Component> lore = new ArrayList<>();
+                    lore.add(getComponent("entry", "name", perk.getTag()));
                     if (perk.hasEffects()) {
                         if (perkData.isActive()) {
-                            lore.add(getText("active", "name", perk.getTag()));
+                            lore.add(getComponent("active", "name", perk.getTag()));
                         } else {
-                            lore.add(getText("inactive", "name", perk.getTag()));
+                            lore.add(getComponent("inactive", "name", perk.getTag()));
                         }
-                        lore.add(getText("toggleable", "name", perk.getTag()));
+                        lore.add(getComponent("toggleable", "name", perk.getTag()));
                     }
 
                     if (perk.hasActions()) {
                         for (String state : perk.getActionStates(resident.getSettlement())) {
-                            lore.add(getText("actions." + state, "name", perk.getTag()));
+                            lore.add(getComponent("actions." + state, "name", perk.getTag()));
                         }
                     }
 
@@ -76,7 +77,7 @@ public class PerksGUI extends ConfigurableGui {
                                 }
                                 return true;
                             },
-                            lore.toArray(new String[0])
+                            lore.toArray(new Component[0])
                     );
                 }
                 return null;
@@ -85,7 +86,7 @@ public class PerksGUI extends ConfigurableGui {
 
         gui.addElement(group);
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 
     public void open() {

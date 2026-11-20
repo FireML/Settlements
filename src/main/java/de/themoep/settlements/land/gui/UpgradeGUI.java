@@ -37,7 +37,7 @@ public class UpgradeGUI extends ConfigurableGui {
         navBar.addElement(new DynamicGuiElement('l', who -> new StaticGuiElement('l',
             ItemUtils.setGlowing(getIcon(selected), true),
             _ -> true,
-            getText("navigation.entry",
+            getComponent("navigation.entry",
             "description", getText("navigation.description." + (selected.isMaxLevel() ? "upgraded" : selected.getLevel() > 0 ? "upgradable" : "locked"),
                 "action", getText("navigation.action." + (selected == selected ? "current" : "switch"))),
             "name", selected.getStateTag() + " " + selected.getName(),
@@ -65,7 +65,7 @@ public class UpgradeGUI extends ConfigurableGui {
 
                     boolean hasReached = selected.has(entry.getKey(), entry.getValue());
 
-                    reqGroup.addElement(new StaticGuiElement('r', ItemUtils.setGlowing(icon, hasReached), getText("requirement." + (hasReached ? "reached" : "left"),
+                    reqGroup.addElement(new StaticGuiElement('r', ItemUtils.setGlowing(icon, hasReached), getComponent("requirement." + (hasReached ? "reached" : "left"),
                         "name", HumanReadable.humanizedName(entry.getKey()),
                         "required", String.valueOf(entry.getValue()),
                         "progress", String.valueOf(selected.getAmount(entry.getKey())),
@@ -121,7 +121,7 @@ public class UpgradeGUI extends ConfigurableGui {
                         "description", benefit
                     ));
                 }
-                return new StaticGuiElement('i', getIcon(selected), getText("info",
+                return new StaticGuiElement('i', getIcon(selected), getComponent("info",
                     "name", selected.getTag(),
                     "benefits", String.join("\n", benefitTexts)
                 ));
@@ -133,11 +133,11 @@ public class UpgradeGUI extends ConfigurableGui {
             SettlementLevel nextLevel = selected.getNextLevel().orElse(null);
             if (nextLevel != null) {
                 double progress = selected.getNextLevelProgress();
-                return new StaticGuiElement('p', getIcon("progress"), getText("progress",
+                return new StaticGuiElement('p', getIcon("progress"), getComponent("progress",
                     "progress", String.valueOf(((int) progress * 1000) / 10d),
                     "progressbar", getText("progress-bar.finished",
                         "bars", String.join("", Collections.nCopies((int) Math.floor(progress * 50), "|"))) +
-                        getText("progress-bar.unfinished",
+                        getComponent("progress-bar.unfinished",
                             "bars", String.join("", Collections.nCopies((int) Math.ceil((1 - progress) * 50), "|")))
                 )
                 );
@@ -176,8 +176,8 @@ public class UpgradeGUI extends ConfigurableGui {
                 }
             }
             return true;
-        }, getText("deposit", "name", selected.getTag()))));
+        }, getComponent("deposit", "name", selected.getTag()))));
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 }

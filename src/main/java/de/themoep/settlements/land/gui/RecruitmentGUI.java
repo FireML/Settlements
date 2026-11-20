@@ -27,8 +27,8 @@ public class RecruitmentGUI extends ConfigurableGui {
                     if (landOwner.getJoinType() == joinType) {
                         return new StaticGuiElement('j',
                                 getIcon("selected"),
-                                getText("selected", "jointype", joinType.getTag()),
-                                getText("jointype." + joinType.getKey(), "state", landOwner.getStateTag())
+                                getComponent("selected", "jointype", joinType.getTag()),
+                                getComponent("jointype." + joinType.getKey(), "state", landOwner.getStateTag())
                         );
                     }
                     return new StaticGuiElement('j',
@@ -42,8 +42,8 @@ public class RecruitmentGUI extends ConfigurableGui {
                                 }
                                 return true;
                             },
-                            getText("available", "jointype", joinType.getTag()),
-                            getText("jointype." + joinType.getKey(), "state", landOwner.getStateTag())
+                            getComponent("available", "jointype", joinType.getTag()),
+                            getComponent("jointype." + joinType.getKey(), "state", landOwner.getStateTag())
                     );
                 }
                 return null;

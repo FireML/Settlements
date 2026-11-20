@@ -41,11 +41,11 @@ public class ModeGUI extends ConfigurableGui {
                                 }
                                 return true;
                             },
-                            getText("entry.title",
+                            getComponent("entry.title",
                                     "mode", m.getTag(),
                                     "value", getText("entry.state." + enabled)
                             ),
-                            getText("entry.lore",
+                            getComponent("entry.lore",
                                     "mode", m.getTag(),
                                     "value", getText("entry.state." + enabled)
                             )
@@ -57,7 +57,7 @@ public class ModeGUI extends ConfigurableGui {
 
         gui.addElement(group);
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
 
     }
 }

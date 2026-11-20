@@ -95,7 +95,7 @@ public class BankGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        },getText(landOwner.hasUnlocked("command.donate") ? "donations" : "donations-locked",
+        },getComponent(landOwner.hasUnlocked("command.donate") ? "donations" : "donations-locked",
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasUnlocked("command.donate")
                         || landOwner.hasPermission(resident, "bank.deposit")
@@ -104,7 +104,7 @@ public class BankGUI extends ConfigurableGui {
 
         // Only donations are allowed to be used by everyone
         if (landOwner.isMember(resident)) {
-            gui.addElement(new StaticGuiElement('a', getIcon("balance"), getText("balance",
+            gui.addElement(new StaticGuiElement('a', getIcon("balance"), getComponent("balance",
                     "balance", Utils.CURRENCY_FORMAT.format(landOwner.getBank()),
                     "state", landOwner.getStateTag())));
 
@@ -112,9 +112,9 @@ public class BankGUI extends ConfigurableGui {
             gui.addElement(new StaticGuiElement('s', getIcon("storage"), click -> {
                 // TODO: Storage GUI
                 return true;
-            }, getText("storage",
+            }, getComponent("storage",
                     "state", landOwner.getStateTag(),
-                    "action", landOwner.hasUnlocked("storage") ? getText("unlockables.unlocked.open") : getText("unlockables.locked.npc"))));
+                    "action", landOwner.hasUnlocked("storage") ? getComponent("unlockables.unlocked.open") : getComponent("unlockables.locked.npc"))));
             */
 
             gui.addElement(new StaticGuiElement('h', getIcon("history"), click -> {
@@ -123,7 +123,7 @@ public class BankGUI extends ConfigurableGui {
                         .execute(click.getWhoClicked(), null, landOwner.getKey(), "money", "history");
                 click.getGui().close();
                 return true;
-            }, getText("history",
+            }, getComponent("history",
                     "state", landOwner.getStateTag(),
                     "action", landOwner.hasUnlocked("donation") ? getText("unlockables.unlocked.view") : getText("unlockables.locked.npc"))));
 
@@ -137,14 +137,14 @@ public class BankGUI extends ConfigurableGui {
                 days = (int) (landOwner.getBank() / payPerDay);
             }
 
-            gui.addElement(new StaticGuiElement('u', getIcon("upkeep"), getText("upkeep",
+            gui.addElement(new StaticGuiElement('u', getIcon("upkeep"), getComponent("upkeep",
                     "upkeepperclaim", Utils.CURRENCY_FORMAT.format(landOwner.getClaimUpkeep(resident.getPlayer().getWorld().getName())),
                     "upkeep", Utils.CURRENCY_FORMAT.format(upkeep),
                     "afford", days > -1 ? String.valueOf(days) : Message.get("command." + landOwner.getKey() + ".upkeep.afford-infinite").getText(),
                     "time", UtilTime.format(Utils.timeTillNextUpkeep()),
                     "state", landOwner.getStateTag())));
 
-            gui.addElement(new StaticGuiElement('t', getIcon("taxes"), getText("taxes",
+            gui.addElement(new StaticGuiElement('t', getIcon("taxes"), getComponent("taxes",
                     "tax", Utils.CURRENCY_FORMAT.format(landOwner.getTax()),
                     "auctiontax", Utils.toPercentage(landOwner.getAuctionTax()),
                     "state", landOwner.getStateTag())));
@@ -159,7 +159,7 @@ public class BankGUI extends ConfigurableGui {
                     getError("no-permission").tell(resident);
                 }
                 return true;
-            }, getText("manage-finances",
+            }, getComponent("manage-finances",
                     "tax", Utils.CURRENCY_FORMAT.format(landOwner.getTax()),
                     "acutiontax", Utils.CURRENCY_FORMAT.format(landOwner.getAuctionTax()),
                     "action", getText(landOwner.hasPermission(resident, "tax.set")

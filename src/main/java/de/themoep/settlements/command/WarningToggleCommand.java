@@ -11,7 +11,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.audience.Audience;
 import org.jspecify.annotations.NonNull;
-import uk.firedev.daisylib.messages.message.ComponentMessage;
+import uk.firedev.daisylib.messages.message.Message;
 
 public class WarningToggleCommand {
 
@@ -51,7 +51,7 @@ public class WarningToggleCommand {
             ).build();
     }
 
-    private static void sendMessage(ComponentMessage<?, ?> message, Audience sender, Settlement settlement) {
+    private static void sendMessage(Message<?, ?> message, Audience sender, Settlement settlement) {
         message
             .replace("{state}", settlement.getStateTag())
             .replace("{settlement}", settlement.getName())

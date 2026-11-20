@@ -11,6 +11,7 @@ import de.themoep.settlements.land.events.LandModeChangeEvent;
 import de.themoep.settlements.resident.Resident;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
+import net.kyori.adventure.text.Component;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
 
@@ -33,24 +34,24 @@ public class ModeGUI extends PlotGUI {
                 OwnedLand land = LandManager.getInstance().getLand(h.getLocation());
                 if (land != null) {
                     boolean enabled = m.get(land);
-                    List<String> description = new ArrayList<>();
-                    description.add(getText("entry.title",
+                    List<Component> description = new ArrayList<>();
+                    description.add(getComponent("entry.title",
                             "mode", m.getTag(),
                             "value", getText("entry.state." + enabled)
                     ));
-                    description.add(getText("entry.lore",
+                    description.add(getComponent("entry.lore",
                             "mode", m.getTag(),
                             "value", getText("entry.state." + enabled)
                     ));
 
                     if (m.appliesTo(PlotMode.AppliesTo.LAND_OWNER)) {
                         if (land.hasMode(m)) {
-                            description.add(getText("entry.click-to-unset",
+                            description.add(getComponent("entry.click-to-unset",
                                     "parent", land.getSettlement().getStateTag(),
                                     "value", yesOrNo(land.getSettlement().getMode(m))
                             ));
                         } else {
-                            description.add(getText("entry.parent",
+                            description.add(getComponent("entry.parent",
                                     "parent", land.getSettlement().getStateTag()
                             ));
                         }
@@ -97,7 +98,7 @@ public class ModeGUI extends PlotGUI {
                                 }
                                 return true;
                             },
-                            description.toArray(new String[0])
+                            description.toArray(new Component[0])
                     );
                 }
                 return null;
@@ -106,6 +107,6 @@ public class ModeGUI extends PlotGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 }

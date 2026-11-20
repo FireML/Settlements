@@ -19,18 +19,18 @@ public class ConfirmationGui extends SettlementsGUI {
         if (getSetup().length == 0) {
             SettlementsPlugin.getInstance().getLogging().error("Missing setup for GUI " + name + " in guis.yml!");
         }
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title", replacements), getSetup());
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title", replacements), getSetup());
         gui.addElements(getConfiguredElements());
 
         gui.addElement(new StaticGuiElement('c', getIcon("confirm", new ItemStack(Material.GREEN_WOOL)), click -> {
             confirmedAction.accept(click);
             return true;
-        }, getText("confirm", replacements)));
+        }, getComponent("confirm", replacements)));
 
         gui.addElement(new StaticGuiElement('b', getIcon("cancel", new ItemStack(Material.RED_WOOL)), click -> {
             cancelAction.accept(click);
             return true;
-        }, getText("cancel", replacements)));
+        }, getComponent("cancel", replacements)));
     }
 
     public void open(Player player) {

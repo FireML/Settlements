@@ -30,7 +30,7 @@ public class AlliesGUI extends SettlementsGUI {
     public AlliesGUI(Resident resident, Settlement settlement) {
         super(settlement.getKey() + ".allies");
         this.resident = resident;
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title"), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));
         gui.addElements(getConfiguredElements());
@@ -47,7 +47,7 @@ public class AlliesGUI extends SettlementsGUI {
                                     new AllyGUI(settlement, resident, a).open();
                                 }
                                 return true;
-                            }, getText("entry." + a.getType(), a.getSettlement().getReplacements(this, "allydate", Utils.DATE_FORMAT.format(a.getCreationDate()))))
+                            }, getComponent("entry." + a.getType(), a.getSettlement().getReplacements(this, "allydate", Utils.DATE_FORMAT.format(a.getCreationDate()))))
                     ));
             return group;
         });
@@ -97,7 +97,7 @@ public class AlliesGUI extends SettlementsGUI {
                     }
                 }, request -> request.getReplacements(this)).open();
                 return true;
-            }, getText("requests", "amount", String.valueOf(requests.size()))));
+            }, getComponent("requests", "amount", String.valueOf(requests.size()))));
         }
 
         GuiElementGroup pages = new GuiElementGroup('p');
@@ -113,11 +113,11 @@ public class AlliesGUI extends SettlementsGUI {
                 return new StaticGuiElement('p', icon, page + 1, click -> {
                     gui.setPageNumber(click.getWhoClicked(), page);
                     return true;
-                }, getText("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
+                }, getComponent("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
             }));
         }
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 
     public void open() {

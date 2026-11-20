@@ -39,7 +39,7 @@ public class RankSelectGUI extends ConfigurableGui {
                             InventoryGui.goBack(click.getWhoClicked());
                         }
                         return true;
-                    }, getText("entry" + (landOwner.getRank(resident).below(rank) ? "-not-selectable" : ""),
+                    }, getComponent("entry" + (landOwner.getRank(resident).below(rank) ? "-not-selectable" : ""),
                             "state",  landOwner.getStateTag(),
                             "rank", rank.getTag(landOwner)
                     )
@@ -55,7 +55,7 @@ public class RankSelectGUI extends ConfigurableGui {
                         InventoryGui.goBack(click.getWhoClicked());
                     }
                     return true;
-                }, getText("entry-chief" + (landOwner.getRank(resident).below(landOwner.getHighestRank()) ? "-not-selectable" : ""),
+                }, getComponent("entry-chief" + (landOwner.getRank(resident).below(landOwner.getHighestRank()) ? "-not-selectable" : ""),
                         "state",  landOwner.getStateTag(),
                         "rank", landOwner.getHighestRank().getTag(landOwner)
                 )

@@ -13,14 +13,14 @@ public class MissionGui extends ConfigurableGui {
     public MissionGui(Resident resident, Settlement provider, Resident taker) {
         super(resident, provider.name() + ".missions");
 
-        gui.addElement(new StaticGuiElement('i', getIcon("info"), getText("info",
+        gui.addElement(new StaticGuiElement('i', getIcon("info"), getComponent("info",
                 Mission.getReplacements(this, provider, taker))));
 
         GuiElementGroup group = new GuiElementGroup('m');
         group.setAlignment(getAlignment("m"));
         for (MissionData missionData : taker.getMissionData()) {
             group.addElement(new DynamicGuiElement('m', who -> {
-                StaticGuiElement element = new StaticGuiElement('m', missionData.getMission().getIcon(), getText("entry", missionData.getReplacements(this, provider)));
+                StaticGuiElement element = new StaticGuiElement('m', missionData.getMission().getIcon(), getComponent("entry", missionData.getReplacements(this, provider)));
                 if (missionData.getMission().getType() == Mission.Type.TURN_IN && !missionData.isFinished()) {
                     element.setAction(click -> {
                         new TurnInGUI(resident, missionData).open();
@@ -32,7 +32,7 @@ public class MissionGui extends ConfigurableGui {
         }
         gui.addElement(group);
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 
     public void open() {

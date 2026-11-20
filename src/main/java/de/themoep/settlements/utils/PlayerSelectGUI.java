@@ -29,7 +29,7 @@ public class PlayerSelectGUI extends ConfigurableGui {
                             InventoryGui.goBack(click.getWhoClicked());
                         }
                         return true;
-                    }, getText("player", "name", player.getName(), "uuid", player.getUniqueId().toString())));
+                    }, getComponent("player", "name", player.getName(), "uuid", player.getUniqueId().toString())));
                 }
             }
             Utils.runSync(gui::draw);
@@ -50,10 +50,10 @@ public class PlayerSelectGUI extends ConfigurableGui {
                 return new StaticGuiElement('p', icon, page + 1, click -> {
                     gui.setPageNumber(click.getWhoClicked(), page);
                     return true;
-                }, getText("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
+                }, getComponent("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
             }));
         }
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 }

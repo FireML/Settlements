@@ -39,7 +39,7 @@ public class BanishedGUI extends SettlementsGUI {
         gui.addElement(new StaticGuiElement('u', getIcon("unbanished"), click -> {
             new UnbanishedGUI(resident, settlement).open();
             return true;
-        }, getText("unbanished")));
+        }, getComponent("unbanished")));
     }
 
     public void open() {

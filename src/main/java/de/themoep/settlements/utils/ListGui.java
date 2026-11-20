@@ -52,7 +52,7 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
                                 new StaticGuiElement('e', sortable.getIcon(), click -> {
                                     onSelect.accept(click, sortable);
                                     return true;
-                                }, message.getReplacedText(sortable.getReplacements(this, replacementsProvider.apply(sortable))))
+                                }, message.getReplacedComponent(sortable.getReplacements(this, replacementsProvider.apply(sortable))))
                         );
                     });
                 }
@@ -89,7 +89,7 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
                     return new StaticGuiElement('p', icon, page + 1, click -> {
                         gui.setPageNumber(click.getWhoClicked(), page);
                         return true;
-                    }, getText("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
+                    }, getComponent("page", "page", String.valueOf(page + 1), "pages", String.valueOf(gui.getPageAmount(who))));
                 }));
             }
         };
@@ -103,7 +103,7 @@ public class ListGui<T extends Sortable<T>> extends ConfigurableGui {
             create.run();
         }
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 
     public void addElement(GuiElement element) {

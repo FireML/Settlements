@@ -36,7 +36,7 @@ public class ManagementGUI extends SettlementsGUI {
         super("settlement.management");
         this.resident = resident;
         Settlement landOwner = resident.getSettlement();
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title",
                 "name", landOwner.getName(),
                 "state", landOwner.getStateTag()
         ), getSetup());
@@ -50,7 +50,7 @@ public class ManagementGUI extends SettlementsGUI {
                 new ResListGUI(resident, resident.getSettlement()).open();
             }
             return true;
-        }, getText("reslist",
+        }, getComponent("reslist",
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(resident, "reslist") ? getText("unlockables.unlocked.browse") : getText("no-permission"))));
 
@@ -77,7 +77,7 @@ public class ManagementGUI extends SettlementsGUI {
                 }, request -> request.getReplacements(this)).open();
             }
             return true;
-        }, getText("recruitment",
+        }, getComponent("recruitment",
                 "amount", String.valueOf(requests),
                 "action", landOwner.hasPermission(resident, "recruitment")
                                 ? getText("unlockables.unlocked.browse")
@@ -90,7 +90,7 @@ public class ManagementGUI extends SettlementsGUI {
                 new BanishedGUI(resident, landOwner).open();
             }
             return true;
-        }, getText("banished",
+        }, getComponent("banished",
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(resident, "banished") ? getText("unlockables.unlocked.browse") : getText("unlockables.locked.permission")
         )));
@@ -100,7 +100,7 @@ public class ManagementGUI extends SettlementsGUI {
                 new AlliesGUI(resident, resident.getSettlement()).open();
             }
             return true;
-        }, getText("allies",
+        }, getComponent("allies",
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(resident, "allies") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission")
         )));
@@ -110,7 +110,7 @@ public class ManagementGUI extends SettlementsGUI {
                 new RankPermsGUI(landOwner.getKey(), resident, resident.getSettlement()).open();
             }
             return true;
-        }, getText("ranks",
+        }, getComponent("ranks",
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(resident, "ranks") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission")
         )));
@@ -120,7 +120,7 @@ public class ManagementGUI extends SettlementsGUI {
                 new SettingsGUI(resident, landOwner).open();
             }
             return true;
-        }, getText("settings",
+        }, getComponent("settings",
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(resident, "settings") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission")
         )));
@@ -136,12 +136,12 @@ public class ManagementGUI extends SettlementsGUI {
                 ).open(resident.getPlayer());
             }
             return true;
-        }, getText("land",
+        }, getComponent("land",
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(resident, "perms") ? getText("unlockables.unlocked.options") : getText("unlockables.locked.permission")
         )));
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 
     private Collection<Invite<?, ?>> getRequests(Resident resident) {

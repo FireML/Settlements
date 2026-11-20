@@ -1,7 +1,7 @@
 package de.themoep.settlements.utils.config.message;
 
 import org.jspecify.annotations.NonNull;
-import uk.firedev.daisylib.messages.message.ComponentMessage;
+import uk.firedev.daisylib.messages.message.Message;
 
 public interface ConfigMessages {
 
@@ -10,7 +10,7 @@ public interface ConfigMessages {
      */
     @NonNull String rootKey();
 
-    default @NonNull ComponentMessage<?, ?> getMessage(@NonNull String key) {
+    default @NonNull Message<?, ?> getMessage(@NonNull String key) {
         if (rootKey().isEmpty()) {
             return ConfigMessage.get(key);
         }
@@ -18,7 +18,7 @@ public interface ConfigMessages {
         return ConfigMessage.get(finalKey);
     }
 
-    default @NonNull ComponentMessage<?, ?> getMessage(@NonNull String key, @NonNull String def) {
+    default @NonNull Message<?, ?> getMessage(@NonNull String key, @NonNull String def) {
         if (rootKey().isEmpty()) {
             return ConfigMessage.get(key, def);
         }

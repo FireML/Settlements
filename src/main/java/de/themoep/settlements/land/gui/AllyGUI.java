@@ -22,7 +22,7 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
     public AllyGUI(@NonNull Settlement settlement, Resident resident, Ally ally) {
         super(resident, settlement.getKey() + ".ally");
 
-        gui.addElement(new StaticGuiElement('i', ally.getSettlement().getIcon(), getText("info." + ally.getType(), ally.getSettlement().getReplacements(this))));
+        gui.addElement(new StaticGuiElement('i', ally.getSettlement().getIcon(), getComponent("info." + ally.getType(), ally.getSettlement().getReplacements(this))));
 
         if (settlement.hasPermission(resident, "manageally")) {
             gui.addElement(new DynamicGuiElement('c', who -> new StaticGuiElement('c', getIcon("nearbyclaim"), click -> {
@@ -37,7 +37,7 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
                             "grace", String.valueOf(Config.Claiming.Close.Unclaim.GRACE_DAYS));
                 }
                 return true;
-            }, getText("nearbyclaim",
+            }, getComponent("nearbyclaim",
                     "state", settlement.getStateTag(),
                     "current", getText(ally.isNearbyClaim() ? "enabled" : "disabled")
             ))));
@@ -77,7 +77,7 @@ public class AllyGUI extends ConfigurableGui implements AllyCommand {
                     c.getGui().close();
                 }, c -> InventoryGui.goBack(c.getWhoClicked()), "name", ally.getSettlement().getName(), "state", ally.getSettlement().getStateTag()).open(resident.getPlayer());
                 return true;
-            }, getText("unally.entry")));
+            }, getComponent("unally.entry")));
 
             // TODO: Per ally options
         }

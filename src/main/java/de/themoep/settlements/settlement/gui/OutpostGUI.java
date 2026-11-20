@@ -24,7 +24,7 @@ public class OutpostGUI extends ConfigurableGui {
     public OutpostGUI(Resident resident, Settlement settlement, NamedLocation outpost) {
         super(resident, "settlement.outpost", outpost.getReplacements());
 
-        gui.addElement(new StaticGuiElement('i', getIcon("info"), getText("info", outpost.getReplacements())));
+        gui.addElement(new StaticGuiElement('i', getIcon("info"), getComponent("info", outpost.getReplacements())));
 
         gui.addElement(new StaticGuiElement('r', getIcon("rename"), click -> {
             if (settlement.hasPermission(resident, "outpost.rename")) {
@@ -79,7 +79,7 @@ public class OutpostGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("rename.button",
+        }, getComponent("rename.button",
                 "name", outpost.getName(),
                 "action", getText(settlement.hasPermission(resident, "outpost.rename") ? "unlockables.unlocked.edit" : "unlockables.locked.permission")
         )));
@@ -129,7 +129,7 @@ public class OutpostGUI extends ConfigurableGui {
             }
             Message.get("command." + settlement.getKey() + ".outpost.sethome.success").tell(resident, "name", currentLand.getOutpostName());
             return true;
-        }, getText("sethome",
+        }, getComponent("sethome",
                 "name", outpost.getName(),
                 "action", getText(settlement.hasPermission(resident, "outpost.sethome") ? "unlockables.unlocked.set" : "unlockables.locked.permission")
         )));
@@ -140,7 +140,7 @@ public class OutpostGUI extends ConfigurableGui {
                         .run(click.getWhoClicked(), settlement.getKey() + " outpost", "unclaim", outpost.getName());
             }
             return true;
-        }, getText("unclaim",
+        }, getComponent("unclaim",
                 "name", outpost.getName(),
                 "action", getText(settlement.hasPermission(resident, "outpost.unclaim") ? "unlockables.unlocked.unclaim" : "unlockables.locked.permission")
         )));

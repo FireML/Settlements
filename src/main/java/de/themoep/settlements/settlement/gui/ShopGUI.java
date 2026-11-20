@@ -15,6 +15,7 @@ import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.UtilTime;
 import de.themoep.settlements.utils.Utils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -41,49 +42,49 @@ public class ShopGUI extends ConfigurableGui {
                 }
 
                 group.addElement(new DynamicGuiElement('g', h -> {
-                    List<String> description = new ArrayList<>();
+                    List<Component> description = new ArrayList<>();
                     ItemStack item = ItemStack.of(perk.getIcon());
                     if (resident.getSettlement().hasUnlocked(perk)) {
                         PerkData perkData = resident.getSettlement().getPerkData(perk);
                         if (perk.getRepeat() != 0) {
-                            description.add(getText("entry.repeat",
+                            description.add(getComponent("entry.repeat",
                                     "name", perk.getTag(),
                                     "used", String.valueOf(perkData.getTimes())
                             ));
                             ItemUtils.setGlowing(item, true);
                             if (perk.getRepeat() > 0) {
-                                description.add(getText("repeatable",
+                                description.add(getComponent("repeatable",
                                         "times", String.valueOf(perk.getRepeat()),
                                         "used", String.valueOf(perkData.getTimes()),
                                         "left", String.valueOf(perk.getRepeat() + 1 - perkData.getTimes())
                                 ));
                                 item.setAmount(perkData.getTimes());
                             } else {
-                                description.add(getText("unlimited"));
+                                description.add(getComponent("unlimited"));
                             }
                             if (!resident.getSettlement().checkPerkCooldown(perk)) {
-                                description.add(getText("cooldown", "cooldown", UtilTime.format(System.currentTimeMillis() - perkData.getLastUsed())));
+                                description.add(getComponent("cooldown", "cooldown", UtilTime.format(System.currentTimeMillis() - perkData.getLastUsed())));
                             }
                             if (!perk.getRepeatCost().isEmpty()) {
-                                description.add(getText("cost.repeat"));
+                                description.add(getComponent("cost.repeat"));
                                 for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
-                                    description.add(getText("cost.entry",
+                                    description.add(getComponent("cost.entry",
                                             "type", cost.getKey(),
                                             "icon", "",
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
                                 if (!resident.getSettlement().has(perk.getRepeatCost())) {
-                                    description.add(getText("cost.too-expensive"));
+                                    description.add(getComponent("cost.too-expensive"));
                                 }
                             }
 
                         } else {
-                            description.add(getText("entry.purchased", "name", perk.getTag()));
+                            description.add(getComponent("entry.purchased", "name", perk.getTag()));
                             ItemUtils.setGlowing(item, true);
                         }
                     } else {
-                        description.add(getText("entry." + (perk.matchesLevelRequirement(resident.getSettlement()) ? "unlockable" : "locked"),
+                        description.add(getComponent("entry." + (perk.matchesLevelRequirement(resident.getSettlement()) ? "unlockable" : "locked"),
                                 "name", perk.getTag(),
                                 "state", perk.getState().getTag(),
                                 "level", String.valueOf(perk.getLevel()),
@@ -92,42 +93,42 @@ public class ShopGUI extends ConfigurableGui {
                         ));
                         if (perk.getRepeat() != 0) {
                             if (perk.getRepeat() > 0) {
-                                description.add(getText("repeatable",
+                                description.add(getComponent("repeatable",
                                         "times", String.valueOf(perk.getRepeat()),
                                         "used", String.valueOf(0),
                                         "left", String.valueOf(perk.getRepeat())
                                 ));
                             } else {
-                                description.add(getText("unlimited"));
+                                description.add(getComponent("unlimited"));
                             }
                             if (perk.getCooldown() > 0) {
-                                description.add(getText("cooldown", "cooldown", UtilTime.format(perk.getCooldown())));
+                                description.add(getComponent("cooldown", "cooldown", UtilTime.format(perk.getCooldown())));
                             }
                             if (!perk.getRepeatCost().isEmpty()) {
-                                description.add(getText("cost.repeat"));
+                                description.add(getComponent("cost.repeat"));
                                 for (Map.Entry<String, Long> cost : perk.getRepeatCost().entrySet()) {
-                                    description.add(getText("cost.entry",
+                                    description.add(getComponent("cost.entry",
                                             "type", cost.getKey(),
                                             "icon", "",
                                             "amount", String.valueOf(cost.getValue())
                                     ));
                                 }
                                 if (!resident.getSettlement().has(perk.getRepeatCost())) {
-                                    description.add(getText("cost.too-expensive"));
+                                    description.add(getComponent("cost.too-expensive"));
                                 }
                             }
                         }
                         if (!perk.getUnlockCost().isEmpty()) {
-                            description.add(getText("cost.unlock"));
+                            description.add(getComponent("cost.unlock"));
                             for (Map.Entry<String, Long> cost : perk.getUnlockCost().entrySet()) {
-                                description.add(getText("cost.entry",
+                                description.add(getComponent("cost.entry",
                                         "type", cost.getKey(),
                                         "icon", "",
                                         "amount", String.valueOf(cost.getValue())
                                 ));
                             }
                             if (!resident.getSettlement().has(perk.getUnlockCost())) {
-                                description.add(getText("cost.too-expensive"));
+                                description.add(getComponent("cost.too-expensive"));
                             }
                         }
                     }
@@ -168,14 +169,14 @@ public class ShopGUI extends ConfigurableGui {
                             }
                         }
                         return true;
-                    }, description.toArray(new String[0]));
+                    }, description.toArray(new Component[0]));
                 }));
             }
         }
 
         gui.addElement(group);
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 
     public void open() {

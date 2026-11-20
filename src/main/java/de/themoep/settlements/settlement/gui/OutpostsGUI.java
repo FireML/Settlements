@@ -42,10 +42,10 @@ public class OutpostsGUI extends ConfigurableGui {
                             }
                         }
                         return true;
-                    }, getText("entry", outpost.getReplacements()),
+                    }, getComponent("entry", outpost.getReplacements()),
                             settlement.hasPermission(resident, "outpost.rename")
                                     || settlement.hasPermission(resident, "outpost.sethome")
-                                    || settlement.hasPermission(resident, "outpost.unclaim") ? getText("options", outpost.getReplacements()) : null)
+                                    || settlement.hasPermission(resident, "outpost.unclaim") ? getComponent("options", outpost.getReplacements()) : null)
             );
         }
 
@@ -65,7 +65,7 @@ public class OutpostsGUI extends ConfigurableGui {
                 }
             }, s -> new String[0]).open();
             return true;
-        }, getText("public")));
+        }, getComponent("public")));
 
     }
 }

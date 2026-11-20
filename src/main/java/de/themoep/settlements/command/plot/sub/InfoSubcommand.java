@@ -9,7 +9,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NonNull;
-import uk.firedev.daisylib.messages.message.ComponentMessage;
+import uk.firedev.daisylib.messages.message.Message;
 
 import java.util.Collection;
 import java.util.Map;
@@ -36,15 +36,15 @@ public class InfoSubcommand {
 
     private static Map<String, ?> getInsertionReplacements(@NonNull OwnedLand land) {
         // {owner}
-        ComponentMessage<?, ?> owner = land.isPlot()
+        Message<?, ?> owner = land.isPlot()
             ? getMessage("owner").replace("{owner}", land.getPlotOwnerResident().getName())
             : ConfigMessage.emptyListMessage();
         // {plotprice}
-        ComponentMessage<?, ?> price = land.isForSale()
+        Message<?, ?> price = land.isForSale()
             ? getMessage("price").replace("{price}", land.getPrice())
             : ConfigMessage.emptyListMessage();
         // {plottax}
-        ComponentMessage<?, ?> tax = land.isForSale() || land.isPlot()
+        Message<?, ?> tax = land.isForSale() || land.isPlot()
             ? getMessage("tax").replace("{tax}", land.getTax())
             : ConfigMessage.emptyListMessage();
         return Map.of(
@@ -54,7 +54,7 @@ public class InfoSubcommand {
         );
     }
 
-    private static ComponentMessage<?, ?> getMessage(@NonNull String key) {
+    private static Message<?, ?> getMessage(@NonNull String key) {
         return ConfigMessage.get("command.plot.info." + key);
     }
 

@@ -12,6 +12,7 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.NameTag;
 import de.themoep.settlements.utils.Next;
 import de.themoep.settlements.utils.config.ConfigManager;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -86,9 +87,9 @@ public abstract class SettlementsGUI implements ConfigMessagesOld {
             for (String key : elementsConfig.getKeys(false)) {
                 if (key.length() == 1) {
                     Message loreMessage = getMessage(key);
-                    String lore = " ";
+                    Component lore = Component.space();
                     if (loreMessage.exists()) {
-                        lore = loreMessage.getText();
+                        lore = loreMessage.getComponent();
                     }
                     elements.add(new StaticGuiElement(key.charAt(0), getIcon(key), lore));
                 }
@@ -116,7 +117,7 @@ public abstract class SettlementsGUI implements ConfigMessagesOld {
         ItemStack icon = getIcon(type);
         return new DynamicGuiElement(c, who -> {
             S state = s.get();
-            return new StaticGuiElement(c, icon, click, getText(type,
+            return new StaticGuiElement(c, icon, click, getComponent(type,
                     "state", state.getTag(),
                     "nextstate", state.next().getTag()
             ));

@@ -33,7 +33,7 @@ dependencies {
     bukkitLibrary("com.github.ben-manes.caffeine:caffeine:3.1.8")
     bukkitLibrary("com.zaxxer:HikariCP:5.1.0")
 
-    implementation("de.themoep:inventorygui:1.6.7-SNAPSHOT")
+    implementation("uk.firedev:InventoryGui-Modern:1.6.8-SNAPSHOT")
     bukkitLibrary("de.themoep:minedown-adventure:1.7.6-SNAPSHOT")
     bukkitLibrary("net.wesjd:anvilgui:1.10.13-SNAPSHOT")
 
@@ -45,7 +45,7 @@ dependencies {
     compileOnly("net.luckperms:api:5.5")
 
     // Custom Things
-    implementation("uk.firedev:DaisyLib:4.3-SNAPSHOT")
+    compileOnly("uk.firedev:DaisyLib-Plugin:4.5-SNAPSHOT")
     compileOnly("uk.firedev:ChatChannels:1.2-SNAPSHOT")
 }
 

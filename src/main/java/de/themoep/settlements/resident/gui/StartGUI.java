@@ -42,7 +42,7 @@ public class StartGUI extends ConfigurableGui {
         gui.addElement(new StaticGuiElement('s', getIcon("start"), click -> {
             Bukkit.dispatchCommand(resident.getPlayer(), "cp nosettlement");
             return true;
-        }, getText("start", "playername", resident.getName())));
+        }, getComponent("start", "playername", resident.getName())));
 
         Collection<Invite<?, ?>> requests = getRequests(resident);
         gui.addElement(new StaticGuiElement('i', ItemUtils.setGlowing(getIcon("requests"), !requests.isEmpty()), click -> {
@@ -57,7 +57,7 @@ public class StartGUI extends ConfigurableGui {
                 }
             }, request -> request.getReplacements(this)).open();
             return true;
-        }, getText("requests", "amount", String.valueOf(requests.size()))));
+        }, getComponent("requests", "amount", String.valueOf(requests.size()))));
 
         gui.addElement(new StaticGuiElement('c', getIcon("create"), click -> {
             if (resident.hasPermission("settlements.command.settlement.create")) {
@@ -123,7 +123,7 @@ public class StartGUI extends ConfigurableGui {
                         .open((Player) click.getWhoClicked());
             }
             return true;
-        }, getText("create.entry",
+        }, getComponent("create.entry",
                 "amount", Utils.CURRENCY_FORMAT.format(Config.Settlement.CREATION_COST),
                 "action", getText(resident.hasPermission("settlements.command.settlement.create")
                         ? resident.getBalance() < Config.Settlement.CREATION_COST ? "unlockables.locked.money" : "unlockables.unlocked.create"
@@ -152,7 +152,7 @@ public class StartGUI extends ConfigurableGui {
                 return new String[] { "action", getText("unlockables." + action) };
             }).open();
             return true;
-        }, getText("join")));
+        }, getComponent("join")));
 
         gui.addElement(new StaticGuiElement('p', getIcon("public"), click -> {
             new ListGui<>(resident, "general.public", () -> SettlementManager.getInstance().getSettlements().stream()
@@ -168,13 +168,13 @@ public class StartGUI extends ConfigurableGui {
                 }
             }, settlement -> new String[0]).open();
             return true;
-        }, getText("public")));
+        }, getComponent("public")));
 
         Collection<FriendRequest> friendRequests = resident.getFriendRequests();
         gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("friends"), !friendRequests.isEmpty()), click -> {
             new FriendsList(resident, "general.friends").open();
             return true;
-        }, getText("friends", "amount", String.valueOf(friendRequests.size()))));
+        }, getComponent("friends", "amount", String.valueOf(friendRequests.size()))));
     }
 
     private Collection<Invite<?, ?>> getRequests(Resident resident) {

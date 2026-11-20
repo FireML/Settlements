@@ -17,10 +17,12 @@ import de.themoep.settlements.utils.Message;
 import de.themoep.settlements.utils.StringUtils;
 import de.themoep.settlements.utils.Utils;
 import de.themoep.settlements.utils.config.Config;
+import net.kyori.adventure.text.Component;
 import net.wesjd.anvilgui.AnvilGUI;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,7 +56,7 @@ public class SettingsGUI extends PlotGUI {
                 ).open(resident.getPlayer());
             }
             return true;
-        }, getText("perms")));
+        }, getComponent("perms")));
 
         gui.addElement(new StaticGuiElement('m', getIcon("mode"), click -> {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
@@ -62,7 +64,7 @@ public class SettingsGUI extends PlotGUI {
                 new ModeGUI(resident, land).open();
             }
             return true;
-        }, getText("mode")));
+        }, getComponent("mode")));
 
         gui.addElement(new StaticGuiElement('n', getIcon("name"), click -> {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
@@ -101,7 +103,7 @@ public class SettingsGUI extends PlotGUI {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("name.button", "name", openedOnLand.getName())));
+        }, getComponent("name.button", "name", openedOnLand.getName())));
 
         gui.addElement(new StaticGuiElement('d', getIcon("description"), click -> {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
@@ -139,7 +141,7 @@ public class SettingsGUI extends PlotGUI {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("desc.button", "description", openedOnLand.getDescription())));
+        }, getComponent("desc.button", "description", openedOnLand.getDescription())));
 
         gui.addElement(new StaticGuiElement('e', getIcon("members"), click -> {
             OwnedLand land = LandManager.getInstance().getLand(landLocation);
@@ -147,7 +149,7 @@ public class SettingsGUI extends PlotGUI {
                 new MembersGUI(resident, land).open();
             }
             return true;
-        }, getText("members", "amount", String.valueOf(openedOnLand.getPlotMembers().size()))));
+        }, getComponent("members", "amount", String.valueOf(openedOnLand.getPlotMembers().size()))));
 
         if (!openedOnLand.isPlot() && openedOnLand.canAdmin(resident)) {
             gui.addElement(new DynamicGuiElement('s', () -> new StaticGuiElement('s', getIcon("sale"), click -> {
@@ -209,7 +211,7 @@ public class SettingsGUI extends PlotGUI {
                     }
                 }
                 return true;
-            }, getText("sale.button" + (openedOnLand.isForSale() ? "" : "-not-for-sale"), "price", String.valueOf(openedOnLand.getPrice())))));
+            }, getComponent("sale.button" + (openedOnLand.isForSale() ? "" : "-not-for-sale"), "price", String.valueOf(openedOnLand.getPrice())))));
         }
 
         gui.addElement(new DynamicGuiElement('l', () -> {
@@ -217,10 +219,10 @@ public class SettingsGUI extends PlotGUI {
             if (land == null) {
                 return null;
             }
-            List<String> description = new ArrayList<>();
+            List<Component> description = new ArrayList<>();
             ItemStack item = getIcon("link");
             if (land.isPlotOwner(resident) || (land.canAdmin(resident) && land.isPlot())) {
-                description.add(getText("link"));
+                description.add(getComponent("link"));
             }
             if (description.isEmpty()) {
                 return null;
@@ -237,7 +239,7 @@ public class SettingsGUI extends PlotGUI {
                     }
                 }
                 return true;
-            }, description.toArray(new String[0]));
+            }, description.toArray(new Component[0]));
         }));
 
         gui.addElement(new DynamicGuiElement('i', () -> {
@@ -245,10 +247,10 @@ public class SettingsGUI extends PlotGUI {
             if (land == null) {
                 return null;
             }
-            return new StaticGuiElement('i', getIcon("info"), getText("entry", land.getReplacements()));
+            return new StaticGuiElement('i', getIcon("info"), getComponent("entry", land.getReplacements()));
         }));
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
 
     }
 }

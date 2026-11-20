@@ -10,6 +10,7 @@ import de.themoep.settlements.SettlementsPlugin;
 import de.themoep.settlements.land.BuildState;
 import de.themoep.settlements.land.BuildStateable;
 import de.themoep.settlements.utils.Message;
+import net.kyori.adventure.text.Component;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -24,11 +25,11 @@ public class BuildGUI extends SettlementsGUI {
 
     public BuildGUI(@NonNull String type, BuildStateable stateAble, Supplier<Boolean> permCheck) {
         super(type + ".build");
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title", "type", stateAble.getBuildTag()), getSetup());
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title", "type", stateAble.getBuildTag()), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));
         gui.addElements(getConfiguredElements());
-        gui.addElement(new StaticGuiElement('s', getIcon("states"), getText("states",
+        gui.addElement(new StaticGuiElement('s', getIcon("states"), getComponent("states",
                 "state", stateAble.getParent().getStateTag(),
                 "type", stateAble.getBuildTag()
         )));
@@ -51,25 +52,25 @@ public class BuildGUI extends SettlementsGUI {
                             "type", stateAble.getBuildTag()
                     };
                     ItemStack icon;
-                    List<String> description = new ArrayList<>();
+                    List<Component> description = new ArrayList<>();
                     if (state == stateAble.getBuildState()) {
                         if (stateAble.acceptsState(state)) {
                             icon = getIcon("selected");
-                            description.add(getText("selected-state", replacements));
-                            description.add(getText("description", replacements));
+                            description.add(getComponent("selected-state", replacements));
+                            description.add(getComponent("description", replacements));
                         } else {
                             icon = getIcon("individual");
-                            description.add(getText("individual-state", replacements));
-                            description.add(getText("description", replacements));
+                            description.add(getComponent("individual-state", replacements));
+                            description.add(getComponent("description", replacements));
                         }
                     } else if (state == stateAble.getParent().getBuildState() && !stateAble.acceptsState(state) && (stateAble.getBuildState() == null || !stateAble.getBuildState().appliesTo(stateAble.getParent().getBuildStateType()))) {
                         icon = getIcon("inherited");
-                        description.add(getText("inherited-state", replacements));
-                        description.add(getText("description", replacements));
+                        description.add(getComponent("inherited-state", replacements));
+                        description.add(getComponent("description", replacements));
                     } else {
                         icon = getIcon("unset");
-                        description.add(getText("set-state", replacements));
-                        description.add(getText("description", replacements));
+                        description.add(getComponent("set-state", replacements));
+                        description.add(getComponent("description", replacements));
                     }
                     return new StaticGuiElement('g',
                             icon,
@@ -86,7 +87,7 @@ public class BuildGUI extends SettlementsGUI {
                                 }
                                 return true;
                             },
-                            description.toArray(new String[0])
+                            description.toArray(new Component[0])
                     );
                 }
                 return null;
@@ -95,7 +96,7 @@ public class BuildGUI extends SettlementsGUI {
 
         gui.addElement(group);
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 
     public void open(HumanEntity player) {

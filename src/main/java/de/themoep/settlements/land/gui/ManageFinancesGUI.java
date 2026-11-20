@@ -78,7 +78,7 @@ public class ManageFinancesGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("tax.button",
+        }, getComponent("tax.button",
                 "action", getText(landOwner.hasPermission(resident, "tax.set") ? "unlockables.unlocked.edit" : "unlockables.locked.nopermission"),
                 "tax", Utils.CURRENCY_FORMAT.format(landOwner.getTax()),
                 "hour", Utils.HOUR_FORMAT.format(Config.Upkeep.HOUR * 60 * 60 * 1000),
@@ -141,7 +141,7 @@ public class ManageFinancesGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("auctiontax.button",
+        }, getComponent("auctiontax.button",
                 "action", getText(landOwner.hasPermission(resident, "auctiontax.set") ? "unlockables.unlocked.edit" : "unlockables.locked.nopermission"),
                 "auctiontax", Utils.toPercentage(landOwner.getAuctionTax()),
                 "cooldown", "" // TODO: Cooldown
@@ -212,7 +212,7 @@ public class ManageFinancesGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("deposit.button",
+        }, getComponent("deposit.button",
                 "action", getText(landOwner.hasPermission(resident, "bank.deposit") ? "unlockables.unlocked.deposit" : "unlockables.locked.nopermission")
         )));
 
@@ -282,7 +282,7 @@ public class ManageFinancesGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("withdraw.button",
+        }, getComponent("withdraw.button",
                 "action", getText(landOwner.hasPermission(resident, "bank.withdraw") ? "unlockables.unlocked.withdraw" : "unlockables.locked.nopermission")
         )));
     }

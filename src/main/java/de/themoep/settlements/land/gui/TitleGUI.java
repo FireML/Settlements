@@ -11,6 +11,7 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfigurableGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.ItemStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -32,20 +33,20 @@ public class TitleGUI extends ConfigurableGui {
             for (String title : landOwner.getTitles(rank)) {
                 group.addElement(new DynamicGuiElement('t', h -> {
                     ItemStack item = getIcon("title");
-                    List<String> description = new ArrayList<>();
-                    description.add(getText("entry.title",
+                    List<Component> description = new ArrayList<>();
+                    description.add(getComponent("entry.title",
                             "title", title,
                             "rank", rank.getTag(landOwner)
                     ));
                     if (title.equals(landOwner.getTitle(target))) {
                         ItemUtils.setGlowing(item, true);
-                        description.add(getText("entry.current",
+                        description.add(getComponent("entry.current",
                                 "title", title,
                                 "rank", rank.getTag(landOwner)
                         ));
                     }
                     if (title.equals(landOwner.getDefaultTitle(rank))) {
-                        description.add(getText("entry.default",
+                        description.add(getComponent("entry.default",
                                 "title", title,
                                 "rank", rank.getTag(landOwner)
                         ));
@@ -69,7 +70,7 @@ public class TitleGUI extends ConfigurableGui {
                             );
                         }
                         return true;
-                    }, description.toArray(new String[0]));
+                    }, description.toArray(new Component[0]));
                 }));
             }
 
@@ -83,7 +84,7 @@ public class TitleGUI extends ConfigurableGui {
                         new TitlesGUI(type, resident, landOwner, rank).open();
                     }
                     return true;
-                }, getText("edit",
+                }, getComponent("edit",
                         "rank", rank.getTag(landOwner),
                         "state", landOwner.getStateTag()
                 )));

@@ -80,7 +80,7 @@ public class FriendsList extends SettlementsGUI {
                         }
                     }, request -> request.getReplacements(this)).open();
             return true;
-        }, getText("requests", "amount", String.valueOf(currentRequests.size()))));
+        }, getComponent("requests", "amount", String.valueOf(currentRequests.size()))));
     }
 
     public void open() {

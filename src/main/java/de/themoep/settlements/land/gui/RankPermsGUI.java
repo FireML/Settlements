@@ -15,6 +15,7 @@ import de.themoep.settlements.settlement.Settlement;
 import de.themoep.settlements.utils.ConfirmationGui;
 import de.themoep.settlements.utils.ItemUtils;
 import de.themoep.settlements.utils.Message;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.apache.commons.lang3.text.WordUtils;
@@ -45,7 +46,7 @@ public class RankPermsGUI extends SettlementsGUI {
         if (landOwner.useGuestRank()) {
             rank = rank.getParentRank();
         }
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title",
                 "state", landOwner.getStateTag(),
                 "name", landOwner.getName()
         ), getSetup());
@@ -67,7 +68,7 @@ public class RankPermsGUI extends SettlementsGUI {
                 }
                 ItemStack item;
                 Optional<Boolean> value = landOwner.getEffectivePermissionValue(rank, perm);
-                List<String> description = new ArrayList<>();
+                List<Component> description = new ArrayList<>();
 
                 SettlementRank fromRank = rank;
                 TextColor color;
@@ -82,7 +83,7 @@ public class RankPermsGUI extends SettlementsGUI {
                         color = NamedTextColor.GREEN;
                     } else {
                         item = getIcon("inherited");
-                        description.add(getText("entry.inherited",
+                        description.add(getComponent("entry.inherited",
                                 "perm", permName,
                                 "rank", rank.getTag(landOwner),
                                 "from", fromRank.getTag(landOwner)
@@ -97,7 +98,7 @@ public class RankPermsGUI extends SettlementsGUI {
                 boolean defaultValue = rank.getPermissionValue(perm);
                 if (fromRank == rank && landOwner.getPermissionValue(rank, perm).orElse(false) != defaultValue) {
                     if (landOwner.getRank(res).above(rank) && res.hasPermission("settlement.perms.ranks.unset")) {
-                        description.add(getText("entry.unset",
+                        description.add(getComponent("entry.unset",
                                 "perm", permName,
                                 "rank", rank.getTag(landOwner),
                                 "default", String.valueOf(defaultValue)
@@ -107,21 +108,21 @@ public class RankPermsGUI extends SettlementsGUI {
                 if (rank.below(landOwner.getRank(res)) && res.hasPermission("settlement.ranks.perms.set") && res.hasPermission(perm)) {
                     if (value.orElse(false)) {
                         if (fromRank == rank) {
-                            description.add(getText("entry.revoke",
+                            description.add(getComponent("entry.revoke",
                                     "perm", permName,
                                     "rank", rank.getTag(landOwner)
                             ));
                         }
                     } else {
-                        description.add(getText("entry.grant",
+                        description.add(getComponent("entry.grant",
                                 "perm", permName,
                                 "rank", rank.getTag(landOwner)
                         ));
                     }
                 }
 
-                List<String> text = new ArrayList<>();
-                text.add(getText("entry.title",
+                List<Component> text = new ArrayList<>();
+                text.add(getComponent("entry.title",
                         "color", NamedTextColor.nearestTo(color).asHexString(),
                         "perm", permName,
                         "rank", rank.getTag(landOwner),
@@ -158,7 +159,7 @@ public class RankPermsGUI extends SettlementsGUI {
                         }
                     }
                     return true;
-                }, text.toArray(new String[0]));
+                }, text.toArray(new Component[0]));
             }));
         }
 
@@ -181,7 +182,7 @@ public class RankPermsGUI extends SettlementsGUI {
                     rank = r;
                     click.getGui().draw();
                     return true;
-                }, getText("rank-entry." + (selected ? "selected" : "selectable"),
+                }, getComponent("rank-entry." + (selected ? "selected" : "selectable"),
                         "name", r.getTag(landOwner),
                         "state", landOwner.getStateTag()
                 ));
@@ -195,7 +196,7 @@ public class RankPermsGUI extends SettlementsGUI {
                 new TitlesGUI(type, res, landOwner, rank).open();
             }
             return true;
-        }, getText("titles",
+        }, getComponent("titles",
                 "rank", rank.getTag(landOwner),
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(res, "titles") ? getText("unlockables.unlocked.change") : getText("no-permission")
@@ -219,13 +220,13 @@ public class RankPermsGUI extends SettlementsGUI {
                     "rank", rank.getTag(landOwner)
             ).open((Player) click.getWhoClicked());
             return true;
-        }, getText("reset",
+        }, getComponent("reset",
                 "rank", rank.getTag(landOwner),
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(res, "perms.reset") ? getText("unlockables.unlocked.reset") : getText("no-permission")
         ))));
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 
     public void open() {

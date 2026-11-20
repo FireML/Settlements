@@ -44,7 +44,7 @@ public class TurnInGUI extends SettlementsGUI {
         this.resident = resident;
         this.missionData = missionData;
 
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title",
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title",
                 "mission", missionData.getMission().getTag(),
                 "action", missionData.getMission().getType().getTag()
         ), SETUP);

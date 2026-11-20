@@ -29,19 +29,19 @@ public class OverviewGUI extends ConfigurableGui {
         Settlement settlement = resident.getSettlement();
 
         gui.addElement(new StaticGuiElement('s', getIcon("settlement"),
-                getText("settlement", settlement.getReplacements(this))));
+                getComponent("settlement", settlement.getReplacements(this))));
 
         gui.addElement(new StaticGuiElement('r', getIcon("rules"), click -> {
             ((SettlementRulesCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("rules"))
                     .run(resident, "settlement", "rules");
             return true;
-        }, getText("rules", "state", settlement.getStateTag(), "name", settlement.getName())));
+        }, getComponent("rules", "state", settlement.getStateTag(), "name", settlement.getName())));
 
         gui.addElement(new StaticGuiElement('h', getIcon("home"), click -> {
             ((SettlementHomeCommand) CommandManager.getInstance().getCommand("settlement").getSubCommands().get("home"))
                     .run(resident, "settlement", "home");
             return true;
-        }, getText("home", "state", settlement.getStateTag(), "name", settlement.getName())));
+        }, getComponent("home", "state", settlement.getStateTag(), "name", settlement.getName())));
 
         OwnedLand land = LandManager.getInstance().getLand(resident.getPlayer().getLocation());
         gui.addElement(new StaticGuiElement('p', getIcon("plot"), click -> {
@@ -50,7 +50,7 @@ public class OverviewGUI extends ConfigurableGui {
                 new SettingsGUI(resident).open();
             }
             return true;
-        }, getText("plot",
+        }, getComponent("plot",
                 "action", getText(land != null
                         ? land.isPlotOwner(resident) || land.canAdmin(resident)
                                 ? "unlockables.unlocked.options"
@@ -63,6 +63,6 @@ public class OverviewGUI extends ConfigurableGui {
         gui.addElement(new StaticGuiElement('f', ItemUtils.setGlowing(getIcon("friends"), !requests.isEmpty()), click -> {
             new FriendsList(resident, "general.friends").open();
             return true;
-        }, getText("friends")));
+        }, getComponent("friends")));
     }
 }

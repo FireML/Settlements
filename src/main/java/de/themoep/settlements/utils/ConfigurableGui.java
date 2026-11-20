@@ -15,12 +15,12 @@ public class ConfigurableGui extends SettlementsGUI {
     public ConfigurableGui(Resident resident, String name, String... replacements) {
         super(name);
         this.resident = resident;
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title", replacements), getSetup());
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title", replacements), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
-        gui.addElement(new GuiPageElement('n', getIcon("next"), GuiPageElement.PageAction.NEXT, getText("next")));
-        gui.addElement(new GuiPageElement('p', getIcon("previous"), GuiPageElement.PageAction.PREVIOUS, getText("previous")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
+        gui.addElement(new GuiPageElement('n', getIcon("next"), GuiPageElement.PageAction.NEXT, getComponent("next")));
+        gui.addElement(new GuiPageElement('p', getIcon("previous"), GuiPageElement.PageAction.PREVIOUS, getComponent("previous")));
 
         gui.addElements(getConfiguredElements());
     }

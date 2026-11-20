@@ -84,7 +84,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("rename.entry",
+        }, getComponent("rename.entry",
                 "state", landOwner.getStateTag(),
                 "name", landOwner.getName(),
                 "action", landOwner.hasPermission(resident, "rename") ? getText("unlockables.unlocked.change") : getText("no-permission")
@@ -95,7 +95,7 @@ public class SettingsGUI extends ConfigurableGui {
                 new PerksGUI(resident).open();
             }
             return true;
-        }, getText("perks.entry",
+        }, getComponent("perks.entry",
                 "state", landOwner.getStateTag(),
                 "perks", landOwner.getPerks().stream().map(p -> getText("perks.list", "name", p.getTag())).collect(Collectors.joining("\n")),
                 "action", landOwner.hasPermission(resident, "perks") ? getText("unlockables.unlocked.options") : getText("no-permission")
@@ -139,7 +139,7 @@ public class SettingsGUI extends ConfigurableGui {
                 Utils.runLater(() -> new SettingsGUI(resident, landOwner).open(), 1);
             }).open((Player) click.getWhoClicked());
             return true;
-        }, getText("rules.entry",
+        }, getComponent("rules.entry",
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(resident, "rules.set") ? getText("unlockables.unlocked.change") : getText("no-permission"))
         ));
@@ -185,7 +185,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("discord.entry", "state", landOwner.getStateTag(),
+        }, getComponent("discord.entry", "state", landOwner.getStateTag(),
                 "name", landOwner.getName(),
                 "discord", landOwner.getDiscord(),
                 "action", landOwner.hasPermission(resident, "discord.set") ? getText("unlockables.unlocked.change") : getText("no-permission")
@@ -233,7 +233,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("joinfee.entry",
+        }, getComponent("joinfee.entry",
                 "state", landOwner.getStateTag(),
                 "name", landOwner.getName(),
                 "joinfee", String.valueOf(landOwner.getJoinFee()),
@@ -275,7 +275,7 @@ public class SettingsGUI extends ConfigurableGui {
                         .open(resident.getPlayer());
             }
             return true;
-        }, getText("description.entry",
+        }, getComponent("description.entry",
                 "state", landOwner.getStateTag(),
                 "name", landOwner.getName(),
                 "description", landOwner.getDescription(),
@@ -287,7 +287,7 @@ public class SettingsGUI extends ConfigurableGui {
                 new AccessGUI(resident, landOwner.getKey(), landOwner).open();
             }
             return true;
-        }, getText("access",
+        }, getComponent("access",
                 "access", landOwner.getAccess().getTag(),
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(resident, "setaccess") ? getText("unlockables.unlocked.change") : getText("no-permission")
@@ -298,12 +298,12 @@ public class SettingsGUI extends ConfigurableGui {
                 new RecruitmentGUI(resident, landOwner).open();
             }
             return true;
-        }, getText("recruitment",
+        }, getComponent("recruitment",
                 "jointype", landOwner.getJoinType().getTag(),
                 "state", landOwner.getStateTag(),
                 "action", landOwner.hasPermission(resident, "recruitment") ? getText("unlockables.unlocked.change") : getText("no-permission")
         )));
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
     }
 }

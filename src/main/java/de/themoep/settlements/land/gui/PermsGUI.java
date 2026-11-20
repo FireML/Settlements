@@ -36,18 +36,18 @@ public class PermsGUI extends SettlementsGUI {
 
     public PermsGUI(String type, FlagAble flagAble, Supplier<Boolean> permCheck, BiConsumer<BuildStateable, GuiElement.Click> buildSetter, Resident resident) {
         super(type + ".perms");
-        gui = new InventoryGui(SettlementsPlugin.getInstance(), getText("title"), getSetup());
+        gui = new InventoryGui(SettlementsPlugin.getInstance(), getComponent("title"), getSetup());
         gui.setCloseAction(close -> false);
         gui.setFiller(getIcon("filler"));
         gui.addElements(getConfiguredElements());
-        gui.addElement(new StaticGuiElement('s', getIcon("states"), getText("states", "state", flagAble.getParent().getStateTag())));
+        gui.addElement(new StaticGuiElement('s', getIcon("states"), getComponent("states", "state", flagAble.getParent().getStateTag())));
 
         gui.addElement(new StaticGuiElement('a', getIcon("build"), click -> {
             if (permCheck.get()) {
                 buildSetter.accept(flagAble, click);
             }
             return true;
-        }, getText("build",
+        }, getComponent("build",
                 "build", flagAble.getBuildState() != null ? flagAble.getBuildState().getTag() : flagAble.getDefaultBuildState().getTag(),
                 "state", flagAble.getStateTag()
         )));
@@ -62,7 +62,7 @@ public class PermsGUI extends SettlementsGUI {
                 }
             }
             return true;
-        }, getText("modes",
+        }, getComponent("modes",
                 "build", flagAble.getBuildState() != null ? flagAble.getBuildState().getTag() : flagAble.getDefaultBuildState().getTag(),
                 "state", flagAble.getStateTag()
         )));
@@ -93,7 +93,7 @@ public class PermsGUI extends SettlementsGUI {
                             buildSetter.accept(new UseGroupSetter(flagAble, group), click);
                         }
                         return true;
-                    }, getText("entry",
+                    }, getComponent("entry",
                             "flag", group.getTag(),
                             "description", getText("descriptions." + group.name().toLowerCase(Locale.ROOT), "state", flagAble.getStateTag()),
                             "state", flagAble.getStateTag(),
@@ -106,7 +106,7 @@ public class PermsGUI extends SettlementsGUI {
         }
         gui.addElement(flagGroup);
 
-        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getText("back")));
+        gui.addElement(new GuiBackElement('b', getIcon("back"), true, getComponent("back")));
 
     }
 

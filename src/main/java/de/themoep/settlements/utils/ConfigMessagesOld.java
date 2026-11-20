@@ -2,6 +2,7 @@ package de.themoep.settlements.utils;
 
 import de.themoep.settlements.perk.SettlementPerk;
 import de.themoep.settlements.settlement.Settlement;
+import net.kyori.adventure.text.Component;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +14,10 @@ public interface ConfigMessagesOld extends ConfigKey {
 
     default String getText(String key, String... replacements) {
         return StringUtils.parseColors(getMessage(key).getReplacedText(replacements));
+    }
+
+    default Component getComponent(String key, String... replacements) {
+        return getMessage(key).getReplacedComponent(replacements);
     }
 
     default String getUnlockText(Settlement settlement, String unlockable) {

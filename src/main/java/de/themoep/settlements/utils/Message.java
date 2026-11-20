@@ -87,6 +87,14 @@ public class Message {
         return ComponentUtils.parsePlaceholders(getComponent(), replacements);
     }
 
+    public List<Component> getReplacedComponentList(String... replacements) {
+        List<Component> returnList = new ArrayList<>();
+        for (String s : getTextList()) {
+            returnList.add(ComponentUtils.parseComponent(s, replacements));
+        }
+        return returnList;
+    }
+
     public Component getReplacedComponent(Map<String, Component> replacements) {
         return ComponentUtils.parsePlaceholders(getComponent(), replacements);
     }
